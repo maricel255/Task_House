@@ -446,7 +446,9 @@ if (isset($_SESSION['message'])) {
             <div class="dashboard-cards">
                 <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
                 <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
-                <div class="card intern"><h2>Intern Account</h2><p>3 Intern Account</p></div>
+                <div class="card intern"><h2>Intern Account</h2>
+                Total Intern Accounts: <strong><?php echo count($internAccounts); ?></strong>
+                </div>
                 <div class="card company"><h2>Company</h2><p>4 Company</p></div>
             </div>
             <div class="announcement-board">
@@ -458,102 +460,94 @@ if (isset($_SESSION['message'])) {
             </div>
         </div>
         
-        <div class="content-section" id="Intern_profile">
-            <h1>Intern Profile</h1>
-            <h1 class="db_Details">Database here!</h1>
-            </div>
-                <div class="content-section" id="Intern_Account">
-                    <h1>Intern Logins</h1>
-                    <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
+        <div class="content-section" id="Intern_Account">
+    <h1>Intern Logins</h1>
+    <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
-                            <!-- Intern Modal -->
-                            <div id="InternAccModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
-                            
-                            <h2>Add Intern Account</h2>
-                            <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
-                                <div class="form-group">
-                                    <label for="internID">Intern ID:</label>
-                                    <input type="text" id="internID" name="internID" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="InternPass">Password:</label>
-                                    <input type="password" id="InternPass" name="InternPass" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
-                            <?php if ($message): ?>
-                                <p class="error-message"><?php echo htmlspecialchars($message); ?></p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                            <!-- Display Existing Intern Accounts Outside the Modal -->
-                            <h2>Existing Intern Accounts</h2>
+    <!-- Intern Modal -->
+    <div id="InternAccModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
-                         
-                <!-- Search Form Positioned in Upper Right of the Table -->
-                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                    <form method="GET" action="">
-                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" />
-                        <button type="submit" class="search-button">Search</button>
-                    </form>
+            <h2>Add Intern Account</h2>
+            <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label for="internID">Intern ID:</label>
+                    <input type="text" id="internID" name="internID" required>
                 </div>
+                <div class="form-group">
+                    <label for="InternPass">Password:</label>
+                    <input type="password" id="InternPass" name="InternPass" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <?php if ($message): ?>
+                <p class="error-message"><?php echo htmlspecialchars($message); ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
 
-                <!-- Message Display for Search Results -->
-                <?php if ($searchInternID): ?>
-                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-                <?php endif; ?>
+    <!-- Display Existing Intern Accounts Outside the Modal -->
+    <h2>Existing Intern Accounts</h2>
 
-                <!-- Intern Accounts Table -->
-                <?php if (!empty($internAccounts)): ?>
-                    <table class="intern-accounts-table">
-                        <tr>
-                            <th class="table-header">Intern ID</th> <!-- First Column -->
-                            <th class="table-header">Current Password</th>
-                            <th class="table-header" style="padding-left: 30%;">Actions</th> <!-- Add padding to move it away from the edge -->
-                            </tr>
-                        <?php 
-                        // To store the filtered and non-filtered accounts
-                        $highlightedRow = [];
-                        $otherRows = [];
+    <!-- Search Form Positioned in Upper Right of the Table -->
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+        <form method="GET" action="">
+            <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" />
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </div>
 
-                        foreach ($internAccounts as $account): 
-                            // Check if the intern ID matches the search
-                            if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
-                                $highlightedRow[] = $account; // Add to highlighted rows
-                            } else {
-                                $otherRows[] = $account; // Add to other rows
-                            }
-                        endforeach; 
+    <!-- Message Display for Search Results -->
+    <?php if ($searchInternID): ?>
+        <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+    <?php endif; ?>
 
-                        // Merge highlighted row(s) with other rows
-                        $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                        ?>
+    <!-- Intern Accounts Table -->
+    <?php if (!empty($internAccounts)): ?>
+        <table class="intern-accounts-table">
+            <tr>
+                <th class="table-header">Intern ID</th>
+                <th class="table-header">Current Password</th>
+                <th class="table-header" style="padding-left: 30%;">Actions</th>
+            </tr>
 
-                        <?php foreach ($sortedAccounts as $account): ?>
-                            <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
-                                <td class="table-data">
-                                    <?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?>
-                                </td>
-                                <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
-                                <td class="table-actions">
-                                    <form method="POST" action="" style="display:inline;">
-                                        <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
-                                        <input type="password" name="InternPass" class="password-input" placeholder="New Password" />
-                                        <button type="submit" name="action" value="update" class="update-button">Update</button>
-                                        <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                <?php else: ?>
-                    <p>No intern accounts found.</p>
-                <?php endif; ?>
+            <?php 
+            // To store the filtered and non-filtered accounts
+            $highlightedRow = [];
+            $otherRows = [];
 
+            foreach ($internAccounts as $account): 
+                if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
+                    $highlightedRow[] = $account; 
+                } else {
+                    $otherRows[] = $account; 
+                }
+            endforeach; 
 
-             </div>
+            // Merge highlighted row(s) with other rows
+            $sortedAccounts = array_merge($highlightedRow, $otherRows);
+            foreach ($sortedAccounts as $account): ?>
+                <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
+                    <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
+                    <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
+                    <td class="table-actions">
+                        <form method="POST" action="" style="display:inline;">
+                            <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                            <input type="password" name="InternPass" class="password-input" placeholder="New Password" />
+                            <button type="submit" name="action" value="update" class="update-button">Update</button>
+                            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php else: ?>
+        <p>No intern accounts found.</p>
+    <?php endif; ?>
+
+</div>
+
             
         </div>      
             <!-- Pagination Links -->
