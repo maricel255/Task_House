@@ -1,0 +1,42 @@
+.abody{
+    background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
+
+}
+
+.form-label{
+    color: black;
+
+}
+.img-fluid{
+    margin-top: 130px;
+}
+.s-intern{
+    color: #E10000;
+    font-family:'Arial Narrow Bold';
+    font-size: 5.0em;
+}
+.s-TH{
+    color: green;
+    font-family:'Arial Narrow Bold';
+    font-size: 4.5em;
+}
+.fw-normal mb-3 pb-3{
+    font-family:'Arial Narrow Bold';
+    font-size: 1.0em;
+}
+.admin_header{
+    width: 18%;
+    height:98vh;
+    border-radius: 25px;
+    background-color:green;
+    background-position: center;
+    background-size: cover;
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,188 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Styling */
+.header-container {
+  background-color: green;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure header stays above other content */
+}
+
+/* Header height for padding reference */
+.header-container {
+  height: 100px; /* Adjust this value if needed */
+}
+
+/* Padding for main content to avoid overlap with the header */
+#main-section {
+  padding-top: 120px; /* Same as header height */
+}
+
+/* Custom styles for navigation buttons */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between buttons */
+}
+
+.nav-buttons a,
+.nav-buttons button,
+.nav-buttons .dropdown {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px; /* Ensures the buttons are spaced evenly */
+  text-decoration: none; /* Remove underline from links */
+  font-size: 16px;
+}
+
+.nav-buttons a:hover,
+.nav-buttons button:hover,
+.nav-buttons .dropdown .btn:hover {
+  background-color: darkgreen; /* Hover effect */
+}
+
+.dropdown-menu {
+  min-width: 150px; /* Adjust width of dropdown */
+}
+
+.nav-buttons .dropdown-toggle {
+  background-color: green;
+  border: none;
+}
+
+.nav-buttons .dropdown-toggle:hover {
+  background-color: darkgreen;
+}
+
+/* Main Section and Other Styles */
+.container {
+  margin-top: 20px; /* Adjust if needed */
+}
+
+.main-text {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.interns {
+  color: rgb(216, 59, 19);
+}
+
+.task-house {
+  color: blue;
+  position: relative;
+}
+
+/* Right Side Text and other styling */
+.lorem-container {
+  height: 350px; /* Adjust height as needed */
+  width: 500px;
+  padding: 50px;
+  margin-left: -260px;
+  border: 1px solid #ddd; /* Optional: Add a border for visibility */
+}
+
+/* Horizontal orange line under TASK HOUSE */
+.task-house::after {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 4px;
+  background-color: orange;
+  margin-top: 0px;
+}
+
+.capstone-title {
+  font-size: 18px;
+  color: black;
+  margin-top: 0px;
+}
+
+.separator {
+  width: 4px;
+  height: 160px;
+  background-color: orange;
+  margin-left: -500px;
+  margin-right: 20px;
+}
+
+.right-text {
+  font-size: 16px;
+  margin-top: 60px;
+}
+
+/* Documents Section Styles */
+.documents-section {
+  background-color: #f9f9f9; /* Light background for documents */
+  padding: 50px;
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 10px;
+}
+
+.documents-section h4 {
+  font-size: 24px;
+  color: #21618c; /* Dark blue color for the heading */
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.documents-section p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.documents-section ul {
+  list-style-type: none; /* Remove default list styling */
+  padding-left: 0;
+}
+
+.documents-section ul li {
+  padding: 10px 0;
+  font-size: 16px;
+}
+
+.documents-section ul li a {
+  text-decoration: none;
+  color: #007bff; /* Link color */
+}
+
+.documents-section ul li a:hover {
+  text-decoration: underline;
+  color: #0056b3; /* Darker link on hover */
+}
+
+/* Footer Styling */
+.footer {
+  background-color: green !important; /* Ensure footer has a green background */
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: fixed; /* Keep it fixed */
+  left: 0; /* Align left */
+  bottom: -100px; /* Hide it initially */
+  transition: bottom 0.3s; /* Smooth transition */
+}
+
+
+/* New Adjustments to move image and text to the left */
+.main-section {
+  padding-left: 0px; /* Added left padding */
+}
+
+.row > .col-md-3 {
+  padding-right: 10px;
+}

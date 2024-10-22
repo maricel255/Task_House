@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expandable Sidebar with User Info</title>
+    <link rel="stylesheet" href="faci_styles.css">
+</head>
+<body>
+
+<p>SAMOKA NI KYLE UY</p>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar hide-content">
+            <div class="user-info">
+                <img src="image/cot-removebg-preview.png" alt="Toggle Sidebar" class="user-icon">
+                <div class="user-details">
+                    <p class="user-name">Last name, First name</p>
+                    <p class="role">Intern Facilitator</p>
+                    
+                </div>
+            </div>
+            <nav class="navigation">
+                <a href="#" class="home-link" onclick="showContent('dashboard')">
+                    <i class="fa fa-home"></i><span> Dashboard</span>
+                </a>
+                <a href="#" onclick="showContent('requests')">
+                    <i class="fa fa-cog"></i><span> Requests</span>
+                </a>
+                <a href="#" onclick="showContent('report')">
+                    <i class="fa fa-cog"></i><span> Intern Reports</span>
+                </a>
+                
+            </nav>
+        </div>
+        
+        <!-- Header -->
+        <div class="header" id="header">
+            <button class="logout-btn" onclick="logout()">
+                <img src="image/logout.png" alt="logout icon" class="logout-icon">
+                | LOG OUT
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-section" id="dashboard">
+    <div class="main-content">
+        
+            <div class="announcement-board">
+                <h2>ANNOUNCEMENT BOARD</h2>
+                <p class="announcement">This announcement's from CUT COT admin</p>
+                <p class="announcement-details">
+                    GDSAKFHASDFKNBASDF <br>
+                    NFDSKAJFSDFLKNDSLAFLKNVADSLVNLSALVN <br>
+                    SDAFDSAPFKJASDLFJASDLDFKMNF
+                </p>
+            </div>
+        </div>
+    
+
+    <div class="dash-content" >
+        <div class="dashboard">
+            <h2>Dashboard</h2>
+            <div class="card red">
+                <h3>ACTIVE INTERN'S</h3>
+                <p>5 Active Intern's</p>
+            </div>
+            <div class="card orange">
+                <h3>APPROVAL REQUESTS</h3>
+                <p>5 Active Intern's</p>
+            </div>
+            <div class="card green">
+                <h3>APPROVAL REQUESTS</h3>
+                <p>5 Active Intern's</p>
+            </div>
+        </div>
+</div>
+</div>
+
+<div class="content-section" id="requests">
+    <div class="req-content">
+    <div class="req-container">
+        <h1>Request</h1>
+        
+    </div>
+    <button class="decline-button" id="openModalBtn">Decline</button>
+</div>
+    </div>
+     <!-- Modal Structure -->
+     <div id="declineModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModalBtn">&times;</span>
+            <h2>Decline Request</h2>
+            <form>
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date">
+                </div>
+    
+                <div class="form-group">
+                    <label for="time-in">Time-In:</label>
+                    <input type="time" id="time-in" name="time-in">
+                </div>
+    
+                <div class="form-group">
+                    <label for="time-out">Time-Out:</label>
+                    <input type="time" id="time-out" name="time-out">
+                </div>
+    
+                <div class="form-group">
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes" rows="4" cols="30"></textarea>
+                </div>
+    
+                <button type="button" class="update-button">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="content-section" id="report">
+        <div class="rep-content">
+            <div class="wrapper">
+            <h1>DATABASE HERE</h1>
+        </div>
+        </div>
+    </div>
+   
+
+    <script src="faci_script.js"></script>
+</body>
+</html>

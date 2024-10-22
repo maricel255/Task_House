@@ -1,0 +1,624 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Container styling */
+.container {
+    display: flex;
+}
+
+/* Sidebar styling */
+.sidebar {
+    background-color: green;
+    color: white;
+    width: 60px; /* Partially visible when closed */
+    height: 100%;
+    position: fixed; /* Fix the sidebar in place */
+    left: 0; /* Sidebar is visible initially */
+    transition: width 0.3s ease-in-out; /* Smooth width transition */
+    z-index: 1000; /* Make sure sidebar is on top */
+    overflow: hidden; /* Hide the overflowing content */
+    border-radius: 15px;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.sidebar.active {
+    width: 250px; /* Expanded width */
+}
+
+/* Hide content styling */
+.sidebar.hide-content .user-details,
+.sidebar.hide-content .navigation a {
+    opacity: 0; /* Make content invisible */
+    visibility: hidden; /* Hide the content */
+    transition: opacity 0.3s ease-in-out, visibility 0s 0.3s; /* Smooth fade out */
+}
+
+.sidebar.show-content .user-details,
+.sidebar.show-content .navigation a {
+    opacity: 1; /* Make content visible */
+    visibility: visible; /* Show the content */
+    transition: opacity 0.3s ease-in-out; /* Smooth fade in */
+}
+
+.user-name{
+    border-bottom: 2px solid yellow; /* This adds a yellow line under the text */
+    padding-bottom: 5px; /* Adds some space between the text and the line */
+}
+
+.break-btn {
+    border-radius: 5px;
+    padding: 3px 10px 3px 10px;
+    background-color: #ffc107; /* Bootstrap-like yellow */
+    cursor: pointer;
+}
+
+.back-to-work-btn {
+    background-color: #ffc107; /* Bootstrap-like green */
+    border-radius: 5px;
+    padding: 3px 10px 3px 10px;
+    cursor: pointer;
+   
+}
+
+.user-details .btn:hover {
+    opacity: 0.7; /* Simple hover effect */
+}
+/* Sidebar content */
+.user-info {
+    display: flex; /* Align image and details horizontally */
+    align-items: center; /* Vertically center content */
+    margin-bottom: 20px;
+    overflow: hidden; /* Hide details when sidebar is narrow */
+}
+
+.user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer; /* Indicate it's clickable */
+    transition: width 0.3s, height 0.3s; /* Smooth size transition */
+}
+
+.sidebar.active .user-icon {
+    width: 60px; /* Expand image */
+    height: 60px; /* Expand image */
+}
+
+.user-details {
+    opacity: 0; /* Hide details when sidebar is narrow */
+    margin-left: 10px;
+    white-space: nowrap; /* Prevent text wrapping */
+    transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.active .user-details {
+    opacity: 1; /* Show details when sidebar expands */
+}
+/* Navigation links */
+.navigation a {
+    display: block;
+    padding: 20px;
+    text-decoration: none;
+    text-align: center;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s ease-in-out;
+    white-space: nowrap; /* Prevent text wrapping */
+    width: 100%;
+}
+
+.navigation a:hover {
+    background-color: #f0f0f0;
+}
+
+.navigation a.active {
+    background-color: #ccc;
+}
+
+/* Content sections */
+.content-section {
+    display: none; /* Initially hidden, except the one being shown */
+}
+
+.content-section#dashboard {
+    display: block; /* Dashboard is visible by default */
+}
+
+
+/* Sidebar navigation */
+.navigation ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.navigation li {
+    opacity: 0;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.3s ease-in-out;
+    white-space: nowrap; /* Prevent text wrapping */
+    width: 100%;
+}
+.sidebar.active .navigation li {
+    opacity: 1; /* Show navigation items when sidebar expands */
+}
+
+.navigation li:hover, .navigation li.active {
+    background-color: #034b04;
+}
+
+/* Header Styling */
+.header {
+    width: calc(100% - 60px); /* Full width minus initial sidebar */
+    height: 60px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 20px;
+    position: fixed;
+    top: 0;
+    left: 60px; /* Offset by the sidebar */
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+    z-index: 1001; /* To be above sidebar */
+}
+
+.header.shifted {
+    left: 250px; /* Aligned with expanded sidebar */
+    width: calc(100% - 250px);
+}
+
+/* Logout Button Styling */
+.logout-btn {
+    background-color: #e8e8e8;
+    border: 2px solid navy;
+    color: navy;
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: navy;
+    color: white;
+}
+
+.logout-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    transition: filter 0.3s ease;
+}
+
+.logout-btn:hover .logout-icon {
+    filter: invert(100%);
+}
+
+/* Main Content Styling */
+.main-content {
+    margin-left: 60px;
+    padding: 70px 20px 20px 20px; /* Top padding to avoid header */
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.main-content.shift {
+    margin-left: 250px; /* Fully shifted when sidebar is active */
+    width: calc(100% - 250px); /* Adjust width */
+}
+
+/* Announcement Board Styling */
+.announcement-board {
+    background-color: #ffffff;
+    border: 2px solid red;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.announcement-board h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #e15c15;
+}
+
+.announcement {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.announcement-details {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #666;
+}
+
+.time-clock-container {
+    background-color: #ffffff; /* White background */
+    border-radius: 10px;
+    border: 2px solid navy;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#time-display {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.tasks button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+input[type="text"] {
+    width: 100%;
+    padding: 30px 10px 30px 10px ;
+    margin-bottom: 20px;
+    border: 2px solid navy;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+
+
+.login-btn { background-color: #4CAF50; }
+.logut-butn { background-color: #f44336; }
+
+.tasks button:hover {
+    opacity: 0.8;
+}
+.time-content{
+    margin-left: 60px;
+    padding: 0 520px 0 20px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+ .shifts {  
+    margin-left: 250px; /* Fully shifted when sidebar is active */
+    width: calc(100% - 250px); /* Adjust width */
+}
+/* Content sections */
+.content-section {
+    display: none; /* Initially hidden, except the one being shown */
+}
+
+.content-section#dashboard {
+    display: block; /* Dashboard is visible by default */
+}
+/*Attendance*/
+
+.attent-content{
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.move{
+    margin-left: 250px; /* Fully shifted when sidebar is active */
+    width: calc(100% - 250px); /* Adjust width */
+}
+.attendance-container {
+    margin-left: 60px;
+    padding: 15px 100px 15px 350px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    
+    background-color: #ffffff; /* Light green background */
+    box-shadow: 5px 2px 5px 2px  rgba(0, 0, 0, 0.1);
+    
+    border-radius: 8px; /* Rounded corners */
+    margin-top: 100px; /* Space between logout button and attendance container */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Bold text */
+    color: black; /* Green text */
+}
+
+/*Request*/
+.req-content{
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.moves{
+    margin-left: 250px; /* Fully shifted when sidebar is active */
+    width: calc(100% - 250px); /* Adjust width */
+}
+/* CSS for the styled button */
+/* Wrapper styling */
+.wrapper {
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full height of the viewport */
+    padding-left: 20px; /* Adjust the left padding as needed */
+    
+}
+
+/* CSS for the styled button */
+.styled-button {
+    background-color: #1e1b7e; /* Navy blue background */
+    color: white; /* White text color */
+    font-size: 14px; /* Font size */
+    font-weight: bold; /* Bold text */
+    padding: 20px 50px; /* Padding inside the button */
+    border: none; /* No border */
+    border-radius: 15px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effect */
+    outline: none; /* Remove default outline */
+}
+
+.styled-button:hover {
+    background-color: navy;
+    color: white;
+}
+.styled-button:hover{
+    filter: invert(100%);
+}
+
+
+/* Profile Button */
+
+.profile-button {
+    position: absolute; /* Position relative to the sidebar */
+    bottom: 20px; /* Distance from the bottom of the sidebar */
+    right: 20px; /* Distance from the right of the sidebar */
+    background-color: #FF920C; /* Button background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Padding */
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    display: inline-flex; /* Flexbox for centering icon and text */
+    align-items: center; /* Vertically center the content */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+    z-index: 1000; /* Ensure button is above other content */
+  }
+  .profile-button:hover {
+    background-color: #000543; /* Background color on hover */
+  }
+  
+  .profile-button i {
+    margin-right: 8px; /* Space between icon and text */
+  }
+  .profile-details{
+    margin-top: 9%;
+    width: 30%;
+  }
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-left: 50px;
+  }
+  
+  .form-group label {
+    flex: none;
+    width: 150px; /* Adjust width as needed */
+    margin-right: 5px;
+    text-align: left; /* Align labels to the right */
+  }
+  
+  .form-group input,
+  .form-group select {
+    flex: 1;
+    padding: 8px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+  }
+  
+  .form-group input[type="radio"],
+  .form-group input[type="checkbox"] {
+    flex: none;
+    margin-right: 10px;
+  }
+  
+  .form-group .gender-group,
+  .form-group .contact-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-group .gender-group label,
+  .form-group .contact-group label {
+    margin-right: 10px;
+  }
+  
+  .form-group .gender-group input[type="radio"],
+  .form-group .contact-group input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  .form-group input[type="date"],
+  .form-group input[type="number"] {
+    width: 100%;
+  }
+  .profile-input {
+    font-size: 20px;
+    padding: 5px;
+    border-radius: 10px; /* Border radius for input fields */
+    border: 1px solid #ccc;
+    width: 150px; /* Adjusted smaller width */
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+  }
+  .profile-cont{
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.moved{
+    margin-left: 250px; /* Fully shifted when sidebar is active */
+    width: calc(100% - 250px); /* Adjust width */
+}
+.Coverimg{
+    width: 100%;
+    height: 20%;
+    background: linear-gradient(110.1deg, rgb(34, 126, 34) 2.9%, rgb(168, 251, 60) 90.3%);
+    border-radius: 25px;
+    border-style:1px solid;
+    align-items: center;
+    width: calc(100% - 60px); /* Initial width when sidebar is collapsed */
+    transition: all 0.3s ease; /* Smooth transition */
+  }
+
+  .myprofileimg {
+    position: absolute; /* Position absolutely within the sidebar */
+    top: 15%; /* Distance from the bottom of the container */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust horizontal centering */
+    width: 200px; /* Adjust the width to make the image bigger */
+    height: 200px; /* Maintain aspect ratio */
+    border-radius: 50%; /* Optional: make it circular */
+    cursor: pointer; /* Pointer cursor on hover */
+    border: 7px solid #f1f1f1;
+    align-items: center;
+  }
+
+  .Coverimg .input{
+    border-radius: 25px;
+  }
+  
+  .update-btn {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Padding */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    margin-top: 20px; /* Space above the button */
+    display: block; /* Make button a block-level element for centering */
+    width: fit-content; /* Adjust width to fit the content */
+    margin-left: auto; /* Center the button horizontally */
+    margin-right: auto; /* Center the button horizontally */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+  }
+  
+  .update-btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+
+  /* Modal Styles */
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 10px;
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+   
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Styling the label to have a fixed width */
+label {
+    width: 150px; /* Fixed width for the label */
+    margin-right: 10px; /* Space between label and input */
+    text-align: right; /* Align the label to the right */
+}
+
+input, select {
+    flex: 1; /* Input takes up the remaining space */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding and borders are included in the total width */
+}
+
+.modal-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.modal-footer button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-footer button:hover {
+    background-color: #45a049;
+}
+
+/* Close button styling */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    cursor: pointer;
+}
+
+/* Modal background */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+}
+
+/* Blur effect when modal is open */
+.blur-background {
+    filter: blur(8px);
+}
+
+
+  

@@ -1,0 +1,498 @@
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Container styling */
+.container {
+  display: flex;
+}
+
+/* Sidebar styling */
+.sidebar {
+  background-color: green;
+  color: white;
+  width: 60px; /* Partially visible when closed */
+  height: 100%;
+  position: fixed; /* Fix the sidebar in place */
+  left: 0; /* Sidebar is visible initially */
+  transition: width 0.3s ease-in-out; /* Smooth width transition */
+  z-index: 1000; /* Make sure sidebar is on top */
+  overflow: hidden; /* Hide the overflowing content */
+  border-radius: 15px;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.sidebar.active {
+  width: 250px; /* Expanded width */
+}
+
+/* Hide content styling */
+.sidebar.hide-content .user-details,
+.sidebar.hide-content .navigation a {
+  opacity: 0; /* Make content invisible */
+  visibility: hidden; /* Hide the content */
+  transition: opacity 0.3s ease-in-out, visibility 0s 0.3s; /* Smooth fade out */
+}
+
+.sidebar.show-content .user-details,
+.sidebar.show-content .navigation a {
+  opacity: 1; /* Make content visible */
+  visibility: visible; /* Show the content */
+  transition: opacity 0.3s ease-in-out; /* Smooth fade in */
+}
+
+.user-name{
+  border-bottom: 2px solid yellow; /* This adds a yellow line under the text */
+  padding-bottom: 5px; /* Adds some space between the text and the line */
+}
+
+.break-btn {
+  border-radius: 5px;
+  padding: 3px 10px 3px 10px;
+  background-color: #ffc107; /* Bootstrap-like yellow */
+  cursor: pointer;
+}
+
+.back-to-work-btn {
+  background-color: #ffc107; /* Bootstrap-like green */
+  border-radius: 5px;
+  padding: 3px 10px 3px 10px;
+  cursor: pointer;
+ 
+}
+
+.user-details .btn:hover {
+  opacity: 0.7; /* Simple hover effect */
+}
+/* Sidebar content */
+.user-info {
+  display: flex; /* Align image and details horizontally */
+  align-items: center; /* Vertically center content */
+  margin-bottom: 20px;
+  overflow: hidden; /* Hide details when sidebar is narrow */
+}
+
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer; /* Indicate it's clickable */
+  transition: width 0.3s, height 0.3s; /* Smooth size transition */
+}
+
+.sidebar.active .user-icon {
+  width: 60px; /* Expand image */
+  height: 60px; /* Expand image */
+}
+
+.user-details {
+  opacity: 0; /* Hide details when sidebar is narrow */
+  margin-left: 10px;
+  white-space: nowrap; /* Prevent text wrapping */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.active .user-details {
+  opacity: 1; /* Show details when sidebar expands */
+}
+/* Navigation links */
+.navigation a {
+  display: block;
+  padding: 20px;
+  text-decoration: none;
+  text-align: center;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s ease-in-out;
+  white-space: nowrap; /* Prevent text wrapping */
+  width: 100%;
+}
+
+.navigation a:hover {
+  background-color: #f0f0f0;
+}
+
+.navigation a.active {
+  background-color: #ccc;
+}
+
+/* Content sections */
+.content-section {
+  display: none; /* Initially hidden, except the one being shown */
+}
+
+.content-section#dashboard {
+  display: block; /* Dashboard is visible by default */
+}
+
+
+/* Sidebar navigation */
+.navigation ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.navigation li {
+  opacity: 0;
+  padding: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s ease-in-out;
+  white-space: nowrap; /* Prevent text wrapping */
+  width: 100%;
+}
+.sidebar.active .navigation li {
+  opacity: 1; /* Show navigation items when sidebar expands */
+}
+
+.navigation li:hover, .navigation li.active {
+  background-color: #034b04;
+}
+
+/* Header Styling */
+.header {
+  width: calc(100% - 60px); /* Full width minus initial sidebar */
+  height: 60px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 20px;
+  position: fixed;
+  top: 0;
+  left: 60px; /* Offset by the sidebar */
+  transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+  z-index: 1001; /* To be above sidebar */
+}
+
+.header.shifted {
+  left: 250px; /* Aligned with expanded sidebar */
+  width: calc(100% - 250px);
+}
+
+/* Logout Button Styling */
+.logout-btn {
+  background-color: #e8e8e8;
+  border: 2px solid navy;
+  color: navy;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: navy;
+  color: white;
+}
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  transition: filter 0.3s ease;
+}
+
+.logout-btn:hover .logout-icon {
+  filter: invert(100%);
+}
+
+/* Main Content Styling */
+.main-content {
+  margin-left: 60px;
+  padding: 70px 20px 20px 20px; /* Top padding to avoid header */
+  width: calc(100% - 60px);
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.main-content.shift {
+  margin-left: 250px; /* Fully shifted when sidebar is active */
+  width: calc(100% - 250px); /* Adjust width */
+}
+
+/* Announcement Board Styling */
+.announcement-board {
+  background-color: #ffffff;
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.announcement-board h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #e15c15;
+}
+
+.announcement {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.announcement-details {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.dashboard {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  max-width: 300px;
+}
+
+/* Heading styling */
+.dashboard h2 {
+  font-size: 24px;
+  color: #1e1b7e;
+  margin-bottom: 20px;
+}
+
+/* Card styling */
+.card {
+  background-color: #f9f9f9;
+  padding: 15px 20px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  border-left: 5px solid; /* Left border for color indicator */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+/* Card hover effect */
+.card:hover {
+  transform: translateX(5px);
+}
+
+/* Card heading styling */
+.card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Card content styling */
+.card p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Card border colors */
+.card.red {
+  border-color: red;
+}
+
+.card.orange {
+  border-color: orange;
+}
+
+.card.green {
+  border-color: green;
+}
+.dash-content{
+  margin-left: 60px;
+  padding: 0 520px 0 20px;
+  width: calc(100% - 60px);
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.shifts {  
+  margin-left: 250px; /* Fully shifted when sidebar is active */
+  width: calc(100% - 250px); /* Adjust width */
+}
+/* Content sections */
+.content-section {
+  display: none; /* Initially hidden, except the one being shown */
+}
+
+.content-section#dashboard {
+  display: block; /* Dashboard is visible by default */
+}
+/*Request*/
+
+.req-content{
+  margin-left: 60px;
+  width: calc(100% - 60px);
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.move{
+  margin-left: 250px; /* Fully shifted when sidebar is active */
+  width: calc(100% - 250px); /* Adjust width */
+}
+.req-container {
+  margin-left: 60px;
+  padding: 15px 100px 15px 350px;
+  width: calc(100% - 60px);
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  margin-top: 100px; /* Space between logout button and attendance container */
+  font-size: 16px; /* Font size */
+  font-weight: bold; /* Bold text */
+  color: black; /* Green text */
+}
+.decline-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 50px;
+  margin-left: 100px;
+  color: navy;
+  background-color: #e8e8e8;
+  align-items: center;
+  border: 2px solid navy;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  
+}
+
+
+.decline-button:hover {
+  background-color: navy;
+  color: white;
+}
+
+/* Modal background */
+.modal {
+  display: none; /* Hide modal by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 400px; /* Width of the modal */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Form group */
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+}
+
+/* Form labels */
+.form-group label {
+  margin-bottom: 5px; /* Space between label and input */
+}
+
+/* Form inputs */
+.form-group input, 
+.form-group textarea {
+  padding: 8px;
+  font-size: 14px;
+  width: 100%; /* Make inputs take full width */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* Update button */
+.update-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
+
+.update-button:hover {
+  background-color: #45a049;
+}
+
+/*report*/
+.rep-content{
+  margin-left: 60px;
+  width: calc(100% - 60px);
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.moves{
+  margin-left: 250px; /* Fully shifted when sidebar is active */
+  width: calc(100% - 250px); /* Adjust width */
+}
+/* CSS for the styled button */
+/* Wrapper styling */
+.wrapper {
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full height of the viewport */
+  padding-left: 20px; /* Adjust the left padding as needed */
+  
+}
+
+/* CSS for the styled button */
+.styled-button {
+  background-color: #1e1b7e; /* Navy blue background */
+  color: white; /* White text color */
+  font-size: 14px; /* Font size */
+  font-weight: bold; /* Bold text */
+  padding: 20px 50px; /* Padding inside the button */
+  border: none; /* No border */
+  border-radius: 15px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effect */
+  outline: none; /* Remove default outline */
+}
+
+.styled-button:hover {
+  background-color: navy;
+  color: white;
+}
+.styled-button:hover{
+  filter: invert(100%);
+}
+
+
+
+
+
