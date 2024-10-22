@@ -5,9 +5,10 @@ require('Admin_connection.php'); // Include your database connection file
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
+
 try {
     // Prepare the SQL query using placeholders to prevent SQL injection
-    $query = "SELECT Firstname, Roles, admin_profile, Uname FROM users WHERE Uname = :Uname";
+    $query = "SELECT Firstname, Roles, admin_profile, Uname, adminID FROM users WHERE Uname = :Uname"; // Include adminID
     $stmt = $conn->prepare($query);
     
     // Bind the parameter
@@ -24,6 +25,7 @@ try {
         $Firstname = $user['Firstname']; // User's first name
         $Roles = $user['Roles']; // User's roles
         $admin_profile = $user['admin_profile']; // User's profile (image path)
+        $adminID = $user['adminID']; // Store adminID for later use
     } else {
         // Redirect to the login page if user data is not found
         header("Location: admin_registration.php");
@@ -55,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verify the current password
     if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
-        $errorMessages[] = "Current password is incorrect.";
+        $message[] = "Current password is incorrect.";
     }
 
     // Validate new password if the current password is correct
-    if (empty($errorMessages)) {
+    if (empty($message)) {
         if ($newUpass !== $confirmUpass) {
-            $errorMessages[] = "Passwords do not match.";
+            $message[] = "Passwords do not match.";
         } elseif (strlen($newUpass) < 6) {
-            $errorMessages[] = "Password must be at least 6 characters long.";
+            $message[] = "Password must be at least 6 characters long.";
         }
     }
 
@@ -88,15 +90,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Move the file to the uploads directory
             if (!move_uploaded_file($fileTmpPath, $dest_path)) {
-                $errorMessages[] = "Error moving the uploaded file.";
+                $message[] = "Error moving the uploaded file.";
             }
         } else {
-            $errorMessages[] = "Invalid file type or file size too large.";
+            $message[] = "Invalid file type or file size too large.";
         }
     }
 
      // If there are no errors, update user info in the database
-     if (empty($errorMessages)) {
+     if (empty($message)) {
         try {
             // Update user info in the database, no hashing for new password
             $query = "UPDATE users SET Firstname = :firstname, Upass = :password, admin_profile = :profile WHERE Uname = :Uname"; // Use 'Upass' here as well
@@ -118,43 +120,171 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
-
 // Handle adding intern account
-if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['internID'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get and sanitize user input
-    $internID = trim($_POST['internID']);
+    $internID = trim($_POST['internID'] ?? '');
     $InternPass = trim($_POST['InternPass'] ?? '');
 
-    // Validate input
+    // Validate input for creating an account
     if (empty($internID) || empty($InternPass)) {
         $_SESSION['message'] = 'Intern ID and password are required.';
     } else {
-        // Optionally, you could enforce length and character requirements for passwords
+        // Optional: Check password length
         if (strlen($InternPass) < 6) {
             $_SESSION['message'] = 'Password must be at least 6 characters long.';
         } else {
-            // Prepare SQL query to insert data
-            $sql = "INSERT INTO intacc (internID, Internpass) VALUES (:internID, :InternPass)";
+            // Check if the internID already exists
+            $checkQuery = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
+            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt->bindParam(':internID', $internID, PDO::PARAM_STR);
+            $checkStmt->execute();
+            $exists = $checkStmt->fetchColumn();
 
-            try {
-                $stmt = $conn->prepare($sql);
-                
-                // Bind parameters
-                $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
+            if ($exists > 0) {
+                // Intern ID already exists
+                $_SESSION['message'] = 'Intern ID already exists.';
+            } else {
+                // Prepare SQL query to insert data
+                $sql = "INSERT INTO intacc (internID, Internpass, adminID) VALUES (:internID, :InternPass, :adminID)"; 
 
-                // Execute the statement
-                if ($stmt->execute()) {
-                    $_SESSION['message'] = 'Intern account added successfully!'; // Set success message in session
-                } else {
-                    $_SESSION['message'] = 'Error: Could not add intern account.'; // Set error message in session
+                try {
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                    $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
+                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); 
+
+                    if ($stmt->execute()) {
+                        $_SESSION['message'] = 'Intern account added successfully!';
+                    } else {
+                        $_SESSION['message'] = 'Error: Could not add intern account.';
+                    }
+                } catch (PDOException $e) {
+                    $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
                 }
-            } catch (PDOException $e) {
-                $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage(); // Set error message in session
             }
         }
     }
 }
+
+
+// Handle deleting and updating intern account
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Check if internID is set for actions
+    if (isset($_POST['internID'])) {
+        // Get and sanitize user input
+        $internID = trim($_POST['internID']);
+        $InternPass = trim($_POST['InternPass'] ?? ''); // Use null coalescing operator to avoid undefined index
+        $action = $_POST['action'] ?? '';
+
+        // Validate input for update or delete actions
+        if ($action === 'update') {
+            // Validate internID and new password if provided
+            if (empty($internID) || empty($InternPass)) {
+                $_SESSION['message'] = 'Intern ID and new password are required for update.';
+            } else {
+                // Optional: Check password length
+                if (strlen($InternPass) < 6) {
+                    $_SESSION['message'] = 'Password must be at least 6 characters long.';
+                } else {
+                    // Prepare SQL query to update data
+                    $sql = "UPDATE intacc SET InternPass = :InternPass WHERE internID = :internID AND adminID = :adminID"; 
+
+                    try {
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
+                        $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
+
+                        if ($stmt->execute()) {
+                            $_SESSION['message'] = 'Intern account updated successfully!';
+                        } else {
+                            $_SESSION['message'] = 'Error: Could not update intern account.';
+                        }
+                    } catch (PDOException $e) {
+                        $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
+                    }
+                }
+            }
+        } elseif ($action === 'delete') {
+            // Prepare SQL query to delete data
+            $sql = "DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID"; 
+
+            try {
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
+
+                if ($stmt->execute()) {
+                    $_SESSION['message'] = 'Intern account deleted successfully!';
+                } else {
+                    $_SESSION['$errorMessages'] = 'Error: Could not delete intern account.';
+                }
+            } catch (PDOException $e) {
+                $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
+            }
+        }
+    } 
+}
+
+
+
+// Initialize a variable for the search ID
+$searchInternID = '';
+
+// Check if the request method is GET and the searchInternID is set
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
+    $searchInternID = trim($_GET['searchInternID']);
+    
+    // Query to fetch intern accounts matching the search ID
+    $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :internID"; 
+    $stmt = $conn->prepare($sql);
+    $likeInternID = '%' . $searchInternID . '%'; // Use LIKE for partial matching
+    $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+    $stmt->bindParam(':internID', $likeInternID, PDO::PARAM_STR);
+    $stmt->execute();
+    $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Check if any accounts were found
+    if (empty($internAccounts)) {
+        $searchMessage = "No intern found with ID: " . htmlspecialchars($searchInternID);
+    }
+}
+
+
+// Pagination settings
+$recordsPerPage = 10; // Number of records to display per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
+$offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
+
+// Fetch total number of intern accounts for pagination
+try {
+    if (isset($adminID)) {
+        $sql = "SELECT COUNT(*) FROM intacc WHERE adminID = :adminID"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->execute();
+        $totalRecords = $stmt->fetchColumn(); // Total number of records
+        $totalPages = ceil($totalRecords / $recordsPerPage); // Total number of pages
+
+        // Fetch the current page records
+        $sql = "SELECT * FROM intacc WHERE adminID = :adminID LIMIT :limit OFFSET :offset"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT); // Set limit
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT); // Set offset
+        $stmt->execute();
+        $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $_SESSION['message'] = 'Admin ID is not set.';
+        $internAccounts = [];
+    }
+    } catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
+    $internAccounts = [];
+}
+
 
 // Handle adding facilitator account
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['faciID']) && !isset($_POST['updateFaci']) && !isset($_POST['deleteFaci'])) {
@@ -195,14 +325,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['faciID']) && !isset($
 
 
 
-// Fetch existing intern accounts for display
-try {
-    $sql = "SELECT * FROM intacc";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $internAccounts = []; // Handle error, you can log it if needed
+
+
+
+// Display any messages
+if (isset($_SESSION['message'])) {
+            $message = $_SESSION['message'];
+            unset($_SESSION['message']); // Clear the message after displaying
+        ?>
+        <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+            <?php echo $message; ?>
+        </div>
+
+        <script type="text/javascript">
+            // Hide the alert after 10 seconds (10000 milliseconds)
+            setTimeout(function() {
+                var alertBox = document.getElementById('alertBox');
+                if (alertBox) {
+                    alertBox.style.display = 'none';
+                }
+            }, 10000); // 10 seconds
+        </script>
+
+
+        <?php
 }
 
 
@@ -294,12 +440,13 @@ try {
     </div>
 
     <div class="main-content" id="main-content">
-        <div class="content-section active" id="Dashboard">
+        
+    <div class="content-section active" id="Dashboard">
             <h1>Dashboard</h1>
             <div class="dashboard-cards">
                 <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
                 <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
-                <div class="card intern"><h2>Intern</h2><p>3 Intern</p></div>
+                <div class="card intern"><h2>Intern Account</h2><p>3 Intern Account</p></div>
                 <div class="card company"><h2>Company</h2><p>4 Company</p></div>
             </div>
             <div class="announcement-board">
@@ -321,61 +468,111 @@ try {
 
                             <!-- Intern Modal -->
                             <div id="InternAccModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
-                                    
-                                    <h2>Add Intern Account</h2>
-                                    <form id="addInterAccForm" method="POST" action="add_intern.php" onsubmit="return validateForm()">
-                                        <div class="form-group">
-                                            <label for="internID">Intern ID:</label>
-                                            <input type="text" id="internID" name="internID" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="InternPass">Password:</label>
-                                            <input type="password" id="InternPass" name="InternPass" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
+                            
+                            <h2>Add Intern Account</h2>
+                            <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
+                                <div class="form-group">
+                                    <label for="internID">Intern ID:</label>
+                                    <input type="text" id="internID" name="internID" required>
                                 </div>
-                            </div>
-
+                                <div class="form-group">
+                                    <label for="InternPass">Password:</label>
+                                    <input type="password" id="InternPass" name="InternPass" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                            <?php if ($message): ?>
+                                <p class="error-message"><?php echo htmlspecialchars($message); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                             <!-- Display Existing Intern Accounts Outside the Modal -->
                             <h2>Existing Intern Accounts</h2>
-                        <?php if ($internAccounts): ?>
-                            <table>
-                                <tr>
-                                    <th>Intern ID</th>
-                                    <th>Password</th>
-                                    <th>Actions</th>
-                                </tr>
-                                <?php foreach ($internAccounts as $account): ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($account['internID']); ?></td>
-                                        <td><?php echo htmlspecialchars($account['InternPass']); ?></td> <!-- Use correct key here -->
-                                        <td>
-                                            <form method="POST" action="update.php" style="display:inline;">
-                                                <input type="hidden" name="internID" value="<?php echo htmlspecialchars($account['internID']); ?>" />
-                                                <input type="submit" value="Update" />
-                                            </form>
-                                            <form method="POST" action="delete.php" style="display:inline;">
-                                                <input type="hidden" name="internID" value="<?php echo htmlspecialchars($account['internID']); ?>" />
-                                                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" />
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
-                        <?php else: ?>
-                            <p>No intern accounts found.</p>
-                        <?php endif; ?>
+
+                         
+                <!-- Search Form Positioned in Upper Right of the Table -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                    <form method="GET" action="">
+                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" />
+                        <button type="submit" class="search-button">Search</button>
+                    </form>
+                </div>
+
+                <!-- Message Display for Search Results -->
+                <?php if ($searchInternID): ?>
+                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+                <?php endif; ?>
+
+                <!-- Intern Accounts Table -->
+                <?php if (!empty($internAccounts)): ?>
+                    <table class="intern-accounts-table">
+                        <tr>
+                            <th class="table-header">Intern ID</th> <!-- First Column -->
+                            <th class="table-header">Current Password</th>
+                            <th class="table-header" style="padding-left: 30%;">Actions</th> <!-- Add padding to move it away from the edge -->
+                            </tr>
+                        <?php 
+                        // To store the filtered and non-filtered accounts
+                        $highlightedRow = [];
+                        $otherRows = [];
+
+                        foreach ($internAccounts as $account): 
+                            // Check if the intern ID matches the search
+                            if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
+                                $highlightedRow[] = $account; // Add to highlighted rows
+                            } else {
+                                $otherRows[] = $account; // Add to other rows
+                            }
+                        endforeach; 
+
+                        // Merge highlighted row(s) with other rows
+                        $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                        ?>
+
+                        <?php foreach ($sortedAccounts as $account): ?>
+                            <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
+                                <td class="table-data">
+                                    <?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?>
+                                </td>
+                                <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
+                                <td class="table-actions">
+                                    <form method="POST" action="" style="display:inline;">
+                                        <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                                        <input type="password" name="InternPass" class="password-input" placeholder="New Password" />
+                                        <button type="submit" name="action" value="update" class="update-button">Update</button>
+                                        <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                <?php else: ?>
+                    <p>No intern accounts found.</p>
+                <?php endif; ?>
+
+
              </div>
             
         </div>      
-                 
+            <!-- Pagination Links -->
+            <div class="pagination">
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?php echo $page - 1; ?>">Previous</a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo ($i === $page) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="?page=<?php echo $page + 1; ?>">Next</a>
+                <?php endif; ?>
 
         
    
-            <div class="content-section" id="Facilitator_Account">
+        <div class="content-section" id="Facilitator_Account">
                 <h1>Facilitator Logins</h1>
                 <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
                 <div id="FaccAccModal" class="modal" style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);height: 30%;">
