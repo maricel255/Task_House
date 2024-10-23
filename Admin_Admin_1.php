@@ -360,8 +360,8 @@ if (isset($_SESSION['message'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
-    <link rel="stylesheet" href="Admin_style.css"> <!-- Link to your CSS -->
-</head>
+    <link rel="stylesheet" href="css/Admin_style.css">
+    </head>
 <body>
     <div id="header" class="header">
         <button class="logout-btn" onclick="logout()">
