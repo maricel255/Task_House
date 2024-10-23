@@ -1,0 +1,51 @@
+
+.message-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 1000;
+}
+
+.message-box button {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+body {
+  background: linear-gradient(135deg, #B6F492, #338B93); /* Slanted gradient background */
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margins */
+}
+.btn-orange {
+  background-color: orange;
+  color: white;
+  width: 100%; /* Set the button's width */
+  display: block;
+  margin: 10px auto; /* Space between buttons and center */
+}
+
+.btn-orange:hover {
+  background-color: darkorange;
+  color: white;
+}
+
+.btn-green {
+  background-color: green;
+  color: black;
+  width: 100%; /* Set the button's width */
+  display: block;
+  margin: 10px auto; /* Space between buttons and center */
+}
+
+.btn-green:hover {
+  background-color: lightgreen;
+  color: white;
+}
