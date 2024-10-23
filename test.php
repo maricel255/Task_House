@@ -119,6 +119,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+// Display any messages
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']); // Clear the message after displaying
+?>
+<div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+    <?php echo $message; ?>
+</div>
+
+<script type="text/javascript">
+    // Hide the alert after 10 seconds (10000 milliseconds)
+    setTimeout(function() {
+        var alertBox = document.getElementById('alertBox');
+        if (alertBox) {
+            alertBox.style.display = 'none';
+        }
+    }, 10000); // 10 seconds
+</script>
+
+
+<?php
+}
 
 // Handle adding intern account
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -288,28 +310,6 @@ try {
 
 
 
-// Display any messages
-if (isset($_SESSION['message'])) {
-            $message = $_SESSION['message'];
-            unset($_SESSION['message']); // Clear the message after displaying
-        ?>
-        <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-            <?php echo $message; ?>
-        </div>
-
-        <script type="text/javascript">
-            // Hide the alert after 10 seconds (10000 milliseconds)
-            setTimeout(function() {
-                var alertBox = document.getElementById('alertBox');
-                if (alertBox) {
-                    alertBox.style.display = 'none';
-                }
-            }, 10000); // 10 seconds
-        </script>
-
-
-        <?php
-}
 
 
 
