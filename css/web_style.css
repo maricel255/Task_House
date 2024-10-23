@@ -1,0 +1,189 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Include padding and border in total width/height */
+}
+
+html, body {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Header Styling */
+.header-container {
+  background-color: green; /* Green Bar */
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensure header stays above other content */
+  height: 100px; /* Adjust this value if needed */
+}
+
+/* Padding for main content to avoid overlap with the header */
+#main-section {
+  padding-top: 120px; /* Same as header height */
+}
+
+/* Custom styles for navigation buttons */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between buttons */
+}
+
+.nav-buttons a,
+.nav-buttons button,
+.nav-buttons .dropdown {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px; /* Ensures the buttons are spaced evenly */
+  text-decoration: none; /* Remove underline from links */
+  font-size: 16px;
+}
+
+.nav-buttons a:hover,
+.nav-buttons button:hover,
+.nav-buttons .dropdown .btn:hover {
+  background-color: darkgreen; /* Hover effect */
+}
+
+.dropdown-menu {
+  min-width: 150px; /* Adjust width of dropdown */
+}
+
+.nav-buttons .dropdown-toggle {
+  background-color: green;
+  border: none;
+}
+
+.nav-buttons .dropdown-toggle:hover {
+  background-color: darkgreen;
+}
+
+/* Main Section and Other Styles */
+.container {
+  margin-top: 20px; /* Adjust if needed */
+}
+
+.main-text {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.interns {
+  color: #333333; /* Dark Gray text color */
+}
+
+.task-house {
+  color: #333333;
+  position: relative;
+}
+
+/* Right Side Text and other styling */
+.lorem-container {
+  height: 350px; /* Adjust height as needed */
+  width: 500px;
+  padding: 50px;
+  margin-left: -260px;
+  border: 1px solid #ddd; /* Optional: Add a border for visibility */
+}
+
+/* Horizontal orange line under TASK HOUSE */
+.task-house::after {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 4px;
+  background-color: orange;
+  margin-top: 0px;
+}
+
+.capstone-title {
+  font-size: 18px;
+  color: black;
+  margin-top: 0px;
+}
+
+.separator {
+  width: 4px;
+  height: 160px;
+  background-color: orange;
+  margin-left: -500px;
+  margin-right: 20px;
+}
+
+.right-text {
+  font-size: 16px;
+  margin-top: 60px;
+}
+
+/* Documents Section Styles */
+/* Documents Section Styles */
+.documents-section {
+  background-color: #f9f9f9; /* Light background for documents */
+  padding: 20px; /* Padding inside the section */
+  border-radius: 10px; /* Rounded corners */
+  margin: 20px 0; /* Margin for separation from other sections */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow for depth */
+}
+
+/* Title Styles within Documents Section */
+.documents-section h4 {
+  font-size: 24px; /* Title size */
+  color: #21618c; /* Dark blue color for the heading */
+  margin-bottom: 15px; /* Space below the title */
+  font-weight: bold; /* Bold text for emphasis */
+}
+
+/* Paragraph Styles within Documents Section */
+.documents-section p {
+  font-size: 16px; /* Paragraph text size */
+  color: #333; /* Dark gray text color */
+  margin-bottom: 20px; /* Space below each paragraph */
+}
+
+/* List Styles within Documents Section */
+.documents-section ul {
+  list-style-type: none; /* Remove default list styling */
+  padding-left: 0; /* Remove left padding */
+}
+
+.documents-section ul li {
+  padding: 10px 0; /* Space between list items */
+  font-size: 16px; /* List item text size */
+}
+
+.documents-section ul li a {
+  text-decoration: none; /* Remove underline from links */
+  color: #007bff; /* Link color */
+}
+
+.documents-section ul li a:hover {
+  text-decoration: underline; /* Underline on hover */
+  color: #0056b3; /* Darker link color on hover */
+}
+
+/* About Us Section Styles */
+.about-us-section {
+  margin: 40px 0; /* Margin above and below */
+  padding: 20px;
+  background-color: #eaeaea; /* Light gray background */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Footer Styles */
+.footer {
+  background-color: green; /* Footer color */
+  color: white; /* Footer text color */
+  text-align: center;
+  padding: 10px 0; /* Padding above and below */
+  position: relative; /* Position footer normally */
+}
