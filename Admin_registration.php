@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <button name="login" data-mdb-button-init data-mdb-ripple-init class="btn btn-green btn-lg btn-block" type="submit">
   Login
 </button>
-                  <a href="index.html" class="btn btn-lg btn-block btn-orange">Back to Home</a>
+                  <a href="index.html" class="btn btn-lg btn-block btn-orange">Back to Web</a>
 
 
                 </form> 
