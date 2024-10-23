@@ -27,6 +27,7 @@ html, body {
 /* Padding for main content to avoid overlap with the header */
 #main-section {
   padding-top: 120px; /* Same as header height */
+  height: 150%;
 }
 
 /* Custom styles for navigation buttons */
@@ -89,7 +90,7 @@ html, body {
 
 /* Right Side Text and other styling */
 .lorem-container {
-  height: 350px; /* Adjust height as needed */
+  height: 500px; /* Adjust height as needed */
   width: 500px;
   padding: 50px;
   margin-left: -260px;
@@ -126,19 +127,29 @@ html, body {
 }
 
 /* Documents Section Styles */
-/* Documents Section Styles */
 .documents-section {
   background-color: #f9f9f9; /* Light background for documents */
   padding: 20px; /* Padding inside the section */
   border-radius: 10px; /* Rounded corners */
-  margin: 20px 0; /* Margin for separation from other sections */
+  margin-top: 80px; /* Space between line and heading */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow for depth */
+}
+html {
+  scroll-behavior: smooth; /* Enables smooth scrolling */
+}
+
+.line {
+
+  width: 100%; /* Adjust width as necessary */
+  height: 4px; /* Adjust thickness */
+  background-color: orange; /* Change to your desired color */
+  margin-top: 80px; /* Space between line and heading */
 }
 
 /* Title Styles within Documents Section */
 .documents-section h4 {
   font-size: 24px; /* Title size */
-  color: #21618c; /* Dark blue color for the heading */
+  color: orange /* Dark blue color for the heading */;
   margin-bottom: 15px; /* Space below the title */
   font-weight: bold; /* Bold text for emphasis */
 }
@@ -173,10 +184,61 @@ html, body {
 
 /* About Us Section Styles */
 .about-us-section {
-  margin: 40px 0; /* Margin above and below */
-  padding: 20px;
-  background-color: #eaeaea; /* Light gray background */
+  padding: 40px; /* Adjust padding for the section */
+}
+
+.about-us-section .row {
+  display: flex; /* Use flexbox for alignment */
+  flex-wrap: wrap; /* Allow items to wrap */
+  gap: 20px; /* Space between cards */
+}
+
+.about-us-section .col-md-3 {
+  flex: 0 0 23%; /* Set width for portrait orientation */
+  max-width: 23%; /* Limit the maximum width */
+  position: relative; /* For positioning the overlay */
+  overflow: hidden; /* Hide overflow for rounded corners */
   border-radius: 10px; /* Rounded corners */
+  transition: transform 0.3s; /* Smooth scaling effect */
+}
+
+.about-us-section img {
+  width: 100%; /* Ensure the image takes full width */
+  height: 250px; /* Fixed height for uniformity */
+  object-fit: cover; /* Ensure the image covers the area without distortion */
+  border-radius: 10px; /* Rounded corners for images */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+  filter: grayscale(100%); /* Apply black and white filter */
+  transition: filter 0.3s ease; /* Smooth transition for the filter effect */
+}
+
+.about-us-section .col-md-3:hover {
+  transform: scale(1.05); /* Scale up on hover */
+}
+
+.about-us-section .col-md-3:hover img {
+  filter: grayscale(0%); /* Remove filter on hover to show original color */
+}
+
+.about-us-section .col-md-3:hover {
+  transform: scale(1.05); /* Scale up on hover */
+  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.5); /* Green highlight shadow on hover */
+  border-color: rgba(0, 255, 0, 0.5); /* Green border color on hover */
+}
+.about-us-section img {
+  width: 100%; /* Ensure the image takes full width */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 400px; /* Limit height for portrait effect */
+  object-fit: cover; /* Ensure the image covers the area */
+  border-radius: 10px; /* Rounded corners for images */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+}
+
+.about-us-section p {
+  text-align: center; /* Center align descriptions */
+  margin-top: 20px; /* Space above description */
+  font-size: 14px; /* Adjust font size */
+  color: #333; /* Dark text color */
 }
 
 /* Footer Styles */
@@ -186,4 +248,56 @@ html, body {
   text-align: center;
   padding: 10px 0; /* Padding above and below */
   position: relative; /* Position footer normally */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column; /* Stack header elements on smaller screens */
+    height: auto; /* Adjust header height */
+    padding: 10px; /* Less padding */
+  }
+
+  .nav-buttons {
+    flex-direction: column; /* Stack buttons */
+    gap: 10px; /* Reduced space between buttons */
+  }
+
+  .about-us-section .col-md-3 {
+    flex: 0 0 46%; /* Wider on smaller screens */
+    max-width: 46%; /* Limit max width */
+  }
+
+  .documents-section {
+    padding: 15px; /* Reduce padding */
+  }
+
+  .main-text {
+    font-size: 36px; /* Smaller main text */
+  }
+
+  .lorem-container {
+    width: 100%; /* Full width on small screens */
+    margin-left: 0; /* Center it */
+  }
+
+  .right-text {
+    font-size: 14px; /* Smaller text */
+    margin-top: 30px; /* Adjust margin */
+  }
+}
+
+@media (max-width: 480px) {
+  .about-us-section .col-md-3 {
+    flex: 0 0 100%; /* Full width for the cards */
+    max-width: 100%; /* Full width */
+  }
+
+  .main-text {
+    font-size: 28px; /* Further reduce main text size */
+  }
+
+  .capstone-title {
+    font-size: 16px; /* Smaller capstone title */
+  }
 }
