@@ -141,11 +141,12 @@ body::before {
   justify-content: center; /* Center text/icon horizontally */
   border: 2px solid #000543; /* Add border if needed */
   background-color: transparent; /* Background color */
-  background-image: url('image/USER_ICON.png'); /* Set your image */
+  background-image: url('../image/USER_ICON.png'); /* Adjust path if necessary */
   background-size: cover; /* Ensures the image covers the button */
   background-position: center; /* Centers the image */
   transition: background-color 0.3s; /* Transition for hover effect */
 }
+
 
 .modal-btn:hover {
   background-color: #000543; /* Background color on hover */
