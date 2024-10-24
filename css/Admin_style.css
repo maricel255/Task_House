@@ -673,18 +673,19 @@ body::before {
 .update-btn:hover {
   background-color: #45a049; /* Darker green on hover */
 }
-
-.intern-accounts-table {
-  width: 100%;
+.intern-accounts-table, .faccacc-table { /* Assuming you had a class for facilitator accounts */
+  width: 100%; /* or your desired width */
   border-collapse: collapse;
-  margin-bottom: 20px; /* Space below the table */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
+.table-header {
+  background-color: #f2f2f2; /* Light grey background */
+  text-align: left;
+  padding: 10px;
 }
 
-.table-header, .table-data {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd; /* Border between rows */
+
+.table-actions {
+  text-align: right; /* Align actions to the right */
 }
 
 .table-header {
@@ -702,9 +703,15 @@ body::before {
   border: 1px solid #ccc; /* Light gray border */
   border-radius: 4px; /* Rounded corners for input */
 }
-
-.table-actions {
-  text-align: right; /* Aligns content to the right */
+.update-button, .delete-button {
+  margin-left: 5px; /* Space between buttons */
+  cursor: pointer;
+}
+.table-container {
+  max-height: 300px; /* Adjust the height as needed */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  margin-top: 10px; /* Optional: Space above the table */
 }
 
 .update-button {
@@ -838,5 +845,6 @@ p {
   background-color: #e7e7e7;
 }
 .highlight {
-  background-color: yellow; /* You can choose any color */
+  background-color: #f9f9f9; /* Optional: a light background for better visibility */
+  box-shadow: 0 0 10px green; /* Optional: adds a glowing effect around the border */
 }
