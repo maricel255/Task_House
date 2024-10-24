@@ -68,6 +68,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message[] = "Password must be at least 6 characters long.";
         }
     }
+    // Display any messages
+        if (isset($_SESSION['message'])) {
+                    $message = $_SESSION['message'];
+                    unset($_SESSION['message']); // Clear the message after displaying
+                ?>
+                <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+                    <?php echo $message; ?>
+                </div>
+
+                <script type="text/javascript">
+                    // Hide the alert after 5 seconds (5000 milliseconds)
+                    setTimeout(function() {
+                        var alertBox = document.getElementById('alertBox');
+                        if (alertBox) {
+                            alertBox.style.display = 'none';
+                        }
+                    }, 5000); // 5 seconds
+                </script>
+
+        <?php
+        }
 
 
     // Handle file upload if provided
@@ -119,28 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Display any messages
-if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
-    unset($_SESSION['message']); // Clear the message after displaying
-?>
-<div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-    <?php echo $message; ?>
-</div>
 
-<script type="text/javascript">
-    // Hide the alert after 10 seconds (10000 milliseconds)
-    setTimeout(function() {
-        var alertBox = document.getElementById('alertBox');
-        if (alertBox) {
-            alertBox.style.display = 'none';
-        }
-    }, 10000); // 10 seconds
-</script>
-
-
-<?php
-}
 
 // Handle adding intern account
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -317,6 +317,46 @@ try {
 
 // Handle adding facilitator account
 
+if (isset($_POST['submitFacilitator'])) {
+    $faciID = $_POST['faciID'];
+    $faciPass = $_POST['faciPass'];
+
+   
+    try {
+        // Check if the faciID already exists
+        $checkSql = "SELECT COUNT(*) FROM facacc WHERE faciID = :faciID";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bindParam(':faciID', $faciID);
+        $checkStmt->execute();
+
+        $count = $checkStmt->fetchColumn();
+
+        if ($count > 0) {
+            $_SESSION['message'] = "Error: The Facilitator ID '$faciID' already exists. Please use a different ID.";
+        } else {
+            // Create the SQL query to insert into the facacc table
+            $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (:faciID, :faciPass, :adminID)";
+            
+            // Prepare and execute the statement
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':faciID', $faciID);
+            $stmt->bindParam(':faciPass', $faciPass);
+            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Facilitator account added successfully!";
+            } else {
+                $_SESSION['message'] = "Error: Could not add facilitator account.";
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+    }
+
+
+
+}
+
 // Handle deleting and updating facilitator account
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Check if faciID is set for actions
@@ -491,9 +531,11 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
                                     <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
                                     <div class="card intern"><h2>Intern Account</h2>
-                                    Total Intern Accounts: <strong><?php echo count($internAccounts); ?></strong>
+                                    <strong><?php echo count($internAccounts); ?></strong>
                                     </div>
-                                    <div class="card company"><h2>Company</h2><p>4 Company</p></div>
+                                    <div class="card company"><h2>Facilitator Account</h2>
+                                    <strong><?php echo count($faccAccounts); ?></strong>
+                                </div>
                                 </div>
                                 <div class="announcement-board">
                                     <h2>Announcement Board</h2>
@@ -547,6 +589,8 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <!-- Intern Accounts Table -->
                         <?php if (!empty($internAccounts)): ?>
+                            <div class="table-container"> <!-- Added container for scrolling -->
+
                             <table class="intern-accounts-table">
                                 <tr>
                                     <th class="table-header">Intern ID</th>
@@ -584,6 +628,8 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </tr>
                                 <?php endforeach; ?>
                             </table>
+                            </div>
+
                         <?php else: ?>
                             <p>No intern accounts found.</p>
                         <?php endif; ?>
@@ -599,30 +645,26 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
 
                       <!-- Facilitator Modal -->
-                            <div id="FaccAccModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
-                                    <h2>Add Facilitator Account</h2>
-                                    <form id="addFaccAccForm" method="POST" action="">
-                                        <div class="form-group">
-                                            <label for="faciID">Facilitator ID:</label>
-                                            <input type="text" id="faciID" name="faciID" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="faciPass">Password:</label>
-                                            <input type="password" id="faciPass" name="faciPass" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
-                                    <?php if (isset($_SESSION['message'])): ?>
-                                        <div class="alert">
-                                            <?= htmlspecialchars($_SESSION['message']) ?>
-                                            <?php unset($_SESSION['message']); // Clear the message after displaying ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                      <div id="FaccAccModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
+                                <h2>Add Facilitator Account</h2>
+                                <form id="addFaccAccForm" method="POST" action="">
+                                    <div class="form-group">
+                                        <label for="faciID">Facilitator ID:</label>
+                                        <input type="text" id="faciID" name="faciID" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="faciPass">Password:</label>
+                                        <input type="password" id="faciPass" name="faciPass" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" name="submitFacilitator">Submit</button>
+                                </form>
+                                
                             </div>
-                                                    <!-- Display Existing Facilitator Accounts Outside the Modal -->
+                        </div>
+
+                                                                            <!-- Display Existing Facilitator Accounts Outside the Modal -->
                         <h2>Existing Facilitator Accounts</h2>
 
                         <!-- Search Form Positioned in Upper Right of the Table -->
@@ -640,46 +682,51 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <!-- Facilitator Accounts Table -->
                         <?php if (!empty($faccAccounts)): ?>
-                            <table class="faccacc-table">
-                                <tr>
-                                    <th class="table-header">Facilitator ID</th>
-                                    <th class="table-header">Current Password</th>
-                                    <th class="table-header" style="padding-left: 30%;">Actions</th>
-                                </tr>
+                            <div class="table-container"> <!-- Added container for scrolling -->
 
-                                <?php 
-                                // To store the filtered and non-filtered accounts
-                                $highlightedRow = [];
-                                $otherRows = [];
+                                        <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
+                                            <tr>
+                                                <th class="table-header">Facilitator ID</th>
+                                                <th class="table-header">Current Password</th>
+                                                <th class="table-header" style="padding-left: 30%;">Actions</th>
+                                            </tr>
 
-                                foreach ($faccAccounts as $account): 
-                                    if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
-                                        $highlightedRow[] = $account; 
-                                    } else {
-                                        $otherRows[] = $account; 
-                                    }
-                                endforeach; 
+                                            <?php 
+                                            // To store the filtered and non-filtered accounts
+                                            $highlightedRow = [];
+                                            $otherRows = [];
 
-                                // Merge highlighted row(s) with other rows
-                                $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                foreach ($sortedAccounts as $account): ?>
-                                    <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
-                                        <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
-                                        <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
-                                        <td class="table-actions">
-                                            <form method="POST" action="" style="display:inline;">
-                                                <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
-                                                <input type="password" name="faciPass" class="password-input" placeholder="New Password" />
-                                                <button type="submit" name="action" value="update" class="update-button">Update</button>
-                                                <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
+                                            foreach ($faccAccounts as $account): 
+                                                if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
+                                                    $highlightedRow[] = $account; 
+                                                } else {
+                                                    $otherRows[] = $account; 
+                                                }
+                                            endforeach; 
+
+                                            // Merge highlighted row(s) with other rows
+                                            $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                                            foreach ($sortedAccounts as $account): ?>
+                                                <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
+                                                    <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
+                                                    <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
+                                                    <td class="table-actions">
+                                                        <form method="POST" action="" style="display:inline;">
+                                                            <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
+                                                            <input type="password" name="faciPass" class="password-input" placeholder="New Password" />
+                                                            <button type="submit" name="action" value="update" class="update-button">Update</button>
+                                                            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </table>
+                                        </div>
+
                         <?php else: ?>
                             <p>No facilitator accounts found.</p>
                         <?php endif; ?>
+
                     </div>
 
 </div>
