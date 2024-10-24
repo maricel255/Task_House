@@ -848,3 +848,36 @@ p {
   background-color: #f9f9f9; /* Optional: a light background for better visibility */
   box-shadow: 0 0 10px green; /* Optional: adds a glowing effect around the border */
 }
+
+ /* Search button */
+ .search-input {
+  padding: 10px;
+  border: 2px solid #007BFF; /* Set border color and thickness */
+  border-radius: 4px; /* Rounded corners */
+  margin-right: 10px;
+  width: 200px; /* Adjust width as needed */
+  transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+.search-input:focus {
+  border-color: #000543;
+  outline: none; /* Remove default outline */
+}
+
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #007BFF; /* Blue background */
+  color: white; /* White text */
+  border-color: #000543;
+
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
