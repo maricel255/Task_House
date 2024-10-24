@@ -313,7 +313,6 @@ try {
 
 
 
-// do not change anything above!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
 // Handle adding facilitator account
 
@@ -434,7 +433,25 @@ $stmt->bindParam(':faciID', $likeFaciID, PDO::PARAM_STR);
 $stmt->execute();
 $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+if (isset($_SESSION['adminID'])) { // Replace 'adminID' with the actual session variable name
+    $adminID = $_SESSION['adminID']; // Get the logged-in admin ID
+    
+    // Query to count facilitator accounts for this admin
+    $sql = "SELECT COUNT(*) AS total FROM facacc WHERE admin_id = :adminID"; // Adjust column name as necessary
+    $stmt = $conn->prepare($sql);
+    
+    // Bind the adminID parameter
+    $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+    
+    $stmt->execute();
+    
+    // Fetch the result
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row) {
+        $totalFacilitatorAccounts = $row['total'];
+    }
 
+}
 
 ?>
 
@@ -533,9 +550,11 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <div class="card intern"><h2>Intern Account</h2>
                                     <strong><?php echo count($internAccounts); ?></strong>
                                     </div>
-                                    <div class="card company"><h2>Facilitator Account</h2>
-                                    <strong><?php echo count($faccAccounts); ?></strong>
-                                </div>
+                                    
+                   <div class="card company">
+    <h2>Facilitator Account</h2>
+    <p>Total Accounts: <?php echo $totalFacilitatorAccounts; ?></p>
+</div>
                                 </div>
                                 <div class="announcement-board">
                                     <h2>Announcement Board</h2>
@@ -577,7 +596,7 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Search Form Positioned in Upper Right of the Table -->
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                             <form method="GET" action="">
-                                <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" />
+                                <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
                                 <button type="submit" class="search-button">Search</button>
                             </form>
                         </div>
@@ -670,8 +689,8 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Search Form Positioned in Upper Right of the Table -->
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                             <form method="GET" action="">
-                                <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" />
-                                <button type="submit" class="search-button">Search</button>
+                            <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
+                            <button type="submit" class="search-button">Search</button>
                             </form>
                         </div>
 
