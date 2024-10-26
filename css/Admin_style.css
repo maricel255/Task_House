@@ -280,52 +280,63 @@ body::before {
           color:white;
         }
         .announcement-board {
-            margin-top: 40px;
-            background-color: #fff;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px;
-            position: relative;
-            border: 1px solid #bc2649;
-            height: 350px;
-            width: 700px;
-            
-           
-          
-        }
+          margin-top: 40px;
+          background-color: #fff;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px;
+          position: relative;
+          border: 1px solid #bc2649;
+          height: 250px;
+          width: 70%;
+      }
+
         .announcement-board h2 {
             font-size: 24px;
             color: #000543;
-            margin-bottom: 20px;
+            margin-top: 1px;
         }
         .announcement-board img {
-          opacity: 0.3; /* Set opacity to 0.5 */
-          width: 300px; /* Adjust width as needed */
-          height:300px;
+          width: 32%; /* Adjust width as needed */
+          height:80%;
           position: absolute;
-          left: 50%;
-          top: 50%;
+          left: 9%;
+          top: 80%;
           transform: translate(-50%, -50%);
         }
 
-       
+       /* user input in annoucement */
+        
           .input-container {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-          }
+            margin-bottom: 15px; /* Space between inputs */
+         }
 
-          .styled-input {
-            width: 500px;
-            height:100px;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s, box-shadow 0.3s;
-            margin-top: 50px;    
-          }
+         .styled-input {
+          width: 100%; /* Full width */
+          padding: 12px; /* Padding inside the input */
+          border: 1px solid #ced4da; /* Border color */
+          border-radius: 5px; /* Rounded corners */
+          font-size: 16px; /* Font size for input text */
+          transition: border-color 0.3s; /* Transition for border color */
+      }
+      .styled-inputann {
+        width: 100%; /* Full width */
+        padding: 12px; /* Padding inside the input */
+        margin-top: 3px;
+        font-size: 16px; /* Font size for input text */
+        transition: border-color 0.3s; /* Transition for border color */
+        margin-left: 15%;
+       }
+       .styled-inputannup{
+        width: 100%; /* Full width */
+        padding: 12px; /* Padding inside the input */
+        margin-top: 3px;
+        font-size: 16px; /* Font size for input text */
+        transition: border-color 0.3s; /* Transition for border color */
+        margin-left: 18%;
+
+       }
+      
 
           .styled-input::placeholder {
             color: #888;
@@ -337,21 +348,26 @@ body::before {
             box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
             outline: none;
           }
-        .post-button {
-            background-color: #f2b25c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 100px;      
-          }
-         /* Ad
-          .post-button:hover {
-            background-color: #000543;
-            color:white;
-          }min details hidden by default */
+          .post-button {
+            width: 30%; /* Full width */
+            padding: 12px; /* Padding inside the button */
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size for button text */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s; /* Transition for background color */
+            position: absolute; /* Positioning to place it at bottom right */
+            bottom: 20px; /* Adjust as needed for spacing from the bottom */
+            right: 20px; /* Adjust as needed for spacing from the right */
+        }
+        
+        .post-button:hover {
+          background-color: #0056b3; /* Darker blue on hover */
+      }
+             /* end here user input in annoucement */
+
           #detail {
             display: none; /* Initially hidden */
             color: white;
@@ -881,3 +897,13 @@ p {
   background-color: #0056b3; /* Darker blue on hover */
 }
 
+.list-announcement {
+  height: 50%; /* Height of the announcement list */
+  width: 22%; /* Width of the announcement list */
+  background-color: blue; /* Background color */
+  position: fixed; /* Fixed positioning */
+  bottom: 20px; /* Distance from the bottom of the viewport */
+  right: 20px; /* Distance from the right of the viewport */
+  z-index: 1000; /* Ensures it stays on top of other elements */
+  border-radius: 25px;
+}
