@@ -9,7 +9,7 @@ $Uname = $_SESSION['Uname'];
 try {
     // Prepare the SQL query using placeholders to prevent SQL injection
     $query = "SELECT Firstname, Roles, admin_profile, Uname, adminID FROM users WHERE Uname = :Uname"; // Include adminID
-    $stmt = $conn->prepare($query);
+    $stmt = $pdo->prepare($query);
     
     // Bind the parameter
     $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Fetch current user's password from the database
     $query = "SELECT Upass FROM users WHERE Uname = :Uname"; // Use 'Upass' instead of 'password'
-    $stmt = $conn->prepare($query);
+    $stmt = $pdo->prepare($query);
     $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
     $stmt->execute();
     $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             // Update user info in the database, no hashing for new password
             $query = "UPDATE users SET Firstname = :firstname, Upass = :password, admin_profile = :profile WHERE Uname = :Uname"; // Use 'Upass' here as well
-            $stmt = $conn->prepare($query);
+            $stmt = $pdo->prepare($query);
             $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
             $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
             $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Check if the internID already exists
             $checkQuery = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
-            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt = $pdo->prepare($checkQuery);
             $checkStmt->bindParam(':internID', $internID, PDO::PARAM_STR);
             $checkStmt->execute();
             $exists = $checkStmt->fetchColumn();
@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "INSERT INTO intacc (internID, Internpass, adminID) VALUES (:internID, :InternPass, :adminID)"; 
 
                 try {
-                    $stmt = $conn->prepare($sql);
+                    $stmt = $pdo->prepare($sql);
                     $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
                     $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
                     $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); 
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $sql = "UPDATE intacc SET InternPass = :InternPass WHERE internID = :internID AND adminID = :adminID"; 
 
                     try {
-                        $stmt = $conn->prepare($sql);
+                        $stmt = $pdo->prepare($sql);
                         $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
                         $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
                         $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $sql = "DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID"; 
 
             try {
-                $stmt = $conn->prepare($sql);
+                $stmt = $pdo->prepare($sql);
                 $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
                 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
 
@@ -243,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
     
     // Query to fetch intern accounts matching the search ID
     $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :internID"; 
-    $stmt = $conn->prepare($sql);
+    $stmt = $pdo->prepare($sql);
     $likeInternID = '%' . $searchInternID . '%'; // Use LIKE for partial matching
     $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
     $stmt->bindParam(':internID', $likeInternID, PDO::PARAM_STR);
@@ -266,7 +266,7 @@ $offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
 try {
     if (isset($adminID)) {
         $sql = "SELECT COUNT(*) FROM intacc WHERE adminID = :adminID"; 
-        $stmt = $conn->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
         $stmt->execute();
         $totalRecords = $stmt->fetchColumn(); // Total number of records
@@ -274,7 +274,7 @@ try {
 
         // Fetch the current page records
         $sql = "SELECT * FROM intacc WHERE adminID = :adminID LIMIT :limit OFFSET :offset"; 
-        $stmt = $conn->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT); // Set limit
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT); // Set offset
@@ -302,7 +302,7 @@ if (isset($_POST['submitFacilitator'])) {
     try {
         // Check if the faciID already exists
         $checkSql = "SELECT COUNT(*) FROM facacc WHERE faciID = :faciID";
-        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt = $pdo->prepare($checkSql);
         $checkStmt->bindParam(':faciID', $faciID);
         $checkStmt->execute();
 
@@ -315,7 +315,7 @@ if (isset($_POST['submitFacilitator'])) {
             $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (:faciID, :faciPass, :adminID)";
             
             // Prepare and execute the statement
-            $stmt = $conn->prepare($sql);
+            $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':faciID', $faciID);
             $stmt->bindParam(':faciPass', $faciPass);
             $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
@@ -357,7 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $sql = "UPDATE facacc SET faciPass = :faciPass WHERE faciID = :faciID AND adminID = :adminID";
 
                     try {
-                        $stmt = $conn->prepare($sql);
+                        $stmt = $pdo->prepare($sql);
                         $stmt->bindValue(':faciPass', $faciPass, PDO::PARAM_STR);
                         $stmt->bindValue(':faciID', $faciID, PDO::PARAM_STR);
                         $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
@@ -377,7 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $sql = "DELETE FROM facacc WHERE faciID = :faciID AND adminID = :adminID";
 
             try {
-                $stmt = $conn->prepare($sql);
+                $stmt = $pdo->prepare($sql);
                 $stmt->bindValue(':faciID', $faciID, PDO::PARAM_STR);
                 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
 
@@ -404,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchFaciID'])) {
 
 // Query to fetch facilitator accounts matching the search ID and adminID
 $sql = "SELECT * FROM facacc WHERE adminID = :adminID AND faciID LIKE :faciID";
-$stmt = $conn->prepare($sql);
+$stmt = $pdo->prepare($sql);
 $likeFaciID = '%' . $searchFaciID . '%'; // Use LIKE for partial matching
 $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR); // Make sure adminID is used
 $stmt->bindParam(':faciID', $likeFaciID, PDO::PARAM_STR);
@@ -415,7 +415,7 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //for counting facilititator account under a adminID
 $sql = "SELECT COUNT(*) AS totalAccounts FROM facacc WHERE adminID = :adminID";
-$stmt = $conn->prepare($sql);
+$stmt = $pdo->prepare($sql);
 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 $stmt->execute();
 
@@ -448,7 +448,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // File is successfully uploaded
                 // Prepare the SQL statement
                 $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
-                $stmt = $conn->prepare($sql);
+                $stmt = $pdo->prepare($sql);
 
                 // Bind the parameters
                 $stmt->bindValue(':title', $title, PDO::PARAM_STR);
@@ -479,7 +479,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-
+// Fetch announcements for the current admin
+$sql = "SELECT title, imagePath, content FROM announcements WHERE adminID = :adminID";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Use your actual admin ID
+$stmt->execute();
+$announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -628,7 +633,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" class="post-button">Submit</button>
             </form>
         </div>
-        
+        <div class="announcement-slider">
+            <div class="slider-container">
+                <?php if ($announcements): ?>
+                    <?php foreach ($announcements as $announcement): ?>
+                        <div class="announcement-item">
+                            <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                            <?php if ($announcement['imagePath']): ?>
+                                <img src="<?php echo htmlspecialchars($announcement['imagePath']); ?>" alt="Announcement Image">
+                            <?php endif; ?>
+                            <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No announcements found.</p>
+                <?php endif; ?>
+            </div>
+            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+
+
     </div>
 
                         
