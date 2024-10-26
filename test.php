@@ -486,6 +486,7 @@ $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Use your actual admin
 $stmt->execute();
 $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
 ?>
 
 
@@ -602,6 +603,11 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main-content" id="main-content">
         
     <div class="content-section active" id="Dashboard">
+    <a href="<?php echo $filePath; ?>" target="_blank" class="pdf-link">View PDF</a>
+<?php
+echo "<p>PDF Path: " . $filePath . "</p>"; // This will display the path for debugging
+?>
+
        <h1>Dashboard</h1>
         <div class="dashboard-cards">
             <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
@@ -634,24 +640,38 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </form>
         </div>
         <div class="announcement-slider">
-            <div class="slider-container">
-                <?php if ($announcements): ?>
-                    <?php foreach ($announcements as $announcement): ?>
-                        <div class="announcement-item">
-                            <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
-                            <?php if ($announcement['imagePath']): ?>
-                                <img src="<?php echo htmlspecialchars($announcement['imagePath']); ?>" alt="Announcement Image">
-                            <?php endif; ?>
-                            <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No announcements found.</p>
-                <?php endif; ?>
-            </div>
-            <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-            <button class="next" onclick="moveSlide(1)">&#10095;</button>
-        </div>
+    <div class="slider-container">
+        <?php if ($announcements): ?>
+            <?php foreach ($announcements as $index => $announcement): ?>
+                <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                    <?php if ($announcement['imagePath']): ?>
+                        <?php
+                        // Get the file extension
+                        $filePath = htmlspecialchars($announcement['imagePath']);
+                        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                        ?>
+
+                        <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                            <img src="<?php echo $filePath; ?>" alt="Announcement Image" class="Announcement-Image">
+                        <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                            <a href="<?php echo $filePath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                        <?php else: ?>
+                            <p>Unsupported file type.</p>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No announcements found.</p>
+        <?php endif; ?>
+        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+    </div>
+</div>
+
+</div>
 
 
     </div>
