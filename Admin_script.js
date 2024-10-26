@@ -68,3 +68,32 @@ function validateForm() {
     }
     return true;
 }
+
+    // Annoucement viewrer
+
+
+let currentSlide = 0;
+
+function showSlide(index) {
+    const slides = document.querySelectorAll('.announcement-item');
+    const totalSlides = slides.length;
+
+    // Ensure currentSlide wraps around if out of bounds
+    if (index >= totalSlides) {
+        currentSlide = 0;
+    } else if (index < 0) {
+        currentSlide = totalSlides - 1;
+    } else {
+        currentSlide = index;
+    }
+
+    const sliderContainer = document.querySelector('.slider-container');
+    sliderContainer.style.transform = `translateX(${-currentSlide * 100}%)`; // Move slider to show the current slide
+}
+
+function moveSlide(direction) {
+    showSlide(currentSlide + direction);
+}
+
+// Initial call to show the first slide
+showSlide(currentSlide);
