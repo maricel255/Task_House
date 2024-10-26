@@ -39,6 +39,8 @@ try {
 }
 
 // Initialize an empty array to hold error messages
+$message = []; // Initialize message as an array
+
 $errorMessages = [];
 
 // Handle form submission for profile update
@@ -56,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Verify the current password
-    if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
+    if ($currentUser && $oldUpass !== $currentUser['Upass']) 
+    { // No hashing, direct comparison
         $message[] = "Current password is incorrect.";
     }
 
@@ -68,28 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $message[] = "Password must be at least 6 characters long.";
         }
     }
-    // Display any messages
-        if (isset($_SESSION['message'])) {
-                    $message = $_SESSION['message'];
-                    unset($_SESSION['message']); // Clear the message after displaying
-                ?>
-                <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-                    <?php echo $message; ?>
-                </div>
-
-                <script type="text/javascript">
-                    // Hide the alert after 5 seconds (5000 milliseconds)
-                    setTimeout(function() {
-                        var alertBox = document.getElementById('alertBox');
-                        if (alertBox) {
-                            alertBox.style.display = 'none';
-                        }
-                    }, 5000); // 5 seconds
-                </script>
-
-        <?php
-        }
-
+ 
 
     // Handle file upload if provided
     $newFileName = null; // Initialize to null
@@ -165,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($exists > 0) {
                 // Intern ID already exists
+
                 $_SESSION['message'] = 'Intern ID already exists.';
             } else {
                 // Prepare SQL query to insert data
@@ -309,11 +292,6 @@ try {
 
 
 
-
-
-
-
-
 // Handle adding facilitator account
 
 if (isset($_POST['submitFacilitator'])) {
@@ -433,27 +411,79 @@ $stmt->bindParam(':faciID', $likeFaciID, PDO::PARAM_STR);
 $stmt->execute();
 $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if (isset($_SESSION['adminID'])) { // Replace 'adminID' with the actual session variable name
-    $adminID = $_SESSION['adminID']; // Get the logged-in admin ID
-    
-    // Query to count facilitator accounts for this admin
-    $sql = "SELECT COUNT(*) AS total FROM facacc WHERE admin_id = :adminID"; // Adjust column name as necessary
-    $stmt = $conn->prepare($sql);
-    
-    // Bind the adminID parameter
-    $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
-    
-    $stmt->execute();
-    
-    // Fetch the result
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($row) {
-        $totalFacilitatorAccounts = $row['total'];
-    }
 
+
+//for counting facilititator account under a adminID
+$sql = "SELECT COUNT(*) AS totalAccounts FROM facacc WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
+$stmt->execute();
+
+$totalAccounts = $stmt->fetchColumn();
+
+
+
+
+// Check if form is submitted in posting a announcement 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the posted values
+    if (isset($_POST['title']) && isset($_POST['announcement'])) {
+        $title = trim($_POST['title']);
+        $announcement = trim($_POST['announcement']);
+
+        // Ensure the file upload is handled correctly
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+            // Process file upload
+            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+            $fileName = $_FILES['fileUpload']['name'];
+            $fileSize = $_FILES['fileUpload']['size'];
+            $fileType = $_FILES['fileUpload']['type'];
+
+            // Define the path where the file will be uploaded
+            $uploadFileDir = './uploaded_files/';
+            $dest_path = $uploadFileDir . $fileName;
+
+            // Move the file to the desired directory
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                // File is successfully uploaded
+                // Prepare the SQL statement
+                $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
+                $stmt = $conn->prepare($sql);
+
+                // Bind the parameters
+                $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+                $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR); // Store the file path in the database
+                $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Replace with the actual admin ID
+
+                // Execute the statement
+                if ($stmt->execute()) {
+                    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+                    $_SESSION['message'] = 'Announcement posted successfully!';
+
+                    exit; // Prevent further script execution
+
+                } else {
+                    $_SESSION['message'] = "Error posting announcement.";
+                }
+            } else {
+                $_SESSION['message'] = "Error uploading the file.";
+            }
+        } else {
+            $_SESSION['message'] = "No file uploaded or there was an upload error.";
+        }
+    }
 }
 
+// do not change anything above----------------------------------------------------------------
+
+
+
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -464,7 +494,31 @@ if (isset($_SESSION['adminID'])) { // Replace 'adminID' with the actual session 
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 </head>
 <body>
-    <div id="header" class="header">
+<?php
+    // Display any messages
+    if (isset($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+
+        unset($_SESSION['message']); // Clear the message after displaying
+        ?>
+        <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+
+        <script type="text/javascript">
+            // Hide the alert after 5 seconds (5000 milliseconds)
+            setTimeout(function() {
+                var alertBox = document.getElementById('alertBox');
+                if (alertBox) {
+                    alertBox.style.display = 'none';
+                }
+            }, 5000); // 5 seconds
+        </script>
+        <?php
+    }
+?>
+
+<div id="header" class="header">
         <button class="logout-btn" onclick="logout()">
             <img src="image/logout.png" alt="Logout Icon" class="logout-icon"> | LOG OUT
         </button>
@@ -519,7 +573,7 @@ if (isset($_SESSION['adminID'])) { // Replace 'adminID' with the actual session 
                 </form>
             </div>
         </div>
-    </div>
+</div>
 
     <div id="sidebar" class="sidebar">
         <!-- Display admin profile image -->
@@ -543,27 +597,41 @@ if (isset($_SESSION['adminID'])) { // Replace 'adminID' with the actual session 
     <div class="main-content" id="main-content">
         
     <div class="content-section active" id="Dashboard">
-                                <h1>Dashboard</h1>
-                                <div class="dashboard-cards">
-                                    <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
-                                    <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
-                                    <div class="card intern"><h2>Intern Account</h2>
-                                    <strong><?php echo count($internAccounts); ?></strong>
-                                    </div>
-                                    
-                   <div class="card company">
-    <h2>Facilitator Account</h2>
-    <p>Total Accounts: <?php echo $totalFacilitatorAccounts; ?></p>
-</div>
-                                </div>
-                                <div class="announcement-board">
-                                    <h2>Announcement Board</h2>
-                                    <div class="input-container">
-                                        <input type="text" placeholder="Enter your Announcement here" class="styled-input">
-                                    </div>
-                                    <button class="post-button">POST</button>
-                                </div>
-                            </div>
+       <h1>Dashboard</h1>
+        <div class="dashboard-cards">
+            <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
+            <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
+            <div class="card intern"><h2>Intern Account</h2>
+                <strong><?php echo count($internAccounts); ?></strong>
+             </div>
+             <div class="card company"><h2>Facilitator Account</h2>
+                <strong> <?php echo $totalAccounts; ?></strong>
+             </div>
+        </div>
+        <div class="announcement-board">
+        <img src="image/announce.png" alt="Announcement Image" class="img">
+        <div class="form-container">
+            <h2>Announcement Board</h2>
+            <form method="POST" enctype="multipart/form-data">
+               <div class="form-group">
+                <label for="title"  class="styled-inputann">Title:</label>
+                <input type="text" id="title" name="title" class="styled-input"required>
+                </div>
+                <div class="form-group">
+                <label for="announcement" class="styled-inputann">Announcement:</label>
+                <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
+                </div>
+                <div class="form-group">
+                <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
+                <input type="file" id="fileUpload" name="fileUpload" required>
+                </div>
+                <button type="submit" class="post-button">Submit</button>
+            </form>
+        </div>
+        
+    </div>
+
+                        
         
      <div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
@@ -653,7 +721,7 @@ if (isset($_SESSION['adminID'])) { // Replace 'adminID' with the actual session 
                             <p>No intern accounts found.</p>
                         <?php endif; ?>
 
-</div>
+    </div>
 
             
            
