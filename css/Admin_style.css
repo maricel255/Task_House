@@ -897,7 +897,13 @@ p {
   background-color: #0056b3; /* Darker blue on hover */
 }
 
-.list-announcement {
+
+.announcement-slider {
+  position: relative;
+  max-width: 600px; /* Adjust as needed */
+  margin: auto;
+  overflow: hidden; /* Hide the overflowing slides */
+  border: 1px solid #ccc; /* Optional border */
   height: 50%; /* Height of the announcement list */
   width: 22%; /* Width of the announcement list */
   background-color: blue; /* Background color */
@@ -907,3 +913,39 @@ p {
   z-index: 1000; /* Ensures it stays on top of other elements */
   border-radius: 25px;
 }
+
+.slider-container {
+  display: flex; /* Align items in a row */
+  transition: transform 0.5s ease; /* Smooth slide transition */
+}
+
+.announcement-item {
+  min-width: 100%; /* Each item takes full width of the slider */
+  box-sizing: border-box; /* Include padding/borders in width calculation */
+  padding: 20px; /* Optional padding */
+  text-align: center; /* Center text */
+}
+
+img {
+  max-width: 100%; /* Ensure images fit within the announcement item */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white; /* Button color */
+  border: 1px solid #ccc; /* Optional border */
+  cursor: pointer;
+  padding: 10px; /* Button padding */
+}
+
+.prev {
+  left: 10px; /* Position left button */
+}
+
+.next {
+  right: 10px; /* Position right button */
+}
+
