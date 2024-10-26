@@ -113,7 +113,7 @@ body::before {
   background-color: white;
   border-bottom: 1px solid #ccc;
   transition: margin-left 0.3s; /* Smooth transition for header */
-  height: 24px;
+  height: 27px;
 }
 
 /* Adjust header when sidebar is hovered */
@@ -132,7 +132,7 @@ body::before {
   cursor: pointer;
   border-radius: 50%; /* Makes the button circular */
   position: absolute; /* Position absolutely within the header */
-  top: 22px; /* Adjust as needed to position from the top edge */
+  top: 7px; /* Adjust as needed to position from the top edge */
   right: 12%; /* Position from the right edge */
   width: 50px; /* Set a fixed width */
   height: 50px; /* Set a fixed height */
@@ -164,7 +164,7 @@ body::before {
         font-size: 16px;
         border-radius: 5px;
         position: absolute; /* Position absolutely within the header */
-        top: 22px; /* Adjust as needed to position from the top edge */
+        top: 7px; /* Adjust as needed to position from the top edge */
         right: 16px; /* Position from the right edge */
         display: flex;
        align-items: center; /* Align items vertically */
@@ -899,53 +899,97 @@ p {
 
 
 .announcement-slider {
-  position: relative;
-  max-width: 600px; /* Adjust as needed */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 350px; /* Adjust for a more compact design */
+  height: 50%;
+  width: 22%;
   margin: auto;
-  overflow: hidden; /* Hide the overflowing slides */
-  border: 1px solid #ccc; /* Optional border */
-  height: 50%; /* Height of the announcement list */
-  width: 22%; /* Width of the announcement list */
-  background-color: blue; /* Background color */
-  position: fixed; /* Fixed positioning */
-  bottom: 20px; /* Distance from the bottom of the viewport */
-  right: 20px; /* Distance from the right of the viewport */
-  z-index: 1000; /* Ensures it stays on top of other elements */
-  border-radius: 25px;
+  background-color:#dc3545; /* A more user-friendly shade of blue */
+  border-radius: 15px; /* Softer rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a floating effect */
+  overflow: hidden;
+  z-index: 1000;
+  border: none; /* Removed border for a cleaner look */
 }
 
 .slider-container {
-  display: flex; /* Align items in a row */
-  transition: transform 0.5s ease; /* Smooth slide transition */
+  position: relative;
+  height: 100%; /* Make the slider fill the height of the container */
+  display: flex;
+  flex-direction: column;
 }
 
 .announcement-item {
-  min-width: 100%; /* Each item takes full width of the slider */
-  box-sizing: border-box; /* Include padding/borders in width calculation */
-  padding: 20px; /* Optional padding */
-  text-align: center; /* Center text */
+  display: none; /* Hide all items by default */
+  padding: 15px;
+  text-align: left; /* Align text to the left for better readability */
+  background-color: #f9f9f9; /* Light background for the announcement text */
+  border-radius: 10px;
+  margin: 10px; /* Spacing between announcements */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for a card-like appearance */
+  height: 70%;
 }
 
-img {
-  max-width: 100%; /* Ensure images fit within the announcement item */
+
+.Announcement-Image {
+  display: block;
+  width: 45%; /* Initial size */
   height: auto; /* Maintain aspect ratio */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 10px auto 45px 55px; /* Centering */
+  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+  position: relative; /* Relative position for z-index */
+}
+
+.Announcement-Image:hover {
+  transform: translate(-50%, -50%) scale(1); /* Center the image and keep its size */
+  width: 90vw; /* Full viewport width */
+  height: 80vh; /* Full viewport height */
+  position: fixed; /* Fix to the viewport */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  margin: 0; /* Reset margin */
+  border-radius: 0; /* No rounded corners */
+  box-shadow: none; /* Remove shadow */
+  z-index: 1000; /* Above other content */
+  border: 5px solid red; /* Red border */
+  border-radius: 25px;;
+}
+
+
+.active {
+  display: block; /* Show the active item */
 }
 
 .prev, .next {
+  cursor: pointer;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: white; /* Button color */
-  border: 1px solid #ccc; /* Optional border */
-  cursor: pointer;
-  padding: 10px; /* Button padding */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+  color: #fff; /* White color for better contrast */
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .prev {
-  left: 10px; /* Position left button */
+  left: 10px;
 }
 
 .next {
-  right: 10px; /* Position right button */
+  right: 10px;
 }
 
+.prev:hover, .next:hover {
+  background-color: #333; /* Darker background on hover for better visual feedback */
+}
