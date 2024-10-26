@@ -993,3 +993,12 @@ p {
 .prev:hover, .next:hover {
   background-color: #333; /* Darker background on hover for better visual feedback */
 }
+.pdf-link {
+  color: blue; /* Change to desired color */
+  text-decoration: underline; /* Underline to indicate it's a link */
+  font-weight: bold; /* Bold font for emphasis */
+}
+
+.pdf-link:hover {
+  color: darkblue; /* Change color on hover */
+}
