@@ -125,6 +125,7 @@ body::before {
   display: none; /* Hidden by default */
 }
 
+
 .content-section.active {
   display: block; /* Show when active */
 }
