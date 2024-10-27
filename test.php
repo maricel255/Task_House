@@ -650,19 +650,21 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $filePath = htmlspecialchars($announcement['imagePath']);
                     $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                     ?>
+                       <div class="Announcement-Image" style="background-image: url('<?php echo htmlspecialchars($filePath); ?>');">
+    <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+        <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image">
+    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+        <?php
+        // Extract the file name and construct the file path
+        $fileName = basename($filePath);
+        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+        ?>
+        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+    <?php else: ?>
+        <p>Unsupported file type.</p>
+    <?php endif; ?>
+</div>
 
-                    <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                        <img src="<?php echo $filePath; ?>" alt="Announcement Image" class="Announcement-Image">
-                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-                        <?php
-                        // Extract the file name and construct the file path
-                        $fileName = basename($filePath);
-                        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
-                        ?>
-                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-                    <?php else: ?>
-                        <p>Unsupported file type.</p>
-                    <?php endif; ?>
                 <?php endif; ?>
             </div>
             
