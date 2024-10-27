@@ -13,7 +13,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false, // Disable emulation mode for "real" prepared statements
     ];
 
-    $pdo = new PDO($dsn, $username, $password, $options); // Changed $conn to $pdo
+    $conn = new PDO($dsn, $username, $password, $options); // Changed $conn to $pdo
     
     // Check connection (optional)
     // echo "Connected successfully"; // You can comment this out or remove it for production
