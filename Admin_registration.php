@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
       // Prepare the SQL statement
       $sql = "SELECT * FROM users WHERE Uname = :uname"; // Use a prepared statement with a placeholder
-      $stmt = $pdo->prepare($sql); // Prepare the statement
+      $stmt = $conn->prepare($sql); // Prepare the statement
       
       // Execute the statement with the actual value for the placeholder
       $stmt->execute(['uname' => $Uname]);
