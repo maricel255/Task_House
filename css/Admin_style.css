@@ -919,7 +919,26 @@ p {
   height: 100%; /* Make the slider fill the height of the container */
   display: flex;
   flex-direction: column;
+  padding-bottom: 90px; /* Space below the image */
 }
+
+.Announcement-Image {
+  display: inline-block;
+  width: 10px; /* Set fixed width */
+  height:10px; /* Set fixed height to match width for a square shape */
+  object-fit: cover; /* Ensure the image covers the box */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin-top: -50%; /* Remove space above the image */
+  margin-left: 50%; /* Center the image horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+  position: relative; /* Relative position for z-index */
+  border: solid 2px #dc3545; /* Solid red border */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+
 
 .announcement-item {
   display: none; /* Hide all items by default */
@@ -933,16 +952,8 @@ p {
 }
 
 
-.Announcement-Image {
-  display: block;
-  width: 45%; /* Initial size */
-  height: auto; /* Maintain aspect ratio */
-  border-radius: 5px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  margin: 10px auto 45px 55px; /* Centering */
-  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
-  position: relative; /* Relative position for z-index */
-}
+
+
 
 .Announcement-Image:hover {
   transform: translate(-50%, -50%) scale(1); /* Center the image and keep its size */
