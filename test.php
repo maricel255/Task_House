@@ -41,10 +41,9 @@ try {
 // Initialize an empty array to hold error messages
 $errorMessages = [];
 
-// Handle form submission for profile update
 
+// Handle form submission for profile update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $Uname = $_POST['Uname']; // Get the username from hidden input
     $oldUpass = $_POST['currentUpass'] ?? null; // Get current password from input
     $newFirstname = $_POST['newFirstname'] ?? ''; // New first name
     $newUpass = $_POST['newUpass'] ?? ''; // New password
@@ -513,6 +512,30 @@ $stmt->execute();
 $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // do not change anything above----------------------------------------------------------------
 
+// Handle the deletion
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if the announcement ID is set
+    if (isset($_POST['announcement_id'])) {
+        $announcementID = $_POST['announcement_id'];
+
+        // Prepare the deletion query
+        $sql = "DELETE FROM announcements WHERE id = :announcementID";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':announcementID', $announcementID, PDO::PARAM_INT);
+        
+        // Execute the query and check if the deletion was successful
+        if ($stmt->execute()) {
+            echo "Announcement deleted successfully.";
+        } else {
+            echo "Error deleting announcement.";
+        }
+    } else {
+        echo "Announcement ID not set.";
+    }
+}
 
 ?>
 
@@ -558,51 +581,51 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="overlay" id="overlay"></div>
 
        <!-- Modal Structure -->
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('myModal')">&times;</span>
-        <h2>My Profile</h2>
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('myModal')">&times;</span>
+                    <h2>My Profile</h2>
 
-        <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
-            <!-- Display error messages if any -->
-            <?php if (!empty($messages)): ?>
-                <div class="error-messages" style="color: red;">
-                    <?php foreach ($messages as $message): ?>
-                        <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-                    <?php endforeach; ?>
+                    <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
+                        <!-- Display error messages if any -->
+                        <?php if (!empty($messages)): ?>
+                            <div class="error-messages" style="color: red;">
+                                <?php foreach ($messages as $message): ?>
+                                    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="form-group">
+                            <label for="newFirstname">New First Name:</label>
+                            <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currentUpass">Current Password:</label>
+                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newUpass">New Password:</label>
+                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmUpass">Confirm New Password:</label>
+                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newProfileImage">New Profile Image:</label>
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
+                        </div>
+                        
+                        <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
                 </div>
-            <?php endif; ?>
-
-            <div class="form-group">
-                <label for="newFirstname">New First Name:</label>
-                <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
             </div>
-
-            <div class="form-group">
-                <label for="currentUpass">Current Password:</label>
-                <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="newUpass">New Password:</label>
-                <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmUpass">Confirm New Password:</label>
-                <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
-            </div>
-
-            <div class="form-group">
-                <label for="newProfileImage">New Profile Image:</label>
-                <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
-            </div>
-            
-            <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
-    </div>
-</div>
     </div>
 
     <div id="sidebar" class="sidebar">
@@ -661,46 +684,52 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </form>
   </div>
   <div class="announcement-slider">
-  <div class="slider-container">
-<?php if ($announcements): ?>
-  <?php foreach ($announcements as $index => $announcement): ?>
-      <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
-          <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
-     
-          <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
-          <?php if ($announcement['imagePath']): ?>
-              <?php
-              // Get the file extension
-              $filePath = htmlspecialchars($announcement['imagePath']);
-              $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-              ?>
-                 <div class="Announcement-Image" style="background-image: url('<?php echo htmlspecialchars($filePath); ?>');">
-<?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-  <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image">
-<?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-  <?php
-  // Extract the file name and construct the file path
-  $fileName = basename($filePath);
-  $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
-  ?>
-  <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-<?php else: ?>
-  <p>Unsupported file type.</p>
-<?php endif; ?>
-</div>
+    <div class="slider-container">
+        <?php if ($announcements): ?>
+            <?php foreach ($announcements as $index => $announcement): ?>
+                <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                    <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
 
-          <?php endif; ?>
-      </div>
-      
-  <?php endforeach; ?>
-<?php else: ?>
-  <p>No announcements found.</p>
-<?php endif; ?>
-<button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-<button class="next" onclick="moveSlide(1)">&#10095;</button>
-</div>
+                    <?php if ($announcement['imagePath']): ?>
+                        <?php
+                        // Get the file extension
+                        $filePath = htmlspecialchars($announcement['imagePath']);
+                        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                        ?>
+                        <div class="Announcement-Image">
+                            <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image">
+                            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                <?php
+                                // Extract the file name and construct the file path
+                                $fileName = basename($filePath);
+                                $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                ?>
+                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                            <?php else: ?>
+                                <p>Unsupported file type.</p>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
 
+                    <!-- Delete Button Form -->
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="announcement_id" value="<?php echo htmlspecialchars($announcement['id']); ?>">
+                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this announcement?');">
+                            &#10060; Delete
+                        </button>
+                    </form>
 
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No announcements found.</p>
+        <?php endif; ?>
+        
+        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+    </div>
 </div>
 
 </div>

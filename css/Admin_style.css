@@ -927,15 +927,16 @@ p {
   display: inline-block;
   width: 45%; /* Set fixed width */
   height:45%; /* Set fixed height to match width for a square shape */
-  object-fit: cover; /* Ensure the image covers the box */
   border-radius: 15px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   margin-bottom:  -78%; /* Remove space above the image */
   margin-left: 15%; /* Center the image horizontally */
   transform: translateX(-50%); /* Center horizontally */
   transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
   position: relative; /* Relative position for z-index */
   cursor: pointer; /* Change cursor to pointer */
+  background-color: transparent; /* Set transparent background */
+
+  
 }
 .Announcement-Image img {
   width: 90%; /* Make image fill the container width */
@@ -958,7 +959,6 @@ p {
   background-color: #f9f9f9; /* Light background for the announcement text */
   border-radius: 10px;
   margin: 10px; /* Spacing between announcements */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for a card-like appearance */
   height: 70%;
 }
 
@@ -1016,6 +1016,7 @@ p {
 .prev:hover, .next:hover {
   background-color: #333; /* Darker background on hover for better visual feedback */
 }
+
 .pdf-link {
   display: inline-block; /* Make it block-level for padding and margin */
   background-color: #28a745; /* Green background color */
@@ -1024,14 +1025,29 @@ p {
   border-radius: 5px; /* Rounded corners */
   text-decoration: none; /* Remove underline from the link */
   font-size: 16px; /* Slightly larger font size */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
   text-align: center; /* Center text within the button */
-  margin-top: 10px; /* Space above the link */
+  margin-top: 140px; /* Space above the link */
+  border: solid 4px #dc3545; /* Solid red border */
+  border-radius: 5px; /* Rounded corners */
+
+}
+
+/* Ensure there are no hover styles */
+.pdf-link:hover {
+  background-color: #28a745; /* Keep the same background color on hover */
+  color: white; /* Keep the same text color on hover */
+  /* You can add any other properties you want to remain unchanged on hover */
 }
 
 
-/* Focus state for accessibility */
-.pdf-link:focus {
-  outline: none; /* Remove default outline */
-  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.5); /* Add custom focus outline */
+.delete-button {
+  background: transparent; /* No background */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Pointer cursor */
+  margin-left: 10px; /* Space between content and button */
+}
+
+.trash-icon {
+  width: 20px; /* Adjust the size of the icon */
+  height: auto; /* Maintain aspect ratio */
 }
