@@ -603,10 +603,7 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main-content" id="main-content">
         
     <div class="content-section active" id="Dashboard">
-    <a href="<?php echo $filePath; ?>" target="_blank" class="pdf-link">View PDF</a>
-<?php
-echo "<p>PDF Path: " . $filePath . "</p>"; // This will display the path for debugging
-?>
+ 
 
        <h1>Dashboard</h1>
         <div class="dashboard-cards">
@@ -640,36 +637,43 @@ echo "<p>PDF Path: " . $filePath . "</p>"; // This will display the path for deb
             </form>
         </div>
         <div class="announcement-slider">
-    <div class="slider-container">
-        <?php if ($announcements): ?>
-            <?php foreach ($announcements as $index => $announcement): ?>
-                <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                    <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
-                    <?php if ($announcement['imagePath']): ?>
-                        <?php
-                        // Get the file extension
-                        $filePath = htmlspecialchars($announcement['imagePath']);
-                        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-                        ?>
+        <div class="slider-container">
+    <?php if ($announcements): ?>
+        <?php foreach ($announcements as $index => $announcement): ?>
+            <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+           
+                <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+                <?php if ($announcement['imagePath']): ?>
+                    <?php
+                    // Get the file extension
+                    $filePath = htmlspecialchars($announcement['imagePath']);
+                    $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                    ?>
 
-                        <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                            <img src="<?php echo $filePath; ?>" alt="Announcement Image" class="Announcement-Image">
-                        <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-                            <a href="<?php echo $filePath; ?>" target="_blank" class="pdf-link">View PDF</a>
-                        <?php else: ?>
-                            <p>Unsupported file type.</p>
-                        <?php endif; ?>
+                    <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                        <img src="<?php echo $filePath; ?>" alt="Announcement Image" class="Announcement-Image">
+                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                        <?php
+                        // Extract the file name and construct the file path
+                        $fileName = basename($filePath);
+                        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                        ?>
+                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                    <?php else: ?>
+                        <p>Unsupported file type.</p>
                     <?php endif; ?>
-                    <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No announcements found.</p>
-        <?php endif; ?>
-        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-        <button class="next" onclick="moveSlide(1)">&#10095;</button>
-    </div>
+                <?php endif; ?>
+            </div>
+            
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No announcements found.</p>
+    <?php endif; ?>
+    <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+    <button class="next" onclick="moveSlide(1)">&#10095;</button>
 </div>
+
 
 </div>
 
