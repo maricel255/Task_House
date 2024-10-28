@@ -720,9 +720,16 @@ body::before {
   border: 1px solid #ccc; /* Light gray border */
   border-radius: 4px; /* Rounded corners for input */
 }
+.action-form {
+  display: flex; /* Align items in a row */
+  gap: 10px; /* Optional: space between buttons */
+  align-items: center; /* Aligns items vertically within the form */
+}
 .update-button, .delete-button {
-  margin-left: 5px; /* Space between buttons */
-  cursor: pointer;
+  padding: 5px 10px; /* Adjust padding for better appearance */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Optional: rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
 }
 .table-container {
   max-height: 300px; /* Adjust the height as needed */
@@ -903,16 +910,19 @@ p {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  max-width: 350px; /* Adjust for a more compact design */
+  max-width: 350px;
   height: 50%;
   width: 22%;
-  margin: auto;
-  background-color:#dc3545; /* A more user-friendly shade of blue */
-  border-radius: 15px; /* Softer rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a floating effect */
+  background-color: #dc3545;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   z-index: 1000;
-  border: none; /* Removed border for a cleaner look */
+  border: none;
+  transition: right 0.3s ease; /* Smooth transition for sidebar hover effect */
+}
+.sidebar:hover + .announcement-slider {
+  right: 250px; /* Adjust this value based on sidebar width */
 }
 
 .slider-container {
@@ -928,7 +938,7 @@ p {
   width: 45%; /* Set fixed width */
   height:45%; /* Set fixed height to match width for a square shape */
   border-radius: 15px; /* Rounded corners */
-  margin-bottom:  -78%; /* Remove space above the image */
+  margin-bottom:  28%; /* Remove space above the image */
   margin-left: 15%; /* Center the image horizontally */
   transform: translateX(-50%); /* Center horizontally */
   transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
@@ -942,7 +952,7 @@ p {
   width: 90%; /* Make image fill the container width */
   height: 90%; /* Make image fill the container height */
   transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for effects */
-  margin-top: -25%; /* Remove space above the image */
+  margin-top: -35%; /* Remove space above the image */
   margin-left: 40%; /* Center the image horizontally */
   border: solid 4px #dc3545; /* Solid red border */
   border-radius: 5px; /* Rounded corners */
@@ -1026,7 +1036,7 @@ p {
   text-decoration: none; /* Remove underline from the link */
   font-size: 16px; /* Slightly larger font size */
   text-align: center; /* Center text within the button */
-  margin-top: 140px; /* Space above the link */
+  margin-top: 190px; /* Space above the link */
   border: solid 4px #dc3545; /* Solid red border */
   border-radius: 5px; /* Rounded corners */
 
@@ -1041,13 +1051,23 @@ p {
 
 
 .delete-button {
-  background: transparent; /* No background */
-  border: none; /* Remove default border */
-  cursor: pointer; /* Pointer cursor */
-  margin-left: 10px; /* Space between content and button */
+  background: orange;
+  border: none;
+  cursor: pointer;
+  margin-left: 75%;
+  margin-top: 5px;
+  height: 60px; /* Set a specific height */
+  padding: 10px 20px; /* Add padding for a balanced look */
 }
 
 .trash-icon {
   width: 20px; /* Adjust the size of the icon */
   height: auto; /* Maintain aspect ratio */
+}
+.Announcement-Image:hover + .delete-form {
+  display: none; /* Hide form */
+}
+
+.delete-form {
+  margin-top: 15px; /* Adjust as needed */
 }

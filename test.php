@@ -484,11 +484,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Execute the statement
                 if ($stmt->execute()) {
-                    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
                     $_SESSION['message'] = 'Announcement posted successfully!';
-
-                    exit; // Prevent further script execution
-
+                   
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
                 }
@@ -505,37 +502,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 // Fetch announcements for the current admin
-$sql = "SELECT title, imagePath, content FROM announcements WHERE adminID = :adminID";
+$sql = "SELECT title,announcementID, imagePath, content FROM announcements WHERE adminID = :adminID";
 $stmt = $conn->prepare($sql);
 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Use your actual admin ID
 $stmt->execute();
 $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 // do not change anything above----------------------------------------------------------------
 
-// Handle the deletion
+// Handle the deletion for annoucement 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
+    $announcementID = $_POST['announcementID'];
 
+    // Prepare the SQL statement to delete the announcement
+    $stmt = $conn->prepare("DELETE FROM announcements WHERE announcementID = :announcementID");
+    $stmt->bindParam(':announcementID', $announcementID);
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if the announcement ID is set
-    if (isset($_POST['announcement_id'])) {
-        $announcementID = $_POST['announcement_id'];
-
-        // Prepare the deletion query
-        $sql = "DELETE FROM announcements WHERE id = :announcementID";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':announcementID', $announcementID, PDO::PARAM_INT);
-        
-        // Execute the query and check if the deletion was successful
+    try {
         if ($stmt->execute()) {
-            echo "Announcement deleted successfully.";
+            // Set a success message if the deletion was successful
+            header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+
+            $_SESSION['message'] = "Announcement deleted successfully.";
+            exit; // Prevent further script execution
+
         } else {
-            echo "Error deleting announcement.";
+            $_SESSION['message'] = "Failed to delete the announcement.";
         }
-    } else {
-        echo "Announcement ID not set.";
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
     }
+} else {
+    $_SESSION['message'] = "Invalid request.";
+
 }
+
+
 
 ?>
 
@@ -552,21 +555,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Display any messages
     if (isset($_SESSION['message'])) {
         $message = $_SESSION['message'];
-
         unset($_SESSION['message']); // Clear the message after displaying
         ?>
         <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
             <?php echo htmlspecialchars($message); ?>
         </div>
-
         <script type="text/javascript">
-            // Hide the alert after 5 seconds (5000 milliseconds)
+            // Hide the alert after 5 seconds
             setTimeout(function() {
                 var alertBox = document.getElementById('alertBox');
                 if (alertBox) {
                     alertBox.style.display = 'none';
                 }
-            }, 5000); // 5 seconds
+            }, 5000);
         </script>
         <?php
     }
@@ -649,92 +650,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="main-content" id="main-content">
         
-    <div class="content-section active" id="Dashboard">
+<div class="content-section active" id="Dashboard">
  
 
- <h1>Dashboard</h1>
-  <div class="dashboard-cards">
-      <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
-      <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
-      <div class="card intern"><h2>Intern Account</h2>
-          <strong><?php echo count($internAccounts); ?></strong>
-       </div>
-       <div class="card company"><h2>Facilitator Account</h2>
-          <strong> <?php echo $totalAccounts; ?></strong>
-       </div>
-  </div>
-  <div class="announcement-board">
-  <img src="image/announce.png" alt="Announcement Image" class="img">
-  <div class="form-container">
-      <h2>Announcement Board</h2>
-      <form method="POST" enctype="multipart/form-data">
-         <div class="form-group">
-          <label for="title"  class="styled-inputann">Title:</label>
-          <input type="text" id="title" name="title" class="styled-input"required>
-          </div>
-          <div class="form-group">
-          <label for="announcement" class="styled-inputann">Announcement:</label>
-          <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
-          </div>
-          <div class="form-group">
-          <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
-          <input type="file" id="fileUpload" name="fileUpload" required>
-          </div>
-          <button type="submit" class="post-button">Submit</button>
-      </form>
-  </div>
-  <div class="announcement-slider">
-    <div class="slider-container">
-        <?php if ($announcements): ?>
-            <?php foreach ($announcements as $index => $announcement): ?>
-                <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                    <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
-                    <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
-
-                    <?php if ($announcement['imagePath']): ?>
-                        <?php
-                        // Get the file extension
-                        $filePath = htmlspecialchars($announcement['imagePath']);
-                        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-                        ?>
-                        <div class="Announcement-Image">
-                            <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                                <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image">
-                            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-                                <?php
-                                // Extract the file name and construct the file path
-                                $fileName = basename($filePath);
-                                $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
-                                ?>
-                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-                            <?php else: ?>
-                                <p>Unsupported file type.</p>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- Delete Button Form -->
-                    <form method="POST" action="" style="display: inline;">
-                        <input type="hidden" name="announcement_id" value="<?php echo htmlspecialchars($announcement['id']); ?>">
-                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this announcement?');">
-                            &#10060; Delete
-                        </button>
-                    </form>
-
+        <h1>Dashboard</h1>
+        <div class="dashboard-cards">
+            <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
+            <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
+            <div class="card intern"><h2>Intern Account</h2>
+                <strong><?php echo count($internAccounts); ?></strong>
+            </div>
+            <div class="card company"><h2>Facilitator Account</h2>
+                <strong> <?php echo $totalAccounts; ?></strong>
+            </div>
+        </div>
+        <div class="announcement-board">
+        <img src="image/announce.png" alt="Announcement Image" class="img">
+        <div class="form-container">
+            <h2>Announcement Board</h2>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                <label for="title"  class="styled-inputann">Title:</label>
+                <input type="text" id="title" name="title" class="styled-input"required>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No announcements found.</p>
-        <?php endif; ?>
-        
-        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-        <button class="next" onclick="moveSlide(1)">&#10095;</button>
-    </div>
-</div>
+                <div class="form-group">
+                <label for="announcement" class="styled-inputann">Announcement:</label>
+                <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
+                </div>
+                <div class="form-group">
+                <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
+                <input type="file" id="fileUpload" name="fileUpload" required>
+                </div>
+                <button type="submit" class="post-button">Submit</button>
+            </form>
+        </div>
+        <div class="announcement-slider">
+            <div class="slider-container">
+                <?php if ($announcements): ?>
+                    <?php foreach ($announcements as $index => $announcement): ?>
+                        <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                            <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                            <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+
+                            <?php if ($announcement['imagePath']): ?>
+                                <?php
+                                // Get the file extension
+                                $filePath = htmlspecialchars($announcement['imagePath']);
+                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                ?>
+                                <div class="Announcement-Image">
+                                    <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                        <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
+                                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                        <?php
+                                        // Extract the file name and construct the file path
+                                        $fileName = basename($filePath);
+                                        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                        ?>
+                                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                    <?php else: ?>
+                                        <p>Unsupported file type.</p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                                <!-- Delete Button Form -->
+                                <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                        <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                        </div>
+                    
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No announcements found.</p>
+                <?php endif; ?>
+                
+                <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                <button class="next" onclick="moveSlide(1)">&#10095;</button>
+            </div>
+        </div>
 
 </div>
 
+
 </div>
+
+
+
         
      <div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
