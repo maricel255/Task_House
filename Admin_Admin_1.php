@@ -39,9 +39,8 @@ try {
 }
 
 // Initialize an empty array to hold error messages
-$message = []; // Initialize message as an array
-
 $errorMessages = [];
+
 
 // Handle form submission for profile update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -49,29 +48,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $newFirstname = $_POST['newFirstname'] ?? ''; // New first name
     $newUpass = $_POST['newUpass'] ?? ''; // New password
     $confirmUpass = $_POST['confirmUpass'] ?? ''; // Confirm new password
+    $messages = []; // Array to hold any error messages
 
     // Fetch current user's password from the database
-    $query = "SELECT Upass FROM users WHERE Uname = :Uname"; // Use 'Upass' instead of 'password'
+    $query = "SELECT Upass FROM users WHERE Uname = :Uname";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
     $stmt->execute();
     $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Verify the current password
-    if ($currentUser && $oldUpass !== $currentUser['Upass']) 
-    { // No hashing, direct comparison
-        $message[] = "Current password is incorrect.";
+    if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
+        $messages[] = "Current password is incorrect.";
     }
 
     // Validate new password if the current password is correct
-    if (empty($message)) {
+    if (empty($messages)) {
         if ($newUpass !== $confirmUpass) {
-            $message[] = "Passwords do not match.";
+            $messages[] = "Passwords do not match.";
         } elseif (strlen($newUpass) < 6) {
-            $message[] = "Password must be at least 6 characters long.";
+            $messages[] = "Password must be at least 6 characters long.";
         }
     }
- 
 
     // Handle file upload if provided
     $newFileName = null; // Initialize to null
@@ -89,35 +87,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Set a new file name and directory
             $newFileName = md5(time() . $fileName) . '.' . $fileExtension; // unique file name
             $uploadFileDir = './uploads/';
+            
+            // Ensure the upload directory exists
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0755, true); // Create directory if it doesn't exist
+            }
+            
             $dest_path = $uploadFileDir . $newFileName;
 
             // Move the file to the uploads directory
             if (!move_uploaded_file($fileTmpPath, $dest_path)) {
-                $message[] = "Error moving the uploaded file.";
+                $messages[] = "Error moving the uploaded file.";
             }
         } else {
-            $message[] = "Invalid file type or file size too large.";
+            $messages[] = "Invalid file type or file size too large.";
         }
     }
 
-     // If there are no errors, update user info in the database
-     if (empty($message)) {
+    // If there are no errors, update user info in the database
+    if (empty($messages)) {
         try {
-            // Update user info in the database, no hashing for new password
-            $query = "UPDATE users SET Firstname = :firstname, Upass = :password, admin_profile = :profile WHERE Uname = :Uname"; // Use 'Upass' here as well
+            // Build the query
+            $query = "UPDATE users SET Firstname = :firstname";
+            if (!empty($newUpass)) {
+                $query .= ", Upass = :password"; // Include password only if not empty
+            }
+            if (!empty($newFileName)) {
+                $query .= ", admin_profile = :profile"; // Include profile only if not empty
+            }
+            $query .= " WHERE Uname = :Uname"; // Finalize the WHERE clause
+            
             $stmt = $conn->prepare($query);
+            
+            // Bind parameters
             $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
-            $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
-            $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
+            if (!empty($newUpass)) {
+                $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
+            }
+            if (!empty($newFileName)) {
+                $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
+            }
             $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
+            
+            // Execute the query
             $stmt->execute();
-
+            
             // Redirect to the admin page or display success message
             header("Location: test.php"); // Adjust the redirect as needed
             exit();
 
         } catch (PDOException $e) {
-            echo "Error updating user data: " . $e->getMessage();
+            // Log the error message instead of echoing it
+            error_log("Error updating user data: " . $e->getMessage());
+            echo "There was an error updating your data. Please try again later.";
         }
     }
 }
@@ -147,7 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($exists > 0) {
                 // Intern ID already exists
-
                 $_SESSION['message'] = 'Intern ID already exists.';
             } else {
                 // Prepare SQL query to insert data
@@ -289,6 +310,11 @@ try {
     $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
     $internAccounts = [];
 }
+
+
+
+
+
 
 
 
@@ -458,11 +484,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Execute the statement
                 if ($stmt->execute()) {
-                    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
                     $_SESSION['message'] = 'Announcement posted successfully!';
-
-                    exit; // Prevent further script execution
-
+                   
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
                 }
@@ -475,15 +498,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+
+
+
+// Fetch announcements for the current admin
+$sql = "SELECT title,announcementID, imagePath, content FROM announcements WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Use your actual admin ID
+$stmt->execute();
+$announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
 // do not change anything above----------------------------------------------------------------
 
+// Handle the deletion for annoucement 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
+    $announcementID = $_POST['announcementID'];
 
+    // Prepare the SQL statement to delete the announcement
+    $stmt = $conn->prepare("DELETE FROM announcements WHERE announcementID = :announcementID");
+    $stmt->bindParam(':announcementID', $announcementID);
+
+    try {
+        if ($stmt->execute()) {
+            // Set a success message if the deletion was successful
+            header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+
+            $_SESSION['message'] = "Announcement deleted successfully.";
+            exit; // Prevent further script execution
+
+        } else {
+            $_SESSION['message'] = "Failed to delete the announcement.";
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+    }
+} else {
+    $_SESSION['message'] = "Invalid request.";
+
+}
 
 
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -498,27 +555,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Display any messages
     if (isset($_SESSION['message'])) {
         $message = $_SESSION['message'];
-
         unset($_SESSION['message']); // Clear the message after displaying
         ?>
         <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
             <?php echo htmlspecialchars($message); ?>
         </div>
-
         <script type="text/javascript">
-            // Hide the alert after 5 seconds (5000 milliseconds)
+            // Hide the alert after 5 seconds
             setTimeout(function() {
                 var alertBox = document.getElementById('alertBox');
                 if (alertBox) {
                     alertBox.style.display = 'none';
                 }
-            }, 5000); // 5 seconds
+            }, 5000);
         </script>
         <?php
     }
 ?>
 
-<div id="header" class="header">
+    <div id="header" class="header">
         <button class="logout-btn" onclick="logout()">
             <img src="image/logout.png" alt="Logout Icon" class="logout-icon"> | LOG OUT
         </button>
@@ -526,28 +581,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button class="modal-btn" onclick="openModal('myModal')"></button>
         <div class="overlay" id="overlay"></div>
 
-        <!-- Modal Structure -->
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-            <span class="close" onclick="closeModal('myModal')">&times;</span>
-            <h2>My Profile</h2>
+       <!-- Modal Structure -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('myModal')">&times;</span>
+                    <h2>My Profile</h2>
 
-                <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
-                    <!-- Display error messages if any -->
-                    <?php if (!empty($errorMessages)): ?>
-                        <div class="error-messages" style="color: red;">
-                            <?php foreach ($errorMessages as $message): ?>
-                                <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <?php endforeach; ?>
+                    <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
+                        <!-- Display error messages if any -->
+                        <?php if (!empty($messages)): ?>
+                            <div class="error-messages" style="color: red;">
+                                <?php foreach ($messages as $message): ?>
+                                    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="form-group">
+                            <label for="newFirstname">New First Name:</label>
+                            <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
                         </div>
-                    <?php endif; ?>
 
-                    <div class="form-group">
-                        <label for="newFirstname">New First Name:</label>
-                        <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
-                    </div>
-
-                    <div class="form-group">
+                        <div class="form-group">
                             <label for="currentUpass">Current Password:</label>
                             <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required>
                         </div>
@@ -562,18 +617,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
                         </div>
 
-
-                    <div class="form-group">
-                        <label for="newProfileImage">New Profile Image:</label>
-                        <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
-                    </div>
-                    
-                    <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
+                        <div class="form-group">
+                            <label for="newProfileImage">New Profile Image:</label>
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
+                        </div>
+                        
+                        <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
             </div>
-        </div>
-</div>
+    </div>
 
     <div id="sidebar" class="sidebar">
         <!-- Display admin profile image -->
@@ -596,24 +650,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="main-content" id="main-content">
         
-    <div class="content-section active" id="Dashboard">
-       <h1>Dashboard</h1>
+<div class="content-section active" id="Dashboard">
+ 
+
+        <h1>Dashboard</h1>
         <div class="dashboard-cards">
             <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
             <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
             <div class="card intern"><h2>Intern Account</h2>
                 <strong><?php echo count($internAccounts); ?></strong>
-             </div>
-             <div class="card company"><h2>Facilitator Account</h2>
+            </div>
+            <div class="card company"><h2>Facilitator Account</h2>
                 <strong> <?php echo $totalAccounts; ?></strong>
-             </div>
+            </div>
         </div>
         <div class="announcement-board">
         <img src="image/announce.png" alt="Announcement Image" class="img">
         <div class="form-container">
             <h2>Announcement Board</h2>
             <form method="POST" enctype="multipart/form-data">
-               <div class="form-group">
+                <div class="form-group">
                 <label for="title"  class="styled-inputann">Title:</label>
                 <input type="text" id="title" name="title" class="styled-input"required>
                 </div>
@@ -628,10 +684,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" class="post-button">Submit</button>
             </form>
         </div>
-        
-    </div>
+        <div class="announcement-slider">
+            <div class="slider-container">
+                <?php if ($announcements): ?>
+                    <?php foreach ($announcements as $index => $announcement): ?>
+                        <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                            <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                            <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
 
-                        
+                            <?php if ($announcement['imagePath']): ?>
+                                <?php
+                                // Get the file extension
+                                $filePath = htmlspecialchars($announcement['imagePath']);
+                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                ?>
+                                <div class="Announcement-Image">
+                                    <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                        <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
+                                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                        <?php
+                                        // Extract the file name and construct the file path
+                                        $fileName = basename($filePath);
+                                        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                        ?>
+                                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                    <?php else: ?>
+                                        <p>Unsupported file type.</p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                                <!-- Delete Button Form -->
+                                <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                        <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                        </div>
+                    
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No announcements found.</p>
+                <?php endif; ?>
+                
+                <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                <button class="next" onclick="moveSlide(1)">&#10095;</button>
+            </div>
+        </div>
+
+</div>
+
+
+</div>
+
+
+
         
      <div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
@@ -721,7 +826,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <p>No intern accounts found.</p>
                         <?php endif; ?>
 
-    </div>
+</div>
 
             
            
