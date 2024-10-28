@@ -301,3 +301,115 @@ html {
     font-size: 16px; /* Smaller capstone title */
   }
 }
+
+
+/* Modal container */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 5% auto; /* Further reduced margin from the top */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%; /* Adjusted width to make the modal smaller */
+    max-width: 400px; /* Set a smaller max width for larger screens */
+    position: relative; /* Create a positioning context */
+  }
+  body.modal-open {
+    overflow: hidden; /* Disable scrolling */
+  }
+  .close {
+    color: #aaa;
+    float: right; /* Align to the right */
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute; /* Positioning absolute to the modal content */
+    right: 20px; /* 20px from the right */
+    top: 10px; /* Adjust as necessary */
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .form-group {
+    margin-bottom: 15px; /* Space between form fields */
+  }
+
+  label {
+    display: block; /* Make labels block level */
+    margin-bottom: 5px; /* Space below the label */
+    font-weight: bold; /* Bold label */
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside input */
+    border: 1px solid #ccc; /* Border for input */
+    border-radius: 5px; /* Rounded corners for inputs */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    transition: border-color 0.3s; /* Smooth border transition */
+  }
+
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    border-color: #007BFF; /* Highlight border on focus */
+    outline: none; /* Remove outline */
+  }
+
+  button {
+    padding: 10px 15px; /* Button padding */
+    background-color: #007BFF; /* Primary button color */
+    color: white; /* Text color for button */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners for button */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s; /* Smooth background transition */
+  }
+
+  button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+
+  .forgot-password {
+    text-align: center; /* Center align the forgot password link */
+    margin-top: 15px; /* Space above the link */
+  }
+
+  .forgot-password a {
+    color: #007BFF; /* Link color */
+    text-decoration: none; /* No underline */
+    transition: color 0.3s; /* Smooth color transition */
+  }
+
+  .forgot-password a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }
+  .modal-header {
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically (optional) */
+    padding: 20px; /* Optional padding */
+  }
+  
+  .profile-image {
+    width: 225px; /* Set a larger width */
+    height: 225px; /* Set a larger height */
+    border-radius: 50%; /* Make it circular if desired */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+    margin: 10px; /* Space around the image */
+  }
