@@ -41,15 +41,17 @@ try {
 // Initialize an empty array to hold error messages
 $errorMessages = [];
 
+
 // Handle form submission for profile update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $oldUpass = $_POST['currentUpass'] ?? null; // Get current password from input
     $newFirstname = $_POST['newFirstname'] ?? ''; // New first name
     $newUpass = $_POST['newUpass'] ?? ''; // New password
     $confirmUpass = $_POST['confirmUpass'] ?? ''; // Confirm new password
+    $messages = []; // Array to hold any error messages
 
     // Fetch current user's password from the database
-    $query = "SELECT Upass FROM users WHERE Uname = :Uname"; // Use 'Upass' instead of 'password'
+    $query = "SELECT Upass FROM users WHERE Uname = :Uname";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
     $stmt->execute();
@@ -57,18 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verify the current password
     if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
-        $message[] = "Current password is incorrect.";
+        $messages[] = "Current password is incorrect.";
     }
 
     // Validate new password if the current password is correct
-    if (empty($message)) {
+    if (empty($messages)) {
         if ($newUpass !== $confirmUpass) {
-            $message[] = "Passwords do not match.";
+            $messages[] = "Passwords do not match.";
         } elseif (strlen($newUpass) < 6) {
-            $message[] = "Password must be at least 6 characters long.";
+            $messages[] = "Password must be at least 6 characters long.";
         }
     }
-
 
     // Handle file upload if provided
     $newFileName = null; // Initialize to null
@@ -86,61 +87,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Set a new file name and directory
             $newFileName = md5(time() . $fileName) . '.' . $fileExtension; // unique file name
             $uploadFileDir = './uploads/';
+            
+            // Ensure the upload directory exists
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0755, true); // Create directory if it doesn't exist
+            }
+            
             $dest_path = $uploadFileDir . $newFileName;
 
             // Move the file to the uploads directory
             if (!move_uploaded_file($fileTmpPath, $dest_path)) {
-                $message[] = "Error moving the uploaded file.";
+                $messages[] = "Error moving the uploaded file.";
             }
         } else {
-            $message[] = "Invalid file type or file size too large.";
+            $messages[] = "Invalid file type or file size too large.";
         }
     }
 
-     // If there are no errors, update user info in the database
-     if (empty($message)) {
+    // If there are no errors, update user info in the database
+    if (empty($messages)) {
         try {
-            // Update user info in the database, no hashing for new password
-            $query = "UPDATE users SET Firstname = :firstname, Upass = :password, admin_profile = :profile WHERE Uname = :Uname"; // Use 'Upass' here as well
+            // Build the query
+            $query = "UPDATE users SET Firstname = :firstname";
+            if (!empty($newUpass)) {
+                $query .= ", Upass = :password"; // Include password only if not empty
+            }
+            if (!empty($newFileName)) {
+                $query .= ", admin_profile = :profile"; // Include profile only if not empty
+            }
+            $query .= " WHERE Uname = :Uname"; // Finalize the WHERE clause
+            
             $stmt = $conn->prepare($query);
+            
+            // Bind parameters
             $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
-            $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
-            $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
+            if (!empty($newUpass)) {
+                $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
+            }
+            if (!empty($newFileName)) {
+                $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
+            }
             $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
+            
+            // Execute the query
             $stmt->execute();
-
+            
             // Redirect to the admin page or display success message
             header("Location: test.php"); // Adjust the redirect as needed
             exit();
 
         } catch (PDOException $e) {
-            echo "Error updating user data: " . $e->getMessage();
+            // Log the error message instead of echoing it
+            error_log("Error updating user data: " . $e->getMessage());
+            echo "There was an error updating your data. Please try again later.";
         }
     }
 }
 
-// Display any messages
-if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
-    unset($_SESSION['message']); // Clear the message after displaying
-?>
-<div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-    <?php echo $message; ?>
-</div>
 
-<script type="text/javascript">
-    // Hide the alert after 10 seconds (10000 milliseconds)
-    setTimeout(function() {
-        var alertBox = document.getElementById('alertBox');
-        if (alertBox) {
-            alertBox.style.display = 'none';
-        }
-    }, 10000); // 10 seconds
-</script>
-
-
-<?php
-}
 
 // Handle adding intern account
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -313,9 +317,48 @@ try {
 
 
 
-// do not change anything above!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
 // Handle adding facilitator account
+
+if (isset($_POST['submitFacilitator'])) {
+    $faciID = $_POST['faciID'];
+    $faciPass = $_POST['faciPass'];
+
+   
+    try {
+        // Check if the faciID already exists
+        $checkSql = "SELECT COUNT(*) FROM facacc WHERE faciID = :faciID";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bindParam(':faciID', $faciID);
+        $checkStmt->execute();
+
+        $count = $checkStmt->fetchColumn();
+
+        if ($count > 0) {
+            $_SESSION['message'] = "Error: The Facilitator ID '$faciID' already exists. Please use a different ID.";
+        } else {
+            // Create the SQL query to insert into the facacc table
+            $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (:faciID, :faciPass, :adminID)";
+            
+            // Prepare and execute the statement
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':faciID', $faciID);
+            $stmt->bindParam(':faciPass', $faciPass);
+            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Facilitator account added successfully!";
+            } else {
+                $_SESSION['message'] = "Error: Could not add facilitator account.";
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+    }
+
+
+
+}
 
 // Handle deleting and updating facilitator account
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -396,6 +439,104 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 
+//for counting facilititator account under a adminID
+$sql = "SELECT COUNT(*) AS totalAccounts FROM facacc WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
+$stmt->execute();
+
+$totalAccounts = $stmt->fetchColumn();
+
+
+
+
+// Check if form is submitted in posting a announcement 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the posted values
+    if (isset($_POST['title']) && isset($_POST['announcement'])) {
+        $title = trim($_POST['title']);
+        $announcement = trim($_POST['announcement']);
+
+        // Ensure the file upload is handled correctly
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+            // Process file upload
+            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+            $fileName = $_FILES['fileUpload']['name'];
+            $fileSize = $_FILES['fileUpload']['size'];
+            $fileType = $_FILES['fileUpload']['type'];
+
+            // Define the path where the file will be uploaded
+            $uploadFileDir = './uploaded_files/';
+            $dest_path = $uploadFileDir . $fileName;
+
+            // Move the file to the desired directory
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                // File is successfully uploaded
+                // Prepare the SQL statement
+                $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
+                $stmt = $conn->prepare($sql);
+
+                // Bind the parameters
+                $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+                $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR); // Store the file path in the database
+                $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Replace with the actual admin ID
+
+                // Execute the statement
+                if ($stmt->execute()) {
+                    header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
+                    $_SESSION['message'] = 'Announcement posted successfully!';
+
+                    exit; // Prevent further script execution
+
+                } else {
+                    $_SESSION['message'] = "Error posting announcement.";
+                }
+            } else {
+                $_SESSION['message'] = "Error uploading the file.";
+            }
+        } else {
+            $_SESSION['message'] = "No file uploaded or there was an upload error.";
+        }
+    }
+}
+
+
+
+
+// Fetch announcements for the current admin
+$sql = "SELECT title, imagePath, content FROM announcements WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Use your actual admin ID
+$stmt->execute();
+$announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// do not change anything above----------------------------------------------------------------
+
+// Handle the deletion
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if the announcement ID is set
+    if (isset($_POST['announcement_id'])) {
+        $announcementID = $_POST['announcement_id'];
+
+        // Prepare the deletion query
+        $sql = "DELETE FROM announcements WHERE id = :announcementID";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':announcementID', $announcementID, PDO::PARAM_INT);
+        
+        // Execute the query and check if the deletion was successful
+        if ($stmt->execute()) {
+            echo "Announcement deleted successfully.";
+        } else {
+            echo "Error deleting announcement.";
+        }
+    } else {
+        echo "Announcement ID not set.";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -407,6 +548,30 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 </head>
 <body>
+<?php
+    // Display any messages
+    if (isset($_SESSION['message'])) {
+        $message = $_SESSION['message'];
+
+        unset($_SESSION['message']); // Clear the message after displaying
+        ?>
+        <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+
+        <script type="text/javascript">
+            // Hide the alert after 5 seconds (5000 milliseconds)
+            setTimeout(function() {
+                var alertBox = document.getElementById('alertBox');
+                if (alertBox) {
+                    alertBox.style.display = 'none';
+                }
+            }, 5000); // 5 seconds
+        </script>
+        <?php
+    }
+?>
+
     <div id="header" class="header">
         <button class="logout-btn" onclick="logout()">
             <img src="image/logout.png" alt="Logout Icon" class="logout-icon"> | LOG OUT
@@ -415,28 +580,28 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <button class="modal-btn" onclick="openModal('myModal')"></button>
         <div class="overlay" id="overlay"></div>
 
-        <!-- Modal Structure -->
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-            <span class="close" onclick="closeModal('myModal')">&times;</span>
-            <h2>My Profile</h2>
+       <!-- Modal Structure -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('myModal')">&times;</span>
+                    <h2>My Profile</h2>
 
-                <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
-                    <!-- Display error messages if any -->
-                    <?php if (!empty($errorMessages)): ?>
-                        <div class="error-messages" style="color: red;">
-                            <?php foreach ($errorMessages as $message): ?>
-                                <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <?php endforeach; ?>
+                    <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
+                        <!-- Display error messages if any -->
+                        <?php if (!empty($messages)): ?>
+                            <div class="error-messages" style="color: red;">
+                                <?php foreach ($messages as $message): ?>
+                                    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="form-group">
+                            <label for="newFirstname">New First Name:</label>
+                            <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
                         </div>
-                    <?php endif; ?>
 
-                    <div class="form-group">
-                        <label for="newFirstname">New First Name:</label>
-                        <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
-                    </div>
-
-                    <div class="form-group">
+                        <div class="form-group">
                             <label for="currentUpass">Current Password:</label>
                             <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required>
                         </div>
@@ -451,17 +616,16 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
                         </div>
 
-
-                    <div class="form-group">
-                        <label for="newProfileImage">New Profile Image:</label>
-                        <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
-                    </div>
-                    
-                    <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
+                        <div class="form-group">
+                            <label for="newProfileImage">New Profile Image:</label>
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
+                        </div>
+                        
+                        <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
             </div>
-        </div>
     </div>
 
     <div id="sidebar" class="sidebar">
@@ -486,23 +650,91 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main-content" id="main-content">
         
     <div class="content-section active" id="Dashboard">
-                                <h1>Dashboard</h1>
-                                <div class="dashboard-cards">
-                                    <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
-                                    <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
-                                    <div class="card intern"><h2>Intern Account</h2>
-                                    Total Intern Accounts: <strong><?php echo count($internAccounts); ?></strong>
-                                    </div>
-                                    <div class="card company"><h2>Company</h2><p>4 Company</p></div>
-                                </div>
-                                <div class="announcement-board">
-                                    <h2>Announcement Board</h2>
-                                    <div class="input-container">
-                                        <input type="text" placeholder="Enter your Announcement here" class="styled-input">
-                                    </div>
-                                    <button class="post-button">POST</button>
-                                </div>
-                            </div>
+ 
+
+ <h1>Dashboard</h1>
+  <div class="dashboard-cards">
+      <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
+      <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
+      <div class="card intern"><h2>Intern Account</h2>
+          <strong><?php echo count($internAccounts); ?></strong>
+       </div>
+       <div class="card company"><h2>Facilitator Account</h2>
+          <strong> <?php echo $totalAccounts; ?></strong>
+       </div>
+  </div>
+  <div class="announcement-board">
+  <img src="image/announce.png" alt="Announcement Image" class="img">
+  <div class="form-container">
+      <h2>Announcement Board</h2>
+      <form method="POST" enctype="multipart/form-data">
+         <div class="form-group">
+          <label for="title"  class="styled-inputann">Title:</label>
+          <input type="text" id="title" name="title" class="styled-input"required>
+          </div>
+          <div class="form-group">
+          <label for="announcement" class="styled-inputann">Announcement:</label>
+          <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
+          </div>
+          <div class="form-group">
+          <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
+          <input type="file" id="fileUpload" name="fileUpload" required>
+          </div>
+          <button type="submit" class="post-button">Submit</button>
+      </form>
+  </div>
+  <div class="announcement-slider">
+    <div class="slider-container">
+        <?php if ($announcements): ?>
+            <?php foreach ($announcements as $index => $announcement): ?>
+                <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                    <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+
+                    <?php if ($announcement['imagePath']): ?>
+                        <?php
+                        // Get the file extension
+                        $filePath = htmlspecialchars($announcement['imagePath']);
+                        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                        ?>
+                        <div class="Announcement-Image">
+                            <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image">
+                            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                <?php
+                                // Extract the file name and construct the file path
+                                $fileName = basename($filePath);
+                                $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                ?>
+                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                            <?php else: ?>
+                                <p>Unsupported file type.</p>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Delete Button Form -->
+                    <form method="POST" action="" style="display: inline;">
+                        <input type="hidden" name="announcement_id" value="<?php echo htmlspecialchars($announcement['id']); ?>">
+                        <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this announcement?');">
+                            &#10060; Delete
+                        </button>
+                    </form>
+
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No announcements found.</p>
+        <?php endif; ?>
+        
+        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+    </div>
+</div>
+
+</div>
+
+</div>
         
      <div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
@@ -535,7 +767,7 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Search Form Positioned in Upper Right of the Table -->
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                             <form method="GET" action="">
-                                <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" />
+                                <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
                                 <button type="submit" class="search-button">Search</button>
                             </form>
                         </div>
@@ -547,6 +779,8 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <!-- Intern Accounts Table -->
                         <?php if (!empty($internAccounts)): ?>
+                            <div class="table-container"> <!-- Added container for scrolling -->
+
                             <table class="intern-accounts-table">
                                 <tr>
                                     <th class="table-header">Intern ID</th>
@@ -584,6 +818,8 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </tr>
                                 <?php endforeach; ?>
                             </table>
+                            </div>
+
                         <?php else: ?>
                             <p>No intern accounts found.</p>
                         <?php endif; ?>
@@ -599,37 +835,33 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
 
                       <!-- Facilitator Modal -->
-                            <div id="FaccAccModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
-                                    <h2>Add Facilitator Account</h2>
-                                    <form id="addFaccAccForm" method="POST" action="">
-                                        <div class="form-group">
-                                            <label for="faciID">Facilitator ID:</label>
-                                            <input type="text" id="faciID" name="faciID" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="faciPass">Password:</label>
-                                            <input type="password" id="faciPass" name="faciPass" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
-                                    <?php if (isset($_SESSION['message'])): ?>
-                                        <div class="alert">
-                                            <?= htmlspecialchars($_SESSION['message']) ?>
-                                            <?php unset($_SESSION['message']); // Clear the message after displaying ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                      <div id="FaccAccModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
+                                <h2>Add Facilitator Account</h2>
+                                <form id="addFaccAccForm" method="POST" action="">
+                                    <div class="form-group">
+                                        <label for="faciID">Facilitator ID:</label>
+                                        <input type="text" id="faciID" name="faciID" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="faciPass">Password:</label>
+                                        <input type="password" id="faciPass" name="faciPass" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" name="submitFacilitator">Submit</button>
+                                </form>
+                                
                             </div>
-                                                    <!-- Display Existing Facilitator Accounts Outside the Modal -->
+                        </div>
+
+                                                                            <!-- Display Existing Facilitator Accounts Outside the Modal -->
                         <h2>Existing Facilitator Accounts</h2>
 
                         <!-- Search Form Positioned in Upper Right of the Table -->
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                             <form method="GET" action="">
-                                <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" />
-                                <button type="submit" class="search-button">Search</button>
+                            <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
+                            <button type="submit" class="search-button">Search</button>
                             </form>
                         </div>
 
@@ -640,46 +872,51 @@ $faccAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <!-- Facilitator Accounts Table -->
                         <?php if (!empty($faccAccounts)): ?>
-                            <table class="faccacc-table">
-                                <tr>
-                                    <th class="table-header">Facilitator ID</th>
-                                    <th class="table-header">Current Password</th>
-                                    <th class="table-header" style="padding-left: 30%;">Actions</th>
-                                </tr>
+                            <div class="table-container"> <!-- Added container for scrolling -->
 
-                                <?php 
-                                // To store the filtered and non-filtered accounts
-                                $highlightedRow = [];
-                                $otherRows = [];
+                                        <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
+                                            <tr>
+                                                <th class="table-header">Facilitator ID</th>
+                                                <th class="table-header">Current Password</th>
+                                                <th class="table-header" style="padding-left: 30%;">Actions</th>
+                                            </tr>
 
-                                foreach ($faccAccounts as $account): 
-                                    if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
-                                        $highlightedRow[] = $account; 
-                                    } else {
-                                        $otherRows[] = $account; 
-                                    }
-                                endforeach; 
+                                            <?php 
+                                            // To store the filtered and non-filtered accounts
+                                            $highlightedRow = [];
+                                            $otherRows = [];
 
-                                // Merge highlighted row(s) with other rows
-                                $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                foreach ($sortedAccounts as $account): ?>
-                                    <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
-                                        <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
-                                        <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
-                                        <td class="table-actions">
-                                            <form method="POST" action="" style="display:inline;">
-                                                <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
-                                                <input type="password" name="faciPass" class="password-input" placeholder="New Password" />
-                                                <button type="submit" name="action" value="update" class="update-button">Update</button>
-                                                <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
+                                            foreach ($faccAccounts as $account): 
+                                                if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
+                                                    $highlightedRow[] = $account; 
+                                                } else {
+                                                    $otherRows[] = $account; 
+                                                }
+                                            endforeach; 
+
+                                            // Merge highlighted row(s) with other rows
+                                            $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                                            foreach ($sortedAccounts as $account): ?>
+                                                <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
+                                                    <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
+                                                    <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
+                                                    <td class="table-actions">
+                                                        <form method="POST" action="" style="display:inline;">
+                                                            <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
+                                                            <input type="password" name="faciPass" class="password-input" placeholder="New Password" />
+                                                            <button type="submit" name="action" value="update" class="update-button">Update</button>
+                                                            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </table>
+                                        </div>
+
                         <?php else: ?>
                             <p>No facilitator accounts found.</p>
                         <?php endif; ?>
+
                     </div>
 
 </div>

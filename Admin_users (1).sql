@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 28, 2024 at 10:34 AM
+-- Generation Time: Oct 23, 2024 at 12:24 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -70,22 +70,9 @@ CREATE TABLE `facacc` (
 -- Dumping data for table `facacc`
 --
 
-INSERT INTO `facacc` (`faciID`, `faciPass`, `adminID`) VALUES
-('bshmf', 'bshmf', 2),
-('cotfa', '12345', 1),
-('cotfa6', 'cotfa6', 1),
-('dfg', 'dfgdfg', 2),
-('faco12', 'faco12', 1),
-('facot', 'facot', 1),
-('fahm1', 'fahm1', 2),
-('fahm2', 'fahm2', 2),
-('fahmt', 'fahmt', 2),
-('fahmt1', 'fahmt1', 2),
-('fahmt3', 'fahmt3', 2),
-('fahmt5', 'fahmt5', 2),
-('fghjkl', 'fghjkl', 1),
-('inter', 'inter', 0),
-('poi', 'poipoi', 2);
+INSERT INTO `facacc` (`faciID`, `faciPass`) VALUES
+('67896', '67896'),
+('inter', 'inter');
 
 -- --------------------------------------------------------
 
@@ -104,20 +91,9 @@ CREATE TABLE `intacc` (
 --
 
 INSERT INTO `intacc` (`internID`, `InternPass`, `adminID`) VALUES
-('cot123', 'cot123', 1),
-('cot234', 'cot234', 1),
-('cotfa7', 'cotfa7', 1),
-('ertert', 'ertert', 1),
-('inhmt7', 'inhmt7', 2),
-('int567', 'int567', 1),
-('intco4', 'intco4', 1),
+('123456', '123456', 2),
 ('intern1', 'intern1', 1),
-('inthm1', 'inthm1', 2),
-('qwe', 'qweqwe', 2),
-('qwerty', 'qwerty', 2),
-('rty', 'rtyrty', 2),
-('tgh', 'tghtgh', 2),
-('wer', 'werwer', 2);
+('qwerty', 'qwerty', 2);
 
 -- --------------------------------------------------------
 
@@ -139,7 +115,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`adminID`, `Uname`, `Upass`, `admin_profile`, `Roles`, `Firstname`) VALUES
-(1, 'admin1', 'rodely', 0x36363034326661306136376265393664623064343135633338306662306364362e706e67, 'School Intern Coordinator', 'Gaco, Rodelyn'),
+(1, 'admin1', 'debebar', 0x31383034383437646663333764636230306562326466306264303834333965302e706e67, 'School Intern Coordinator', 'Debebar, Maricel'),
 (2, 'admin2', 'duterte', 0x33666236653330313639303131646266613033363537663163326632376565342e706e67, 'BSHM Intern Coordinator', 'Duterte, Sarah');
 
 --

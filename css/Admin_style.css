@@ -113,7 +113,7 @@ body::before {
   background-color: white;
   border-bottom: 1px solid #ccc;
   transition: margin-left 0.3s; /* Smooth transition for header */
-  height: 24px;
+  height: 27px;
 }
 
 /* Adjust header when sidebar is hovered */
@@ -125,6 +125,7 @@ body::before {
   display: none; /* Hidden by default */
 }
 
+
 .content-section.active {
   display: block; /* Show when active */
 }
@@ -132,7 +133,7 @@ body::before {
   cursor: pointer;
   border-radius: 50%; /* Makes the button circular */
   position: absolute; /* Position absolutely within the header */
-  top: 22px; /* Adjust as needed to position from the top edge */
+  top: 7px; /* Adjust as needed to position from the top edge */
   right: 12%; /* Position from the right edge */
   width: 50px; /* Set a fixed width */
   height: 50px; /* Set a fixed height */
@@ -164,7 +165,7 @@ body::before {
         font-size: 16px;
         border-radius: 5px;
         position: absolute; /* Position absolutely within the header */
-        top: 22px; /* Adjust as needed to position from the top edge */
+        top: 7px; /* Adjust as needed to position from the top edge */
         right: 16px; /* Position from the right edge */
         display: flex;
        align-items: center; /* Align items vertically */
@@ -280,52 +281,63 @@ body::before {
           color:white;
         }
         .announcement-board {
-            margin-top: 40px;
-            background-color: #fff;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px;
-            position: relative;
-            border: 1px solid #bc2649;
-            height: 350px;
-            width: 700px;
-            
-           
-          
-        }
+          margin-top: 40px;
+          background-color: #fff;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px;
+          position: relative;
+          border: 1px solid #bc2649;
+          height: 250px;
+          width: 70%;
+      }
+
         .announcement-board h2 {
             font-size: 24px;
             color: #000543;
-            margin-bottom: 20px;
+            margin-top: 1px;
         }
         .announcement-board img {
-          opacity: 0.3; /* Set opacity to 0.5 */
-          width: 300px; /* Adjust width as needed */
-          height:300px;
+          width: 32%; /* Adjust width as needed */
+          height:80%;
           position: absolute;
-          left: 50%;
-          top: 50%;
+          left: 9%;
+          top: 80%;
           transform: translate(-50%, -50%);
         }
 
-       
+       /* user input in annoucement */
+        
           .input-container {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-          }
+            margin-bottom: 15px; /* Space between inputs */
+         }
 
-          .styled-input {
-            width: 500px;
-            height:100px;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s, box-shadow 0.3s;
-            margin-top: 50px;    
-          }
+         .styled-input {
+          width: 100%; /* Full width */
+          padding: 12px; /* Padding inside the input */
+          border: 1px solid #ced4da; /* Border color */
+          border-radius: 5px; /* Rounded corners */
+          font-size: 16px; /* Font size for input text */
+          transition: border-color 0.3s; /* Transition for border color */
+      }
+      .styled-inputann {
+        width: 100%; /* Full width */
+        padding: 12px; /* Padding inside the input */
+        margin-top: 3px;
+        font-size: 16px; /* Font size for input text */
+        transition: border-color 0.3s; /* Transition for border color */
+        margin-left: 15%;
+       }
+       .styled-inputannup{
+        width: 100%; /* Full width */
+        padding: 12px; /* Padding inside the input */
+        margin-top: 3px;
+        font-size: 16px; /* Font size for input text */
+        transition: border-color 0.3s; /* Transition for border color */
+        margin-left: 18%;
+
+       }
+      
 
           .styled-input::placeholder {
             color: #888;
@@ -337,21 +349,26 @@ body::before {
             box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
             outline: none;
           }
-        .post-button {
-            background-color: #f2b25c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 100px;      
-          }
-         /* Ad
-          .post-button:hover {
-            background-color: #000543;
-            color:white;
-          }min details hidden by default */
+          .post-button {
+            width: 30%; /* Full width */
+            padding: 12px; /* Padding inside the button */
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size for button text */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s; /* Transition for background color */
+            position: absolute; /* Positioning to place it at bottom right */
+            bottom: 20px; /* Adjust as needed for spacing from the bottom */
+            right: 20px; /* Adjust as needed for spacing from the right */
+        }
+        
+        .post-button:hover {
+          background-color: #0056b3; /* Darker blue on hover */
+      }
+             /* end here user input in annoucement */
+
           #detail {
             display: none; /* Initially hidden */
             color: white;
@@ -673,18 +690,19 @@ body::before {
 .update-btn:hover {
   background-color: #45a049; /* Darker green on hover */
 }
-
-.intern-accounts-table {
-  width: 100%;
+.intern-accounts-table, .faccacc-table { /* Assuming you had a class for facilitator accounts */
+  width: 100%; /* or your desired width */
   border-collapse: collapse;
-  margin-bottom: 20px; /* Space below the table */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
+.table-header {
+  background-color: #f2f2f2; /* Light grey background */
+  text-align: left;
+  padding: 10px;
 }
 
-.table-header, .table-data {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd; /* Border between rows */
+
+.table-actions {
+  text-align: right; /* Align actions to the right */
 }
 
 .table-header {
@@ -702,9 +720,15 @@ body::before {
   border: 1px solid #ccc; /* Light gray border */
   border-radius: 4px; /* Rounded corners for input */
 }
-
-.table-actions {
-  text-align: right; /* Aligns content to the right */
+.update-button, .delete-button {
+  margin-left: 5px; /* Space between buttons */
+  cursor: pointer;
+}
+.table-container {
+  max-height: 300px; /* Adjust the height as needed */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  margin-top: 10px; /* Optional: Space above the table */
 }
 
 .update-button {
@@ -838,5 +862,192 @@ p {
   background-color: #e7e7e7;
 }
 .highlight {
-  background-color: yellow; /* You can choose any color */
+  background-color: #f9f9f9; /* Optional: a light background for better visibility */
+  box-shadow: 0 0 10px green; /* Optional: adds a glowing effect around the border */
+}
+
+ /* Search button */
+ .search-input {
+  padding: 10px;
+  border: 2px solid #007BFF; /* Set border color and thickness */
+  border-radius: 4px; /* Rounded corners */
+  margin-right: 10px;
+  width: 200px; /* Adjust width as needed */
+  transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+.search-input:focus {
+  border-color: #000543;
+  outline: none; /* Remove default outline */
+}
+
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #007BFF; /* Blue background */
+  color: white; /* White text */
+  border-color: #000543;
+
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+.announcement-slider {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 350px; /* Adjust for a more compact design */
+  height: 50%;
+  width: 22%;
+  margin: auto;
+  background-color:#dc3545; /* A more user-friendly shade of blue */
+  border-radius: 15px; /* Softer rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a floating effect */
+  overflow: hidden;
+  z-index: 1000;
+  border: none; /* Removed border for a cleaner look */
+}
+
+.slider-container {
+  position: relative;
+  height: 100%; /* Make the slider fill the height of the container */
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 90px; /* Space below the image */
+}
+
+.Announcement-Image {
+  display: inline-block;
+  width: 45%; /* Set fixed width */
+  height:45%; /* Set fixed height to match width for a square shape */
+  border-radius: 15px; /* Rounded corners */
+  margin-bottom:  -78%; /* Remove space above the image */
+  margin-left: 15%; /* Center the image horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+  position: relative; /* Relative position for z-index */
+  cursor: pointer; /* Change cursor to pointer */
+  background-color: transparent; /* Set transparent background */
+
+  
+}
+.Announcement-Image img {
+  width: 90%; /* Make image fill the container width */
+  height: 90%; /* Make image fill the container height */
+  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for effects */
+  margin-top: -25%; /* Remove space above the image */
+  margin-left: 40%; /* Center the image horizontally */
+  border: solid 4px #dc3545; /* Solid red border */
+  border-radius: 5px; /* Rounded corners */
+
+
+}
+
+
+
+.announcement-item {
+  display: none; /* Hide all items by default */
+  padding: 15px;
+  text-align: left; /* Align text to the left for better readability */
+  background-color: #f9f9f9; /* Light background for the announcement text */
+  border-radius: 10px;
+  margin: 10px; /* Spacing between announcements */
+  height: 70%;
+}
+
+
+
+
+
+.Announcement-Image:hover {
+  transform: translate(-50%, -50%) scale(1); /* Center the image and keep its size */
+  width: 80vw; /* Full viewport width */
+  height: 80vh; /* Full viewport height */
+  position: fixed; /* Fix to the viewport */
+  top: 80%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  margin: 0; /* Reset margin */
+  border-radius: 0; /* No rounded corners */
+  box-shadow: none; /* Remove shadow */
+  z-index: 1000; /* Above other content */
+  border-radius: 25px;;
+  object-fit: fill; /* Ensure the image covers the box */
+
+}
+
+
+.active {
+  display: block; /* Show the active item */
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+  color: #fff; /* White color for better contrast */
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.prev:hover, .next:hover {
+  background-color: #333; /* Darker background on hover for better visual feedback */
+}
+
+.pdf-link {
+  display: inline-block; /* Make it block-level for padding and margin */
+  background-color: #28a745; /* Green background color */
+  color: white; /* Text color */
+  padding: 10px 15px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* Remove underline from the link */
+  font-size: 16px; /* Slightly larger font size */
+  text-align: center; /* Center text within the button */
+  margin-top: 140px; /* Space above the link */
+  border: solid 4px #dc3545; /* Solid red border */
+  border-radius: 5px; /* Rounded corners */
+
+}
+
+/* Ensure there are no hover styles */
+.pdf-link:hover {
+  background-color: #28a745; /* Keep the same background color on hover */
+  color: white; /* Keep the same text color on hover */
+  /* You can add any other properties you want to remain unchanged on hover */
+}
+
+
+.delete-button {
+  background: transparent; /* No background */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Pointer cursor */
+  margin-left: 10px; /* Space between content and button */
+}
+
+.trash-icon {
+  width: 20px; /* Adjust the size of the icon */
+  height: auto; /* Maintain aspect ratio */
 }
