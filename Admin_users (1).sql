@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 23, 2024 at 12:24 AM
+-- Generation Time: Oct 29, 2024 at 01:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -41,18 +41,30 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`announcementID`, `adminID`, `title`, `content`, `imagePath`, `datePosted`) VALUES
-(1, 2, 'test1', 'test1', './uploaded_files/3fb6e30169011dbfa03657f1c2f27ee4.png', '2024-10-27 05:00:42'),
-(2, 2, 'test2', 'test2', './uploaded_files/1804847dfc37dcb00eb2df0bd08439e0.png', '2024-10-27 05:00:53'),
-(3, 1, 'admin1 annoucement', 'admin1 annoucement', './uploaded_files/1804847dfc37dcb00eb2df0bd08439e0.png', '2024-10-27 05:13:40'),
-(4, 1, 'admin2 annoucement', 'admin2 annoucement', './uploaded_files/c05c9827039cf159c12ae94d6503523d.png', '2024-10-27 05:19:52'),
-(5, 1, 'test3 admin2', 'test3 admin2', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-27 06:05:37'),
-(6, 1, 'test4', 'dasfdsaffdf,dfgalgnddkfgmdfpg;jdkfgnfdlgjifgdfhgbdf.ghdfgf.kdgsaf\r\ndasfdsaffdf,dfgalgnddkfgmdfpg;jdkfgnfdlgjifgdfhgbdf.ghdfgf.kdgsaf\r\ndasfdsaffdf,dfgalgnddkfgmdfpg;jdkfgnfdlgjifgdfhgbdf.ghdfgf.kdgsaf', './uploaded_files/436335911_457539703276308_6121920634856150492_n.jpg', '2024-10-27 06:12:16'),
-(7, 1, 'test4', 'dsadas\r\ndasddasd\r\nasfdsf\r\nfafsdfsd\r\nfa\r\ndsadas\r\ndasddasd\r\nasfdsf\r\nfafsdfsd\r\nfa', './uploaded_files/BACK_ICON.png', '2024-10-27 06:14:22'),
-(8, 1, 'test1 with pdf', 'test1 with pdf', './uploaded_files/test2.pdf', '2024-10-27 15:27:56'),
-(9, 1, 'gaco anouce', 'gaco anouce', './uploaded_files/gaco.pdf', '2024-10-27 19:57:44'),
-(10, 1, 'test2 ni gaco', 'metting at lobby', './uploaded_files/gaco.pdf', '2024-10-27 19:59:09'),
-(11, 1, 'test3with', 'test3with', './uploaded_files/gaco.pdf', '2024-10-27 21:13:22'),
-(12, 1, 'Annoucment1', 'Annoucment1 text', './uploaded_files/gaco.pdf', '2024-10-27 21:59:33');
+(22, 1, 'Cot Announcement', 'Cot Announcement', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-29 05:56:35'),
+(24, 1, 'Cot Announcement3', 'Cot Announcement3', './uploaded_files/test2.pdf', '2024-10-29 06:00:20'),
+(25, 1, 'Cot Announcement2', 'Cot Announcement2', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-29 06:00:31'),
+(26, 1, 'Cot Announcement4', 'Cot Announcement4', './uploaded_files/test2.pdf', '2024-10-29 06:01:07'),
+(28, 2, 'test4', 'test4', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-29 06:46:53');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `developers`
+--
+
+CREATE TABLE `developers` (
+  `dev_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `developers`
+--
+
+INSERT INTO `developers` (`dev_id`, `username`, `password`) VALUES
+(1, 'developer', 'developerako');
 
 -- --------------------------------------------------------
 
@@ -70,9 +82,13 @@ CREATE TABLE `facacc` (
 -- Dumping data for table `facacc`
 --
 
-INSERT INTO `facacc` (`faciID`, `faciPass`) VALUES
-('67896', '67896'),
-('inter', 'inter');
+INSERT INTO `facacc` (`faciID`, `faciPass`, `adminID`) VALUES
+('67896', '67896', 0),
+('fac1', 'fac123', 1),
+('fac134', 'fac134', 2),
+('fac2', 'fac234', 1),
+('fac3', 'fac345', 1),
+('inter', 'inter', 0);
 
 -- --------------------------------------------------------
 
@@ -116,7 +132,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`adminID`, `Uname`, `Upass`, `admin_profile`, `Roles`, `Firstname`) VALUES
 (1, 'admin1', 'debebar', 0x31383034383437646663333764636230306562326466306264303834333965302e706e67, 'School Intern Coordinator', 'Debebar, Maricel'),
-(2, 'admin2', 'duterte', 0x33666236653330313639303131646266613033363537663163326632376565342e706e67, 'BSHM Intern Coordinator', 'Duterte, Sarah');
+(2, 'admin2', 'maricel', 0x32616666643235613832353462353030356561356337346665303933633034642e676966, 'BSHM Intern Coordinator', 'Duterte, Sarah');
 
 --
 -- Indexes for dumped tables
@@ -128,6 +144,13 @@ INSERT INTO `users` (`adminID`, `Uname`, `Upass`, `admin_profile`, `Roles`, `Fir
 ALTER TABLE `announcements`
   ADD PRIMARY KEY (`announcementID`),
   ADD KEY `adminID` (`adminID`);
+
+--
+-- Indexes for table `developers`
+--
+ALTER TABLE `developers`
+  ADD PRIMARY KEY (`dev_id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `facacc`
@@ -157,7 +180,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcementID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `announcementID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+--
+-- AUTO_INCREMENT for table `developers`
+--
+ALTER TABLE `developers`
+  MODIFY `dev_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
