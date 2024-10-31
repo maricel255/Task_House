@@ -972,6 +972,53 @@ p {
   height: 70%;
 }
 
+/* Table Styles */
+table {
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Remove gaps between cells */
+}
+
+th, td {
+  padding: 12px; /* Padding for cells */
+  text-align: left; /* Left-align text */
+  border-bottom: 1px solid #ddd; /* Bottom border for rows */
+}
+
+th {
+  background-color: #FADADD; /* Soft Pink header */
+  color: #333; /* Dark text color for headers */
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* Light gray on row hover */
+}
+
+/* Profile Image */
+img {
+  border-radius: 50%; /* Make images circular */
+}
+
+/* Message Style */
+p {
+  font-size: 18px; /* Increase font size for messages */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  h1 {
+      font-size: 20px; /* Smaller font for headings on mobile */
+  }
+
+  th, td {
+      padding: 10px; /* Reduced padding for smaller screens */
+      font-size: 14px; /* Smaller font size for table text */
+  }
+
+  img {
+      width: 40px; /* Smaller images on mobile */
+      height: 40px;
+  }
+}
 
 
 

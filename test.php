@@ -511,7 +511,6 @@ $stmt->execute();
 $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-// do not change anything above----------------------------------------------------------------
 
 // Handle the deletion for annoucement 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
@@ -564,6 +563,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                 unset($_SESSION['message']); // Clear the message after displaying
             }
             
+
+      // do not change anything above----------------------------------------------------------------
+  
+
+
+// Prepare and execute the query using PDO
+$sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+$stmt->execute();   
+
 
 ?>
 
@@ -740,6 +750,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 </div>
 
+<div class="content-section" id="Intern_profile">
+<h1>Intern Profile </h1>
+<h1 class="db_Details">Database here!</h1>
+<?php
+ // Prepare and execute the query using PDO
+ $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+ $stmt = $conn->prepare($sql);
+ $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+
+ // Execute the statement
+ $stmt->execute();
+
+ // Check if there are results
+ if ($stmt->rowCount() > 0) {
+     echo '<table>';
+     echo '<tr>
+             <th>Profile Image</th>
+             <th>Intern ID</th>
+             <th>Name</th>
+             <th>Email</th>
+             <th>Required Hours</th>
+             <th>Course Section</th>
+             <th>Date Started</th>
+             <th>Date Ended</th>
+             <th>DOB</th>
+             <th>Facilitator Name</th>
+             <th>Facilitator Email</th>
+             <th>Gender</th>
+             <th>Company Name</th>
+             <th>Shift Start</th>
+             <th>Shift End</th>
+             <th>Facilitator ID</th>
+           </tr>';
+
+     // Fetch and display the intern records
+     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+         echo '<tr>';
+         echo '<td><img src="' . htmlspecialchars($row['profileImage']) . '" alt="Profile Image" style="width:50px; height:50px; border-radius:50%;"></td>'; // Display the profile image
+         echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['internName']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['requiredHours']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['courseSection']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['dateStarted']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['dateEnded']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['dob']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['facilitatorName']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['facilitatorEmail']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['gender']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['companyName']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['shiftStart']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['shiftEnd']) . '</td>';
+         echo '<td>' . htmlspecialchars($row['facilitatorID']) . '</td>';
+         echo '</tr>';
+     }
+
+     echo '</table>';
+ } else {
+     echo '<p>No records found for your admin ID!</p>';
+ }
+
+
+?>
+</div>
 
 
 <div class="content-section" id="Intern_Account">
