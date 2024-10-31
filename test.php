@@ -937,6 +937,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     
     </div>
  
-    <script src="admin_script.js"></script>
+    <script src="js/admin_script.js"></script>
 </body>
 </html>
