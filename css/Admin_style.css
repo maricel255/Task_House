@@ -537,10 +537,10 @@ body::before {
    border-radius: 15px;
   }
 
-  .form-inline + .form-inline {
-    margin-top: 50px; /* Space between the form rows */
-    
-  }
+  .form-inline {
+    display: flex;
+    align-items: center;
+}
   .intern_acc{
     background-color:  #FF920C; /* Green background */
     color: white; /* Text color */
@@ -726,7 +726,7 @@ body::before {
   align-items: center; /* Aligns items vertically within the form */
 }
 .update-button, .delete-button {
-  padding: 5px 10px; /* Adjust padding for better appearance */
+  padding: 5px 5px; /* Adjust padding for better appearance */
   border: none; /* Remove default border */
   border-radius: 5px; /* Optional: rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
@@ -1046,12 +1046,12 @@ p {
 }
 
 
-.delete-button {
+.delete-button {  
   background: orange;
   border: none;
   cursor: pointer;
   margin-left: 75%;
-  margin-top: 5px;
+  margin-top: 1px;
   height: 60px; /* Set a specific height */
   padding: 10px 20px; /* Add padding for a balanced look */
 }
