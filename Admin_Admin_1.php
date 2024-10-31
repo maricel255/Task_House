@@ -40,6 +40,7 @@ try {
 
 // Initialize an empty array to hold error messages
 $errorMessages = [];
+unset($_SESSION['message']); // Clear the message after displaying
 
 
 // Handle form submission for profile update
@@ -485,6 +486,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Execute the statement
                 if ($stmt->execute()) {
                     $_SESSION['message'] = 'Announcement posted successfully!';
+                    
                    
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
@@ -522,23 +524,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     try {
         if ($stmt->execute()) {
             // Set a success message if the deletion was successful
-            header("Location: " . $_SERVER['PHP_SELF']); // Redirect to the same page
-
             $_SESSION['message'] = "Announcement deleted successfully.";
-            exit; // Prevent further script execution
-
+            
         } else {
             $_SESSION['message'] = "Failed to delete the announcement.";
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
     }
-} else {
-    $_SESSION['message'] = "Invalid request.";
 
 }
 
+            // Display any messages
+            if (isset($_SESSION['message'])) {
+                $message = $_SESSION['message'];
 
+                unset($_SESSION['message']); // Clear the message after displaying
+                ?>
+                <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+                    <?php echo htmlspecialchars($message); ?>
+                </div>
+                <script type="text/javascript">
+                    // Hide the alert after 5 seconds
+                    setTimeout(function() {
+                        var alertBox = document.getElementById('alertBox');
+                        if (alertBox) {
+                            alertBox.style.display = 'none';
+                        }
+                    }, 5000);
+                </script>
+                <?php
+            }
+
+
+
+            if (isset($_SESSION['message'])) {
+                echo "Message before unsetting: " . htmlspecialchars($_SESSION['message']); // Debugging line
+                $message = $_SESSION['message'];
+                unset($_SESSION['message']); // Clear the message after displaying
+            }
+            
 
 ?>
 
@@ -551,27 +576,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 </head>
 <body>
-<?php
-    // Display any messages
-    if (isset($_SESSION['message'])) {
-        $message = $_SESSION['message'];
-        unset($_SESSION['message']); // Clear the message after displaying
-        ?>
-        <div class="alert alert-success" role="alert" style="position: fixed; bottom: 30px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-            <?php echo htmlspecialchars($message); ?>
-        </div>
-        <script type="text/javascript">
-            // Hide the alert after 5 seconds
-            setTimeout(function() {
-                var alertBox = document.getElementById('alertBox');
-                if (alertBox) {
-                    alertBox.style.display = 'none';
-                }
-            }, 5000);
-        </script>
-        <?php
-    }
-?>
+
 
     <div id="header" class="header">
         <button class="logout-btn" onclick="logout()">
@@ -705,7 +710,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                                         <?php
                                         // Extract the file name and construct the file path
                                         $fileName = basename($filePath);
-                                        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                        $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
                                         ?>
                                         <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
                                     <?php else: ?>
@@ -737,7 +742,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 
 
-        
 <div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
                         <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
@@ -787,7 +791,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                                 <tr>
                                     <th class="table-header">Intern ID</th>
                                     <th class="table-header">Current Password</th>
-                                    <th class="table-header" style="padding-left: 30%;">Actions</th>
+                                    <th class="table-header" style="padding-left: 40%;">Actions</th>
                                 </tr>
 
                                 <?php 
@@ -810,12 +814,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                                         <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
                                         <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
                                         <td class="table-actions">
-                                            <form method="POST" action="" style="display:inline;">
-                                                <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
-                                                <input type="password" name="InternPass" class="password-input" placeholder="New Password" />
-                                                <button type="submit" name="action" value="update" class="update-button">Update</button>
-                                                <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                            </form>
+                                        <form method="POST" action="" style="display: flex; align-items: center;">
+                                            <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                                            <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
+                                            <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
+                                            <button type="submit" name="action" value="delete" class="delete-button" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                        </form>
+
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -827,7 +832,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                         <?php endif; ?>
 
 </div>
-            
            
         
    
@@ -904,10 +908,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                                                     <td class="table-actions">
                                                         <form method="POST" action="" style="display:inline;">
                                                             <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
-                                                            <input type="password" name="faciPass" class="password-input" placeholder="New Password" />
-                                                            <button type="submit" name="action" value="update" class="update-button">Update</button>
-                                                            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                            <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
+                                                            <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
+                                                            <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
                                                         </form>
+                                                 
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -931,6 +936,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     
     
     </div>
+ 
     <script src="admin_script.js"></script>
 </body>
 </html>
