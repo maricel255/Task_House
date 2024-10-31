@@ -738,7 +738,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 
         
-     <div class="content-section" id="Intern_Account">
+<div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
                         <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
@@ -827,7 +827,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                         <?php endif; ?>
 
 </div>
-
             
            
         

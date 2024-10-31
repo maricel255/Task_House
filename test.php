@@ -705,7 +705,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                                         <?php
                                         // Extract the file name and construct the file path
                                         $fileName = basename($filePath);
-                                        $pdfPath = "http://localhost/Task_HOuse/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                        $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
                                         ?>
                                         <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
                                     <?php else: ?>
@@ -737,8 +737,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 
 
-        
-     <div class="content-section" id="Intern_Account">
+<div class="content-section" id="Intern_Account">
                         <h1>Intern Logins</h1>
                         <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
@@ -827,8 +826,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
                         <?php endif; ?>
 
 </div>
-
-            
            
         
    

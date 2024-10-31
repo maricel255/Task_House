@@ -1041,12 +1041,8 @@ p {
   border-radius: 5px; /* Rounded corners */
 
 }
-
-/* Ensure there are no hover styles */
-.pdf-link:hover {
-  background-color: #28a745; /* Keep the same background color on hover */
-  color: white; /* Keep the same text color on hover */
-  /* You can add any other properties you want to remain unchanged on hover */
+.pdf-link.enable-hover {
+  pointer-events: auto; /* Enable pointer events when this class is added */
 }
 
 
