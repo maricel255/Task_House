@@ -47,7 +47,7 @@ function login() {
 }
 function logout() {
     alert('Logging out...');
-    window.location.href = "intern_log.html";
+    window.location.href = "intern_log.php";
 }
  // Open Modal and apply blur effect
  function openModal() {
@@ -66,3 +66,32 @@ function updateProfile() {
     alert("Profile updated successfully!");
     closeModal();
 }
+
+let currentIndex = 0; // Initialize the current index
+
+function moveSlide(direction) {
+    const announcementItems = document.querySelectorAll('.announcement-item');
+    announcementItems[currentIndex].classList.remove('active'); // Hide current announcement
+
+    // Update the index based on direction
+    currentIndex += direction;
+
+    // Wrap around if necessary
+    if (currentIndex < 0) {
+        currentIndex = announcementItems.length - 1; // Go to last item
+    } else if (currentIndex >= announcementItems.length) {
+        currentIndex = 0; // Go back to first item
+    }
+
+    announcementItems[currentIndex].classList.add('active'); // Show new announcement
+}
+
+// Initial setup: show the first announcement
+document.addEventListener('DOMContentLoaded', function () {
+    const announcementItems = document.querySelectorAll('.announcement-item');
+    announcementItems.forEach((item, index) => {
+        if (index !== 0) {
+            item.classList.remove('active'); // Hide all except the first
+        }
+    });
+});

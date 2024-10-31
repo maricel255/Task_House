@@ -1,47 +1,43 @@
 <?php
 require('Admin_connection.php');
-
 session_start(); // Start the session
 
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $InternID = $_POST['InternID'];
-  $InternPass = $_POST['InternPass'];
+    $InternID = $_POST['InternID'];
+    $InternPass = $_POST['InternPass'];
 
-  // Fetch the user from the database using PDO
-  $sql = "SELECT * FROM intacc WHERE InternID = :InternID";
-  $stmt = $conn->prepare($sql); // Prepare the statement with PDO
-  $stmt->bindParam(':InternID', $InternID); // Bind the parameter using bindParam
-  $stmt->execute(); // Execute the statement
-  $user = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the user as an associative array
+    // Fetch the user from the database using PDO
+    $sql = "SELECT * FROM intacc WHERE InternID = :InternID";
+    $stmt = $conn->prepare($sql); // Prepare the statement with PDO
+    $stmt->bindParam(':InternID', $InternID); // Bind the parameter using bindParam
+    $stmt->execute(); // Execute the statement
+    $user = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the user as an associative array
 
-  echo "SQL Query: $sql with InternID: $InternID<br>"; // Debugging line
+    // Debugging lines (remove these in production)
+    // echo "SQL Query: $sql with InternID: $InternID<br>";
+    // echo "User found.<br>"; // Debugging line
 
-  if ($user) { // Check if the user was found
-      echo "User found.<br>"; // Debugging line
-
-      // Verify password
-      if ($InternPass === $user['InternPass']) { // Compare passwords
-          // Store user information in session
-          $_SESSION['InternID'] = $InternID;
-          echo "Login successful! Welcome, " . $_SESSION['InternID'] . "!<br>";
-          // Redirect to the dashboard or next page
-          header("Location: intern_page.php");
-          exit();
-      } else {
-          echo "Password does not match.<br>"; // Debugging line
-      }
-  } else {
-      echo "No user found with the provided InternID.<br>"; // Debugging line
-  }
+    if ($user) { // Check if the user was found
+        // Verify password
+        if ($InternPass === $user['InternPass']) { // Compare passwords
+            // Store user information in session
+            $_SESSION['internID'] = $InternID;
+            // Redirect to the dashboard or next page
+            header("Location: intern_page.php");
+            exit();
+        } else {
+            echo "<script>alert('Password does not match.');</script>"; // Display an alert for password mismatch
+        }
+    } else {
+        echo "<script>alert('No user found with the provided InternID.');</script>"; // Alert for user not found
+    }
 }
-
 ?>
+
 
 
 

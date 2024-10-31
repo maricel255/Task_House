@@ -3,75 +3,107 @@ require('Admin_connection.php');
 
 session_start(); // Start the session
 
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} else {
-    echo "Database connected successfully.<br>"; // Debugging line
+// Check if the user is logged in
+if (!isset($_SESSION['internID'])) {  // Ensure this matches the session variable from intern_log.php
+  header("Location: intern_log.php");
+  exit();
 }
 
-
+// Handle form submission for intern info
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Fetch and sanitize input values safely
-  $internPass = isset($_POST['internPass']) ? $_POST['internPass'] : ''; // Default to empty if not set
-  $profileImage = $_FILES['profileImage']['tmp_name']; // Handle file upload appropriately
+    try {
+        // Handle profile image upload first
+        $profileImagePath = '';
+        if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = 'uploaded_files/'; // Using your existing folder
+            
+            // Generate unique filename
+            $fileName = time() . '_' . $_FILES['profileImage']['name'];
+            $targetPath = $uploadDir . $fileName;
+            
+            // Move uploaded file
+            if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $targetPath)) {
+                $profileImagePath = $targetPath;
+            }
+        }
 
-  // Check if the file upload was successful and read the image data
-  $imageData = file_exists($profileImage) ? file_get_contents($profileImage) : null;
+        // Update user data including image path
+        $sql = "UPDATE intacc SET 
+            internName = :internName,
+            email = :email,
+            requiredHours = :requiredHours,
+            dateStarted = :dateStarted,
+            dateEnded = :dateEnded,
+            dob = :dob,
+            facilitatorName = :facilitatorName,
+            courseSection = :courseSection,
+            facilitatorEmail = :facilitatorEmail,
+            gender = :gender,
+            companyName = :companyName,
+            shiftStart = :shiftStart,
+            shiftEnd = :shiftEnd,
+            facilitatorID = :facilitatorID";
+        
+        // Add image path to update only if a new image was uploaded
+        if ($profileImagePath !== '') {
+            $sql .= ", profileImage = :profileImage";
+        }
+        
+        $sql .= " WHERE internID = :internID";
 
-  // Prepare the SQL statement for updating intern data
-  $sql = "UPDATE intacc SET 
-              InternPass = ?, 
-              internName = ?, 
-              profileImage = ?, 
-              email = ?, 
-              requiredHours = ?, 
-              dateStarted = ?, 
-              dateEnded = ?, 
-              dob = ?, 
-              facilitatorName = ?, 
-              courseSection = ?, 
-              facilitatorEmail = ?, 
-              gender = ?, 
-              companyName = ?, 
-              shiftStart = ?, 
-              shiftEnd = ?, 
-              facilitatorID = ? 
-          WHERE InternID = ?";
+        $stmt = $conn->prepare($sql);
+        
+        // Bind all parameters
+        $stmt->bindParam(':internID', $_SESSION['InternID']);
+        $stmt->bindParam(':internName', $_POST['internName']);
+        $stmt->bindParam(':email', $_POST['email']);
+        $stmt->bindParam(':requiredHours', $_POST['requiredHours']);
+        $stmt->bindParam(':dateStarted', $_POST['dateStarted']);
+        $stmt->bindParam(':dateEnded', $_POST['dateEnded']);
+        $stmt->bindParam(':dob', $_POST['dob']);
+        $stmt->bindParam(':facilitatorName', $_POST['facilitatorName']);
+        $stmt->bindParam(':courseSection', $_POST['courseSection']);
+        $stmt->bindParam(':facilitatorEmail', $_POST['facilitatorEmail']);
+        $stmt->bindParam(':gender', $_POST['gender']);
+        $stmt->bindParam(':companyName', $_POST['companyName']);
+        $stmt->bindParam(':shiftStart', $_POST['shiftStart']);
+        $stmt->bindParam(':shiftEnd', $_POST['shiftEnd']);
+        $stmt->bindParam(':facilitatorID', $_POST['facilitatorID']);
 
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param(
-      "sssssssssssssssss", 
-      $internPass, 
-      $internData['internName'], 
-      $imageData, 
-      $internData['email'], 
-      $internData['requiredHours'], 
-      $internData['dateStarted'], 
-      $internData['dateEnded'], 
-      $internData['dob'], 
-      $internData['facilitatorName'], 
-      $internData['courseSection'], 
-      $internData['facilitatorEmail'], 
-      $internData['gender'], 
-      $internData['companyName'], 
-      $internData['shiftStart'], 
-      $internData['shiftEnd'], 
-      $internData['facilitatorID'], 
-      $internID // To specify which record to update
-  );
+        // Bind image path if a new image was uploaded
+        if ($profileImagePath !== '') {
+            $stmt->bindParam(':profileImage', $profileImagePath);
+        }
 
-  if ($stmt->execute()) {
-      echo "Data updated successfully.";
-  } else {
-      echo "Error updating data: " . $stmt->error;
-  }
-  $stmt->close();
+        if ($stmt->execute()) {
+            echo "<script>
+                alert('Profile updated successfully!');
+                window.location.href = 'intern_page.php';
+            </script>";
+        } else {
+            echo "<script>alert('Error updating profile.');</script>";
+        }
+    } catch (PDOException $e) {
+        echo "<script>alert('Database error: " . $e->getMessage() . "');</script>";
+    }
 }
+
+// Fetch existing user data
+try {
+    $stmt = $conn->prepare("SELECT * FROM intacc WHERE internID = :internID");
+    $stmt->bindParam(':internID', $_SESSION['InternID']);
+    $stmt->execute();
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "<script>alert('Error fetching user data');</script>";
+}
+
+
 
 ?>
 
@@ -88,11 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Sidebar -->
         <div class="sidebar hide-content">
             <div class="user-info">
-                <img src="image/cot.png" alt="Toggle Sidebar" class="user-icon">
+                <img src="<?php 
+                    echo !empty($userData['profileImage']) ? 
+                        htmlspecialchars($userData['profileImage']) : 
+                        'image/cot.png'; 
+                ?>" alt="User Profile" class="user-icon">
                 <div class="user-details">
-                    <p class="user-name">Last name, First name</p>
-                    <p>Intern ID: <?php echo isset($internID) ? htmlspecialchars($internID) : 'No InternID found'; ?></p>
-
+                    <p class="user-name"><?php echo htmlspecialchars($userData['internName']); ?></p>
+                    <p>Intern ID: <?php echo htmlspecialchars($_SESSION['InternID']); ?></p>
                     <p class="role">INTERN</p>
                     <div class="button-container"> <!-- New container for buttons -->
                         <button class="btn break-btn">Break</button>
@@ -118,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
         </div>
         
+        
         <!-- Header -->
         <div class="header" id="header">
             <button class="logout-btn" onclick="logout()">
@@ -130,17 +166,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Main Content -->
     <div class="content-section" id="dashboard">
     <div class="main-content">
-        
-            <div class="announcement-board">
-                <h2>ANNOUNCEMENT BOARD</h2>
-                <p class="announcement">This announcement's from CUT COT admin</p>
-                <p class="announcement-details">
-                    GDSAKFHASDFKNBASDF <br>
-                    NFDSKAJFSDFLKNDSLAFLKNVADSLVNLSALVN <br>
-                    SDAFDSAPFKJASDLFJASDLDFKMNF
-                </p>
-            </div>
+        <div class="announcement-board">
+            <h2>ANNOUNCEMENT BOARD</h2>
+
+            <?php
+              if (isset($_SESSION['internID'])) {
+                  $internID = $_SESSION['internID'];
+
+                  // Fetch the adminID for the current intern
+                  $sql_admin = "SELECT adminID FROM intacc WHERE internID = :internID";
+                  $stmt_admin = $conn->prepare($sql_admin);
+                  $stmt_admin->bindValue(':internID', $internID, PDO::PARAM_STR);
+
+                  if ($stmt_admin->execute()) {
+                      $admin = $stmt_admin->fetch(PDO::FETCH_ASSOC);
+
+                      if ($admin) {
+                          $adminID = $admin['adminID'];
+
+                          // Fetch announcements for the current adminID
+                          $sql = "SELECT title, announcementID, imagePath, content 
+                                  FROM announcements 
+                                  WHERE adminID = :adminID";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
+
+                          if ($stmt->execute()) {
+                              $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                              // Display announcements in a simple slider
+                              if ($announcements) {
+                                  echo '<div class="announcement-slider">';
+                                  echo '<div class="slider-container">';
+
+                                  // Create announcement items
+                                  foreach ($announcements as $index => $announcement) {
+                                      $filePath = htmlspecialchars($announcement['imagePath']);
+                                      $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                      $activeClass = $index === 0 ? 'active' : '';
+
+                                      // Each announcement item
+                                      echo '<div class="announcement-item ' . $activeClass . '">';
+                                      echo '<h3>' . htmlspecialchars($announcement['title']) . '</h3>';
+                                      echo '<p class="announcement-details">' . nl2br(htmlspecialchars($announcement['content'])) . '</p>';
+
+                                      // Display image or PDF link based on file type
+                                      echo '<div class="Announcement-Image">';
+                                      if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
+                                          echo '<img src="' . $filePath . '" alt="Announcement Image" class="ann_img" style="max-width: 100%; height: auto;">';
+                                      } elseif (strtolower($fileExtension) === 'pdf') {
+                                          $fileName = basename($filePath);
+                                          $pdfPath = "http://localhost/uploaded_files/" . rawurlencode($fileName);
+                                          echo '<a href="' . $pdfPath . '" target="_blank" class="pdf-link">View PDF</a>';
+                                      } else {
+                                          echo '<p>Unsupported file type.</p>';
+                                      }
+                                      echo '</div>'; // Close .Announcement-Image
+                                      echo '</div>'; // Close .announcement-item
+                                  }
+
+                                  echo '</div>'; // Close .slider-container
+
+                                  // Navigation buttons
+                                  echo '<button class="prev" onclick="moveSlide(-1)">&#10094;</button>';
+                                  echo '<button class="next" onclick="moveSlide(1)">&#10095;</button>';
+                                  echo '</div>'; // Close .announcement-slider
+                              } else {
+                                  echo '<p>No announcements available.</p>';
+                              }
+                          } else {
+                              echo '<p>Error fetching announcements.</p>';
+                          }
+                      } else {
+                          echo '<p>Admin information not found for this intern.</p>';
+                      }
+                  } else {
+                      echo '<p>Error fetching admin information.</p>';
+                  }
+              } else {
+                  echo '<p>Intern is not logged in.</p>';
+                  exit;
+              }
+              ?>
+                  
+
         </div>
+          <img src="image/announce.png" alt="Announcement Image" class="anno-img">
+    </div>
+</div>
+
+
+
     
 
     <div class="time-content" >
@@ -155,84 +271,124 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </div>
-</div>
-
-<!-- Modal for Profile Information -->
+</div><!-- Modal for Profile Information -->
 <div id="profileModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h2>Profile Information</h2>
-    <form action="#" method="POST" enctype="multipart/form-data">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data">
     <div class="form-container">
-  <div class="form-group">
-    <label for="internName">Intern's Name:</label>
-    <input type="text" id="internName" name="internName" value=" <?php echo isset($internName) ? htmlspecialchars($internName) : 'No internName found'; ?>">
+        <div class="form-group">
+            <label for="internName">Intern's Name:</label>
+            <input type="text" id="internName" name="internName" 
+                   value="<?php echo isset($userData['internName']) ? htmlspecialchars($userData['internName']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="profileImage">Upload Profile Image:</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*">
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" 
+                   value="<?php echo isset($userData['email']) ? htmlspecialchars($userData['email']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="requiredHours">Required Hours:</label>
+            <input type="number" id="requiredHours" name="requiredHours" 
+                   value="<?php echo isset($userData['requiredHours']) ? htmlspecialchars($userData['requiredHours']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="dateStarted">Date Started:</label>
+            <input type="date" id="dateStarted" name="dateStarted" 
+                   value="<?php echo isset($userData['dateStarted']) ? htmlspecialchars($userData['dateStarted']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="dateEnded">Date Ended:</label>
+            <input type="date" id="dateEnded" name="dateEnded" 
+                   value="<?php echo isset($userData['dateEnded']) ? htmlspecialchars($userData['dateEnded']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" 
+                   value="<?php echo isset($userData['dob']) ? htmlspecialchars($userData['dob']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="facilitatorName">Facilitator Name:</label>
+            <input type="text" id="facilitatorName" name="facilitatorName" 
+                   value="<?php echo isset($userData['facilitatorName']) ? htmlspecialchars($userData['facilitatorName']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="courseSection">Course & Section:</label>
+            <input type="text" id="courseSection" name="courseSection" 
+                   value="<?php echo isset($userData['courseSection']) ? htmlspecialchars($userData['courseSection']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="facilitatorEmail">Facilitator Email:</label>
+            <input type="email" id="facilitatorEmail" name="facilitatorEmail" 
+                   value="<?php echo isset($userData['facilitatorEmail']) ? htmlspecialchars($userData['facilitatorEmail']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="male" <?php echo (isset($userData['gender']) && $userData['gender'] == 'male') ? 'selected' : ''; ?>>Male</option>
+                <option value="female" <?php echo (isset($userData['gender']) && $userData['gender'] == 'female') ? 'selected' : ''; ?>>Female</option>
+                <option value="other" <?php echo (isset($userData['gender']) && $userData['gender'] == 'other') ? 'selected' : ''; ?>>Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" name="companyName" 
+                   value="<?php echo isset($userData['companyName']) ? htmlspecialchars($userData['companyName']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="shiftStart">Shift Start:</label>
+            <input type="time" id="shiftStart" name="shiftStart" 
+                   value="<?php echo isset($userData['shiftStart']) ? htmlspecialchars($userData['shiftStart']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="shiftEnd">Shift End:</label>
+            <input type="time" id="shiftEnd" name="shiftEnd" 
+                   value="<?php echo isset($userData['shiftEnd']) ? htmlspecialchars($userData['shiftEnd']) : ''; ?>" 
+                   required>
+        </div>
+        
+        <div class="form-group">
+            <label for="facilitatorID">Facilitator ID:</label>
+            <input type="text" id="facilitatorID" name="facilitatorID" 
+                   value="<?php echo isset($userData['facilitatorID']) ? htmlspecialchars($userData['facilitatorID']) : ''; ?>" 
+                   required>
+        </div>
     </div>
-  <div class="form-group">
-    <label for="profileImage">Upload Profile Image:</label>
-    <input type="file" id="profileImage" name="profileImage">
-  </div>
-  <div class="form-group">
-    <label for="shiftStart">Shift Start:</label>
-    <input type="time" id="shiftStart" name="shiftStart">
-  </div>
-  <div class="form-group">
-    <label for="shiftEnd">Shift End:</label>
-    <input type="time" id="shiftEnd" name="shiftEnd">
-  </div>
-  <div class="form-group">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" placeholder="example@example.com">
-  </div>
-  <div class="form-group">
-    <label for="requiredHours">Required Hours:</label>
-    <input type="number" id="requiredHours" name="requiredHours" placeholder="700">
-  </div>
-  <div class="form-group">
-    <label for="dateStarted">Date Started:</label>
-    <input type="date" id="dateStarted" name="dateStarted">
-  </div>
-  <div class="form-group">
-    <label for="dateEnded">Date Ended:</label>
-    <input type="date" id="dateEnded" name="dateEnded">
-  </div>
-  <div class="form-group">
-    <label for="dob">Date of Birth:</label>
-    <input type="date" id="dob" name="dob">
-  </div>
-  <div class="form-group">
-    <label for="facilitatorName">Facilitator Name:</label>
-    <input type="text" id="facilitatorName" name="facilitatorName" placeholder="Facilitator Name">
-  </div>
-  <div class="form-group">
-    <label for="courseSection">Course & Section:</label>
-    <input type="text" id="courseSection" name="courseSection" placeholder="Course and Section">
-  </div>
-  <div class="form-group">
-    <label for="facilitatorEmail">Facilitator Email:</label>
-    <input type="email" id="facilitatorEmail" name="facilitatorEmail" placeholder="example@example.com">
-  </div>
-  <div class="form-group">
-    <label for="gender">Gender:</label>
-    <select id="gender" name="gender">
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="other">Other</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="companyName">Company Name:</label>
-    <input type="text" id="companyName" name="companyName" placeholder="Company Name">
-  </div>
-  <div class="form-group">
-    <label for="facilitatorID">Facilitator ID:</label>
-    <input type="text" id="facilitatorID" name="facilitatorID" placeholder="Facilitator ID">
-  </div>
-</div>
-
-    </div>
+    
     <div class="modal-footer">
-    <button type="submit" class="create-button">Create</button>
+        <button type="submit" class="create-button">
+            <?php echo isset($_SESSION['InternID']) ? 'Update Profile' : 'Create Profile'; ?>
+        </button>
     </div>
 </form>
   </div>
