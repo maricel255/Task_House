@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/web_style.css" />
+
+    <title>Intern's Task House</title>
+  </head>
+
+  <body>
+    <!-- Header (Green Bar) -->
+    <div class="header-container d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <img src="image/th_logo.png" alt="logo" style="width: 50px; height: 50px;" />
+        <div class="logotext ms-2" style="font-size: 20px;">INTERN'S TASK HOUSE</div>
+      </div>
+
+      <!-- Navigation with buttons aligned in one row -->
+      <nav class="nav-buttons">
+        <a href="#main-section" class="btn btn-primary">Home</a>
+        <a href="#documents-section" class="btn btn-primary">Documents</a>
+        <a href="#about-us-section" class="btn btn-primary">About Us</a>
+
+        <!-- Dropdown for Login -->
+        <div class="dropdown">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Login
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="Admin_registration.php">Admin</a></li>
+            <li><a class="dropdown-item" href="faci_log_in.php">Facilitator</a></li>
+            <li><a class="dropdown-item" href="intern_log.php">Interns</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Main Section -->
+    <div id="main-section" class="container-fluid d-flex align-items-center justify-content-center my-5">
+      <div class="col-md-3 d-flex align-items-center justify-content-center" style="margin-left: 10%;">
+        <img src="image/th_logo.png" alt="logo" class="img-fluid" style="width: 300%; height: auto;" />
+      </div>
+      
+      <div class="col-md-6 d-flex flex-column justify-content-center" style="margin-left: 5%;">
+        <p class="main-text interns">INTERN'S</p>
+        <p class="main-text task-house">TASK HOUSE</p>
+        <p class="capstone-title">Capstone title</p>
+      </div>
+      
+      <div class="col-md-3 d-flex align-items-center"> <!-- Combined column for separator and abstract -->
+        <div class="col-md-1 d-flex justify-content-center align-items-center" style="margin-right: -0%;">
+          <div class="separator"></div>
+        </div>
+    
+        <div class="col-md-2" style="margin-left: 2px;">
+          <p class="abstract-title">ABSTRACT</p>
+          <div class="lorem-container">
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+              Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+              when an unknown printefdsafdfafffffffffffffffdafsfadfdafadfr took a galley of type and scrambled it to make a type specimen book.
+              It has survived not only five centuries but also the leap into electronic typesetting,
+              remaining essentially unchanged.
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+              Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+              when an unknown printef.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents Section -->
+
+    <div id="documents-section" class="documents-section mt-4">
+      <div class="card card-body">
+         
+      <div class="line"></div> <!-- Line above the heading -->
+          <h4>Documents</h4>
+
+
+          <ul>
+              <li><a href="#">Internship Guidelines</a></li>
+              <li><a href="#">Project Templates</a></li>
+              <li><a href="#">Monthly Reports</a></li>
+              <li><a href="#">Capstone Documentation</a></li>
+          </ul>
+      </div>
+    
+    <!-- About Us Section -->
+    <div id="about-us-section" class="about-us-section my-5">
+      <h4 class="text-center">About Us</h4>
+      <div class="row">
+        <div class="col-md-3 text-center">
+          <img src="image/image2.jpg" alt="Description 1" class="img-fluid" />
+          <p>Description for Image 1</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <img src="image/image1.png" alt="Description 2" class="img-fluid" />
+          <p>Description for Image 2</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <img src="image/image3.jpg" alt="Description 3" class="img-fluid" />
+          <p>Description for Image 3</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <img src="image/image4.jpg" alt="Description 4" class="img-fluid" />
+          <p>Description for Image 4</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer (Green Bar) -->
+    <div class="footer">
+      &copy; 2024 Intern's Task House - All Rights Reserved
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    ></script>
+  </body>
+</html>
