@@ -414,6 +414,6 @@ try {
 
    
 
-    <script src="Intern_script.js"></script>
+    <script src="js/Intern_script.js"></script>
 </body>
 </html>
