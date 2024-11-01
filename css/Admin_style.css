@@ -976,6 +976,8 @@ p {
 table {
   width: 100%; /* Full width */
   border-collapse: collapse; /* Remove gaps between cells */
+  margin-top: 20px; /* Space between the form and the table */
+
 }
 
 th, td {

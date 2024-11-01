@@ -5,6 +5,26 @@ require('Admin_connection.php'); // Include your database connection file
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
+// Display any messages
+if (isset($_SESSION['message'])) {
+    ?>
+    <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+        <?php echo htmlspecialchars($_SESSION['message']); ?>
+    </div>
+    <script type="text/javascript">
+        // Hide the alert after 5 seconds
+        setTimeout(function() {
+            var alertBox = document.getElementById('alertBox');
+            if (alertBox) {
+                alertBox.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+    <?php
+    // Unset the message after displaying
+    unset($_SESSION['message']);
+}  
+
 
 try {
     // Prepare the SQL query using placeholders to prevent SQL injection
@@ -486,7 +506,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Execute the statement
                 if ($stmt->execute()) {
                     $_SESSION['message'] = 'Announcement posted successfully!';
-                    
                    
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
@@ -497,7 +516,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $_SESSION['message'] = "No file uploaded or there was an upload error.";
         }
+        
     }
+    
 }
 
 
@@ -563,30 +584,7 @@ $stmt->execute();
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 </head>
 <body>
-    <?php
- // Display any messages
-if (isset($_SESSION['message'])) {
-    // Display the alert with the session message
-
-    ?>
-    <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-        <?php echo htmlspecialchars($_SESSION['message']); ?>
-    </div>
-    <script type="text/javascript">
-        // Hide the alert after 5 seconds
-        setTimeout(function() {
-            var alertBox = document.getElementById('alertBox');
-            if (alertBox) {
-                alertBox.style.display = 'none';
-            }
-        }, 5000);
-    </script>
-    <?php
-    // Unset the message after displaying
-    unset($_SESSION['message']);
-}
-
-    ?>
+   
 
 
     <div id="header" class="header">
@@ -667,7 +665,7 @@ if (isset($_SESSION['message'])) {
     <div class="main-content" id="main-content">
         
 <div class="content-section active" id="Dashboard">
- 
+                      
 
         <h1>Dashboard</h1>
         <div class="dashboard-cards">
@@ -681,6 +679,7 @@ if (isset($_SESSION['message'])) {
             </div>
         </div>
         <div class="announcement-board">
+            
         <img src="image/announce.png" alt="Announcement Image" class="img">
         <div class="form-container">
             <h2>Announcement Board</h2>
@@ -698,6 +697,7 @@ if (isset($_SESSION['message'])) {
                 <input type="file" id="fileUpload" name="fileUpload" required>
                 </div>
                 <button type="submit" class="post-button">Submit</button>
+                
             </form>
         </div>
         <div class="announcement-slider">
@@ -872,6 +872,27 @@ if (isset($_SESSION['message'])) {
 
 
 <div class="content-section" id="Intern_Account">
+            <?php
+                
+                if (isset($_SESSION['message'])) {
+                    ?>
+                    <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+                        <?php echo htmlspecialchars($_SESSION['message']); ?>
+                    </div>
+                    <script type="text/javascript">
+                        // Hide the alert after 5 seconds
+                        setTimeout(function() {
+                            var alertBox = document.getElementById('alertBox');
+                            if (alertBox) {
+                                alertBox.style.display = 'none';
+                            }
+                        }, 5000);
+                    </script>
+                    <?php
+                    // Unset the message after displaying
+                    unset($_SESSION['message']);
+                }  
+            ?>
                         <h1>Intern Logins</h1>
                         <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
@@ -965,6 +986,28 @@ if (isset($_SESSION['message'])) {
         
    
                 <div class="content-section" id="Facilitator_Account">
+                    <?php
+     
+                        if (isset($_SESSION['message'])) {
+                            ?>
+                            <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+                                <?php echo htmlspecialchars($_SESSION['message']); ?>
+                            </div>
+                            <script type="text/javascript">
+                                // Hide the alert after 5 seconds
+                                setTimeout(function() {
+                                    var alertBox = document.getElementById('alertBox');
+                                    if (alertBox) {
+                                        alertBox.style.display = 'none';
+                                    }
+                                }, 5000);
+                            </script>
+                            <?php
+                            // Unset the message after displaying
+                            unset($_SESSION['message']);
+                        }  
+                     ?>
+                    
                         <h1>Facilitator Logins</h1>
                         <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
 
