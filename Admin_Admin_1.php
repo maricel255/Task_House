@@ -511,7 +511,6 @@ $stmt->execute();
 $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-// do not change anything above----------------------------------------------------------------
 
 // Handle the deletion for annoucement 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
@@ -535,35 +534,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 }
 
-            // Display any messages
-            if (isset($_SESSION['message'])) {
-                $message = $_SESSION['message'];
-
-                unset($_SESSION['message']); // Clear the message after displaying
-                ?>
-                <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-                    <?php echo htmlspecialchars($message); ?>
-                </div>
-                <script type="text/javascript">
-                    // Hide the alert after 5 seconds
-                    setTimeout(function() {
-                        var alertBox = document.getElementById('alertBox');
-                        if (alertBox) {
-                            alertBox.style.display = 'none';
-                        }
-                    }, 5000);
-                </script>
-                <?php
-            }
-
-
-
-            if (isset($_SESSION['message'])) {
-                echo "Message before unsetting: " . htmlspecialchars($_SESSION['message']); // Debugging line
-                $message = $_SESSION['message'];
-                unset($_SESSION['message']); // Clear the message after displaying
-            }
+          
             
+
+  
+
+
+// Prepare and execute the query using PDO
+$sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+$stmt->execute();   
+
+
+
+      // do not change anything above----------------------------------------------------------------
+
+
 
 ?>
 
@@ -576,6 +563,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 </head>
 <body>
+    <?php
+ // Display any messages
+if (isset($_SESSION['message'])) {
+    // Display the alert with the session message
+
+    ?>
+    <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+        <?php echo htmlspecialchars($_SESSION['message']); ?>
+    </div>
+    <script type="text/javascript">
+        // Hide the alert after 5 seconds
+        setTimeout(function() {
+            var alertBox = document.getElementById('alertBox');
+            if (alertBox) {
+                alertBox.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+    <?php
+    // Unset the message after displaying
+    unset($_SESSION['message']);
+}
+
+    ?>
 
 
     <div id="header" class="header">
@@ -739,6 +750,124 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 
 </div>
+
+<div class="content-section" id="Intern_profile">
+    <div class=intern-profile>
+    <h1>Intern Profile</h1>
+
+    <!-- Search Form -->
+    <form method="post" action="">
+        <label for="searchField">Search:</label>
+        <input type="text" id="searchField" name="searchField" placeholder="Enter search term" >
+        <label for="searchBy">Search By:</label>
+        <select id="searchBy" name="searchBy">
+            <option value="all">All</option> <!-- Option to view all records -->
+            <option value="internID">Intern ID</option>
+            <option value="internName">Name</option>
+            <option value="email">Email</option>
+            <option value="requiredHours">Required Hours</option>
+            <option value="courseSection">Course Section</option>
+            <option value="dateStarted">Date Started</option>
+            <option value="dateEnded">Date Ended</option>
+            <option value="dob">DOB</option>
+            <option value="facilitatorName">Facilitator Name</option>
+            <option value="facilitatorEmail">Facilitator Email</option>
+            <option value="gender">Gender</option>
+            <option value="companyName">Company Name</option>
+            <option value="shiftStart">Shift Start</option>
+            <option value="shiftEnd">Shift End</option>
+            <option value="facilitatorID">Facilitator ID</option>
+        </select>
+        <input type="submit" value="Search">
+    </form>
+
+    
+    <?php
+    // Prepare the base SQL query using PDO
+    $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+
+    // Check if a search is submitted
+    if (isset($_POST['searchField']) && isset($_POST['searchBy'])) {
+        $searchField = $_POST['searchField'];
+        $searchBy = $_POST['searchBy'];
+
+        // Check if the 'All' option is selected
+        if ($searchBy === 'all') {
+            // No additional filtering needed, query remains the same
+        } else {
+            // Use the equality operator for exact matches
+            $sql .= " AND $searchBy = :searchField"; // Use = for exact matches
+        }
+    }
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+
+    // Bind the search field parameter if it's not 'All'
+    if (isset($searchField) && $searchBy !== 'all') {
+        $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // No wildcards for exact matches
+    }
+
+    // Execute the statement
+    $stmt->execute();
+
+    // Check if there are results
+    if ($stmt->rowCount() > 0) {
+        // Fetch all records
+        $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Display the table
+        echo '<table>';
+        echo '<tr>
+                <th>Profile Image</th>
+                <th>Intern ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Required Hours</th>
+                <th>Course Section</th>
+                <th>Date Started</th>
+                <th>Date Ended</th>
+                <th>DOB</th>
+                <th>Facilitator Name</th>
+                <th>Facilitator Email</th>
+                <th>Gender</th>
+                <th>Company Name</th>
+                <th>Shift Start</th>
+                <th>Shift End</th>
+                <th>Facilitator ID</th>
+              </tr>';
+
+        // Fetch and display the intern records
+        foreach ($records as $row) {
+            echo '<tr>';
+            echo '<td><img src="' . htmlspecialchars($row['profileImage']) . '" alt="Profile Image" style="width:50px; height:50px; border-radius:50%;"></td>'; // Display the profile image
+            echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['internName']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['requiredHours']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['courseSection']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['dateStarted']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['dateEnded']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['dob']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['facilitatorName']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['facilitatorEmail']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['gender']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['companyName']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['shiftStart']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['shiftEnd']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['facilitatorID']) . '</td>';
+            echo '</tr>';
+        }
+
+        echo '</table>';
+    } else {
+        echo '<p>No records found for your search!</p>'; // Updated message
+    }
+    ?>
+    </div>
+</div>
+
+
 
 
 
@@ -936,6 +1065,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     
     
     </div>
+ 
     <script src="js/admin_script.js"></script>
 </body>
 </html>

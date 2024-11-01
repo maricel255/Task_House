@@ -985,7 +985,7 @@ th, td {
 }
 
 th {
-  background-color: #FADADD; /* Soft Pink header */
+  background-color: #81C784; /* Soft Pink header */
   color: #333; /* Dark text color for headers */
 }
 
@@ -1113,4 +1113,54 @@ p {
 
 .delete-form {
   margin-top: 15px; /* Adjust as needed */
+}
+
+/* General body styles */
+
+
+/* Content section styles */
+.intern-profile {
+  background-color: #FFFFFF; /* White background for contrast */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+
+/* Label styles */
+label {
+  font-weight: bold; /* Make labels stand out */
+}
+
+/* Input field styles */
+input[type="text"],
+select {
+  padding: 10px; /* Padding for comfort */
+  border: 2px solid #A5D6A7; /* Light green border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Larger font for better readability */
+}
+
+/* Input focus styles */
+input[type="text"]:focus,
+select:focus {
+  border-color: #66BB6A; /* Medium green on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Submit button styles */
+input[type="submit"] {
+  background-color: #81C784; /* Medium green background */
+  color: #FFFFFF; /* White text color */
+  border: none; /* Remove default border */
+  padding: 10px; /* Padding for button */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Larger font for better readability */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Submit button hover effect */
+input[type="submit"]:hover {
+  background-color: #4CAF50; /* Darker green on hover */
 }
