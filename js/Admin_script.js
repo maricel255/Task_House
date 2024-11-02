@@ -97,3 +97,38 @@ function validateForm() {
 
     // Show the first slide
     showSlide(currentSlide);
+
+   
+function printPDF() {
+    // Open the print dialog to allow PDF printing
+    const content = document.getElementById('Intern_profile').innerHTML;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.open();
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Intern Profile</title>
+            <style>
+                /* Add styles for the table here */
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                table, th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+            </style>
+        </head>
+        <body>
+            ${content}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}

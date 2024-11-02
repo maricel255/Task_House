@@ -864,7 +864,10 @@ $stmt->execute();
         echo '<p>No records found for your search!</p>'; // Updated message
     }
     ?>
+        <button onclick="printPDF()">Print as PDF</button>
+
     </div>
+
 </div>
 
 
