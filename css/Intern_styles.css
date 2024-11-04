@@ -371,6 +371,8 @@ input[type="text"] {
     padding: 0 520px 0 20px;
     width: calc(100% - 60px);
     transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    height: 500px; /* Adjust this value as needed */
+
 }
  .shifts {  
     margin-left: 250px;

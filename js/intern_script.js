@@ -95,3 +95,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
+function updateTime() {
+    const now = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+    };
+    document.getElementById('time-display').textContent = now.toLocaleDateString('en-US', options);
+}
+
+// Update the time every second
+setInterval(updateTime, 1000);
+
+// Initialize the clock
+updateTime();

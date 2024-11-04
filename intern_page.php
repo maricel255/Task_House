@@ -14,95 +14,14 @@ if (!isset($_SESSION['internID'])) {  // Ensure this matches the session variabl
   exit();
 }
 
-// Handle form submission for intern info
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        // Handle profile image upload first
-        $profileImagePath = '';
-        if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'uploaded_files/'; // Using your existing folder
-            
-            // Generate unique filename
-            $fileName = time() . '_' . $_FILES['profileImage']['name'];
-            $targetPath = $uploadDir . $fileName;
-            
-            // Move uploaded file
-            if (move_uploaded_file($_FILES['profileImage']['tmp_name'], $targetPath)) {
-                $profileImagePath = $targetPath;
-            }
-        }
 
-        // Update user data including image path
-        $sql = "UPDATE intacc SET 
-            internName = :internName,
-            email = :email,
-            requiredHours = :requiredHours,
-            dateStarted = :dateStarted,
-            dateEnded = :dateEnded,
-            dob = :dob,
-            facilitatorName = :facilitatorName,
-            courseSection = :courseSection,
-            facilitatorEmail = :facilitatorEmail,
-            gender = :gender,
-            companyName = :companyName,
-            shiftStart = :shiftStart,
-            shiftEnd = :shiftEnd,
-            facilitatorID = :facilitatorID";
-        
-        // Add image path to update only if a new image was uploaded
-        if ($profileImagePath !== '') {
-            $sql .= ", profileImage = :profileImage";
-        }
-        
-        $sql .= " WHERE internID = :internID";
-
-        $stmt = $conn->prepare($sql);
-        
-        // Bind all parameters
-        $stmt->bindParam(':internID', $_SESSION['InternID']);
-        $stmt->bindParam(':internName', $_POST['internName']);
-        $stmt->bindParam(':email', $_POST['email']);
-        $stmt->bindParam(':requiredHours', $_POST['requiredHours']);
-        $stmt->bindParam(':dateStarted', $_POST['dateStarted']);
-        $stmt->bindParam(':dateEnded', $_POST['dateEnded']);
-        $stmt->bindParam(':dob', $_POST['dob']);
-        $stmt->bindParam(':facilitatorName', $_POST['facilitatorName']);
-        $stmt->bindParam(':courseSection', $_POST['courseSection']);
-        $stmt->bindParam(':facilitatorEmail', $_POST['facilitatorEmail']);
-        $stmt->bindParam(':gender', $_POST['gender']);
-        $stmt->bindParam(':companyName', $_POST['companyName']);
-        $stmt->bindParam(':shiftStart', $_POST['shiftStart']);
-        $stmt->bindParam(':shiftEnd', $_POST['shiftEnd']);
-        $stmt->bindParam(':facilitatorID', $_POST['facilitatorID']);
-
-        // Bind image path if a new image was uploaded
-        if ($profileImagePath !== '') {
-            $stmt->bindParam(':profileImage', $profileImagePath);
-        }
-
-        if ($stmt->execute()) {
-            echo "<script>
-                alert('Profile updated successfully!');
-                window.location.href = 'intern_page.php';
-            </script>";
-        } else {
-            echo "<script>alert('Error updating profile.');</script>";
-        }
-    } catch (PDOException $e) {
-        echo "<script>alert('Database error: " . $e->getMessage() . "');</script>";
-    }
-}
-
-// Fetch existing user data
-try {
-    $stmt = $conn->prepare("SELECT * FROM intacc WHERE internID = :internID");
-    $stmt->bindParam(':internID', $_SESSION['InternID']);
-    $stmt->execute();
-    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "<script>alert('Error fetching user data');</script>";
-}
-
+// Fetch user data based on the session intern ID
+$internID = $_SESSION['internID'];
+$sql = "SELECT * FROM intacc WHERE internID = :internID";
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':internID', $internID);
+$stmt->execute();
+$userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
 ?>
@@ -119,22 +38,22 @@ try {
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar hide-content">
-            <div class="user-info">
-                <img src="<?php 
-                    echo !empty($userData['profileImage']) ? 
-                        htmlspecialchars($userData['profileImage']) : 
-                        'image/cot.png'; 
-                ?>" alt="User Profile" class="user-icon">
-                <div class="user-details">
-                    <p class="user-name"><?php echo htmlspecialchars($userData['internName']); ?></p>
-                    <p>Intern ID: <?php echo htmlspecialchars($_SESSION['InternID']); ?></p>
-                    <p class="role">INTERN</p>
-                    <div class="button-container"> <!-- New container for buttons -->
-                        <button class="btn break-btn">Break</button>
-                        <button class="btn back-to-work-btn">Back to Work</button>
+                    <div class="user-info">
+
+                    <div class="profile-image"> 
+                        <img src="uploaded_files/<?php echo htmlspecialchars($profileImage, ENT_QUOTES, 'UTF-8'); ?>" class="user-icon" alt="User Profile" >
+                    </div>
+                   
+                    <div class="user-details">
+                        <p class="user-name"><?php echo htmlspecialchars($userData['internName']); ?></p>
+                        <p>Intern ID: <?php echo htmlspecialchars($internID); ?></p>
+                        <p class="role">INTERN</p>
+                        <div class="button-container"> <!-- New container for buttons -->
+                            <button class="btn break-btn">Break</button>
+                            <button class="btn back-to-work-btn">Back to Work</button>
+                        </div>
                     </div>
                 </div>
-            </div>
             <nav class="navigation">
                 <a href="#" class="home-link" onclick="showContent('dashboard')">
                     <i class="fa fa-home"></i><span> Dashboard</span>
@@ -258,18 +177,21 @@ try {
 
 
     
-
-    <div class="time-content" >
-    <div class="time-clock-container" >
+<div class="time-content">
+    <div class="time-clock-container">
         <h3>Online Time Clock</h3>
-        <p id="time-display">Wednesday, March 20, 2024 13:41:51</p>
-        <p>Last login at: <span id="last-login-time">3/19/2024 10:15</span></p>
+        <p id="time-display">
+            March 20, 2024 13:41:51<br>
+            <span id="day-of-week">Wednesday</span>
+        </p>
         <div class="tasks">
             <input type="text" id="text">
             <button class="login-btn">Log in</button>
-            <button class="logut-butn">Log out</button>
+            <button class   ="logut-butn">Log out</button>
         </div>
     </div>
+</div>
+
 </div>
 </div><!-- Modal for Profile Information -->
 <div id="profileModal" class="modal">
