@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               $_SESSION['Uname'] = $Uname;
               echo "<div class='message-box' id='message-box'>
                       <p>Login successful! Welcome, " . $_SESSION['Uname'] . "!</p>
-                    <form action='test.php' method='post'>
+                    <form action='Admin_Admin_1.php' method='post'>
                     <button type='submit'>OK</button>
                 </form>
                     </div>";
