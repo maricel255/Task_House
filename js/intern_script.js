@@ -116,3 +116,12 @@ setInterval(updateTime, 1000);
 
 // Initialize the clock
 updateTime();
+
+ 
+function closeModal(event) {
+    // Check if the click was outside the modal-content or on the close button
+    if (event.target.className === 'modal' || event.target.className === 'close') {
+        document.getElementById('taskModal').style.display = 'none';
+    }
+}
+

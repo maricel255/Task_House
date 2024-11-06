@@ -358,6 +358,37 @@ input[type="text"] {
     transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
+/* Style for the alert box */
+.alert-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    border: 1px solid #f5c6cb; /* Red border */
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    width: 300px;
+    max-width: 80%;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+/* Optional: Style for the close button */
+.alert-box .close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    color: #721c24;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
 
 
 .login-btn { background-color: #4CAF50; }
