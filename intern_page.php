@@ -195,6 +195,12 @@ if (isset($_SESSION['alertMessage'])) {
     // Clear the alert message after displaying
     unset($_SESSION['alertMessage']);
 }
+
+
+// this is for  PROFILE MODAL
+
+
+
 ?>
 
 
@@ -388,137 +394,222 @@ if (isset($_SESSION['alertMessage'])) {
 </div>
 
 
-</div>
-</div><!-- Modal for Profile Information -->
+
+<!-- Modal for Profile Information -->
 <div id="profileModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2>Profile Information</h2>
-    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data">
-    <div class="form-container">
-        <div class="form-group">
-            <label for="internName">Intern's Name:</label>
-            <input type="text" id="internName" name="internName" 
-                   value="<?php echo isset($userData['internName']) ? htmlspecialchars($userData['internName']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="profileImage">Upload Profile Image:</label>
-            <input type="file" id="profileImage" name="profileImage" accept="image/*">
-        </div>
-        
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" 
-                   value="<?php echo isset($userData['email']) ? htmlspecialchars($userData['email']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="requiredHours">Required Hours:</label>
-            <input type="number" id="requiredHours" name="requiredHours" 
-                   value="<?php echo isset($userData['requiredHours']) ? htmlspecialchars($userData['requiredHours']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="dateStarted">Date Started:</label>
-            <input type="date" id="dateStarted" name="dateStarted" 
-                   value="<?php echo isset($userData['dateStarted']) ? htmlspecialchars($userData['dateStarted']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="dateEnded">Date Ended:</label>
-            <input type="date" id="dateEnded" name="dateEnded" 
-                   value="<?php echo isset($userData['dateEnded']) ? htmlspecialchars($userData['dateEnded']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob" 
-                   value="<?php echo isset($userData['dob']) ? htmlspecialchars($userData['dob']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="facilitatorName">Facilitator Name:</label>
-            <input type="text" id="facilitatorName" name="facilitatorName" 
-                   value="<?php echo isset($userData['facilitatorName']) ? htmlspecialchars($userData['facilitatorName']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="courseSection">Course & Section:</label>
-            <input type="text" id="courseSection" name="courseSection" 
-                   value="<?php echo isset($userData['courseSection']) ? htmlspecialchars($userData['courseSection']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="facilitatorEmail">Facilitator Email:</label>
-            <input type="email" id="facilitatorEmail" name="facilitatorEmail" 
-                   value="<?php echo isset($userData['facilitatorEmail']) ? htmlspecialchars($userData['facilitatorEmail']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender" required>
-                <option value="">Select Gender</option>
-                <option value="male" <?php echo (isset($userData['gender']) && $userData['gender'] == 'male') ? 'selected' : ''; ?>>Male</option>
-                <option value="female" <?php echo (isset($userData['gender']) && $userData['gender'] == 'female') ? 'selected' : ''; ?>>Female</option>
-                <option value="other" <?php echo (isset($userData['gender']) && $userData['gender'] == 'other') ? 'selected' : ''; ?>>Other</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="companyName">Company Name:</label>
-            <input type="text" id="companyName" name="companyName" 
-                   value="<?php echo isset($userData['companyName']) ? htmlspecialchars($userData['companyName']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="shiftStart">Shift Start:</label>
-            <input type="time" id="shiftStart" name="shiftStart" 
-                   value="<?php echo isset($userData['shiftStart']) ? htmlspecialchars($userData['shiftStart']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="shiftEnd">Shift End:</label>
-            <input type="time" id="shiftEnd" name="shiftEnd" 
-                   value="<?php echo isset($userData['shiftEnd']) ? htmlspecialchars($userData['shiftEnd']) : ''; ?>" 
-                   required>
-        </div>
-        
-        <div class="form-group">
-            <label for="facilitatorID">Facilitator ID:</label>
-            <input type="text" id="facilitatorID" name="facilitatorID" 
-                   value="<?php echo isset($userData['facilitatorID']) ? htmlspecialchars($userData['facilitatorID']) : ''; ?>" 
-                   required>
-        </div>
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <!-- Single form for all categories -->
+        <form action=" " method="POST" enctype="multipart/form-data">
+            
+            <!-- Sidebar for category navigation -->
+            <div class="profile-sidebar">
+                <button type="button" onclick="showCategory('personalData')">Personal Data</button>
+                <button type="button" onclick="showCategory('companyDetails')">Company Details</button> <!-- New button -->   
+                <button type="button" onclick="showCategory('familyData')">Family Data</button>
+                <button type="button" onclick="showCategory('healthData')">Health Data</button>
+                <button type="button" onclick="showCategory('scholasticData')">Scholastic Data</button>
+                <button type="button" onclick="showCategory('workExperience')">Work Experience</button>
+                <button type="button" onclick="showCategory('specialSkills')">Special Skills</button>
+                <button type="button" onclick="showCategory('characterReferences')">Character References</button>
+                <button type="button" onclick="showCategory('emergencyContact')">Emergency Contact</button>
+            </div>
+
+            <div class="profile-form-container">
+                
+                <!-- Personal Data -->
+                <div id="personalData" class="profile-category">
+                    <h3>Personal Data</h3>
+                    <div class="form-container">
+                        <div class="form-row">
+                            <label>First Name:</label>
+                            <input type="text" name="firstName"><br>
+
+                            <label>Middle Name:</label>
+                            <input type="text" name="middleName"><br>
+
+                            <label>Last Name:</label>
+                            <input type="text" name="lastName"><br>
+
+                            <label>Course, Year, Sec.:</label>
+                            <input type="text" name="courseYearSec"><br>
+
+                            <label>Gender:</label>
+                            <input type="radio" name="gender" value="Male"> Male
+                            <input type="radio" name="gender" value="Female"> Female<br>
+
+                            <label>Age:</label>
+                            <input type="number" name="age"><br>
+
+                            <label>Current Address:</label>
+                            <input type="text" name="currentAddress"><br>
+                        </div>
+
+                        <div class="form-row">
+                            <label>Provincial Address:</label>
+                            <input type="text" name="provincialAddress"><br>
+
+                            <label>Tel. No.:</label>
+                            <input type="text" name="telNo"><br>
+
+                            <label>Mobile No.:</label>
+                            <input type="text" name="mobileNo"><br>
+
+                            <label>Birth Place:</label>
+                            <input type="text" name="birthPlace"><br>
+
+                            <label>Birth Date:</label>
+                            <input type="date" name="birthDate"><br>
+
+                            <label>Religion:</label>
+                            <input type="text" name="religion"><br>
+
+                            <label>Email Address:</label>
+                            <input type="email" name="email"><br>
+
+                            <label>Civil Status:</label>
+                            <input type="text" name="civilStatus"><br>
+
+                            <label>Citizenship:</label>
+                            <input type="text" name="citizenship"><br>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company Details -->
+                <div id="companyDetails" class="profile-category">
+                    <h3>Company Details</h3>
+                    <label>HR/Manager:</label>
+                    <input type="text" name="hrManager"><br>
+                    <label>faciID:</label>
+                    <input type="text" name="faciID"><br>
+                    <label>Company:</label>
+                    <input type="text" name="company"><br>
+                    <label>Company Address:</label>
+                    <input type="text" name="companyAddress"><br>
+                </div>
+
+                <!-- Family Data -->
+                <div id="familyData" class="profile-category">
+                    <h3>Family Data</h3>
+                    <label>Father's Name:</label>
+                    <input type="text" name="fatherName"><br>
+                    <label>Occupation:</label>
+                    <input type="text" name="fatherOccupation"><br>
+                    <label>Mother's Name:</label>
+                    <input type="text" name="motherName"><br>
+                    <label>Occupation:</label>
+                    <input type="text" name="motherOccupation"><br>
+                </div>
+
+                <!-- Health Data -->
+                <div id="healthData" class="profile-category">
+                    <h3>Health Data</h3>
+                    <label>Blood Type:</label>
+                    <input type="text" name="bloodType"><br>
+                    <label>Height:</label>
+                    <input type="text" name="height"><br>
+                    <label>Weight:</label>
+                    <input type="text" name="weight"><br>
+                    <label>Health Problems:</label>
+                    <input type="text" name="healthProblems"><br>
+                </div>
+
+                <!-- Scholastic Data -->
+                <div id="scholasticData" class="profile-category">
+                    <h3>Scholastic Data</h3>
+                    <label>Elementary School:</label>
+                    <input type="text" name="elementarySchool"><br>
+                    <label>Year Graduated:</label>
+                    <input type="text" name="elementaryYearGraduated"><br>
+                    <label>Honors/Awards Received:</label>
+                    <input type="text" name="elementaryHonors"><br>
+
+                    <label>Secondary School:</label>
+                    <input type="text" name="secondarySchool"><br>
+                    <label>Year Graduated:</label>
+                    <input type="text" name="secondaryYearGraduated"><br>
+                    <label>Honors/Awards Received:</label>
+                    <input type="text" name="secondaryHonors"><br>
+
+                    <label>College:</label>
+                    <input type="text" name="college"><br>
+                    <label>Year Graduated:</label>
+                    <input type="text" name="collegeYearGraduated"><br>
+                    <label>Honors/Awards Received:</label>
+                    <input type="text" name="collegeHonors"><br>
+                </div>
+
+                <!-- Work Experience -->
+                <div id="workExperience" class="profile-category">
+                    <h3>Work Experience</h3>
+                    <label>Company Name:</label>
+                    <input type="text" name="companyName"><br>
+                    <label>Position:</label>
+                    <input type="text" name="position"><br>
+                    <label>Inclusive Date:</label>
+                    <input type="text" name="inclusiveDate"><br>
+                    <label>Address:</label>
+                    <input type="text" name="companyAddress"><br>
+                </div>
+
+                <!-- Special Skills -->
+                <div id="specialSkills" class="profile-category">
+                    <h3>Special Skills</h3>
+                    <label>Skills:</label>
+                    <input type="text" name="skills"><br>
+                </div>
+
+                <!-- Character References -->
+                <div id="characterReferences" class="profile-category">
+                    <h3>Character References</h3>
+                    <label>Name:</label>
+                    <input type="text" name="refName"><br>
+                    <label>Position:</label>
+                    <input type="text" name="refPosition"><br>
+                    <label>Address:</label>
+                    <input type="text" name="refAddress"><br>
+                    <label>Contact No.:</label>
+                    <input type="text" name="refContact"><br>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div id="emergencyContact" class="profile-category">
+                    <h3>Emergency Contact</h3>
+                    <label>Name:</label>
+                    <input type="text" name="emergencyName"><br>
+                    <label>Address:</label>
+                    <input type="text" name="emergencyAddress"><br>
+                    <label>Contact No.:</label>
+                    <input type="text" name="emergencyContactNo"><br>
+                </div>
+            </div>
+
+            <button type="submit" class="insert-btn">Add Information</button>
+        </form>
+
     </div>
-    
-    <div class="modal-footer">
-        <button type="submit" class="create-button">
-            <?php echo isset($_SESSION['InternID']) ? 'Update Profile' : 'Create Profile'; ?>
-        </button>
-    </div>
-</form>
-  </div>
 </div>
 
-<div class="content-section" id="attendance">
+
+
+  
+
+
+
+
+
+
+
+
+  <div class="content-section" id="attendance">
     <div class="attend-content">
     <div class="attendance-container">
         <h1>REQUIRED HOURS: 700 HRS</h1>
     </div>
-</div>
-    </div>
+  </div>
+    
 
     <div class="content-section" id="requests">
         <div class="req-content">

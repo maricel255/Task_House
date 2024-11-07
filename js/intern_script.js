@@ -125,3 +125,52 @@ function closeModal(event) {
     }
 }
 
+function showCategory(category) {
+    // Hide all categories
+    var categories = document.querySelectorAll('.profile-category');
+    categories.forEach(function (cat) {
+      cat.classList.remove('active');
+    });
+  
+    // Show the clicked category
+    var categoryToShow = document.getElementById(category);
+    categoryToShow.classList.add('active');
+  
+    // Set the active class on the clicked button
+    var buttons = document.querySelectorAll('.profile-sidebar button');
+    buttons.forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+  
+    var buttonToActivate = document.querySelector(`button[onclick="showCategory('${category}')"]`);
+    buttonToActivate.classList.add('active');
+  }
+  
+  // Close the modal
+  function closeModal() {
+    document.getElementById('profileModal').style.display = 'none';
+  }
+  
+  // Open the modal (for testing, you can call this to show the modal)
+  function openModal() {
+    document.getElementById('profileModal').style.display = 'block';
+  }
+  
+// Close the modal when clicking outside the modal content
+window.onclick = function(event) {
+    var modal = document.getElementById("profileModal");
+    if (event.target == modal) {
+      closeModal();
+    }
+  }
+  
+  // Close the modal (function remains the same)
+  function closeModal() {
+    document.getElementById('profileModal').style.display = 'none';
+  }
+  
+  // Open the modal (for testing, you can call this to show the modal)
+  function openModal() {
+    document.getElementById('profileModal').style.display = 'block';
+  }
+  
