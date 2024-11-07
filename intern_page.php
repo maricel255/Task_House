@@ -370,7 +370,7 @@ if (isset($_SESSION['alertMessage'])) {
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                     
                     <button type="submit" name="login-btn" class="login-btn">Log in</button>
-                    <button type="button" name="logout-btn" class="logout-btn" onclick="document.getElementById('taskModal').style.display='block'">Log out</button>
+                    <button type="button" name="logut-butn" class="" onclick="document.getElementById('taskModal').style.display='block'">Log out</button>
                     </form>
                       
                  </div>  
@@ -382,7 +382,7 @@ if (isset($_SESSION['alertMessage'])) {
 
  <!-- Modal for entering task -->
 <div id="taskModal" class="modal" style="display: none;">
-    <div class="modal-content">
+    <div class="modal-contentT">
         <span class="close">&times;</span>
         <h2>Enter Task Before Logging Out</h2>
         <form method="POST">
