@@ -55,7 +55,14 @@ $adminID = $stmtFetch->fetchColumn();
     $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
     $stmt->execute();
     $faciIDs = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows
+// First, retrieve the faciID based on the internID (assuming internID is available)
+$sqlGetFaciID = "SELECT faciID FROM profile_information WHERE internID = :internID LIMIT 1";
+$stmtGetFaciID = $conn->prepare($sqlGetFaciID);
+$stmtGetFaciID->bindParam(':internID', $internID, PDO::PARAM_INT);
+$stmtGetFaciID->execute();
 
+// Fetch the faciID from the profile_information table
+$faciID = $stmtGetFaciID->fetchColumn();
 
 // Handle password update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])) {
@@ -150,6 +157,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $currentTime = date('Y-m-d H:i:s');
     $task = isset($_POST['task']) ? trim($_POST['task']) : '';
 
+    // Fetch the faciID for the intern based on internID
+    $sqlGetFaciID = "SELECT faciID FROM profile_information WHERE internID = :internID LIMIT 1";
+    $stmtGetFaciID = $conn->prepare($sqlGetFaciID);
+    $stmtGetFaciID->bindParam(':internID', $internID, PDO::PARAM_INT);
+    $stmtGetFaciID->execute();
+    $faciID = $stmtGetFaciID->fetchColumn();
+
     // Only perform actions if buttons are clicked
     if (isset($_POST['login-btn'])) {
         // Check if there's an existing login record for today
@@ -161,10 +175,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmtCheckLogin->rowCount() == 0) {
             // No login record for today, so insert a new one
-            $sqlInsert = "INSERT INTO time_logs (internID, adminID, task, login_time) VALUES (:internID, :adminID, :task, :loginTime)";
+            $sqlInsert = "INSERT INTO time_logs (internID, adminID, faciID, task, login_time) VALUES (:internID, :adminID, :faciID, :task, :loginTime)";
             $stmtInsert = $conn->prepare($sqlInsert);
             $stmtInsert->bindParam(':internID', $internID, PDO::PARAM_INT);
             $stmtInsert->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+            $stmtInsert->bindParam(':faciID', $faciID, PDO::PARAM_INT); // Bind faciID
             $stmtInsert->bindParam(':task', $task, PDO::PARAM_STR);
             $stmtInsert->bindParam(':loginTime', $currentTime, PDO::PARAM_STR);
 
@@ -230,76 +245,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Check if the task form is submitted
+    if (isset($_POST['submitTask'])) {
+        $internID = $_POST['internID'];
 
-
-// Check if the task form is submitted
-if (isset($_POST['submitTask'])) {
-    $internID = $_POST['internID'];
-    
-    // Validate the tasks input
-    if (!isset($_POST['tasks']) || count($_POST['tasks']) < 1 || count($_POST['tasks']) > 10) {
-        $alertMessage = "Please input a Task before logging out";
-    } else {
-        $selectedTasks = $_POST['tasks'];
-        $todayDate = date('Y-m-d'); // Get today's date
-
-        // Check if a record exists for the intern for today with logout time already set
-        $sqlCheckTask = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(logout_time) = :todayDate";
-        $stmtCheckTask = $conn->prepare($sqlCheckTask);
-        $stmtCheckTask->bindParam(':internID', $internID, PDO::PARAM_STR);
-        $stmtCheckTask->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
-        $stmtCheckTask->execute();
-
-        if ($stmtCheckTask->rowCount() > 0) {
-            $alertMessage = "Already recorded the task and logout for today.";
+        // Validate the tasks input
+        if (!isset($_POST['tasks']) || count($_POST['tasks']) < 1 || count($_POST['tasks']) > 10) {
+            $alertMessage = "Please input a Task before logging out";
         } else {
-            // Check for an existing task without logout_time for today
-            $sqlCheckExistingTask = "SELECT * FROM time_logs WHERE internID = :internID AND logout_time IS NULL AND DATE(back_to_work_time) = :todayDate";
-            $stmtCheckExistingTask = $conn->prepare($sqlCheckExistingTask);
-            $stmtCheckExistingTask->bindParam(':internID', $internID, PDO::PARAM_STR);
-            $stmtCheckExistingTask->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
-            $stmtCheckExistingTask->execute();
+            $selectedTasks = $_POST['tasks'];
+            $todayDate = date('Y-m-d'); // Get today's date
 
-            if ($stmtCheckExistingTask->rowCount() > 0) {
-                // Update the existing task with logout time
-                $currentTime = date('Y-m-d H:i:s'); // Get the current time
-                $taskString = implode(", ", $selectedTasks); // Convert array to string
-                
-                $sqlUpdateTask = "UPDATE time_logs SET task = :task, logout_time = :logoutTime WHERE internID = :internID AND logout_time IS NULL AND DATE(back_to_work_time) = :todayDate";
-                $stmtUpdateTask = $conn->prepare($sqlUpdateTask);
-                $stmtUpdateTask->bindParam(':internID', $internID, PDO::PARAM_STR);
-                $stmtUpdateTask->bindParam(':task', $taskString, PDO::PARAM_STR);
-                $stmtUpdateTask->bindParam(':logoutTime', $currentTime, PDO::PARAM_STR);
-                $stmtUpdateTask->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
-                
-                if ($stmtUpdateTask->execute()) {
-                    $alertMessage = "Task recorded successfully and logout time captured.";
-                } else {
-                    $alertMessage = "Error updating task.";
-                }
+            // Check if a record exists for the intern for today with logout time already set
+            $sqlCheckTask = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(logout_time) = :todayDate";
+            $stmtCheckTask = $conn->prepare($sqlCheckTask);
+            $stmtCheckTask->bindParam(':internID', $internID, PDO::PARAM_STR);
+            $stmtCheckTask->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+            $stmtCheckTask->execute();
+
+            if ($stmtCheckTask->rowCount() > 0) {
+                $alertMessage = "Already recorded the task and logout for today.";
             } else {
-                // Insert a new task with logout time for today
-                $currentTime = date('Y-m-d H:i:s');
-                $taskString = implode(", ", $selectedTasks);
+                // Check for an existing task without logout_time for today
+                $sqlCheckExistingTask = "SELECT * FROM time_logs WHERE internID = :internID AND logout_time IS NULL AND DATE(back_to_work_time) = :todayDate";
+                $stmtCheckExistingTask = $conn->prepare($sqlCheckExistingTask);
+                $stmtCheckExistingTask->bindParam(':internID', $internID, PDO::PARAM_STR);
+                $stmtCheckExistingTask->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+                $stmtCheckExistingTask->execute();
 
-                $sqlInsertTask = "INSERT INTO time_logs (internID, task, back_to_work_time, logout_time) VALUES (:internID, :task, :backToWorkTime, :logoutTime)";
-                $stmtInsertTask = $conn->prepare($sqlInsertTask);
-                $stmtInsertTask->bindParam(':internID', $internID, PDO::PARAM_STR);
-                $stmtInsertTask->bindParam(':task', $taskString, PDO::PARAM_STR);
-                $stmtInsertTask->bindParam(':backToWorkTime', $todayDate, PDO::PARAM_STR); // Record today's date as back_to_work_time
-                $stmtInsertTask->bindParam(':logoutTime', $currentTime, PDO::PARAM_STR);
-                
-                if ($stmtInsertTask->execute()) {
-                    $alertMessage = "Task recorded successfully and logout time captured.";
+                if ($stmtCheckExistingTask->rowCount() > 0) {
+                    // Update the existing task with logout time
+                    $currentTime = date('Y-m-d H:i:s'); // Get the current time
+                    $taskString = implode(", ", $selectedTasks); // Convert array to string
+
+                    $sqlUpdateTask = "UPDATE time_logs SET task = :task, logout_time = :logoutTime WHERE internID = :internID AND logout_time IS NULL AND DATE(back_to_work_time) = :todayDate";
+                    $stmtUpdateTask = $conn->prepare($sqlUpdateTask);
+                    $stmtUpdateTask->bindParam(':internID', $internID, PDO::PARAM_STR);
+                    $stmtUpdateTask->bindParam(':task', $taskString, PDO::PARAM_STR);
+                    $stmtUpdateTask->bindParam(':logoutTime', $currentTime, PDO::PARAM_STR);
+                    $stmtUpdateTask->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+
+                    if ($stmtUpdateTask->execute()) {
+                        $alertMessage = "Task recorded successfully and logout time captured.";
+                    } else {
+                        $alertMessage = "Error updating task.";
+                    }
                 } else {
-                    $alertMessage = "Error recording task.";
+                    // Insert a new task with logout time for today
+                    $currentTime = date('Y-m-d H:i:s');
+                    $taskString = implode(", ", $selectedTasks);
+
+                    $sqlInsertTask = "INSERT INTO time_logs (internID, task, back_to_work_time, logout_time, faciID) VALUES (:internID, :task, :backToWorkTime, :logoutTime, :faciID)";
+                    $stmtInsertTask = $conn->prepare($sqlInsertTask);
+                    $stmtInsertTask->bindParam(':internID', $internID, PDO::PARAM_STR);
+                    $stmtInsertTask->bindParam(':task', $taskString, PDO::PARAM_STR);
+                    $stmtInsertTask->bindParam(':backToWorkTime', $todayDate, PDO::PARAM_STR); // Record today's date as back_to_work_time
+                    $stmtInsertTask->bindParam(':logoutTime', $currentTime, PDO::PARAM_STR);
+                    $stmtInsertTask->bindParam(':faciID', $faciID, PDO::PARAM_INT); // Bind faciID
+                    
+                    if ($stmtInsertTask->execute()) {
+                        $alertMessage = "Task recorded successfully and logout time captured.";
+                    } else {
+                        $alertMessage = "Error recording task.";
+                    }
                 }
             }
         }
     }
-}
 
-// Handle profile form submission
+
 // Handle profile form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
     try {
@@ -437,7 +451,6 @@ if (isset($_SESSION['alertMessage'])) {
 }
 
 
-// this is for  PROFILE MODAL
 
 
 
@@ -451,7 +464,7 @@ if (isset($_SESSION['alertMessage'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expandable Sidebar with User Info</title>
+    <title>Intern</title>
     <link rel="stylesheet" href="css/intern_styles.css">
 </head>
 <body>
