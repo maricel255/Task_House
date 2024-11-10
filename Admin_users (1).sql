@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 07, 2024 at 01:01 AM
+-- Generation Time: Nov 10, 2024 at 06:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -41,41 +41,12 @@ CREATE TABLE `announcements` (
 --
 
 INSERT INTO `announcements` (`announcementID`, `adminID`, `title`, `content`, `imagePath`, `datePosted`) VALUES
-(22, 1, 'Cot Announcement', 'Cot Announcement', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-29 05:56:35'),
-(24, 1, 'Cot Announcement3', 'Cot Announcement3', './uploaded_files/test2.pdf', '2024-10-29 06:00:20'),
-(25, 1, 'Cot Announcement2', 'Cot Announcement2', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-29 06:00:31'),
-(26, 1, 'Cot Announcement4', 'Cot Announcement4', './uploaded_files/test2.pdf', '2024-10-29 06:01:07'),
-(28, 2, 'test4', 'test4', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-10-29 06:46:53'),
-(29, 2, 'admin2 annoucement', 'admin2 annoucement text', './uploaded_files/Doc1.docx', '2024-11-01 06:48:12'),
-(30, 2, 'admin2 annoucement', 'admin2 annoucement', './uploaded_files/maricel SABELLO - Quiz # 1.pdf', '2024-11-01 06:48:33'),
-(31, 1, 'debebaranntitle', 'debebaranntext', './uploaded_files/24058497 (1).pdf', '2024-11-02 07:06:42'),
-(32, 1, 'debebaranntitle', 'debebaranntext', './uploaded_files/24058497 (1).pdf', '2024-11-02 07:06:58'),
-(33, 1, 'debebaranntitle1', 'debebaranntitle1', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:20:40'),
-(34, 1, 'debebaranntitle1', 'debebaranntitle1', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:23:13'),
-(35, 1, 'debebaranntitle1', 'debebaranntitle1', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:23:47'),
-(36, 1, 'debebaranntitle2', 'debebaranntitle2', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:23:58'),
-(37, 1, 'debebaranntitle2', 'debebaranntitle2', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:25:38'),
-(38, 1, 'debebaranntitle2', 'debebaranntitle2', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:26:34'),
-(39, 1, 'debebaranntitle2', 'debebaranntitle2', './uploaded_files/24058241 (2).pdf', '2024-11-02 07:26:47');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `developers`
---
-
-CREATE TABLE `developers` (
-  `dev_id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `developers`
---
-
-INSERT INTO `developers` (`dev_id`, `username`, `password`) VALUES
-(1, 'developer', 'developerako');
+(1, 2, 'test1', 'test1', './uploaded_files/3fb6e30169011dbfa03657f1c2f27ee4.png', '2024-10-27 05:00:42'),
+(2, 2, 'test2', 'test2', './uploaded_files/1804847dfc37dcb00eb2df0bd08439e0.png', '2024-10-27 05:00:53'),
+(8, 1, 'test1 with pdf', 'test1 with pdf', './uploaded_files/test2.pdf', '2024-10-27 15:27:56'),
+(9, 1, 'gaco anouce', 'gaco anouce', './uploaded_files/gaco.pdf', '2024-10-27 19:57:44'),
+(10, 1, 'test2 ni gaco', 'metting at lobby', './uploaded_files/gaco.pdf', '2024-10-27 19:59:09'),
+(11, 1, 'test3with', 'test3with', './uploaded_files/gaco.pdf', '2024-10-27 21:13:22');
 
 -- --------------------------------------------------------
 
@@ -94,12 +65,18 @@ CREATE TABLE `facacc` (
 --
 
 INSERT INTO `facacc` (`faciID`, `faciPass`, `adminID`) VALUES
-('67896', '67896', 0),
-('ert', 'ertert', 2),
-('fac1', 'fac123', 1),
-('fac134', 'fac134', 2),
-('fac2', 'fac234', 1),
-('inter', 'inter', 0);
+('bshmf', 'bshmf', 2),
+('cotfa', 'asdfgh', 1),
+('dfg', 'dfgdfg', 2),
+('faco12', 'faco12', 1),
+('fahm1', 'fahm1', 2),
+('fahm2', 'fahm2', 2),
+('fahmt', 'fahmt', 2),
+('fahmt1', 'fahmt1', 2),
+('fahmt3', 'fahmt3', 2),
+('fahmt5', 'fahmt5', 2),
+('inter', 'inter', 0),
+('poi', 'poipoi', 2);
 
 -- --------------------------------------------------------
 
@@ -118,10 +95,20 @@ CREATE TABLE `intacc` (
 --
 
 INSERT INTO `intacc` (`internID`, `InternPass`, `adminID`) VALUES
-('Ad2int', 'Ad2int', 2),
-('cot123', 'cot123', 1),
+('', 'e4266470', 2),
+('678905', '678905', 1),
 ('cot234', 'cot234', 1),
-('inthm1', 'inthm1', 2);
+('cot345', 'cot345', 1),
+('cotin3', 'cotin3', 1),
+('inhmt7', 'inhmt7', 2),
+('intcot', 'intcot', 1),
+('inthm1', 'inthm1', 2),
+('kyle', 'fuckyu', 2),
+('qwe', 'qweqwe', 2),
+('qwerty', 'qwerty', 2),
+('rty', 'rtyrty', 2),
+('tgh', 'tghtgh', 2),
+('wer', 'werwer', 2);
 
 -- --------------------------------------------------------
 
@@ -130,6 +117,7 @@ INSERT INTO `intacc` (`internID`, `InternPass`, `adminID`) VALUES
 --
 
 CREATE TABLE `profile_information` (
+  `id` int(11) NOT NULL,
   `internID` varchar(10) DEFAULT NULL,
   `adminID` int(11) DEFAULT NULL,
   `first_name` varchar(100) DEFAULT NULL,
@@ -149,7 +137,7 @@ CREATE TABLE `profile_information` (
   `civil_status` varchar(50) DEFAULT NULL,
   `citizenship` varchar(50) DEFAULT NULL,
   `hr_manager` varchar(100) DEFAULT NULL,
-  `faci_id` varchar(50) DEFAULT NULL,
+  `faciID` varchar(50) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
   `company_address` varchar(255) DEFAULT NULL,
   `father_name` varchar(100) DEFAULT NULL,
@@ -184,6 +172,17 @@ CREATE TABLE `profile_information` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `profile_information`
+--
+
+INSERT INTO `profile_information` (`id`, `internID`, `adminID`, `first_name`, `middle_name`, `last_name`, `course_year_sec`, `gender`, `age`, `current_address`, `provincial_address`, `tel_no`, `mobile_no`, `birth_place`, `birth_date`, `religion`, `email`, `civil_status`, `citizenship`, `hr_manager`, `faciID`, `company`, `company_address`, `father_name`, `father_occupation`, `mother_name`, `mother_occupation`, `blood_type`, `height`, `weight`, `health_problems`, `elementary_school`, `elementary_year_graduated`, `elementary_honors`, `secondary_school`, `secondary_year_graduated`, `secondary_honors`, `college`, `college_year_graduated`, `college_honors`, `company_name`, `position`, `inclusive_date`, `company_address_work_experience`, `skills`, `ref_name`, `ref_position`, `ref_address`, `ref_contact`, `emergency_name`, `emergency_address`, `emergency_contact_no`, `created_at`) VALUES
+(12, 'cot234', 1, 'cot234', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:36:03'),
+(13, 'cot345', 1, '', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'faco12', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:54:18'),
+(14, 'cotin3', 1, '', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'faco12', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 10:15:19'),
+(15, 'intcot', 1, 'intern1name', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'faco12', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 14:47:28'),
+(16, '678905', 1, 'atako', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 15:16:09');
+
 -- --------------------------------------------------------
 
 --
@@ -191,21 +190,27 @@ CREATE TABLE `profile_information` (
 --
 
 CREATE TABLE `time_logs` (
-  `internID` varchar(20) NOT NULL,
+  `id` int(11) NOT NULL,
+  `internID` varchar(255) NOT NULL,
   `adminID` int(11) NOT NULL,
-  `task` varchar(255) NOT NULL,
+  `faciID` varchar(50) NOT NULL,
   `login_time` datetime DEFAULT NULL,
   `break_time` datetime DEFAULT NULL,
   `back_to_work_time` datetime DEFAULT NULL,
-  `logout_time` datetime DEFAULT NULL
+  `task` varchar(255) DEFAULT NULL,
+  `logout_time` datetime DEFAULT NULL,
+  `status` enum('Pending','Approved','Declined') DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `time_logs`
 --
 
-INSERT INTO `time_logs` (`internID`, `adminID`, `task`, `login_time`, `break_time`, `back_to_work_time`, `logout_time`) VALUES
-('cot234', 1, '', '2024-11-06 07:55:31', '2024-11-06 07:55:39', '2024-11-06 07:55:41', NULL);
+INSERT INTO `time_logs` (`id`, `internID`, `adminID`, `faciID`, `login_time`, `break_time`, `back_to_work_time`, `task`, `logout_time`, `status`) VALUES
+(5, 'cot234', 1, 'cotfa', '2024-11-10 16:49:09', '2024-11-10 16:49:40', '2024-11-10 16:49:09', '2024-11-10 16:49:09', '2024-11-10 16:49:09', 'Approved'),
+(33, 'cot345', 1, 'faco12', '2024-11-10 22:39:31', '2024-11-10 22:39:38', '2024-11-10 22:39:49', 'cotfatask', '2024-11-10 22:40:04', 'Pending'),
+(34, 'intcot', 1, 'faco12', '2024-11-10 22:47:33', '2024-11-10 22:48:39', '2024-11-10 22:59:18', '', NULL, 'Pending'),
+(40, '678905', 1, 'cotfa', '2024-11-10 23:47:23', '2024-11-10 23:47:25', '2024-11-10 23:47:27', 'cotfatask', '2024-11-10 23:47:31', 'Approved');
 
 -- --------------------------------------------------------
 
@@ -227,8 +232,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`adminID`, `Uname`, `Upass`, `admin_profile`, `Roles`, `Firstname`) VALUES
-(1, 'admin1', 'debebar', 0x30346263643264306431333734383464633566396566663730646536336136332e706e67, 'School Intern Coordinator', 'Debebar, Maricel'),
-(2, 'admin2', 'maricel', 0x32616666643235613832353462353030356561356337346665303933633034642e676966, 'BSHM Intern Coordinator', 'Duterte, Sarah');
+(1, 'admin1', 'rodely', 0x36363034326661306136376265393664623064343135633338306662306364362e706e67, 'School Intern Coordinator', 'Gaco, Rodelyn'),
+(2, 'admin2', 'duterte', 0x33666236653330313639303131646266613033363537663163326632376565342e706e67, 'BSHM Intern Coordinator', 'Duterte, Sarah');
 
 --
 -- Indexes for dumped tables
@@ -240,13 +245,6 @@ INSERT INTO `users` (`adminID`, `Uname`, `Upass`, `admin_profile`, `Roles`, `Fir
 ALTER TABLE `announcements`
   ADD PRIMARY KEY (`announcementID`),
   ADD KEY `adminID` (`adminID`);
-
---
--- Indexes for table `developers`
---
-ALTER TABLE `developers`
-  ADD PRIMARY KEY (`dev_id`),
-  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `facacc`
@@ -266,15 +264,17 @@ ALTER TABLE `intacc`
 -- Indexes for table `profile_information`
 --
 ALTER TABLE `profile_information`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `internID` (`internID`),
-  ADD KEY `adminID` (`adminID`);
+  ADD KEY `adminID` (`adminID`),
+  ADD KEY `faciID` (`faciID`);
 
 --
 -- Indexes for table `time_logs`
 --
 ALTER TABLE `time_logs`
-  ADD PRIMARY KEY (`internID`),
-  ADD KEY `adminID` (`adminID`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_faciID` (`faciID`);
 
 --
 -- Indexes for table `users`
@@ -290,13 +290,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `announcementID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `announcementID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `developers`
+-- AUTO_INCREMENT for table `profile_information`
 --
-ALTER TABLE `developers`
-  MODIFY `dev_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `profile_information`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `time_logs`
+--
+ALTER TABLE `time_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -315,18 +321,10 @@ ALTER TABLE `announcements`
   ADD CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`adminID`) REFERENCES `users` (`adminID`);
 
 --
--- Constraints for table `profile_information`
---
-ALTER TABLE `profile_information`
-  ADD CONSTRAINT `profile_information_ibfk_1` FOREIGN KEY (`internID`) REFERENCES `intacc` (`internID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `profile_information_ibfk_2` FOREIGN KEY (`adminID`) REFERENCES `users` (`adminID`) ON DELETE CASCADE;
-
---
 -- Constraints for table `time_logs`
 --
 ALTER TABLE `time_logs`
-  ADD CONSTRAINT `time_logs_ibfk_1` FOREIGN KEY (`internID`) REFERENCES `intacc` (`internID`) ON DELETE CASCADE,
-  ADD CONSTRAINT `time_logs_ibfk_2` FOREIGN KEY (`adminID`) REFERENCES `users` (`adminID`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_faciID` FOREIGN KEY (`faciID`) REFERENCES `profile_information` (`faciID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
