@@ -332,25 +332,30 @@ body {
 }
 /*Request*/
 
-.req-content{
-  margin-left: 60px;
-  width: calc(100% - 60px);
+.req-content {
+  margin-left: 0; /* Remove the left margin to position it closer */
+  padding-left: 5px; /* Add slight padding for spacing */
+  width: calc(100% - 20px); /* Adjust width to match the reduced margin, a little narrower */
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
-.move{
-  margin-left: 250px; /* Fully shifted when sidebar is active */
-  width: calc(100% - 250px); /* Adjust width */
+
+/* When sidebar is active */
+.move {
+  margin-left: 25px; /* Shift the content slightly when the sidebar is active */
+  width: calc(100% - 40px); /* Reduce width by 280px when sidebar is active, making it narrower */
 }
+
 .req-container {
-  margin-left: 60px;
+  margin-left: 25px;
   padding: 15px 100px 15px 350px;
-  width: calc(100% - 60px);
+  width: calc(100% - 100px); /* Reduced the width here to make it a bit narrower */
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
   margin-top: 100px; /* Space between logout button and attendance container */
   font-size: 16px; /* Font size */
   font-weight: bold; /* Bold text */
-  color: black; /* Green text */
+  color: black; /* Text color */
 }
+
 .decline-button {
   padding: 10px 20px;
   font-size: 16px;
@@ -491,8 +496,521 @@ body {
 .styled-button:hover{
   filter: invert(100%);
 }
+.alert-box {
+  padding: 20px;
+  margin: 0;
+  border-radius: 5px;
+  position: fixed;  /* Fixed position to stay in place while scrolling */
+  top: 60px;         /* Position it a bit from the top */
+  right: 20px;       /* Position it a bit from the right */
+  width: 80%;        /* Set the width of the alert box */
+  max-width: 400px;  /* Set a maximum width to avoid too large alerts */
+  text-align: center;/* Center the text inside the box */
+  z-index: 1000;     /* Ensure the alert box is on top of other content */
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 16px;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
 
 
 
+/* Modal Styling */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+  transition: opacity 0.3s ease;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 80%;
+  max-width: 600px;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #e74c3c; /* Red when hovered */
+}
+
+/* Form Styling */
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #333;
+}
+
+form input[type="text"] {
+  width: calc(100% - 20px);
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+form input[type="text"]:focus {
+  border-color: #3498db; /* Blue border when focused */
+  outline: none;
+}
 
 
+.req-container h1 {
+  font-size: 24px;
+  color: #2d6a4f; /* Dark green */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 15px; /* Rounded corners */
+  overflow: hidden;
+}
+
+table th, table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #b7e4c7; /* Subtle green divider */
+}
+
+table thead th {
+  background-color: #52b788; /* Medium green */
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-bottom: 2px solid #40916c; /* Darker green */
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #d8f3dc; /* Light mint green for alternating rows */
+}
+
+table tbody tr:hover {
+  background-color: #b7e4c7; /* Light green highlight */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+table td {
+  color: #344e41; /* Darker green-gray text */
+}
+
+/* Button Styling */
+.action-button {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px; /* Smooth rounded edges */
+  text-align: center;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.action-button.approve {
+  background-color: #40916c; /* Darker green */
+  color: #fff;
+}
+
+.action-button.approve:hover {
+  background-color: #2d6a4f; /* Even darker green */
+  box-shadow: 0 3px 6px rgba(45, 106, 79, 0.3);
+}
+
+.action-button.decline {
+  background-color: #95d5b2; /* Lighter green */
+  color: #fff;
+  margin-left: 5px;
+}
+
+.action-button.decline:hover {
+  background-color: #74c69d; /* Slightly darker light green */
+  box-shadow: 0 3px 6px rgba(116, 198, 157, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  table, th, td {
+      display: block;
+      width: 100%;
+  }
+
+  table thead {
+      display: none; /* Hide header */
+  }
+
+  table tbody tr {
+      margin-bottom: 10px;
+      border: 1px solid #b7e4c7;
+      border-radius: 10px; /* Rounded edges for mobile */
+  }
+
+  table tbody td {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border: none;
+      border-bottom: 1px solid #b7e4c7;
+  }
+
+  table tbody td:before {
+      content: attr(data-label);
+      font-weight: bold;
+      color: #2d6a4f;
+  }
+}
+/* Dashboard Container */
+.intern-status-dashboard {
+  position: fixed;
+  bottom: 25px; /* Distance from the bottom */
+  right: 15px;  /* Distance from the right */
+  width: 40vw;  /* Adjust width for more balanced UI */
+  height: 60vh; 
+  background-color: #ffffff; /* White background for clean look */
+  padding: 20px; /* Add padding for better content spacing */
+  border-radius: 15px; /* Soft rounded corners for a modern look */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for focus */
+  z-index: 9999;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Smooth modern font */
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+/* Hover effect to grow the dashboard */
+.intern-status-dashboard:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover for a dynamic feel */
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15); /* Increase shadow on hover */
+}
+
+/* Title styling */
+.intern-status-dashboard h1 {
+  font-size: 1.8rem; /* Larger font size for the title */
+  margin-bottom: 20px;
+  color: #2a5d3a; /* Dark green title */
+  text-align: center;
+  font-weight: 600; /* Make the title bold for emphasis */
+  letter-spacing: 1px; /* Slightly increase space between letters */
+}
+
+/* Table Styling */
+.intern-status-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft table shadow */
+}
+
+/* Table header */
+.intern-status-table th {
+  padding: 15px;
+  background-color: #a9d5a9; /* Light green background */
+  color: #fff; /* White text for contrast */
+  text-align: left;
+  font-size: 1.1rem; /* Slightly larger text */
+  border-top-left-radius: 10px; /* Rounded corners for top-left */
+  border-top-right-radius: 10px; /* Rounded corners for top-right */
+}
+
+/* Table body */
+.intern-status-table td {
+  padding: 12px;
+  background-color: #f9f9f9; /* Subtle background color */
+  text-align: left;
+  font-size: 1rem; /* Standard font size */
+  color: #333; /* Dark text for readability */
+  border-bottom: 1px solid #ddd; /* Soft dividing lines */
+}
+
+/* Hover effect on rows */
+.intern-status-table tr:hover {
+  background-color: #f1f8f1; /* Slight green tint on hover */
+  cursor: pointer; /* Show pointer cursor to indicate interactivity */
+  transform: translateY(-2px); /* Slight row lift effect */
+  transition: all 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+/* Status-specific colors */
+.intern-status-table .active-now {
+  background-color: #90e09b; /* Soft green for active status */
+}
+
+.intern-status-table .on-break {
+  background-color: #a8e6a1; /* Light pastel green for break */
+}
+
+.intern-status-table .back-to-work {
+  background-color: #d4f1d4; /* Very light green for back to work */
+}
+
+.intern-status-table .logged-out {
+  background-color: #e0e0e0; /* Light gray for logged out status */
+  color: #777; /* Lighter text for logged-out rows */
+}
+
+/* Table cell (status) text */
+.intern-status-table td.status {
+  font-weight: 600; /* Bold status text */
+  text-transform: capitalize; /* Capitalize each word in the status */
+}
+
+/* Responsive design for mobile screens */
+@media (max-width: 768px) {
+  .intern-status-dashboard {
+    width: 80vw; /* Use more space on mobile screens */
+    height: 70vh; /* Adjust height for mobile */
+  }
+
+  .intern-status-table th, .intern-status-table td {
+    font-size: 0.9rem; /* Slightly smaller text on mobile for better fit */
+    padding: 10px; /* Reduce padding for better mobile spacing */
+  }
+
+  .intern-status-table {
+    margin-top: 5px; /* Reduce margin for better use of space */
+  }
+}
+
+
+
+/* Overall content section styling */
+.approved-logs-section {
+  padding: 40px;
+  background-color: #f4f9f9;  /* Soft background color */
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin: 30px auto;
+  max-width: 1200px;  /* Max width for larger screens */
+}
+
+/* Styling for the content wrapper */
+.approved-logs-content {
+  padding: 20px;
+  background-color: #ffffff; /* White background for the content */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styling for the "Approved Logs" */
+.approved-logs-content h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: #006400; /* Dark green */
+  margin-bottom: 20px;  /* Space below the heading */
+  text-align: left; /* Align left */
+  border-bottom: 2px solid #006400; /* Border beneath for emphasis */
+  padding-bottom: 10px;  /* Add padding below to separate heading */
+}
+
+/* Table styling */
+.approved-logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Header styling for the table */
+.approved-logs-table thead {
+  background-color: #006400; /* Dark green */
+  color: white;
+}
+
+.approved-logs-table thead th {
+  padding: 12px 15px;
+  font-size: 16px;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Body of the table */
+.approved-logs-table tbody tr {
+  background-color: #fafafa; /* Light gray background for rows */
+  transition: background-color 0.3s ease;
+}
+
+.approved-logs-table tbody tr:hover {
+  background-color: #e1f3e1; /* Light green when hovered */
+}
+
+/* Table data cells */
+.approved-logs-table tbody td {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Styling for status column */
+.approved-logs-table tbody td:nth-child(5) {
+  font-weight: bold;
+}
+
+.approved-logs-table tbody td.status-approved {
+  color: #28a745; /* Green for approved */
+}
+
+.approved-logs-table tbody td.status-pending {
+  color: #ffc107; /* Yellow for pending */
+}
+
+.approved-logs-table tbody td.status-rejected {
+  color: #dc3545; /* Red for rejected */
+}
+
+/* No data message styling */
+.approved-logs-content p {
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+}
+
+/* Responsive Design: Adjust table width and layout for smaller screens */
+@media (max-width: 768px) {
+  .approved-logs-section {
+      padding: 20px;
+  }
+
+  .approved-logs-content h2 {
+      font-size: 24px;
+  }
+
+  .approved-logs-table {
+      font-size: 12px;
+  }
+
+  .approved-logs-table thead th, .approved-logs-table tbody td {
+      padding: 10px 12px;
+  }
+}
+
+
+/* Enhanced Announcement Board */
+.announcement-board {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  border: solid 4px #dc3545; /* Solid red border */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  transition: transform 0.3s ease;
+}
+.announcement-board:hover {
+  transform: translateY(-2px);
+}
+
+.announcement-board h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #e15c15;
+  text-align: center; /* Center the heading */
+
+
+}
+.anno-img {
+  position: absolute; /* Position the image absolutely within the parent */
+  top: 11%; /* Align to the top */
+  left: 0; /* Align to the left */
+  max-width: 18%; /* Set maximum width to be responsive */
+  height: auto; /* Maintain aspect ratio */
+}
+
+
+
+.announcement-slider {
+  position: relative;
+  width: 100%;
+  max-width: 800px; /* Adjust as needed */
+  margin: 0 auto;
+  background-color: #CFFFE5; /* Pastel Mint Green */
+  border: 1px solid #ccc; /* Optional border */
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden; /* Hide overflow */
+}
+
+.slider-container {
+  display: flex; /* Use flexbox for layout */
+  transition: transform 0.5s ease; /* Smooth transition */
+}
+
+.announcement-item {
+  min-width: 100%; /* Each item takes full width */
+  display: none; /* Hide all items by default */
+  padding: 20px; /* Optional padding */
+  text-align: center; /* Center text */
+  background-color: white;
+
+}
+
+.announcement-item.active {
+  display: block; /* Show only the active item */
+
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #ffffff; /* White background */
+  border: none;
+  border-radius: 35px; /* Rounded corners */
+  cursor: pointer;
+  padding: 10px; /* Padding */
+}
+
+.prev {
+  left: 10px; /* Position left */
+}
+
+.next {
+  right: 10px; /* Position right */
+}
+
+/* Hover effects for buttons */
+.prev:hover, .next:hover {
+  background-color: #e0e0e0; /* Light gray on hover */
+}

@@ -7,44 +7,40 @@ session_start(); // Start the session
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $faciID = $_POST['Uname'];
-  $faciPass = $_POST['Upass'];
+    $faciID = $_POST['Uname'];
+    $faciPass = $_POST['Upass'];
 
-  // Fetch the user from the database using PDO
-  $sql = "SELECT * FROM facacc WHERE faciID = :faciID"; // Use a named parameter
-  $stmt = $conn->prepare($sql);
-  $stmt->bindParam(':faciID', $faciID); // Bind the parameter
-  $stmt->execute();
+    // Fetch the user from the database using PDO
+    $sql = "SELECT * FROM facacc WHERE faciID = :faciID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':faciID', $faciID);
+    $stmt->execute();
 
-  echo "SQL Query: $sql with Uname: $faciID<br>"; // Debugging line
+    // Debugging line (should be removed in production)
+    // echo "SQL Query: $sql with Uname: $faciID<br>";
 
-  if ($stmt->rowCount() > 0) {
-      // User found
-      $user = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch user data as an associative array
+    if ($stmt->rowCount() > 0) {
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      // Verify password
-      if ($faciPass === $user['faciPass']) { // Correctly access faciPass from $user
-          // Store user information in session
-          $_SESSION['Uname'] = $faciID;
-          echo "Login successful! Welcome, " . $_SESSION['Uname'] . "!<br>";
-          // Redirect to the dashboard or next page
-          header("Location: faci_facilitator.html");
-          exit();
-      } else {
-          echo "Password does not match.<br>"; // Debugging line
-      }
-  } else {
-      // No user found
-      echo "No user found with the provided FaciID.<br>"; // Debugging line
-  }
+        // Verify password (use hashing in production)
+        if ($faciPass === $user['faciPass']) {
+            $_SESSION['Uname'] = $faciID;
+            // Redirect to the dashboard or next page
+            header("Location: faci_facilitator.php");
+            exit();
+        } else {
+            echo "Password does not match.<br>"; // Debugging line (remove in production)
+        }
+    } else {
+        echo "No user found with the provided FaciID.<br>"; // Debugging line (remove in production)
+    }
 
-  $stmt = null; // Close the statement
+    $stmt = null; // Close the statement
 }
 $conn = null; // Close the connection
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
