@@ -42,11 +42,7 @@ CREATE TABLE `announcements` (
 
 INSERT INTO `announcements` (`announcementID`, `adminID`, `title`, `content`, `imagePath`, `datePosted`) VALUES
 (1, 2, 'test1', 'test1', './uploaded_files/3fb6e30169011dbfa03657f1c2f27ee4.png', '2024-10-27 05:00:42'),
-(2, 2, 'test2', 'test2', './uploaded_files/1804847dfc37dcb00eb2df0bd08439e0.png', '2024-10-27 05:00:53'),
-(8, 1, 'test1 with pdf', 'test1 with pdf', './uploaded_files/test2.pdf', '2024-10-27 15:27:56'),
-(9, 1, 'gaco anouce', 'gaco anouce', './uploaded_files/gaco.pdf', '2024-10-27 19:57:44'),
-(10, 1, 'test2 ni gaco', 'metting at lobby', './uploaded_files/gaco.pdf', '2024-10-27 19:59:09'),
-(11, 1, 'test3with', 'test3with', './uploaded_files/gaco.pdf', '2024-10-27 21:13:22');
+(2, 1, 'test3with', 'test3with', './uploaded_files/gaco.pdf', '2024-10-27 21:13:22');
 
 -- --------------------------------------------------------
 
@@ -66,17 +62,7 @@ CREATE TABLE `facacc` (
 
 INSERT INTO `facacc` (`faciID`, `faciPass`, `adminID`) VALUES
 ('bshmf', 'bshmf', 2),
-('cotfa', 'asdfgh', 1),
-('dfg', 'dfgdfg', 2),
-('faco12', 'faco12', 1),
-('fahm1', 'fahm1', 2),
-('fahm2', 'fahm2', 2),
-('fahmt', 'fahmt', 2),
-('fahmt1', 'fahmt1', 2),
-('fahmt3', 'fahmt3', 2),
-('fahmt5', 'fahmt5', 2),
-('inter', 'inter', 0),
-('poi', 'poipoi', 2);
+('cotfa', 'asdfgh', 1);
 
 -- --------------------------------------------------------
 
@@ -95,19 +81,8 @@ CREATE TABLE `intacc` (
 --
 
 INSERT INTO `intacc` (`internID`, `InternPass`, `adminID`) VALUES
-('', 'e4266470', 2),
+
 ('678905', '678905', 1),
-('cot234', 'cot234', 1),
-('cot345', 'cot345', 1),
-('cotin3', 'cotin3', 1),
-('inhmt7', 'inhmt7', 2),
-('intcot', 'intcot', 1),
-('inthm1', 'inthm1', 2),
-('kyle', 'fuckyu', 2),
-('qwe', 'qweqwe', 2),
-('qwerty', 'qwerty', 2),
-('rty', 'rtyrty', 2),
-('tgh', 'tghtgh', 2),
 ('wer', 'werwer', 2);
 
 -- --------------------------------------------------------
@@ -177,11 +152,8 @@ CREATE TABLE `profile_information` (
 --
 
 INSERT INTO `profile_information` (`id`, `internID`, `adminID`, `first_name`, `middle_name`, `last_name`, `course_year_sec`, `gender`, `age`, `current_address`, `provincial_address`, `tel_no`, `mobile_no`, `birth_place`, `birth_date`, `religion`, `email`, `civil_status`, `citizenship`, `hr_manager`, `faciID`, `company`, `company_address`, `father_name`, `father_occupation`, `mother_name`, `mother_occupation`, `blood_type`, `height`, `weight`, `health_problems`, `elementary_school`, `elementary_year_graduated`, `elementary_honors`, `secondary_school`, `secondary_year_graduated`, `secondary_honors`, `college`, `college_year_graduated`, `college_honors`, `company_name`, `position`, `inclusive_date`, `company_address_work_experience`, `skills`, `ref_name`, `ref_position`, `ref_address`, `ref_contact`, `emergency_name`, `emergency_address`, `emergency_contact_no`, `created_at`) VALUES
-(12, 'cot234', 1, 'cot234', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:36:03'),
-(13, 'cot345', 1, '', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'faco12', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:54:18'),
-(14, 'cotin3', 1, '', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'faco12', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 10:15:19'),
-(15, 'intcot', 1, 'intern1name', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'faco12', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 14:47:28'),
-(16, '678905', 1, 'atako', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 15:16:09');
+(1, 'cot234', 1, 'cot234', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:36:03'),
+(2, '678905', 2, 'atako', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 15:16:09');
 
 -- --------------------------------------------------------
 
@@ -207,10 +179,8 @@ CREATE TABLE `time_logs` (
 --
 
 INSERT INTO `time_logs` (`id`, `internID`, `adminID`, `faciID`, `login_time`, `break_time`, `back_to_work_time`, `task`, `logout_time`, `status`) VALUES
-(5, 'cot234', 1, 'cotfa', '2024-11-10 16:49:09', '2024-11-10 16:49:40', '2024-11-10 16:49:09', '2024-11-10 16:49:09', '2024-11-10 16:49:09', 'Approved'),
-(33, 'cot345', 1, 'faco12', '2024-11-10 22:39:31', '2024-11-10 22:39:38', '2024-11-10 22:39:49', 'cotfatask', '2024-11-10 22:40:04', 'Pending'),
-(34, 'intcot', 1, 'faco12', '2024-11-10 22:47:33', '2024-11-10 22:48:39', '2024-11-10 22:59:18', '', NULL, 'Pending'),
-(40, '678905', 1, 'cotfa', '2024-11-10 23:47:23', '2024-11-10 23:47:25', '2024-11-10 23:47:27', 'cotfatask', '2024-11-10 23:47:31', 'Approved');
+(1, 'cot234', 1, 'cotfa', '2024-11-10 16:49:09', '2024-11-10 16:49:40', '2024-11-10 16:49:09', '2024-11-10 16:49:09', '2024-11-10 16:49:09', 'Approved'),
+(2, '678905', 1, 'cotfa', '2024-11-10 23:47:23', '2024-11-10 23:47:25', '2024-11-10 23:47:27', 'cotfatask', '2024-11-10 23:47:31', 'Approved');
 
 -- --------------------------------------------------------
 

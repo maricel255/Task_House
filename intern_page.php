@@ -324,13 +324,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
         $stmtFetch->execute();
         $adminID = $stmtFetch->fetchColumn();
 
-       
         // Insert new profile
         $sql = "INSERT INTO profile_information (
             internID, adminID, first_name, middle_name, last_name, 
-            course_year_sec, gender, age, current_address, provincial_address,
+            course_year_sec, school, gender, age, current_address, provincial_address,
             tel_no, mobile_no, birth_place, birth_date, religion,
-            email, civil_status, citizenship, hr_manager,faciID,
+            email, civil_status, citizenship, hr_manager, faciID, 
+            facilitator_email, start_shift, end_shift, required_hours, date_start, date_end,
             company, company_address, father_name, father_occupation,
             mother_name, mother_occupation, blood_type, height,
             weight, health_problems, elementary_school, elementary_year_graduated,
@@ -341,9 +341,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
             emergency_name, emergency_address, emergency_contact_no
         ) VALUES (
             :internID, :adminID, :firstName, :middleName, :lastName,
-            :courseYearSec, :gender, :age, :currentAddress, :provincialAddress,
+            :courseYearSec, :school, :gender, :age, :currentAddress, :provincialAddress,
             :telNo, :mobileNo, :birthPlace, :birthDate, :religion,
             :email, :civilStatus, :citizenship, :hrManager, :faciID,
+            :facilitatorEmail, :startShift, :endShift, :reqHrs, :dateStart, :dateEnd,
             :company, :companyAddress, :fatherName, :fatherOccupation,
             :motherName, :motherOccupation, :bloodType, :height,
             :weight, :healthProblems, :elementarySchool, :elementaryYearGraduated,
@@ -363,6 +364,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
         $stmt->bindParam(':middleName', $_POST['middleName']);
         $stmt->bindParam(':lastName', $_POST['lastName']);
         $stmt->bindParam(':courseYearSec', $_POST['courseYearSec']);
+        $stmt->bindParam(':school', $_POST['school']);
         $stmt->bindParam(':gender', $_POST['gender']);
         $stmt->bindParam(':age', $_POST['age']);
         $stmt->bindParam(':currentAddress', $_POST['currentAddress']);
@@ -377,6 +379,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
         $stmt->bindParam(':citizenship', $_POST['citizenship']);
         $stmt->bindParam(':hrManager', $_POST['hrManager']);
         $stmt->bindParam(':faciID', $_POST['faciID']);
+        $stmt->bindParam(':facilitatorEmail', $_POST['facilitatorEmail']);
+        $stmt->bindParam(':startShift', $_POST['startShift']);
+        $stmt->bindParam(':endShift', $_POST['endShift']);
+        $stmt->bindParam(':reqHrs', $_POST['reqHrs']);
+        $stmt->bindParam(':dateStart', $_POST['dateStart']);
+        $stmt->bindParam(':dateEnd', $_POST['dateEnd']);
         $stmt->bindParam(':company', $_POST['company']);
         $stmt->bindParam(':companyAddress', $_POST['companyAddress']);
         $stmt->bindParam(':fatherName', $_POST['fatherName']);
@@ -749,6 +757,11 @@ if (isset($_SESSION['alertMessage'])) {
                                 value="<?php echo htmlspecialchars($profileData['course_year_sec'] ?? ''); ?>"
                                 <?php echo $profileData ? 'readonly' : ''; ?>>
 
+                                <label>School:</label>
+                            <input type="text" name="school" 
+                                value="<?php echo htmlspecialchars($profileData['school'] ?? ''); ?>"
+                                <?php echo $profileData ? 'readonly' : ''; ?>>
+
                             <label>Gender:</label>
                             <?php if ($profileData): ?>
                                 <!-- Display readonly radio buttons -->
@@ -835,7 +848,6 @@ if (isset($_SESSION['alertMessage'])) {
                         <label for="faciID">Facilitator ID:</label>
                         <select name="faciID" id="faciID" <?php echo $profileData ? 'disabled' : ''; ?>>
                             <option value="">Select Facilitator ID</option>
-                            
                             <?php foreach ($faciIDs as $faci): ?>
                                 <option value="<?php echo htmlspecialchars($faci['faciID']); ?>"
                                     <?php echo (isset($profileData['faciID']) && $profileData['faciID'] == $faci['faciID']) || (isset($_POST['faciID']) && $_POST['faciID'] == $faci['faciID']) ? 'selected' : ''; ?>>
@@ -843,6 +855,38 @@ if (isset($_SESSION['alertMessage'])) {
                                 </option>
                             <?php endforeach; ?>
                         </select>
+
+                            <label>Facilitator Email:</label>
+                    <input type="email" name="facilitatorEmail" 
+                        value="<?php echo htmlspecialchars($profileData['facilitator_email'] ?? ''); ?>"
+                        <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>Start Shift:</label>
+                    <input type="time" name="startShift" 
+                        value="<?php echo htmlspecialchars($profileData['start_shift'] ?? ''); ?>"
+                        <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>End Shift:</label>
+                    <input type="time" name="endShift" 
+                        value="<?php echo htmlspecialchars($profileData['end_shift'] ?? ''); ?>"
+                        <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>Required Hours:</label>
+                    <input type="number" name="reqHrs" 
+                        value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
+                        <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>Date Start:</label>
+                    <input type="date" name="dateStart" 
+                        value="<?php echo htmlspecialchars($profileData['date_start'] ?? ''); ?>"
+                        <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>Date End:</label>
+                    <input type="date" name="dateEnd" 
+                        value="<?php echo htmlspecialchars($profileData['date_end'] ?? ''); ?>"
+                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                            
+                            
 
 
                     <label>Company:</label>
