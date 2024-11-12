@@ -132,3 +132,24 @@ function printPDF() {
     printWindow.document.close();
     printWindow.print();
 }
+function openModal(internID) {
+    // Fetch details for the clicked internID
+    var modal = document.getElementById('modal');
+    modal.style.display = "block";
+
+    // Optionally, you can use AJAX to fetch the data dynamically without page reload
+    // Here, I am assuming the modal will show the details rendered on the server side
+}
+
+function closeModal() {
+    var modal = document.getElementById('modal');
+    modal.style.display = "none";
+}
+
+// Close the modal if the user clicks anywhere outside the modal
+window.onclick = function(event) {
+    var modal = document.getElementById('modal');
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
