@@ -451,6 +451,89 @@ if (isset($_SESSION['alertMessage'])) {
 }
 
 
+// Handle password update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])) {
+    $internID = $_SESSION['internID'];
+    $currentPassword = $_POST['currentPassword'];
+    $newPassword = $_POST['newPassword'];
+    $confirmPassword = $_POST['confirmPassword'];
+
+    try {
+        // Handle image upload if a file was submitted
+        if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = 'uploaded_files/profile_images/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $fileExtension = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (!in_array($fileExtension, $allowedTypes)) {
+                throw new Exception('Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.');
+            }
+
+            $maxFileSize = 5 * 1024 * 1024; // 5MB
+            if ($_FILES['profile_image']['size'] > $maxFileSize) {
+                throw new Exception('File size too large. Maximum size is 5MB.');
+            }
+
+            $fileName = 'profile_' . $internID . '_' . time() . '.' . $fileExtension;
+            $targetPath = $uploadDir . $fileName;
+
+            if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
+                // Update database with new image path
+                $updateImageSql = "UPDATE intacc SET profile_image = :profile_image WHERE internID = :internID";
+                $updateImageStmt = $conn->prepare($updateImageSql);
+                $updateImageStmt->bindParam(':profile_image', $targetPath);
+                $updateImageStmt->bindParam(':internID', $internID);
+                $updateImageStmt->execute();
+            }
+        }
+
+        // First verify the current password
+        $sql = "SELECT internPass FROM intacc WHERE internID = :internID";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID);
+        $stmt->execute();
+        $storedPassword = $stmt->fetchColumn();
+
+        // Direct comparison since passwords might not be hashed in your database
+        if ($currentPassword !== $storedPassword) {
+            $alertMessage = "Current password is incorrect";
+        }
+        // Verify new password requirements
+        else if (strlen($newPassword) < 6) {
+            $alertMessage = "Password must be at least 6 characters long";
+        }
+        else if ($newPassword !== $confirmPassword) {
+            $alertMessage = "New passwords do not match";
+        }
+        else {
+            // Update the password (without hashing since your DB uses plain text)
+            $updateSql = "UPDATE intacc SET internPass = :password WHERE internID = :internID";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bindParam(':password', $newPassword);
+            $updateStmt->bindParam(':internID', $internID);
+            
+            if ($updateStmt->execute()) {
+                $alertMessage = "Password updated successfully!";
+                echo "<script>
+                    setTimeout(function() {
+                        document.getElementById('credentialsModal').style.display = 'none';
+                    }, 2000);
+                </script>";
+            } else {
+                $alertMessage = "Failed to update password";
+            }
+        }
+
+    } catch (PDOException $e) {
+        $alertMessage = "Database error: " . $e->getMessage();
+    } catch (Exception $e) {
+        $alertMessage = $e->getMessage();
+    }
+}
 
 
 
@@ -470,18 +553,18 @@ if (isset($_SESSION['alertMessage'])) {
 <body>
         <!-- Display alert message if exists -->
         <?php
-    if (isset($_SESSION['alertMessage'])) {
-        $alertClass = isset($_SESSION['alertType']) && $_SESSION['alertType'] === 'error' ? 'alert-error' : 'alert-success';
-        echo "<div class='alert-box {$alertClass}'>";
-        echo "<span>" . $_SESSION['alertMessage'] . "</span>";
-        echo "<button class='close-btn' onclick='this.parentElement.style.display=\"none\"'>×</button>";
-        echo "</div>";
+            if (isset($_SESSION['alertMessage'])) {
+                $alertClass = isset($_SESSION['alertType']) && $_SESSION['alertType'] === 'error' ? 'alert-error' : 'alert-success';
+                echo "<div class='alert-box {$alertClass}'>";
+                echo "<span>" . $_SESSION['alertMessage'] . "</span>";
+                echo "<button class='close-btn' onclick='this.parentElement.style.display=\"none\"'>×</button>";
+                echo "</div>";
 
-        // Clear the alert message
-        unset($_SESSION['alertMessage']);
-        unset($_SESSION['alertType']);
-    }
-    ?>
+                // Clear the alert message
+                unset($_SESSION['alertMessage']);
+                unset($_SESSION['alertType']);
+            }
+        ?>
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar hide-content">
@@ -525,7 +608,9 @@ if (isset($_SESSION['alertMessage'])) {
         <!-- Header -->
         <div class="header" id="header">
         
-               
+                <button onclick="openCredentialsModal()" class="settings-btn">
+                    <img src="image/USER_ICON.png" alt="Settings" class="settings-icon">
+                </button>
             <button class="logout-btn" onclick="logout()">
                 <img src="image/logout.png" alt="logout icon" class="logout-icon">
                 | LOG OUT
@@ -533,38 +618,41 @@ if (isset($_SESSION['alertMessage'])) {
         </div>
     </div>
 
+ 
     <div id="credentialsModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeCredentialsModal()">&times;</span>
-        <h2>Update Password</h2>
-        <!-- Important: Add a unique form name -->
-        <form id="credentialsForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-            <div class="form-group">
-                <label>Intern Name:</label>
-                <input type="text" id="internName" 
-                    value="<?php echo htmlspecialchars($profileData['first_name'] ?? ''); ?> <?php echo htmlspecialchars($profileData['last_name'] ?? ''); ?>"
-                    readonly 
-                    style="background-color: #f5f5f5; border: 1px solid #ddd;">
-            </div>
-            
-            <div class="form-group">
-                <label>Current Password:</label>
-                <input type="password" name="currentPassword" required>
-            </div>
-            
-            <div class="form-group">
-                <label>New Password:</label>
-                <input type="password" name="newPassword" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Confirm Password:</label>
-                <input type="password" name="confirmPassword" required>
-            </div>
-            
-            <button type="submit" name="update_credentials" class="create-button">Update Password</button>
-        </form>
-    </div>
+        <div class="modal-content">
+            <span class="close" onclick="closeCredentialsModal()">&times;</span>
+
+                
+            <h2>Update Password</h2>
+            <!-- Important: Add a unique form name -->
+            <form id="credentialsForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                <div class="form-group">
+                    <label>Intern Name:</label>
+                    <input type="text" id="internName" 
+                        value="<?php echo htmlspecialchars($profileData['first_name'] ?? ''); ?> <?php echo htmlspecialchars($profileData['last_name'] ?? ''); ?>"
+                        readonly 
+                        style="background-color: #f5f5f5; border: 1px solid #ddd;">
+                </div>  
+                
+                <div class="form-group">
+                    <label>Current Password:</label>
+                    <input type="password" name="currentPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>New Password:</label>
+                    <input type="password" name="newPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirm Password:</label>
+                    <input type="password" name="confirmPassword" required>
+                </div>
+                
+                <button type="submit" name="update_credentials" class="create-button">Update Password</button>
+            </form>
+        </div>
 </div>
 
     <!-- Main Content -->

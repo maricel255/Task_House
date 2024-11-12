@@ -174,3 +174,28 @@ window.onclick = function(event) {
     document.getElementById('profileModal').style.display = 'block';
   }
   
+ // Close the modal (function remains the same)
+ function closeModal() {
+    document.getElementById('profileModal').style.display = 'none';
+  }
+  
+  // Open the modal (for testing, you can call this to show the modal)
+  function openModal() {
+    document.getElementById('profileModal').style.display = 'block';
+  }
+  function openCredentialsModal() {
+    document.getElementById('credentialsModal').style.display = 'block';
+}
+
+function closeCredentialsModal() {
+    document.getElementById('credentialsModal').style.display = 'none';
+    document.getElementById('credentialsForm').reset();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('credentialsModal');
+    if (event.target === modal) {
+        closeCredentialsModal();
+    }
+}
