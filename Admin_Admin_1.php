@@ -562,10 +562,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 
 // Prepare and execute the query using PDO
-$sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+$sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 $stmt = $conn->prepare($sql);
 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
 $stmt->execute();   
+
 
 
 
@@ -752,126 +753,176 @@ $stmt->execute();
 </div>
 
 <div class="content-section" id="Intern_profile">
-    <div class=intern-profile>
-    <h1>Intern Profile</h1>
+    <div class="intern-profile">
+        <h1>Intern Profile</h1>
 
-    <!-- Search Form -->
-    <form method="post" action="">
-        <label for="searchField">Search:</label>
-        <input type="text" id="searchField" name="searchField" placeholder="Enter search term" >
-        <label for="searchBy">Search By:</label>
-        <select id="searchBy" name="searchBy">
-            <option value="all">All</option> <!-- Option to view all records -->
-            <option value="internID">Intern ID</option>
-            <option value="internName">Name</option>
-            <option value="email">Email</option>
-            <option value="requiredHours">Required Hours</option>
-            <option value="courseSection">Course Section</option>
-            <option value="dateStarted">Date Started</option>
-            <option value="dateEnded">Date Ended</option>
-            <option value="dob">DOB</option>
-            <option value="facilitatorName">Facilitator Name</option>
-            <option value="facilitatorEmail">Facilitator Email</option>
-            <option value="gender">Gender</option>
-            <option value="companyName">Company Name</option>
-            <option value="shiftStart">Shift Start</option>
-            <option value="shiftEnd">Shift End</option>
-            <option value="facilitatorID">Facilitator ID</option>
-        </select>
-        <input type="submit" value="Search">
-    </form>
+        <!-- Search Form -->
+        <form method="post" action="">
+            <label for="searchField">Search:</label>
+            <input type="text" id="searchField" name="searchField" placeholder="Enter search term">
+            <label for="searchBy">Search By:</label>
+            <select id="searchBy" name="searchBy">
+                    <option value="all">All</option>
+                    <option value="internID">Intern ID</option>
+                    <option value="first_name">First Name</option>
+                    <option value="middle_name">Middle Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="course_year_sec">Course Year/Section</option>
+                    <option value="gender">Gender</option>
+                    <option value="age">Age</option>
+                    <option value="current_address">Current Address</option>
+                    <option value="provincial_address">Provincial Address</option>
+                    <option value="tel_no">Telephone No</option>
+                    <option value="mobile_no">Mobile No</option>
+                    <option value="birth_place">Birth Place</option>
+                    <option value="birth_date">Birth Date</option>
+                    <option value="religion">Religion</option>
+                    <option value="email">Email</option>
+                    <option value="civil_status">Civil Status</option>
+                    <option value="citizenship">Citizenship</option>
+                    <option value="hr_manager">HR Manager</option>
+                    <option value="faciID">Facilitator ID</option>
+                    <option value="company">Company</option>
+                    <option value="company_address">Company Address</option>
+                    <option value="father_name">Father Name</option>
+                    <option value="father_occupation">Father Occupation</option>
+                    <option value="mother_name">Mother Name</option>
+                    <option value="mother_occupation">Mother Occupation</option>
+                    <option value="blood_type">Blood Type</option>
+                    <option value="height">Height</option>
+                    <option value="weight">Weight</option>
+                    <option value="health_problems">Health Problems</option>
+                    <option value="elementary_school">Elementary School</option>
+                    <option value="elementary_year_graduated">Elementary Year Graduated</option>
+                    <option value="elementary_honors">Elementary Honors</option>
+                    <option value="secondary_school">Secondary School</option>
+                    <option value="secondary_year_graduated">Secondary Year Graduated</option>
+                    <option value="secondary_honors">Secondary Honors</option>
+                    <option value="college">College</option>
+                    <option value="college_year_graduated">College Year Graduated</option>
+                    <option value="college_honors">College Honors</option>
+                    <option value="company_name">Company Name (Work Experience)</option>
+                    <option value="position">Position</option>
+                    <option value="inclusive_date">Inclusive Date</option>
+                    <option value="company_address_work_experience">Company Address (Work Experience)</option>
+                    <option value="skills">Skills</option>
+                    <option value="ref_name">Reference Name</option>
+                    <option value="ref_position">Reference Position</option>
+                    <option value="ref_address">Reference Address</option>
+                    <option value="ref_contact">Reference Contact</option>
+                    <option value="emergency_name">Emergency Contact Name</option>
+                    <option value="emergency_address">Emergency Address</option>
+                    <option value="emergency_contact_no">Emergency Contact No</option>
+                </select>
 
-    
-    <?php
-    // Prepare the base SQL query using PDO
-    $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+            <input type="submit" value="Search">
+        </form>
 
-    // Check if a search is submitted
-    if (isset($_POST['searchField']) && isset($_POST['searchBy'])) {
-        $searchField = $_POST['searchField'];
-        $searchBy = $_POST['searchBy'];
+        <?php
 
-        // Check if the 'All' option is selected
-        if ($searchBy === 'all') {
-            // No additional filtering needed, query remains the same
-        } else {
-            // Use the equality operator for exact matches
-            $sql .= " AND $searchBy = :searchField"; // Use = for exact matches
+        
+        // Prepare the base SQL query
+        $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
+
+        // Determine the column to be displayed
+        $searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
+        $searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
+
+        // Add condition to search by the selected field
+        if ($searchBy !== 'all') {
+            $sql .= " AND $searchBy = :searchField"; 
         }
+
+        // Prepare and execute the query
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+
+        // Bind the search field parameter if it's not 'All'
+        if (isset($searchField) && $searchBy !== 'all') {
+            $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // No wildcards for exact matches
+        }
+
+        // Execute the statement
+        $stmt->execute();
+ // Check if there are results
+ if ($stmt->rowCount() > 0) {
+    // Fetch all records
+    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Start the table
+    echo '<table>';
+    echo '<tr>';
+    echo '<th>#</th>'; // Add a column for numbering
+    echo '<th>Intern ID</th>';
+
+    // Dynamically create headers based on the selected search criteria
+    if ($searchBy !== 'all') {
+        echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
     }
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+    echo '</tr>';
 
-    // Bind the search field parameter if it's not 'All'
-    if (isset($searchField) && $searchBy !== 'all') {
-        $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // No wildcards for exact matches
+    // Counter for enumeration
+    $counter = 1;
+
+    // Loop through the records and display each field
+    foreach ($records as $row) {
+        echo '<tr>';
+        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+
+        // Display the selected search column based on search criteria
+        if ($searchBy !== 'all') {
+            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+        }
+
+        // Add a button to view more details
+        echo '<td>';
+        echo '<form method="post" action="">';
+        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
+        echo '<input type="submit" value="View Details">';
+        echo '</form>';
+        echo '</td>';
+
+        echo '</tr>';
     }
 
-    // Execute the statement
-    $stmt->execute();
+    echo '</table>';
+ // Check if the internID is set and display the corresponding details
+ if (isset($_POST['internID'])) {
+    $internID = $_POST['internID'];
+    
+    // Prepare SQL to fetch details for the selected internID
+    $detailSql = "SELECT * FROM profile_information WHERE internID = :internID";
+    $detailStmt = $conn->prepare($detailSql);
+    $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+    $detailStmt->execute();
 
-    // Check if there are results
-    if ($stmt->rowCount() > 0) {
-        // Fetch all records
-        $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Check if the intern exists
+    if ($detailStmt->rowCount() > 0) {
+        $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
 
-        // Display the table
+        // Display the details in a readable format
+        echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
         echo '<table>';
-        echo '<tr>
-                <th>Profile Image</th>
-                <th>Intern ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Required Hours</th>
-                <th>Course Section</th>
-                <th>Date Started</th>
-                <th>Date Ended</th>
-                <th>DOB</th>
-                <th>Facilitator Name</th>
-                <th>Facilitator Email</th>
-                <th>Gender</th>
-                <th>Company Name</th>
-                <th>Shift Start</th>
-                <th>Shift End</th>
-                <th>Facilitator ID</th>
-              </tr>';
-
-        // Fetch and display the intern records
-        foreach ($records as $row) {
+        foreach ($internDetails as $key => $value) {
             echo '<tr>';
-            echo '<td><img src="' . htmlspecialchars($row['profileImage']) . '" alt="Profile Image" style="width:50px; height:50px; border-radius:50%;"></td>'; // Display the profile image
-            echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['internName']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['email']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['requiredHours']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['courseSection']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['dateStarted']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['dateEnded']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['dob']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['facilitatorName']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['facilitatorEmail']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['gender']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['companyName']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['shiftStart']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['shiftEnd']) . '</td>';
-            echo '<td>' . htmlspecialchars($row['facilitatorID']) . '</td>';
+            echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
+            echo '<td>' . htmlspecialchars($value) . '</td>';
             echo '</tr>';
         }
-
         echo '</table>';
     } else {
-        echo '<p>No records found for your search!</p>'; // Updated message
+        echo '<p>No details found for the selected Intern ID.</p>';
     }
-    ?>
-        <button onclick="printPDF()">Print as PDF</button>
+}
 
-    </div>
-
+} else {
+echo '<p>No records found for your search!</p>';
+}
+?>
 </div>
-
-
-
+</div>
 
 
 <div class="content-section" id="Intern_Account">
