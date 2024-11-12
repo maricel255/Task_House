@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2024 at 06:02 PM
+-- Generation Time: Nov 12, 2024 at 01:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -42,7 +42,11 @@ CREATE TABLE `announcements` (
 
 INSERT INTO `announcements` (`announcementID`, `adminID`, `title`, `content`, `imagePath`, `datePosted`) VALUES
 (1, 2, 'test1', 'test1', './uploaded_files/3fb6e30169011dbfa03657f1c2f27ee4.png', '2024-10-27 05:00:42'),
-(2, 1, 'test3with', 'test3with', './uploaded_files/gaco.pdf', '2024-10-27 21:13:22');
+(2, 2, 'test2', 'test2', './uploaded_files/1804847dfc37dcb00eb2df0bd08439e0.png', '2024-10-27 05:00:53'),
+(8, 1, 'test1 with pdf', 'test1 with pdf', './uploaded_files/test2.pdf', '2024-10-27 15:27:56'),
+(9, 1, 'gaco anouce', 'gaco anouce', './uploaded_files/gaco.pdf', '2024-10-27 19:57:44'),
+(10, 1, 'test2 ni gaco', 'metting at lobby', './uploaded_files/gaco.pdf', '2024-10-27 19:59:09'),
+(11, 1, 'test3with', 'test3with', './uploaded_files/gaco.pdf', '2024-10-27 21:13:22');
 
 -- --------------------------------------------------------
 
@@ -81,7 +85,6 @@ CREATE TABLE `intacc` (
 --
 
 INSERT INTO `intacc` (`internID`, `InternPass`, `adminID`) VALUES
-
 ('678905', '678905', 1),
 ('wer', 'werwer', 2);
 
@@ -180,7 +183,8 @@ CREATE TABLE `time_logs` (
 
 INSERT INTO `time_logs` (`id`, `internID`, `adminID`, `faciID`, `login_time`, `break_time`, `back_to_work_time`, `task`, `logout_time`, `status`) VALUES
 (1, 'cot234', 1, 'cotfa', '2024-11-10 16:49:09', '2024-11-10 16:49:40', '2024-11-10 16:49:09', '2024-11-10 16:49:09', '2024-11-10 16:49:09', 'Approved'),
-(2, '678905', 1, 'cotfa', '2024-11-10 23:47:23', '2024-11-10 23:47:25', '2024-11-10 23:47:27', 'cotfatask', '2024-11-10 23:47:31', 'Approved');
+(2, '678905', 1, 'cotfa', '2024-11-10 23:47:23', '2024-11-10 23:47:25', '2024-11-10 23:47:27', 'cotfatask', '2024-11-10 23:47:31', 'Approved'),
+(41, '678905', 1, 'cotfa', '2024-11-12 07:32:17', NULL, NULL, '', NULL, 'Pending');
 
 -- --------------------------------------------------------
 
@@ -272,7 +276,7 @@ ALTER TABLE `profile_information`
 -- AUTO_INCREMENT for table `time_logs`
 --
 ALTER TABLE `time_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `users`
