@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->execute();
             
             // Redirect to the admin page or display success message
-            header("Location: test.php"); // Adjust the redirect as needed
+            header("Location: Admin_Admin_1.php"); // Adjust the redirect as needed
             exit();
 
         } catch (PDOException $e) {
@@ -562,11 +562,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
 
 // Prepare and execute the query using PDO
-$sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
+$sql = "SELECT * FROM intacc WHERE adminID = :adminID";
 $stmt = $conn->prepare($sql);
 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
 $stmt->execute();   
-
 
 
 
@@ -602,7 +601,7 @@ $stmt->execute();
                     <span class="close" onclick="closeModal('myModal')">&times;</span>
                     <h2>My Profile</h2>
 
-                    <form id="updateProfileForm" method="POST" action="test.php" enctype="multipart/form-data">
+                    <form id="updateProfileForm" method="POST" action=" " enctype="multipart/form-data">
                         <!-- Display error messages if any -->
                         <?php if (!empty($messages)): ?>
                             <div class="error-messages" style="color: red;">
@@ -619,17 +618,17 @@ $stmt->execute();
 
                         <div class="form-group">
                             <label for="currentUpass">Current Password:</label>
-                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required>
+                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" >
                         </div>
 
                         <div class="form-group">
                             <label for="newUpass">New Password:</label>
-                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" required>
+                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" >
                         </div>
 
                         <div class="form-group">
                             <label for="confirmUpass">Confirm New Password:</label>
-                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
+                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" >
                         </div>
 
                         <div class="form-group">
@@ -752,8 +751,7 @@ $stmt->execute();
 
 </div>
 
-<div class="content-section" id="Intern_profile">
-    <div class="intern-profile">
+<div class="content-section" id="Intern_profile"><div class="intern-profile">
         <h1>Intern Profile</h1>
 
         <!-- Search Form -->
@@ -844,85 +842,92 @@ $stmt->execute();
 
         // Execute the statement
         $stmt->execute();
- // Check if there are results
- if ($stmt->rowCount() > 0) {
-    // Fetch all records
-    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Check if there are results
+        if ($stmt->rowCount() > 0) {
+            // Fetch all records
+            $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Start the table
-    echo '<table>';
-    echo '<tr>';
-    echo '<th>#</th>'; // Add a column for numbering
-    echo '<th>Intern ID</th>';
-
-    // Dynamically create headers based on the selected search criteria
-    if ($searchBy !== 'all') {
-        echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
-    }
-
-    echo '</tr>';
-
-    // Counter for enumeration
-    $counter = 1;
-
-    // Loop through the records and display each field
-    foreach ($records as $row) {
-        echo '<tr>';
-        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
-
-        // Display the selected search column based on search criteria
-        if ($searchBy !== 'all') {
-            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
-        }
-
-        // Add a button to view more details
-        echo '<td>';
-        echo '<form method="post" action="">';
-        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-        echo '<input type="submit" value="View Details">';
-        echo '</form>';
-        echo '</td>';
-
-        echo '</tr>';
-    }
-
-    echo '</table>';
- // Check if the internID is set and display the corresponding details
- if (isset($_POST['internID'])) {
-    $internID = $_POST['internID'];
-    
-    // Prepare SQL to fetch details for the selected internID
-    $detailSql = "SELECT * FROM profile_information WHERE internID = :internID";
-    $detailStmt = $conn->prepare($detailSql);
-    $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-    $detailStmt->execute();
-
-    // Check if the intern exists
-    if ($detailStmt->rowCount() > 0) {
-        $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
-
-        // Display the details in a readable format
-        echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
-        echo '<table>';
-        foreach ($internDetails as $key => $value) {
+            // Start the table
+            echo '<table>';
             echo '<tr>';
-            echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-            echo '<td>' . htmlspecialchars($value) . '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    } else {
-        echo '<p>No details found for the selected Intern ID.</p>';
-    }
-}
+            echo '<th>#</th>'; // Add a column for numbering
+            echo '<th>Intern ID</th>';
 
-} else {
-echo '<p>No records found for your search!</p>';
-}
-?>
+            // Dynamically create headers based on the selected search criteria
+            if ($searchBy !== 'all') {
+                echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+            }
+
+            echo '</tr>';
+
+            // Counter for enumeration
+            $counter = 1;
+
+            // Loop through the records and display each field
+            foreach ($records as $row) {
+                echo '<tr>';
+                echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+                echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+
+                // Display the selected search column based on search criteria
+                if ($searchBy !== 'all') {
+                    echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+                }
+
+                // Add a button to view more details
+                echo '<td>';
+                echo '<form method="post" action="">';
+                echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
+                echo '<input type="submit" value="View Details">';
+                echo '</form>';
+                echo '</td>';
+
+                echo '</tr>';
+            }
+
+            echo '</table>';
+        // Check if the internID is set and display the corresponding details
+        if (isset($_POST['internID'])) {
+            $internID = $_POST['internID'];
+            
+            // Prepare SQL to fetch details for the selected internID
+            $detailSql = "SELECT * FROM profile_information WHERE internID = :internID";
+            $detailStmt = $conn->prepare($detailSql);
+            $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $detailStmt->execute();
+
+            // Check if the intern exists
+            if ($detailStmt->rowCount() > 0) {
+                $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
+            
+                echo '<div class="intern-details">';
+                echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
+
+                echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
+                echo '<table>';
+                foreach ($internDetails as $key => $value) {
+                    echo '<tr>';
+                    echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
+                    echo '<td>' . htmlspecialchars($value) . '</td>';
+                    echo '</tr>';
+                }
+                echo '</table>';
+                echo '</div>';
+            } else {
+                echo '<p>No details found for the selected Intern ID.</p>';
+            }
+            
+                }
+
+                } else {
+                echo '<p>No records found for your search!</p>';
+                }
+                ?>
+    </div>  
 </div>
-</div>
+
+
+
 
 
 <div class="content-section" id="Intern_Account">
