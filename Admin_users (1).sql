@@ -155,8 +155,7 @@ CREATE TABLE `profile_information` (
 --
 
 INSERT INTO `profile_information` (`id`, `internID`, `adminID`, `first_name`, `middle_name`, `last_name`, `course_year_sec`, `gender`, `age`, `current_address`, `provincial_address`, `tel_no`, `mobile_no`, `birth_place`, `birth_date`, `religion`, `email`, `civil_status`, `citizenship`, `hr_manager`, `faciID`, `company`, `company_address`, `father_name`, `father_occupation`, `mother_name`, `mother_occupation`, `blood_type`, `height`, `weight`, `health_problems`, `elementary_school`, `elementary_year_graduated`, `elementary_honors`, `secondary_school`, `secondary_year_graduated`, `secondary_honors`, `college`, `college_year_graduated`, `college_honors`, `company_name`, `position`, `inclusive_date`, `company_address_work_experience`, `skills`, `ref_name`, `ref_position`, `ref_address`, `ref_contact`, `emergency_name`, `emergency_address`, `emergency_contact_no`, `created_at`) VALUES
-(1, 'cot234', 1, 'cot234', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:36:03'),
-(2, '678905', 2, 'atako', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 15:16:09');
+(1, 'cot234', 1, 'cot234', '', '', '', NULL, 0, '', '', '', '', '', '0000-00-00', '', '', '', '', 'JOAN SABELLO', 'cotfa', 'CONCENTRIC', 'SABANG', '', '', '', '', '', '', '', '', '', 0, '', '', 0, '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', '2024-11-10 08:36:03');
 
 -- --------------------------------------------------------
 
