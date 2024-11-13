@@ -584,6 +584,27 @@ $stmt->execute();
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 </head>
 <body>
+<?php
+            
+            if (isset($_SESSION['message'])) {
+                ?>
+                <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+                    <?php echo htmlspecialchars($_SESSION['message']); ?>
+                </div>
+                <script type="text/javascript">
+                    // Hide the alert after 5 seconds
+                    setTimeout(function() {
+                        var alertBox = document.getElementById('alertBox');
+                        if (alertBox) {
+                            alertBox.style.display = 'none';
+                        }
+                    }, 5000);
+                </script>
+                <?php
+                // Unset the message after displaying
+                unset($_SESSION['message']);
+            }  
+        ?>   
    
 
 
@@ -663,501 +684,464 @@ $stmt->execute();
     </div>
 
     <div class="main-content" id="main-content">
-        
-<div class="content-section active" id="Dashboard">
-                      
-
-        <h1>Dashboard</h1>
-        <div class="dashboard-cards">
-            <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
-            <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
-            <div class="card intern"><h2>Intern Account</h2>
-                <strong><?php echo count($internAccounts); ?></strong>
-            </div>
-            <div class="card company"><h2>Facilitator Account</h2>
-                <strong> <?php echo $totalAccounts; ?></strong>
-            </div>
-        </div>
-        <div class="announcement-board">
-            
-        <img src="image/announce.png" alt="Announcement Image" class="img">
-        <div class="form-container">
-            <h2>Announcement Board</h2>
-            <form method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                <label for="title"  class="styled-inputann">Title:</label>
-                <input type="text" id="title" name="title" class="styled-input"required>
-                </div>
-                <div class="form-group">
-                <label for="announcement" class="styled-inputann">Announcement:</label>
-                <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
-                </div>
-                <div class="form-group">
-                <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
-                <input type="file" id="fileUpload" name="fileUpload" required>
-                </div>
-                <button type="submit" class="post-button">Submit</button>
                 
-            </form>
-        </div>
-        <div class="announcement-slider">
-            <div class="slider-container">
-                <?php if ($announcements): ?>
-                    <?php foreach ($announcements as $index => $announcement): ?>
-                        <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                            <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
-                            <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+        
+        <div class="content-section active" id="Dashboard">
+                            
 
-                            <?php if ($announcement['imagePath']): ?>
-                                <?php
-                                // Get the file extension
-                                $filePath = htmlspecialchars($announcement['imagePath']);
-                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-                                ?>
-                                <div class="Announcement-Image">
-                                    <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                                        <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
-                                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                <h1>Dashboard</h1>
+                <div class="dashboard-cards">
+                    <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
+                    <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
+                    <div class="card intern"><h2>Intern Account</h2>
+                        <strong><?php echo count($internAccounts); ?></strong>
+                    </div>
+                    <div class="card company"><h2>Facilitator Account</h2>
+                        <strong> <?php echo $totalAccounts; ?></strong>
+                    </div>
+                </div>
+                <div class="announcement-board">
+                    
+                <img src="image/announce.png" alt="Announcement Image" class="img">
+                <div class="form-container">
+                    <h2>Announcement Board</h2>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                        <label for="title"  class="styled-inputann">Title:</label>
+                        <input type="text" id="title" name="title" class="styled-input"required>
+                        </div>
+                        <div class="form-group">
+                        <label for="announcement" class="styled-inputann">Announcement:</label>
+                        <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
+                        </div>
+                        <div class="form-group">
+                        <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
+                        <input type="file" id="fileUpload" name="fileUpload" required>
+                        </div>
+                        <button type="submit" class="post-button">Submit</button>
+                        
+                    </form>
+                </div>
+                <div class="announcement-slider">
+                    <div class="slider-container">
+                        <?php if ($announcements): ?>
+                            <?php foreach ($announcements as $index => $announcement): ?>
+                                <div class="announcement-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                    <h3><?php echo htmlspecialchars($announcement['title']); ?></h3>
+                                    <p><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
+
+                                    <?php if ($announcement['imagePath']): ?>
                                         <?php
-                                        // Extract the file name and construct the file path
-                                        $fileName = basename($filePath);
-                                        $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                        // Get the file extension
+                                        $filePath = htmlspecialchars($announcement['imagePath']);
+                                        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                                         ?>
-                                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-                                    <?php else: ?>
-                                        <p>Unsupported file type.</p>
+                                        <div class="Announcement-Image">
+                                            <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                                <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
+                                            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                                <?php
+                                                // Extract the file name and construct the file path
+                                                $fileName = basename($filePath);
+                                                $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                                ?>
+                                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                            <?php else: ?>
+                                                <p>Unsupported file type.</p>
+                                            <?php endif; ?>
+                                        </div>
                                     <?php endif; ?>
+                                        <!-- Delete Button Form -->
+                                        <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                                                <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                                <button type="submit" class="delete-button">Delete</button>
+                                        </form>
                                 </div>
-                            <?php endif; ?>
-                                <!-- Delete Button Form -->
-                                <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
-                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
-                                        <button type="submit" class="delete-button">Delete</button>
-                                </form>
-                        </div>
-                    
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No announcements found.</p>
-                <?php endif; ?>
-                
-                <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-                <button class="next" onclick="moveSlide(1)">&#10095;</button>
-            </div>
+                            
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No announcements found.</p>
+                        <?php endif; ?>
+                        
+                        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                        <button class="next" onclick="moveSlide(1)">&#10095;</button>
+                    </div>
+                </div>
+
         </div>
 
-</div>
 
+        </div>
 
-</div>
+        <div class="content-section" id="Intern_profile"><div class="intern-profile">
+                <h1>Intern Profile</h1>
 
-<div class="content-section" id="Intern_profile"><div class="intern-profile">
-        <h1>Intern Profile</h1>
+                <!-- Search Form -->
+                <form method="post" action="">
+                    <label for="searchField">Search:</label>
+                    <input type="text" id="searchField" name="searchField" placeholder="Enter search term">
+                    <label for="searchBy">Search By:</label>
+                    <select id="searchBy" name="searchBy">
+                            <option value="all">All</option>
+                            <option value="internID">Intern ID</option>
+                            <option value="first_name">First Name</option>
+                            <option value="middle_name">Middle Name</option>
+                            <option value="last_name">Last Name</option>
+                            <option value="course_year_sec">Course Year/Section</option>
+                            <option value="gender">Gender</option>
+                            <option value="age">Age</option>
+                            <option value="current_address">Current Address</option>
+                            <option value="provincial_address">Provincial Address</option>
+                            <option value="tel_no">Telephone No</option>
+                            <option value="mobile_no">Mobile No</option>
+                            <option value="birth_place">Birth Place</option>
+                            <option value="birth_date">Birth Date</option>
+                            <option value="religion">Religion</option>
+                            <option value="email">Email</option>
+                            <option value="civil_status">Civil Status</option>
+                            <option value="citizenship">Citizenship</option>
+                            <option value="hr_manager">HR Manager</option>
+                            <option value="faciID">Facilitator ID</option>
+                            <option value="company">Company</option>
+                            <option value="company_address">Company Address</option>
+                            <option value="father_name">Father Name</option>
+                            <option value="father_occupation">Father Occupation</option>
+                            <option value="mother_name">Mother Name</option>
+                            <option value="mother_occupation">Mother Occupation</option>
+                            <option value="blood_type">Blood Type</option>
+                            <option value="height">Height</option>
+                            <option value="weight">Weight</option>
+                            <option value="health_problems">Health Problems</option>
+                            <option value="elementary_school">Elementary School</option>
+                            <option value="elementary_year_graduated">Elementary Year Graduated</option>
+                            <option value="elementary_honors">Elementary Honors</option>
+                            <option value="secondary_school">Secondary School</option>
+                            <option value="secondary_year_graduated">Secondary Year Graduated</option>
+                            <option value="secondary_honors">Secondary Honors</option>
+                            <option value="college">College</option>
+                            <option value="college_year_graduated">College Year Graduated</option>
+                            <option value="college_honors">College Honors</option>
+                            <option value="company_name">Company Name (Work Experience)</option>
+                            <option value="position">Position</option>
+                            <option value="inclusive_date">Inclusive Date</option>
+                            <option value="company_address_work_experience">Company Address (Work Experience)</option>
+                            <option value="skills">Skills</option>
+                            <option value="ref_name">Reference Name</option>
+                            <option value="ref_position">Reference Position</option>
+                            <option value="ref_address">Reference Address</option>
+                            <option value="ref_contact">Reference Contact</option>
+                            <option value="emergency_name">Emergency Contact Name</option>
+                            <option value="emergency_address">Emergency Address</option>
+                            <option value="emergency_contact_no">Emergency Contact No</option>
+                        </select>
 
-        <!-- Search Form -->
-        <form method="post" action="">
-            <label for="searchField">Search:</label>
-            <input type="text" id="searchField" name="searchField" placeholder="Enter search term">
-            <label for="searchBy">Search By:</label>
-            <select id="searchBy" name="searchBy">
-                    <option value="all">All</option>
-                    <option value="internID">Intern ID</option>
-                    <option value="first_name">First Name</option>
-                    <option value="middle_name">Middle Name</option>
-                    <option value="last_name">Last Name</option>
-                    <option value="course_year_sec">Course Year/Section</option>
-                    <option value="gender">Gender</option>
-                    <option value="age">Age</option>
-                    <option value="current_address">Current Address</option>
-                    <option value="provincial_address">Provincial Address</option>
-                    <option value="tel_no">Telephone No</option>
-                    <option value="mobile_no">Mobile No</option>
-                    <option value="birth_place">Birth Place</option>
-                    <option value="birth_date">Birth Date</option>
-                    <option value="religion">Religion</option>
-                    <option value="email">Email</option>
-                    <option value="civil_status">Civil Status</option>
-                    <option value="citizenship">Citizenship</option>
-                    <option value="hr_manager">HR Manager</option>
-                    <option value="faciID">Facilitator ID</option>
-                    <option value="company">Company</option>
-                    <option value="company_address">Company Address</option>
-                    <option value="father_name">Father Name</option>
-                    <option value="father_occupation">Father Occupation</option>
-                    <option value="mother_name">Mother Name</option>
-                    <option value="mother_occupation">Mother Occupation</option>
-                    <option value="blood_type">Blood Type</option>
-                    <option value="height">Height</option>
-                    <option value="weight">Weight</option>
-                    <option value="health_problems">Health Problems</option>
-                    <option value="elementary_school">Elementary School</option>
-                    <option value="elementary_year_graduated">Elementary Year Graduated</option>
-                    <option value="elementary_honors">Elementary Honors</option>
-                    <option value="secondary_school">Secondary School</option>
-                    <option value="secondary_year_graduated">Secondary Year Graduated</option>
-                    <option value="secondary_honors">Secondary Honors</option>
-                    <option value="college">College</option>
-                    <option value="college_year_graduated">College Year Graduated</option>
-                    <option value="college_honors">College Honors</option>
-                    <option value="company_name">Company Name (Work Experience)</option>
-                    <option value="position">Position</option>
-                    <option value="inclusive_date">Inclusive Date</option>
-                    <option value="company_address_work_experience">Company Address (Work Experience)</option>
-                    <option value="skills">Skills</option>
-                    <option value="ref_name">Reference Name</option>
-                    <option value="ref_position">Reference Position</option>
-                    <option value="ref_address">Reference Address</option>
-                    <option value="ref_contact">Reference Contact</option>
-                    <option value="emergency_name">Emergency Contact Name</option>
-                    <option value="emergency_address">Emergency Address</option>
-                    <option value="emergency_contact_no">Emergency Contact No</option>
-                </select>
+                    <input type="submit" value="Search">
+                </form>
 
-            <input type="submit" value="Search">
-        </form>
+                <?php
 
-        <?php
-
-        
-        // Prepare the base SQL query
-        $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
-
-        // Determine the column to be displayed
-        $searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
-        $searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
-
-        // Add condition to search by the selected field
-        if ($searchBy !== 'all') {
-            $sql .= " AND $searchBy = :searchField"; 
-        }
-
-        // Prepare and execute the query
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
-
-        // Bind the search field parameter if it's not 'All'
-        if (isset($searchField) && $searchBy !== 'all') {
-            $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // No wildcards for exact matches
-        }
-
-        // Execute the statement
-        $stmt->execute();
-        // Check if there are results
-        if ($stmt->rowCount() > 0) {
-            // Fetch all records
-            $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Start the table
-            echo '<table>';
-            echo '<tr>';
-            echo '<th>#</th>'; // Add a column for numbering
-            echo '<th>Intern ID</th>';
-
-            // Dynamically create headers based on the selected search criteria
-            if ($searchBy !== 'all') {
-                echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
-            }
-
-            echo '</tr>';
-
-            // Counter for enumeration
-            $counter = 1;
-
-            // Loop through the records and display each field
-            foreach ($records as $row) {
-                echo '<tr>';
-                echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-                echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
-
-                // Display the selected search column based on search criteria
-                if ($searchBy !== 'all') {
-                    echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
-                }
-
-                // Add a button to view more details
-                echo '<td>';
-                echo '<form method="post" action="">';
-                echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-                echo '<input type="submit" value="View Details">';
-                echo '</form>';
-                echo '</td>';
-
-                echo '</tr>';
-            }
-
-            echo '</table>';
-        // Check if the internID is set and display the corresponding details
-        if (isset($_POST['internID'])) {
-            $internID = $_POST['internID'];
-            
-            // Prepare SQL to fetch details for the selected internID
-            $detailSql = "SELECT * FROM profile_information WHERE internID = :internID";
-            $detailStmt = $conn->prepare($detailSql);
-            $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-            $detailStmt->execute();
-
-            // Check if the intern exists
-            if ($detailStmt->rowCount() > 0) {
-                $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
-            
-                echo '<div class="intern-details">';
-                echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
-
-                echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
-                echo '<table>';
-                foreach ($internDetails as $key => $value) {
-                    echo '<tr>';
-                    echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-                    echo '<td>' . htmlspecialchars($value) . '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-                echo '</div>';
-            } else {
-                echo '<p>No details found for the selected Intern ID.</p>';
-            }
-            
-                }
-
-                } else {
-                echo '<p>No records found for your search!</p>';
-                }
-                ?>
-    </div>  
-</div>
-
-
-
-
-
-<div class="content-section" id="Intern_Account">
-            <?php
                 
-                if (isset($_SESSION['message'])) {
-                    ?>
-                    <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-                        <?php echo htmlspecialchars($_SESSION['message']); ?>
-                    </div>
-                    <script type="text/javascript">
-                        // Hide the alert after 5 seconds
-                        setTimeout(function() {
-                            var alertBox = document.getElementById('alertBox');
-                            if (alertBox) {
-                                alertBox.style.display = 'none';
-                            }
-                        }, 5000);
-                    </script>
-                    <?php
-                    // Unset the message after displaying
-                    unset($_SESSION['message']);
-                }  
-            ?>
-                        <h1>Intern Logins</h1>
-                        <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
+                // Prepare the base SQL query
+                $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 
-                        <!-- Intern Modal -->
-                        <div id="InternAccModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
+                // Determine the column to be displayed
+                $searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
+                $searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
 
-                                <h2>Add Intern Account</h2>
-                                <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
-                                    <div class="form-group">
-                                        <label for="internID">Intern ID:</label>
-                                        <input type="text" id="internID" name="internID" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="InternPass">Password:</label>
-                                        <input type="password" id="InternPass" name="InternPass" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                                
-                            </div>
-                        </div>
+                // Add condition to search by the selected field
+                if ($searchBy !== 'all') {
+                    $sql .= " AND $searchBy = :searchField"; 
+                }
 
-                        <!-- Display Existing Intern Accounts Outside the Modal -->
-                        <h2>Existing Intern Accounts</h2>
+                // Prepare and execute the query
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
 
-                        <!-- Search Form Positioned in Upper Right of the Table -->
-                        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                            <form method="GET" action="">
-                                <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
-                                <button type="submit" class="search-button">Search</button>
-                            </form>
-                        </div>
+                // Bind the search field parameter if it's not 'All'
+                if (isset($searchField) && $searchBy !== 'all') {
+                    $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // No wildcards for exact matches
+                }
 
-                        <!-- Message Display for Search Results -->
-                        <?php if ($searchInternID): ?>
-                            <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-                        <?php endif; ?>
+                // Execute the statement
+                $stmt->execute();
+                // Check if there are results
+                if ($stmt->rowCount() > 0) {
+                    // Fetch all records
+                    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        <!-- Intern Accounts Table -->
-                        <?php if (!empty($internAccounts)): ?>
-                            <div class="table-container"> <!-- Added container for scrolling -->
+                    // Start the table
+                    echo '<table>';
+                    echo '<tr>';
+                    echo '<th>#</th>'; // Add a column for numbering
+                    echo '<th>Intern ID</th>';
 
-                            <table class="intern-accounts-table">
-                                <tr>
-                                    <th class="table-header">Intern ID</th>
-                                    <th class="table-header">Current Password</th>
-                                    <th class="table-header" style="padding-left: 40%;">Actions</th>
-                                </tr>
+                    // Dynamically create headers based on the selected search criteria
+                    if ($searchBy !== 'all') {
+                        echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+                    }
 
-                                <?php 
-                                // To store the filtered and non-filtered accounts
-                                $highlightedRow = [];
-                                $otherRows = [];
+                    echo '</tr>';
 
-                                foreach ($internAccounts as $account): 
-                                    if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
-                                        $highlightedRow[] = $account; 
-                                    } else {
-                                        $otherRows[] = $account; 
-                                    }
-                                endforeach; 
+                    // Counter for enumeration
+                    $counter = 1;
 
-                                // Merge highlighted row(s) with other rows
-                                $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                foreach ($sortedAccounts as $account): ?>
-                                    <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
-                                        <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
-                                        <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
-                                        <td class="table-actions">
-                                        <form method="POST" action="" style="display: flex; align-items: center;">
-                                            <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
-                                            <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
-                                            <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                            <button type="submit" name="action" value="delete" class="delete-button" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                        </form>
+                    // Loop through the records and display each field
+                    foreach ($records as $row) {
+                        echo '<tr>';
+                        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+                        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
 
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
-                            </div>
+                        // Display the selected search column based on search criteria
+                        if ($searchBy !== 'all') {
+                            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+                        }
 
-                        <?php else: ?>
-                            <p>No intern accounts found.</p>
-                        <?php endif; ?>
+                        // Add a button to view more details
+                        echo '<td>';
+                        echo '<form method="post" action="">';
+                        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
+                        echo '<input type="submit" value="View Details">';
+                        echo '</form>';
+                        echo '</td>';
 
-</div>
-           
-        
-   
-                <div class="content-section" id="Facilitator_Account">
-                    <?php
-     
-                        if (isset($_SESSION['message'])) {
-                            ?>
-                            <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-                                <?php echo htmlspecialchars($_SESSION['message']); ?>
-                            </div>
-                            <script type="text/javascript">
-                                // Hide the alert after 5 seconds
-                                setTimeout(function() {
-                                    var alertBox = document.getElementById('alertBox');
-                                    if (alertBox) {
-                                        alertBox.style.display = 'none';
-                                    }
-                                }, 5000);
-                            </script>
-                            <?php
-                            // Unset the message after displaying
-                            unset($_SESSION['message']);
-                        }  
-                     ?>
+                        echo '</tr>';
+                    }
+
+                    echo '</table>';
+                // Check if the internID is set and display the corresponding details
+                if (isset($_POST['internID'])) {
+                    $internID = $_POST['internID'];
                     
-                        <h1>Facilitator Logins</h1>
-                        <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
+                    // Prepare SQL to fetch details for the selected internID
+                    $detailSql = "SELECT * FROM profile_information WHERE internID = :internID";
+                    $detailStmt = $conn->prepare($detailSql);
+                    $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                    $detailStmt->execute();
 
-                      <!-- Facilitator Modal -->
-                      <div id="FaccAccModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
-                                <h2>Add Facilitator Account</h2>
-                                <form id="addFaccAccForm" method="POST" action="">
-                                    <div class="form-group">
-                                        <label for="faciID">Facilitator ID:</label>
-                                        <input type="text" id="faciID" name="faciID" required>
+                    // Check if the intern exists
+                    if ($detailStmt->rowCount() > 0) {
+                        $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
+                    
+                        echo '<div class="intern-details">';
+                        echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
+
+                        echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
+                        echo '<table>';
+                        foreach ($internDetails as $key => $value) {
+                            echo '<tr>';
+                            echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
+                            echo '<td>' . htmlspecialchars($value) . '</td>';
+                            echo '</tr>';
+                        }
+                        echo '</table>';
+                        echo '</div>';
+                    } else {
+                        echo '<p>No details found for the selected Intern ID.</p>';
+                    }
+                    
+                        }
+
+                        } else {
+                        echo '<p>No records found for your search!</p>';
+                        }
+                        ?>
+            </div>  
+        </div>
+
+
+
+
+
+        <div class="content-section" id="Intern_Account">
+      
+                        
+                       
+                                <h1>Intern Logins</h1>
+                                <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
+
+                                <!-- Intern Modal -->
+                                <div id="InternAccModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
+
+                                        <h2>Add Intern Account</h2>
+                                        <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
+                                            <div class="form-group">
+                                                <label for="internID">Intern ID:</label>
+                                                <input type="text" id="internID" name="internID" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="InternPass">Password:</label>
+                                                <input type="password" id="InternPass" name="InternPass" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </form>
+                                        
                                     </div>
-                                    <div class="form-group">
-                                        <label for="faciPass">Password:</label>
-                                        <input type="password" id="faciPass" name="faciPass" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary" name="submitFacilitator">Submit</button>
-                                </form>
-                                
-                            </div>
-                        </div>
+                                </div>
 
-                                                                            <!-- Display Existing Facilitator Accounts Outside the Modal -->
-                        <h2>Existing Facilitator Accounts</h2>
+                                <!-- Display Existing Intern Accounts Outside the Modal -->
+                                <h2>Existing Intern Accounts</h2>
 
-                        <!-- Search Form Positioned in Upper Right of the Table -->
-                        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                            <form method="GET" action="">
-                            <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
-                            <button type="submit" class="search-button">Search</button>
-                            </form>
-                        </div>
+                                <!-- Search Form Positioned in Upper Right of the Table -->
+                                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                                    <form method="GET" action="">
+                                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
+                                </div>
 
-                        <!-- Message Display for Search Results -->
-                        <?php if ($searchFaciID): ?>
-                            <p>Search Results for: <strong><?php echo htmlspecialchars($searchFaciID); ?></strong></p>
-                        <?php endif; ?>
+                                <!-- Message Display for Search Results -->
+                                <?php if ($searchInternID): ?>
+                                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+                                <?php endif; ?>
 
-                        <!-- Facilitator Accounts Table -->
-                        <?php if (!empty($faccAccounts)): ?>
-                            <div class="table-container"> <!-- Added container for scrolling -->
+                                <!-- Intern Accounts Table -->
+                                <?php if (!empty($internAccounts)): ?>
+                                    <div class="table-container"> <!-- Added container for scrolling -->
 
-                                        <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
-                                            <tr>
-                                                <th class="table-header">Facilitator ID</th>
-                                                <th class="table-header">Current Password</th>
-                                                <th class="table-header" style="padding-left: 30%;">Actions</th>
+                                    <table class="intern-accounts-table">
+                                        <tr>
+                                            <th class="table-header">Intern ID</th>
+                                            <th class="table-header">Current Password</th>
+                                            <th class="table-header" style="padding-left: 40%;">Actions</th>
+                                        </tr>
+
+                                        <?php 
+                                        // To store the filtered and non-filtered accounts
+                                        $highlightedRow = [];
+                                        $otherRows = [];
+
+                                        foreach ($internAccounts as $account): 
+                                            if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
+                                                $highlightedRow[] = $account; 
+                                            } else {
+                                                $otherRows[] = $account; 
+                                            }
+                                        endforeach; 
+
+                                        // Merge highlighted row(s) with other rows
+                                        $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                                        foreach ($sortedAccounts as $account): ?>
+                                            <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
+                                                <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
+                                                <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
+                                                <td class="table-actions">
+                                                <form method="POST" action="" style="display: flex; align-items: center;">
+                                                    <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                                                    <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
+                                                    <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
+                                                    <button type="submit" name="action" value="delete" class="delete-button" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                </form>
+
+                                                </td>
                                             </tr>
+                                        <?php endforeach; ?>
+                                    </table>
+                                    </div>
 
-                                            <?php 
-                                            // To store the filtered and non-filtered accounts
-                                            $highlightedRow = [];
-                                            $otherRows = [];
+                                <?php else: ?>
+                                    <p>No intern accounts found.</p>
+                                <?php endif; ?>
 
-                                            foreach ($faccAccounts as $account): 
-                                                if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
-                                                    $highlightedRow[] = $account; 
-                                                } else {
-                                                    $otherRows[] = $account; 
-                                                }
-                                            endforeach; 
+        </div>
+                
+                
+        
+        <div class="content-section" id="Facilitator_Account">
+                          
+                            
+                                <h1>Facilitator Logins</h1>
+                                <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
 
-                                            // Merge highlighted row(s) with other rows
-                                            $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                            foreach ($sortedAccounts as $account): ?>
-                                                <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
-                                                    <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
-                                                    <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
-                                                    <td class="table-actions">
-                                                        <form method="POST" action="" style="display:inline;">
-                                                            <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
-                                                            <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
-                                                            <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
-                                                            <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                                        </form>
-                                                 
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </table>
-                                        </div>
+                            <!-- Facilitator Modal -->
+                            <div id="FaccAccModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
+                                        <h2>Add Facilitator Account</h2>
+                                        <form id="addFaccAccForm" method="POST" action="">
+                                            <div class="form-group">
+                                                <label for="faciID">Facilitator ID:</label>
+                                                <input type="text" id="faciID" name="faciID" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="faciPass">Password:</label>
+                                                <input type="password" id="faciPass" name="faciPass" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" name="submitFacilitator">Submit</button>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
 
-                        <?php else: ?>
-                            <p>No facilitator accounts found.</p>
-                        <?php endif; ?>
+                                                                                    <!-- Display Existing Facilitator Accounts Outside the Modal -->
+                                <h2>Existing Facilitator Accounts</h2>
 
-                    </div>
+                                <!-- Search Form Positioned in Upper Right of the Table -->
+                                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                                    <form method="GET" action="">
+                                    <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
+                                    <button type="submit" class="search-button">Search</button>
+                                    </form>
+                                </div>
 
-</div>
-       
+                                <!-- Message Display for Search Results -->
+                                <?php if ($searchFaciID): ?>
+                                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchFaciID); ?></strong></p>
+                                <?php endif; ?>
+
+                                <!-- Facilitator Accounts Table -->
+                                <?php if (!empty($faccAccounts)): ?>
+                                    <div class="table-container"> <!-- Added container for scrolling -->
+
+                                                <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
+                                                    <tr>
+                                                        <th class="table-header">Facilitator ID</th>
+                                                        <th class="table-header">Current Password</th>
+                                                        <th class="table-header" style="padding-left: 30%;">Actions</th>
+                                                    </tr>
+
+                                                    <?php 
+                                                    // To store the filtered and non-filtered accounts
+                                                    $highlightedRow = [];
+                                                    $otherRows = [];
+
+                                                    foreach ($faccAccounts as $account): 
+                                                        if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
+                                                            $highlightedRow[] = $account; 
+                                                        } else {
+                                                            $otherRows[] = $account; 
+                                                        }
+                                                    endforeach; 
+
+                                                    // Merge highlighted row(s) with other rows
+                                                    $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                                                    foreach ($sortedAccounts as $account): ?>
+                                                        <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
+                                                            <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
+                                                            <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
+                                                            <td class="table-actions">
+                                                                <form method="POST" action="" style="display:inline;">
+                                                                    <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
+                                                                    <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
+                                                                    <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
+                                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                                </form>
+                                                        
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </table>
+                                                </div>
+
+                                <?php else: ?>
+                                    <p>No facilitator accounts found.</p>
+                                <?php endif; ?>
+
+                            </div>
+
+        </div>
+            
 
         <div class="content-section" id="report">
             <h1>Report</h1>
@@ -1165,9 +1149,9 @@ $stmt->execute();
         </div>
     
     
-    
+        
     </div>
  
-    <script src="js/admin_script.js"></script>
+<script src="js/admin_script.js"></script>
 </body>
 </html>

@@ -123,9 +123,17 @@ body::before {
 
 .content-section {
   display: none; /* Hidden by default */
+  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
+
+}
+.content-section h1 {
+  margin-left: 55px; /* Space from the left */
+  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
 }
 
-
+.sidebar:hover ~ .content-section {
+    margin-left: 320px; /* Adjust to match sidebar width + additional space when hovered */
+}
 .content-section.active {
   display: block; /* Show when active */
 }
@@ -1076,6 +1084,7 @@ p {
   background-color: #333; /* Darker background on hover for better visual feedback */
 }
 
+
 .pdf-link {
   display: inline-block; /* Make it block-level for padding and margin */
   background-color: #28a745; /* Green background color */
@@ -1090,9 +1099,7 @@ p {
   border-radius: 5px; /* Rounded corners */
 
 }
-.pdf-link.enable-hover {
-  pointer-events: auto; /* Enable pointer events when this class is added */
-}
+
 
 
 .delete-button {  
@@ -1171,6 +1178,7 @@ input[type="submit"]:hover {
 /* ------------------------MARICEL------------------------------------------*/
 /* Container for intern details, positioned off-screen initially */
 .intern-details {
+  
   max-width: 500px;
   height: 90vh;
   position: fixed;
