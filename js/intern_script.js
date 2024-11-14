@@ -183,6 +183,7 @@ window.onclick = function(event) {
   function openModal() {
     document.getElementById('profileModal').style.display = 'block';
   }
+  // Start Kyle
   function openCredentialsModal() {
     document.getElementById('credentialsModal').style.display = 'block';
 }
@@ -199,3 +200,50 @@ window.onclick = function(event) {
         closeCredentialsModal();
     }
 }
+
+// Form validation using your existing showToast function
+document.getElementById('credentialsForm')?.addEventListener('submit', function(e) {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (newPassword !== confirmPassword) {
+        e.preventDefault();
+        showToast('Passwords do not match!', 'error');
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        e.preventDefault();
+        showToast('Password must be at least 6 characters long!', 'error');
+        return;
+    }
+
+    if (currentPassword === newPassword) {
+        e.preventDefault();
+        showToast('New password must be different from current password!', 'error');
+        return;
+    }
+});
+
+// Keep your existing showToast function
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Show toast
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    // Hide and remove toast
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+function uploadImage() {
+    document.getElementById('imageForm').submit(); // Automatically submit the form when a file is selected
+}
+
+// End Kyle

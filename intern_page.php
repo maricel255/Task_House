@@ -3,9 +3,22 @@ require('Admin_connection.php');
 
 session_start(); // Start the session
 
+
+
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+// Start Kyle
+$currentProfileImage = null;
+if (isset($_SESSION['internID'])) {
+    $sql = "SELECT profile_image FROM intacc WHERE internID = :internID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':internID', $_SESSION['internID']);
+    $stmt->execute();
+    $currentProfileImage = $stmt->fetchColumn();
+}
+// End Kyle
 
 // Add the new code here ↓
 $profileData = null;
@@ -64,7 +77,70 @@ $stmtGetFaciID->execute();
 // Fetch the faciID from the profile_information table
 $faciID = $stmtGetFaciID->fetchColumn();
 
-// Handle password update
+// Handle image upload separately
+// Start Kyle
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_image'])) {
+    try {
+        $uploadDir = 'uploaded_files/';
+        
+        // Check if the upload directory exists, if not, create it
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $file = $_FILES['profile_image'];
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+
+        // Validate the file type
+        if (!in_array($fileExtension, $allowedTypes)) {
+            throw new Exception('Invalid file type');
+        }
+
+        // Create a unique file name
+        $fileName = 'profile_' . $_SESSION['internID'] . '_' . time() . '.' . $fileExtension;
+        $targetPath = $uploadDir . $fileName;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // Update the database with the new image path
+            $sql = "UPDATE intacc SET profile_image = :profile_image WHERE internID = :internID";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':profile_image', $fileName);
+            $stmt->bindParam(':internID', $_SESSION['internID']);
+            
+            // Execute the statement and check for success
+            if ($stmt->execute()) {
+                $_SESSION['upload_status'] = 'success'; // Set session variable for success
+            } else {
+                throw new Exception('Database update failed');
+            }
+        } else {
+            throw new Exception('Failed to move uploaded file');
+        }
+    } catch (Exception $e) {
+        $_SESSION['upload_status'] = 'error'; // Set session variable for error
+        $_SESSION['upload_message'] = $e->getMessage(); // Store error message
+    }
+    
+    // Redirect back to the original page
+    header("Location: intern_page.php");
+    exit; // Ensure no further output is sent
+}
+
+// Fetch the current profile image to display
+$currentProfileImage = null;
+if (isset($_SESSION['internID'])) {
+    $sql = "SELECT profile_image FROM intacc WHERE internID = :internID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':internID', $_SESSION['internID']);
+    $stmt->execute();
+    $currentProfileImage = $stmt->fetchColumn();
+}
+
+
+
+// Keep your existing password update code separate
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])) {
     $internID = $_SESSION['internID'];
     $currentPassword = $_POST['currentPassword'];
@@ -72,38 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     $confirmPassword = $_POST['confirmPassword'];
 
     try {
-        // Handle image upload if a file was submitted
-        if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'uploaded_files/profile_images/';
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            $fileExtension = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
-            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-
-            if (!in_array($fileExtension, $allowedTypes)) {
-                throw new Exception('Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.');
-            }
-
-            $maxFileSize = 5 * 1024 * 1024; // 5MB
-            if ($_FILES['profile_image']['size'] > $maxFileSize) {
-                throw new Exception('File size too large. Maximum size is 5MB.');
-            }
-
-            $fileName = 'profile_' . $internID . '_' . time() . '.' . $fileExtension;
-            $targetPath = $uploadDir . $fileName;
-
-            if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
-                // Update database with new image path
-                $updateImageSql = "UPDATE intacc SET profile_image = :profile_image WHERE internID = :internID";
-                $updateImageStmt = $conn->prepare($updateImageSql);
-                $updateImageStmt->bindParam(':profile_image', $targetPath);
-                $updateImageStmt->bindParam(':internID', $internID);
-                $updateImageStmt->execute();
-            }
-        }
-
         // First verify the current password
         $sql = "SELECT internPass FROM intacc WHERE internID = :internID";
         $stmt = $conn->prepare($sql);
@@ -147,6 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         $alertMessage = $e->getMessage();
     }
 }
+// End Kyle
 
 // Handle form submissions for logging in, break, back to work, and logout
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -577,9 +622,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         <!-- Sidebar -->
         <div class="sidebar hide-content">
                     <div class="user-info">
-
+                    <!-- Start Kyle-->
                     <div class="profile-image"> 
-                        <img src="uploaded_files/<?php echo htmlspecialchars($profileImage, ENT_QUOTES, 'UTF-8'); ?>" class="user-icon" alt="User Profile" >
+                    <img id="sidebarImage" src="<?php echo $currentProfileImage ? 'uploaded_files/' . htmlspecialchars($currentProfileImage) : 'image/USER_ICON.png'; ?>" alt="User Profile" class="user-icon">
+                <!-- End Kyle-->
                     </div>
                    
                     <div class="user-details">
@@ -626,42 +672,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         </div>
     </div>
 
- 
+ <!-- Start Kyle-->
     <div id="credentialsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeCredentialsModal()">&times;</span>
+    <div class="modal-content">
+        <span class="close" onclick="closeCredentialsModal()">&times;</span>
+        <h2>Update Password</h2>
 
+        <!-- Add image upload section -->
+        <div class="image-upload-container">
+            <img id="imagePreview" src="<?php echo $currentProfileImage ? 
+            'uploaded_files/' . htmlspecialchars($currentProfileImage) : 
+            'image/USER_ICON.png'; ?>" alt="Profile Preview" 
+        style="width: 100px; height: 100px;">
+            <form id="imageForm" method="POST" enctype="multipart/form-data">
+                <input type="file" id="profileImageInput" name="profile_image" accept="image/*" style="display: none;" onchange="uploadImage()">
+                <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
+                    Choose Image
+                </button>
                 
-            <h2>Update Password</h2>
-            <!-- Important: Add a unique form name -->
-            <form id="credentialsForm" method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-                <div class="form-group">
-                    <label>Intern Name:</label>
-                    <input type="text" id="internName" 
-                        value="<?php echo htmlspecialchars($profileData['first_name'] ?? ''); ?> <?php echo htmlspecialchars($profileData['last_name'] ?? ''); ?>"
-                        readonly 
-                        style="background-color: #f5f5f5; border: 1px solid #ddd;">
-                </div>  
-                
-                <div class="form-group">
-                    <label>Current Password:</label>
-                    <input type="password" name="currentPassword" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>New Password:</label>
-                    <input type="password" name="newPassword" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Confirm Password:</label>
-                    <input type="password" name="confirmPassword" required>
-                </div>
-                
-                <button type="submit" name="update_credentials" class="create-button">Update Password</button>
             </form>
         </div>
+
+        <!-- Add this form after the image upload section -->
+        <form id="credentialsForm" method="POST">
+            <div class="form-group">
+                <label>Intern Name:</label>
+                <input type="text" id="internName" 
+                    value="<?php echo htmlspecialchars($profileData['first_name'] ?? ''); ?> <?php echo htmlspecialchars($profileData['last_name'] ?? ''); ?>"
+                    readonly 
+                    style="background-color: #f5f5f5; border: 1px solid #ddd;">
+            </div>
+            <div class="form-group">
+                <label>Current Password:</label>
+                <input type="password" name="currentPassword" required>
+            </div>
+            <div class="form-group">
+                <label>New Password:</label>
+                <input type="password" name="newPassword" required>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                <input type="password" name="confirmPassword" required>
+            </div>
+            <button type="submit" name="update_credentials">Update Password</button>
+        </form>
+    </div>
 </div>
+<!-- end Kyle-->
 
     <!-- Main Content -->
     <div class="content-section" id="dashboard">
@@ -1188,4 +1245,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     <script src="js/Intern_script.js"></script>
 </body>
 </html>
-
