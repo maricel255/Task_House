@@ -42,6 +42,44 @@ function showContent(sectionId) {
     }
 }
 
+
+
+    // Announcement slider functionality
+    let slideIndex = 0; // Initialize slide index to start from the first slide
+    function moveSlide(step) {
+        const slides = document.querySelectorAll('.announcement-item');
+        const totalSlides = slides.length;
+
+        // Update slideIndex with the step (move forward or backward)
+        slideIndex = (slideIndex + step + totalSlides) % totalSlides;
+
+        // Hide all slides first
+        slides.forEach(slide => {
+            slide.classList.remove('active');
+        });
+
+        // Show the new active slide
+        slides[slideIndex].classList.add('active');
+    }
+
+    // Attach event listeners to buttons
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+
+    if (prevButton && nextButton) {
+        prevButton.addEventListener('click', () => {
+            moveSlide(-1);
+        });
+
+        nextButton.addEventListener('click', () => {
+            moveSlide(1);
+        });
+    }
+
+      // Function to show the decline reason textarea when "Decline" is clicked
+      document.getElementById('declineBtn').addEventListener('click', function() {
+        document.getElementById('declineReasonForm').style.display = 'block'; // Show the form
+    });
 // Get the modal
 var modal = document.getElementById("declineModal");
 
@@ -137,44 +175,37 @@ window.onload = function() {
 };
 // Annoucement viewrer
 
-document.addEventListener("DOMContentLoaded", function() {
-    let currentIndex = 0; // Declare currentIndex
 
-    // Get the prev and next buttons
-    const prevButton = document.querySelector('.prev');
-    const nextButton = document.querySelector('.next');
 
-    if (prevButton && nextButton) {
-        // Attach the moveSlide function to the prev and next buttons
-        prevButton.onclick = function() {
-            moveSlide(-1); // Move to the previous slide
-        };
-        nextButton.onclick = function() {
-            moveSlide(1); // Move to the next slide
-        };
-    } else {
-        console.error("Prev and/or Next buttons not found.");
+  
+
+/*This is for the modal that will appear when the settings button is clicked*/
+// Start Kyle
+function openCredentialsModal() {
+    document.getElementById('credentialsModal').style.display = 'block';
+}
+
+/*This is for the close button in the modal*/
+function closeCredentialsModal() {
+    document.getElementById('credentialsModal').style.display = 'none';
+    document.getElementById('credentialsForm').reset();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const credentialsModal = document.getElementById('credentialsModal');
+    const declineModal = document.getElementById('declineModal');
+    
+    if (event.target === credentialsModal) {
+        closeCredentialsModal();
     }
-
-    // Define the moveSlide function
-    function moveSlide(step) {
-        console.log("Current Index before move:", currentIndex);
-        
-        currentIndex += step; // Adjust the currentIndex value
-
-        // Ensure we don't go out of bounds
-        const slides = document.querySelectorAll('.announcement-item');
-        if (currentIndex >= slides.length) {
-            currentIndex = 0; // Loop back to the first slide
-        } else if (currentIndex < 0) {
-            currentIndex = slides.length - 1; // Loop to the last slide
-        }
-
-        console.log("Current Index after move:", currentIndex);
-
-        // Move the slide
-        slides.forEach((slide, index) => {
-            slide.style.display = (index === currentIndex) ? 'block' : 'none'; // Show only the active slide
-        });
+    if (event.target === declineModal) {
+        declineModal.style.display = "none";
     }
-});
+}
+
+
+
+
+// End Kyledocument
+// Annoucement viewrer
