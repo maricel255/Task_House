@@ -127,7 +127,7 @@ body::before {
 
 }
 .content-section h1 {
-  margin-left: 55px; /* Space from the left */
+  margin-left: 65px; /* Space from the left */
   transition: margin-left 0.5s ease-in-out; /* Smooth transition */
 }
 

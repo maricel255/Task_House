@@ -571,8 +571,20 @@ $stmt->execute();
 
       // do not change anything above----------------------------------------------------------------
 
+    // Query to fetch records where adminID matches
+    
+  // Assuming you're already connected to the database via PDO
+    $sql = "SELECT tl.*, pi.start_shift, pi.end_shift 
+    FROM time_logs tl
+    LEFT JOIN profile_information pi ON tl.internID = pi.internID
+    WHERE tl.adminID = :adminID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+    $stmt->execute();
 
-
+    // Fetch the data
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
 ?>
 
 <!DOCTYPE html>
@@ -1145,7 +1157,83 @@ $stmt->execute();
 
         <div class="content-section" id="report">
             <h1>Report</h1>
-            <h1 class="db_Details">Database here!</h1>
+
+             <!-- Search Form -->
+        <form method="GET" action="">
+            <label for="search">Search by Intern ID:</label>
+            <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            <button type="submit">Search</button>
+        </form>
+                
+
+        <?php
+    // Assuming you're already connected to the database via PDO
+
+    // Get the search term if it exists
+    $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
+    // Modify the SQL query to search by internID if the search term exists
+    if ($searchTerm) {
+        $sql = "SELECT tl.*, pi.start_shift, pi.end_shift 
+                FROM time_logs tl
+                LEFT JOIN profile_information pi ON tl.internID = pi.internID
+                WHERE tl.adminID = :adminID AND tl.internID LIKE :searchTerm";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+        $stmt->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR); // Bind the search term (wildcards for partial match)
+        $stmt->execute();
+    } else {
+        // No search term, fetch all records
+        $sql = "SELECT tl.*, pi.start_shift, pi.end_shift 
+                FROM time_logs tl
+                LEFT JOIN profile_information pi ON tl.internID = pi.internID
+                WHERE tl.adminID = :adminID";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+        $stmt->execute();
+    }
+
+    // Fetch the data
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    ?>
+
+    <?php if ($results): ?>
+        <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;">
+            <thead>
+                <tr>
+                    <th>Count</th> <!-- New Count Column -->
+                    <th>Intern ID</th>
+                    <th>Facilitator ID</th>
+                    <th>Start Shift</th>
+                    <th>End Shift</th>
+                    <th>Login Time</th>
+                    <th>Task</th>
+                    <th>Logout Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $count = 1; // Initialize the counter
+                foreach ($results as $row): 
+                ?>
+                    <tr>
+                        <td><?php echo $count++; ?></td> <!-- Display count and increment -->
+                        <td><?php echo htmlspecialchars($row['internID']); ?></td>
+                        <td><?php echo htmlspecialchars($row['faciID']); ?></td>
+                        <td><?php echo htmlspecialchars($row['start_shift']); ?></td>
+                        <td><?php echo htmlspecialchars($row['end_shift']); ?></td>
+                        <td><?php echo htmlspecialchars($row['login_time']); ?></td>
+                        <td><?php echo htmlspecialchars($row['task']); ?></td>
+                        <td><?php echo htmlspecialchars($row['logout_time']); ?></td>
+                        <td><?php echo htmlspecialchars($row['status']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p>No records found.</p>
+    <?php endif; ?>
         </div>
     
     
