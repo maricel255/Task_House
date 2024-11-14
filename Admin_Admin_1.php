@@ -569,7 +569,6 @@ $stmt->execute();
 
 
 
-      // do not change anything above----------------------------------------------------------------
 
     // Query to fetch records where adminID matches
     
@@ -584,7 +583,28 @@ $stmt->execute();
 
     // Fetch the data
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
+
+
+  // Prepare the SQL query to count records in the profile_information table
+$sql = "SELECT COUNT(*) FROM profile_information WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+$stmt->execute();
+
+// Fetch the result for profile information count
+$profileCount = $stmt->fetchColumn(); 
+
+// Prepare the SQL query to count records in the time_logs table
+$sql = "SELECT COUNT(*) FROM time_logs WHERE adminID = :adminID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+$stmt->execute();
+
+// Fetch the result for time logs count
+$timeLogsCount = $stmt->fetchColumn(); 
+    // do not change anything above----------------------------------------------------------------
+
 ?>
 
 <!DOCTYPE html>
@@ -703,8 +723,18 @@ $stmt->execute();
 
                 <h1>Dashboard</h1>
                 <div class="dashboard-cards">
-                    <div class="card course"><h2>Course & Section</h2><p>1 Course & Section</p></div>
-                    <div class="card shift"><h2>Intern’s Shift</h2><p>2 Interns' Shift</p></div>
+                <div class="card course">
+                        <h2>Profile Information</h2>
+                        <strong><?php echo $profileCount; ?></strong>
+                    </div>
+
+                    <!-- Reports Card -->
+                    <div class="card shift">
+                        <h2>Reports</h2>
+                        <strong><?php echo $timeLogsCount; ?></strong>
+                    </div>
+
+
                     <div class="card intern"><h2>Intern Account</h2>
                         <strong><?php echo count($internAccounts); ?></strong>
                     </div>
@@ -852,111 +882,131 @@ $stmt->execute();
 
                 <?php
 
-                
-                // Prepare the base SQL query
-                $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
+// Prepare the base SQL query
+$sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 
-                // Determine the column to be displayed
-                $searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
-                $searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
+// Determine the column to be displayed
+$searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
+$searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
 
-                // Add condition to search by the selected field
-                if ($searchBy !== 'all') {
-                    $sql .= " AND $searchBy = :searchField"; 
-                }
+// Add condition to search by the selected field
+if ($searchBy !== 'all' && !empty($searchField)) {
+    $sql .= " AND $searchBy = :searchField"; 
+}
 
-                // Prepare and execute the query
-                $stmt = $conn->prepare($sql);
-                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
+// Prepare and execute the query
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
 
-                // Bind the search field parameter if it's not 'All'
-                if (isset($searchField) && $searchBy !== 'all') {
-                    $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // No wildcards for exact matches
-                }
+// Bind the search field parameter if it's not 'All' and searchField is set
+if ($searchBy !== 'all' && !empty($searchField)) {
+    $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // Bind the search field parameter
+}
 
-                // Execute the statement
-                $stmt->execute();
-                // Check if there are results
-                if ($stmt->rowCount() > 0) {
-                    // Fetch all records
-                    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Execute the statement
+$stmt->execute();
 
-                    // Start the table
-                    echo '<table>';
-                    echo '<tr>';
-                    echo '<th>#</th>'; // Add a column for numbering
-                    echo '<th>Intern ID</th>';
+// Check if there are results
+if ($stmt->rowCount() > 0) {
+    // Fetch all records
+    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    // Dynamically create headers based on the selected search criteria
-                    if ($searchBy !== 'all') {
-                        echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
-                    }
+    // Start the table
+    echo '<table>';
+    echo '<tr>';
+    echo '<th>#</th>'; // Add a column for numbering
+    echo '<th>Intern ID</th>';
 
-                    echo '</tr>';
+    // Dynamically create headers based on the selected search criteria
+    if ($searchBy !== 'all') {
+        echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+    }
 
-                    // Counter for enumeration
-                    $counter = 1;
+    echo '</tr>';
 
-                    // Loop through the records and display each field
-                    foreach ($records as $row) {
-                        echo '<tr>';
-                        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-                        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+    // Counter for enumeration
+    $counter = 1;
 
-                        // Display the selected search column based on search criteria
-                        if ($searchBy !== 'all') {
-                            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
-                        }
+    // Loop through the records and display each field
+    foreach ($records as $row) {
+        echo '<tr>';
+        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
 
-                        // Add a button to view more details
-                        echo '<td>';
-                        echo '<form method="post" action="">';
-                        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-                        echo '<input type="submit" value="View Details">';
-                        echo '</form>';
-                        echo '</td>';
+        // Display the selected search column based on search criteria
+        if ($searchBy !== 'all') {
+            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+        }
 
-                        echo '</tr>';
-                    }
+        // Add a button to view more details
+        echo '<td>';
+        echo '<form method="post" action="">';
+        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
+        echo '<input type="submit" value="View Details">';
+        echo '</form>';
+        echo '</td>';
 
-                    echo '</table>';
-                // Check if the internID is set and display the corresponding details
-                if (isset($_POST['internID'])) {
-                    $internID = $_POST['internID'];
-                    
-                    // Prepare SQL to fetch details for the selected internID
-                    $detailSql = "SELECT * FROM profile_information WHERE internID = :internID";
-                    $detailStmt = $conn->prepare($detailSql);
-                    $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                    $detailStmt->execute();
+        echo '</tr>';
+    }
 
-                    // Check if the intern exists
-                    if ($detailStmt->rowCount() > 0) {
-                        $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
-                    
-                        echo '<div class="intern-details">';
-                        echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
+    echo '</table>';
+} else {
+    echo '<p>No records found for your search!</p>';
+}
 
-                        echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
-                        echo '<table>';
-                        foreach ($internDetails as $key => $value) {
-                            echo '<tr>';
-                            echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-                            echo '<td>' . htmlspecialchars($value) . '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
-                        echo '</div>';
-                    } else {
-                        echo '<p>No details found for the selected Intern ID.</p>';
-                    }
-                    
-                        }
+// Check if the internID is set and display the corresponding details
+if (isset($_POST['internID'])) {
+    $internID = $_POST['internID'];
 
-                        } else {
-                        echo '<p>No records found for your search!</p>';
-                        }
-                        ?>
+    // Prepare SQL to fetch details for the selected internID from both profile_information and intacc tables
+    $detailSql = "SELECT pi.*, ia.profile_image FROM profile_information pi
+                  LEFT JOIN intacc ia ON pi.internID = ia.internID
+                  WHERE pi.internID = :internID";
+    $detailStmt = $conn->prepare($detailSql);
+    $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+    $detailStmt->execute();
+
+    // Check if the intern exists
+if ($detailStmt->rowCount() > 0) {
+    $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
+
+    echo '<div class="intern-details">';
+    echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
+
+    echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
+
+    // Check if the intern has a profile image and display it
+    if (!empty($internDetails['profile_image'])) {
+        echo '<div class="profile-image">';
+        echo '<img id="imagePreview" src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Preview" width="160"  height="150">';
+        echo '</div>';
+    } else {
+        echo '<div class="profile-image">';
+        echo '<img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" width="150" height="150">';
+        echo '</div>';
+    }
+
+    echo '<table>';
+
+    // Loop through the intern details and display each one
+    foreach ($internDetails as $key => $value) {
+        if ($key != 'profile_image') { // Skip 'profile_image' as it's already displayed
+            echo '<tr>';
+            echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
+            echo '<td>' . htmlspecialchars($value) . '</td>';
+            echo '</tr>';
+        }
+    }
+
+    echo '</table>';
+    echo '</div>';
+} else {
+    echo '<p>No details found for the selected Intern ID.</p>';
+}
+
+}
+?>
+
             </div>  
         </div>
 
