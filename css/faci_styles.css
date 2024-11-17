@@ -87,6 +87,8 @@ body {
   border-radius: 50%;
   cursor: pointer; /* Indicate it's clickable */
   transition: width 0.3s, height 0.3s; /* Smooth size transition */
+  margin-left: 10px; /* Add space from the left */
+
 }
 
 .sidebar.active .user-icon {
@@ -273,21 +275,18 @@ button.prev:hover, button.next:hover {
 }
 /* General dashboard styling */
 .dashboard {
-  background-color: #fff;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: left;
   width: 70%;
   max-width: 100%;
-  max-height: 310px;
+  max-height: 360px;
   overflow: hidden;
 }
 
 /* Heading styling */
 .dashboard h2 {
   font-size: 24px;
-  color: #1e1b7e;
   margin-bottom: 20px;
 }
 
@@ -302,7 +301,7 @@ button.prev:hover, button.next:hover {
 /* Card styling */
 .card {
   background-color: #f9f9f9;
-  padding: 15px 20px;
+  padding: 20px 15px; /* Increase padding for more content space */
   border-radius: 5px;
   margin-bottom: 15px;
   margin-left: 10px; /* Add space between cards and the left */
@@ -311,18 +310,19 @@ button.prev:hover, button.next:hover {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
   cursor: pointer;
-  width: 250px;  /* Fixed width for the cards */
+  width: 450px; /* Fixed width for the cards */
+  height: 73px; /* Adjust height to make it bigger */
 }
 
 /* Card hover effect */
 .card:hover {
-  transform: translateX(5px);
+  transform: translateX(8px);
 }
 
 /* Card heading styling */
 .card h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 45px;
   font-weight: bold;
 }
 
@@ -537,29 +537,37 @@ body {
 }
 /*Request*/
 
-.req-content {
-  margin-left: 0; /* Remove the left margin to position it closer */
-  padding-left: 5px; /* Add slight padding for spacing */
-  width: calc(100% - 20px); /* Adjust width to match the reduced margin, a little narrower */
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
-
-/* When sidebar is active */
-.move {
-  margin-left: 25px; /* Shift the content slightly when the sidebar is active */
-  width: calc(100% - 40px); /* Reduce width by 280px when sidebar is active, making it narrower */
-}
-
+/* Default .req-container styling */
 .req-container {
-  margin-left: 25px;
-  padding: 15px 100px 15px 350px;
-  width: calc(100% - 100px); /* Reduced the width here to make it a bit narrower */
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  margin-left: 40px; /* Reduced margin to avoid excessive space */
+  padding: 15px 20px; /* Padding adjusted for content */
+  width: calc(100% - 40px); /* Default width */
+  transition: margin-left 0.3s ease, width 0.3s ease, padding 0.3s ease, font-size 0.3s ease; /* Smooth transition for margin, width, padding, and font-size */
   margin-top: 100px; /* Space between logout button and attendance container */
   font-size: 16px; /* Font size */
   font-weight: bold; /* Bold text */
   color: black; /* Text color */
+  overflow-x: hidden; /* Prevent horizontal scrolling by default */
 }
+
+/* When sidebar is active */
+/* When sidebar is active */
+.move .req-container {
+  margin-left: 50px; /* Shift the content slightly when the sidebar is active */
+  width: calc(100% - 30px); /* Adjusted width to make it wider */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+
+/* Additional smooth transition */
+.move {
+  margin-left: 220px; /* Adjust sidebar position */
+  width: calc(100% - 200px); /* Adjust width for content */
+  transition: margin-left 0.3s ease, width 0.3s ease; /* Smooth transition for move class */
+}
+
+
+
 
 .decline-button {
   padding: 10px 20px;
@@ -607,6 +615,50 @@ body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Form Fields */
+input[type="text"], input[type="datetime-local"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box; /* To include padding in the width */
+  transition: border-color 0.3s ease;
+}
+
+/* Focus Effect on Inputs */
+input[type="text"]:focus, input[type="datetime-local"]:focus {
+  border-color: #40916c; /* Green focus color */
+  outline: none;
+}
+
+/* Submit Button */
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #40916c; /* Green button */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+/* Button Hover Effect */
+button[type="submit"]:hover {
+  background-color: #2d6a4f; /* Darker green on hover */
+}
+
+/* Label Styling */
+label {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
 /* Close button */
 .close-button {
   color: #aaa;
@@ -845,21 +897,38 @@ table td {
   color: #344e41; /* Darker green-gray text */
 }
 
-
 /* Button Styling */
 .action-button {
-  display: inline-block;
-  padding: 8px 14px;
+  padding: 5px 15px;  /* Adjust padding for better button size */
   font-size: 14px;
   border: none;
-  border-radius: 8px; /* Smooth rounded edges */
-  text-align: center;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  border-radius: 5px;
   cursor: pointer;
-  width: auto; /* Auto width to adjust to content */
-  height: 40px; /* Consistent height */
-  box-sizing: border-box; /* Ensures padding is included in the width/height calculation */
+  display: inline-block;
+  text-align: center;
 }
+.declineReasonForm{
+  display: none; /* Initially hidden, will be shown when triggered */
+  margin-bottom: 15px; /* Space between form and buttons */
+  padding: 20px;
+  border: 1px solid #ddd; /* Light border for separation */
+  background-color: #fff; /* White background for clarity */
+  border-radius: 8px; /* Rounded corners for a soft appearance */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  width: 100%; /* Make the form fill the available width */
+  max-width: 500px; /* Limit the width */
+  margin-top: 10px; /* Margin to separate it from the above content */
+}
+.declineReasonForm label{
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+  color: #333; /* Dark text for better readability */
+}
+
+
+
 
 /* Remove default styling from form buttons */
 form button {
@@ -882,7 +951,15 @@ form button {
 /* Update Button Styles */
 .action-button.update {
   background-color: #fca311; /* Orange */
-  color: #fff;
+  color: #fff;  
+  margin-right: 10px; /* Space between Update and Decline buttons */
+  margin-top: 10px; /* Adjust this value to lower the button */
+  height: 40px; /* Set the height of the button */
+  width: 120px; /* Set the width of the button */
+  font-size: 14px; /* Font size to ensure it fits well */
+  display: flex; /* Make the button a flex container */
+  align-items: center; /* Vertically center the text and image */
+  justify-content: center; /* Horizontally center the text */
 }
 
 .action-button.update:hover {
@@ -894,6 +971,14 @@ form button {
 .action-button.decline {
   background-color: #95d5b2; /* Lighter green */
   color: #fff;
+  margin-right: 10px; /* Space between Update and Decline buttons */
+  margin-top: 10px; /* Adjust this value to lower the button */
+  height: 40px; /* Set the height of the button */
+  width: 120px; /* Set the width of the button */
+  font-size: 14px; /* Font size to ensure it fits well */
+  display: flex; /* Make the button a flex container */
+  align-items: center; /* Vertically center the text and image */
+  justify-content: center; /* Horizontally center the text */
 }
 
 .action-button.decline:hover {
@@ -937,17 +1022,16 @@ form button {
   position: fixed;
   bottom: 15px; /* Distance from the bottom */
   right: 15px;  /* Distance from the right */
-  width: 40vw;  /* Default width for balanced UI */
+  width: 30vw;  /* Default width for balanced UI */
   height: 50vh; 
-  background-color: #ffffff; /* White background for clean look */
   padding: 20px; /* Add padding for better content spacing */
   border-radius: 15px; /* Soft rounded corners for a modern look */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for focus */
   z-index: 9999;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Smooth modern font */
   overflow-y: auto; /* Allow vertical scrolling if content overflows */
   overflow-x: hidden; /* Prevent horizontal scrolling */
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease, width 0.3s ease; /* Smooth transition for width */
+  border: 2px solid #4caf50; /* Slightly green border */
 }
 
 /* When the sidebar is expanded */
@@ -978,7 +1062,7 @@ form button {
   background-color: #a9d5a9; /* Light green background */
   color: #fff; /* White text for contrast */
   text-align: left;
-  font-size: 1.1rem; /* Slightly larger text */
+  font-size: 0.9rem; /* Smaller font size */
   word-wrap: break-word; /* Ensure text wraps within cells */
   text-overflow: ellipsis; /* Truncate overflowed text */
 }
@@ -993,6 +1077,25 @@ form button {
   border-bottom: 1px solid #ddd; /* Soft dividing lines */
   word-wrap: break-word; /* Ensure text wraps inside cells */
   text-overflow: ellipsis; /* Truncate overflowed text */
+}
+
+/* For green text when status is Active */
+.intern-status-table td.active {
+  color: green;
+  font-weight: bold;
+}
+
+/* For orange text when status is On Break */
+/* Orange for 'On Break' */
+.intern-status-table td.on-break {
+  color: orange;
+  font-weight: bold;
+}
+
+/* For blue text when status is Logged Out */
+.intern-status-table td.logged-out {
+  color: blue;
+  font-weight: bold;
 }
 
 /* Hover effect on rows */
@@ -1011,23 +1114,7 @@ form button {
   object-fit: cover; /* Ensure the image fits inside the circle */
 }
 
-/* Status-specific colors */
-.intern-status-table .active-now {
-  background-color: #90e09b; /* Soft green for active status */
-}
 
-.intern-status-table .on-break {
-  background-color: #a8e6a1; /* Light pastel green for break */
-}
-
-.intern-status-table .back-to-work {
-  background-color: #d4f1d4; /* Very light green for back to work */
-}
-
-.intern-status-table .logged-out {
-  background-color: #e0e0e0; /* Light gray for logged out status */
-  color: #777; /* Lighter text for logged-out rows */
-}
 
 /* Table cell (status) text */
 .intern-status-table td.status {
@@ -1168,10 +1255,18 @@ form button {
 }
 
 /* Table styling */
+.approved-logs-table-wrapper {
+  margin-top: 85px; /* Ensures space at the top */
+  max-height: 70vh; /* Limits the height of the table to 60% of the viewport height */
+  overflow-y: auto; /* Adds vertical scrolling if the table content exceeds the height */
+  overflow-x: hidden; /* Hides horizontal scrolling */
+}
+
+/* Table styling */
 .approved-logs-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  min-width: 600px; /* Ensures table has a minimum width */
 }
 
 /* Header styling for the table */
@@ -1259,6 +1354,8 @@ form button {
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   margin-bottom: 30px;
   transition: transform 0.3s ease;
+  
+ 
 }
 .announcement-board:hover {
   transform: translateY(-2px);
@@ -1274,11 +1371,14 @@ form button {
 }
 .anno-img {
   position: absolute; /* Position the image absolutely within the parent */
-  top: 11%; /* Align to the top */
-  left: 0; /* Align to the left */
+  top: 20%; /* Align to the top */
+  right: 0; /* Align to the right */
   max-width: 18%; /* Set maximum width to be responsive */
   height: auto; /* Maintain aspect ratio */
+  transform: scaleX(-1); /* This mirrors the image horizontally */
+  z-index: 9999; /* Ensure the image is always on top */
 }
+
 
 
 
@@ -1523,10 +1623,9 @@ button[type="submit"]:hover {
   align-items: center; /* Vertically center the items */
   justify-content: center; /* Horizontally center the items */
   gap: 10px; /* Space between form elements */
-  background-color: #fff;
+  background-color: transparent;
   padding: 5px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: auto; /* Automatically adjust width based on content */
 }
 
@@ -1540,6 +1639,7 @@ button[type="submit"]:hover {
   width: 120px; /* Fixed width for uniform alignment */
   height: 50px; /* Make input/select height consistent */
   align-self:normal; /* Aligns the button closer to the top */
+  margin-top: 1px;
 
 }
 
@@ -1558,7 +1658,7 @@ button[type="submit"]:hover {
   height: 55px; /* Height of the button */
   background-color: white; /* Ensures the white background color */
   transition: background-color 0.3s ease; /* Smooth transition on hover */
-  align-self: normal; /* Aligns the button closer to the top */
+  margin-top: 1px;
 }
 
 .search-form button img {

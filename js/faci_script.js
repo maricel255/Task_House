@@ -1,44 +1,54 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.querySelector(".sidebar"); // Select the sidebar element
     const userIcon = document.querySelector(".user-icon"); // Select the user icon
-    const sidebar = document.querySelector(".sidebar");
     const mainContent = document.querySelector(".main-content");
     const header = document.querySelector(".header");
     const dashContent = document.querySelector(".dash-content");
     const reqContent = document.querySelector(".req-content");
     const repContent = document.querySelector(".rep-content");
-    const internStatusDashboard = document.querySelector(".intern-status-dashboard"); // Select the dashboard
-    const internStatusTable = document.querySelector(".intern-status-table"); // Select the intern status table
-
+    const internStatusDashboard = document.querySelector(".intern-status-dashboard");
+    const internStatusTable = document.querySelector(".intern-status-table");
 
     let sidebarExpanded = false;
 
-    // Toggle sidebar and content visibility on image click
-    userIcon.addEventListener("click", function () {
-        sidebar.classList.toggle("active");
-        mainContent.classList.toggle("shift")   ;
-        header.classList.toggle("shifted");
-        dashContent.classList.toggle("shifts");
-        reqContent.classList.toggle("move");
-        repContent.classList.toggle("moves");
-        // Toggle inner content visibility
-        if (sidebarExpanded) {
-            sidebar.classList.add("hide-content");
-            sidebar.classList.remove("show-content");
-            internStatusDashboard.classList.remove("shifted");
-            internStatusTable.classList.remove("shifted");
+    // Toggle sidebar and content visibility on sidebar click
+    sidebar.addEventListener("click", function (event) {
+        // If the click was on the user icon, toggle the sidebar
+        if (event.target.closest(".user-icon")) {
+            sidebar.classList.toggle("active");
+            mainContent.classList.toggle("shift");
+            header.classList.toggle("shifted");
+            dashContent.classList.toggle("shifts");
+            reqContent.classList.toggle("move");
+            repContent.classList.toggle("moves");
 
-
-        } else {
-            sidebar.classList.add("show-content");
-            sidebar.classList.remove("hide-content");
-            internStatusDashboard.classList.add("shifted");
-            internStatusTable.classList.add("shifted");
-
-
+            // Toggle inner content visibility
+            if (sidebarExpanded) {
+                sidebar.classList.add("hide-content");
+                sidebar.classList.remove("show-content");
+                internStatusDashboard.classList.remove("shifted");
+                internStatusTable.classList.remove("shifted");
+            } else {
+                sidebar.classList.add("show-content");
+                sidebar.classList.remove("hide-content");
+                internStatusDashboard.classList.add("shifted");
+                internStatusTable.classList.add("shifted");
+            }
+            sidebarExpanded = !sidebarExpanded;
         }
-        sidebarExpanded = !sidebarExpanded;
+    });
+
+    // Optional: Close sidebar when clicking anywhere outside of it
+    document.addEventListener("click", function (event) {
+        if (!sidebar.contains(event.target) && !userIcon.contains(event.target)) {
+            sidebar.classList.remove("show-content");
+            sidebar.classList.add("hide-content");
+            sidebarExpanded = false;
+        }
     });
 });
+
+
 
 function showContent(sectionId) {
     // Hide all content sections

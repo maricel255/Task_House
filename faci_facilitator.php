@@ -227,7 +227,7 @@ if (isset($_POST['approveBtn'])) {
             try {
                 // Debugging: Print the SQL query before execution
                 $sql = "UPDATE time_logs 
-                        SET status = 'Decline', 
+                        SET status = 'Declined', 
                             task = :decline_reason 
                         WHERE internID = :internID 
                         AND id = :id 
@@ -241,15 +241,26 @@ if (isset($_POST['approveBtn'])) {
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             
                 // Execute the query
-                if ($stmt->execute()) {
-                    if ($stmt->rowCount() > 0) {
-                      echo "The status has been updated to 'Decline' and task has been updated successfully.<br>";
-                    } else {
-                       //echo "No rows were updated. Please check if the status was 'Pending' and data matches.<br>";
-                    }
+                // Execute your SQL query
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    // Set the success message if rows are affected
+                    $_SESSION['alertMessage'] = "The status has been updated to 'Decline' and task has been updated successfully.<br>";
+                    $_SESSION['alertType'] = "success"; // Success type for alert
+                     // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
                 } else {
-                   echo "Failed to execute query. Error info: " . implode(", ", $stmt->errorInfo()) . "<br>";
+                    // If no rows were updated, you can display an error or log it
+                    $_SESSION['alertMessage'] = "No rows were updated. Please check if the status was 'Pending' and data matches.<br>";
+                    $_SESSION['alertType'] = "error"; // Error type for alert
                 }
+            } else {
+                // If the query fails to execute, set the error message
+                $_SESSION['alertMessage'] = "Failed to execute query. Error info: " . implode(", ", $stmt->errorInfo()) . "<br>";
+                $_SESSION['alertType'] = "error"; // Error type for alert
+            }
+
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();
             }
@@ -357,8 +368,8 @@ SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i
                 AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') 
                 AND (i.logout_time IS NULL OR i.logout_time = '') THEN 'Active Now'
            
-           -- If back_to_work_time is present (indicating the intern is back to work), show 'Back to Work'
-           WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Back to Work'
+           -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
+           WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Active Now'
            
            -- Default to 'Unknown' if no status is detected
            ELSE 'Unknown'
@@ -557,6 +568,8 @@ try {
     <div class="main-content">
     <div class="announcement-board">
     <h2>ANNOUNCEMENT BOARD</h2>
+    <img src="image/announce.gif" alt="Announcement Image" class="anno-img">
+
     <?php
         // Fetch the adminID for the current faciID
         $sql_admin = "SELECT adminID FROM facacc WHERE faciID = :faciID";
@@ -631,9 +644,9 @@ try {
             echo '<p>Error fetching admin information.</p>';
         }
     ?>
+
 </div>
 
-          <img src="image/announce.png" alt="Announcement Image" class="anno-img">
     </div>
     
 
@@ -658,41 +671,41 @@ try {
         </div>
 
         <div class="intern-status-dashboard">
-        <h1 style="color: green;">Availability Status</h1>
+        <h2 >Availability Status</h2>
 
-
-    <?php if ($interns): ?>
-        <table class="intern-status-table">
-            <thead>
-                <tr>
-                    <th>Intern ID</th>
-                    <th>Intern Name</th>
-                    <th>Status</th>
-                    <th>Profile Image</th>
+        <?php if ($interns): ?>
+    <table class="intern-status-table">
+        <thead>
+            <tr>
+                <th>Intern ID</th>
+                <th>Intern Name</th>
+                <th>Status</th>
+                <th>Profile Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($interns as $intern): ?>
+                <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
+                    <td><?php echo htmlspecialchars($intern['internID']); ?></td>
+                    <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
+                    <td class="<?php echo strtolower($intern['status']); ?>"><?php echo htmlspecialchars($intern['status']); ?></td>
+                    <td>
+                        <?php if (!empty($intern['profile_image'])): ?>
+                            <!-- Display profile image -->
+                            <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
+                        <?php else: ?>  
+                            <!-- Default image if no profile image exists -->
+                            <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
+                        <?php endif; ?>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($interns as $intern): ?>
-                    <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
-                        <td><?php echo htmlspecialchars($intern['internID']); ?></td>
-                        <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
-                        <td><?php echo htmlspecialchars($intern['status']); ?></td>
-                        <td>
-                            <?php if (!empty($intern['profile_image'])): ?>
-                                <!-- Display profile image -->
-                                <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
-                                <?php else: ?>
-                                <!-- Default image if no profile image exists -->
-                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" >
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p>No interns found under your facilitation.</p>
-    <?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <p>No interns found under your facilitation.</p>
+<?php endif; ?>
+
 </div>
 
 </div>
@@ -737,38 +750,39 @@ try {
 
                                 <!-- Action Buttons (Approve and Decline) -->
                                 <td style="display: flex; justify-content: flex-start; align-items: center;">
-    <form action="" method="post" style="margin-right: 10px;">
-        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
-        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" /> <!-- Unique identifier -->
+                                    <form action="" method="post" style="margin-right: 10px;">
+                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" /> <!-- Unique identifier -->
 
-        <?php 
-        // Check if any of the fields are empty
-        $disableApprove = empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time']);
-        ?>
+                                        <?php 
+                                        // Check if any of the fields are empty
+                                        $disableApprove = empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time']);
+                                        ?>
 
-        <!-- Disable approve button if any field is empty -->
-        <button type="submit" class="action-button approve" name="approveBtn" <?php echo ($disableApprove ? 'disabled' : ''); ?>>Approve</button>
-    </form>
+                                        <!-- Disable approve button if any field is empty -->
+                                        <button type="submit" class="action-button approve" name="approveBtn" <?php echo ($disableApprove ? 'disabled' : ''); ?>>Approve</button>
+                                    </form>
 
-    <!-- Update button -->
-    <button type="button" class="action-button update" id="updateBtn<?php echo $log['id']; ?>" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
-    
-    <!-- Decline button -->
-    <form method="POST" action="">
-        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
-        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
-        <button type="button" class="action-button decline" onclick="showDeclineForm(<?php echo $log['id']; ?>)">Decline</button>
-    </form>
+                                    <!-- Update button -->
+                                    <button type="button" class="action-button update" id="updateBtn<?php echo $log['id']; ?>" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
+                                    
+                                    <!-- Decline button -->
+                                    <form method="POST" action="">
+                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
+                                        <button type="button" class="action-button decline" onclick="showDeclineForm(<?php echo $log['id']; ?>)">Decline</button>
+                                    </form>
 
-    <!-- Decline reason form, initially hidden -->
-    <form id="declineReasonForm<?php echo $log['id']; ?>" method="POST" action="" style="display:none;">
-        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
-        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
-        <label for="decline_reason">Enter reason for decline:</label>
-        <textarea name="decline_reason" id="decline_reason_<?php echo $log['id']; ?>" required></textarea>
-        <button type="submit" name="submitDeclineReason">Submit Reason</button>
-    </form>
-</td>
+                                    <!-- Decline reason form, initially hidden -->
+                                    <form id="declineReasonForm<?php echo $log['id']; ?>" method="POST" action="" style="display:none;">
+                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
+                                        <label for="decline_reason">Enter reason for decline:</label>
+                                        <textarea name="decline_reason" id="decline_reason_<?php echo $log['id']; ?>" required></textarea>
+                                        <button type="submit" name="submitDeclineReason">Submit Reason</button>
+                                     
+                                  </form>
+                                </td>
 
                                 
 
@@ -789,7 +803,6 @@ try {
 
 <!-- Modal Structure for Decline Action -->
 
-<!-- Modal Structure for Update Action -->
 <div id="updateModal<?php echo $log['id']; ?>" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal(<?php echo $log['id']; ?>)">&times;</span>
@@ -800,24 +813,25 @@ try {
 
             <!-- Include the input values for editing the data before update -->
             <label for="update_login_time">Login Time:</label>
-            <input type="text" name="login_time" value="<?php echo htmlspecialchars($log['login_time']); ?>" required />
+            <input type="datetime-local" name="login_time" value="<?php echo htmlspecialchars($log['login_time']); ?>" required />
 
             <label for="update_break_time">Break Time:</label>
-            <input type="text" name="break_time" value="<?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?>" required />
+            <input type="datetime-local" name="break_time" value="<?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?>" required />
 
             <label for="update_back_to_work_time">Back to Work Time:</label>
-            <input type="text" name="back_to_work_time" value="<?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?>" required />
+            <input type="datetime-local" name="back_to_work_time" value="<?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?>" required />
 
             <label for="update_task">Task:</label>
             <input type="text" name="task" value="<?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?>" required />
 
             <label for="update_logout_time">Logout Time:</label>
-            <input type="text" name="logout_time" value="<?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?>" required />
+            <input type="datetime-local" name="logout_time" value="<?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?>" required />
 
             <button type="submit" class="action-button update" name="updateBtn">Update to Approve</button>
         </form>
     </div>
 </div>
+
 
 
 
@@ -846,32 +860,42 @@ try {
             </h2>
       
         <?php if (count($approvedLogs) > 0): ?>
-                <table class="approved-logs-table">
-                    <thead>
-                        <tr>
-                            <th>Intern ID</th>
-                            <th>Task</th>
-                            <th>Login Time</th>
-                            <th>Logout Time</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($approvedLogs as $log): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($log['internID']); ?></td>
-                                <td><?php echo htmlspecialchars($log['task']); ?></td>
-                                <td><?php echo htmlspecialchars($log['login_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
-                                <td class="status-<?php echo strtolower($log['status']); ?>">
-                                    <?php echo htmlspecialchars($log['status']); ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No approved logs found.</p>
+            <div class="approved-logs-table-wrapper">
+    <table class="approved-logs-table">
+        <thead>
+            <tr>
+                <th>Intern ID</th>
+                <th>Task</th>
+                <th>Login Time</th>
+                <th>Logout Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($approvedLogs as $log): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($log['internID']); ?></td>
+                    <td><?php echo htmlspecialchars($log['task']); ?></td>
+                    <td><?php echo htmlspecialchars($log['login_time']); ?></td>
+                    <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
+                    <td class="status-<?php echo strtolower($log['status']); ?>">
+                        <?php echo htmlspecialchars($log['status']); ?>
+                    </td>
+                    <td style="display: flex; justify-content: space-evenly; align-items: center;">
+                        <!-- Delete Button -->
+                        <form method="POST" action=" " style="margin: 0;">
+                            <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>">
+                            <input type="hidden" name="id" value="<?php echo $log['id']; ?>">
+                            <button type="submit" class="action-button delete" name="deleteBtn" onclick="return confirm('Are you sure you want to delete this log?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
             <?php endif; ?>
         </div>
     </div>
