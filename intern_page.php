@@ -358,7 +358,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-
+    try {
+        // Query without date condition for now
+        $sqlGetTasks = "SELECT task FROM time_logs WHERE internID = :internID";
+        $stmtGetTasks = $conn->prepare($sqlGetTasks);
+        $stmtGetTasks->bindParam(':internID', $internID, PDO::PARAM_STR);
+        $stmtGetTasks->execute();
+    
+        // Check if tasks are found
+        if ($stmtGetTasks->rowCount() > 0) {
+            $tasks = $stmtGetTasks->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            echo "No tasks found for this intern.";
+        }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();  // Handle query errors
+    }
+    
+    // Debugging output
+    echo 'InternID: ' . htmlspecialchars($internID);  // Verify internID value
+    echo '<pre>';
+    print_r($tasks);  // Debug the fetched tasks
+    echo '</pre>';
 // Handle profile form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
     try {
@@ -847,20 +868,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
 
 <!-- Modal for entering task -->
+
+
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Enter Task Before Logging Out</h2>
-        <form id="taskForm" method="POST" action=""> <!-- Keep action empty to submit to same page -->
-            <input type="hidden" name="internID" value="<?php echo htmlspecialchars($internID); ?>"> <!-- Pass the internID securely -->
-            <label for="task">Task:</label>
-            <input type="text" id="task" name="tasks[]" required>
+        <form id="taskForm" method="POST" action="">
+            <input type="hidden" name="internID" value="<?php echo htmlspecialchars($internID); ?>">
+
+            <!-- Dropdown to select an existing task -->
+            <label for="task">Select Existing Task:</label>
+            <select name="tasks[]" required>
+                <option value="" disabled selected>Select a Task</option>
+                
+                <?php 
+                if (!empty($tasks)) {
+                    foreach ($tasks as $task) {
+                        echo '<option value="' . htmlspecialchars($task['task']) . '">' . htmlspecialchars($task['task']) . '</option>';
+                    }
+                } else {
+                    echo '<option value="">No tasks available</option>';
+                }
+                ?>
+            </select>
+
+            <!-- Input for a new task -->
+            <label for="new_task">Or Enter a New Task:</label>
+            <input type="text" id="new_task" name="tasks[]" placeholder="Enter a new task">
+
             <button type="submit" name="submitTask">Submit Task</button>
         </form>
-        <div id="taskMessage"><?php echo isset($alertMessage) ? htmlspecialchars($alertMessage) : ''; ?></div> <!-- Display message -->
+
+        <div id="taskMessage"><?php echo isset($alertMessage) ? htmlspecialchars($alertMessage) : ''; ?></div>
     </div>
 </div>
-
 
 <!-- Modal for Profile Information -->
 <div id="profileModal" class="modal">
