@@ -183,7 +183,6 @@ window.onclick = function(event) {
   function openModal() {
     document.getElementById('profileModal').style.display = 'block';
   }
-  // Start Kyle
   function openCredentialsModal() {
     document.getElementById('credentialsModal').style.display = 'block';
 }
@@ -247,3 +246,27 @@ function uploadImage() {
 }
 
 // End Kyle
+
+function printTable() {
+    var printContent = document.getElementById('timeLogsTable').outerHTML;
+    var printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Print Table</title>');
+    printWindow.document.write('<style>table { width: 100%; border-collapse: collapse; } th, td { padding: 8px; text-align: left; border: 1px solid #ddd; } th { background-color: #4CAF50; color: white; }</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+    function printTable() {
+        var printContents = document.getElementById('attendanceTable').outerHTML;
+        var originalContents = document.body.innerHTML;
+
+        // Replace the body content with the table content for printing
+        document.body.innerHTML = printContents;
+
+        window.print(); // Trigger the print dialog
+
+        // Restore the original body content after printing
+        document.body.innerHTML = originalContents;
+    }

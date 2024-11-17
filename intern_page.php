@@ -589,6 +589,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 }
 
 
+    // Query to get time logs for the current intern
+    $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID");
+    $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Fetch all the time logs
+    $timeLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Get the required hours from the profile data
+    $requiredHours = $profileData['required_hours'] ?? 0; // Default to 0 if no value is found
 
 ?>
 
@@ -1222,21 +1232,128 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
 
 
-  <div class="content-section" id="attendance">
+
+<div class="content-section" id="attendance">
     <div class="attend-content">
-    <div class="attendance-container">
-        <h1>REQUIRED HOURS: 700 HRS</h1>
+        <div class="attendance-container">
+            <h1>REQUIRED HOURS: 
+            <?php 
+                // Loop through time logs and check if any status is "Approved"
+                foreach ($timeLogs as $log) {
+                    if (strtolower($log['status']) == 'approved') {
+                        // Calculate the difference between login_time and logout_time
+                        $loginTime = strtotime($log['login_time']);
+                        $logoutTime = strtotime($log['logout_time']);
+
+                        // Calculate the difference in seconds
+                        $timeDiff = $logoutTime - $loginTime;
+
+                        // Convert seconds to hours (assuming 1 hour = 3600 seconds)
+                        $hoursWorked = $timeDiff / 3600;
+
+                        // Subtract the calculated hours from the required hours
+                        $requiredHours -= $hoursWorked;
+                    }
+                }
+
+                // Display the adjusted or original required hours
+                echo number_format($requiredHours, 2); 
+            ?> HRS
+            </h1>
+
+            <!-- Print Button -->
+            <button onclick="printTable()" class="print-btn">Print Table</button>
+
+            <!-- Display the time logs in a table -->
+            <table id="attendanceTable">
+                <thead>
+                    <tr>
+                        <th>#</th> <!-- Add the Count column -->
+                        <th>Login Time</th>
+                        <th>Break Time</th>
+                        <th>Back to Work Time</th>
+                        <th>Logout Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($timeLogs)): ?>
+                        <?php $count = 1; // Initialize counter ?>
+                        <?php foreach ($timeLogs as $log): ?>
+                            <tr>
+                                <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
+                                <td><?php echo htmlspecialchars($log['login_time']); ?></td>
+                                <td><?php echo htmlspecialchars($log['break_time']); ?></td>
+                                <td><?php echo htmlspecialchars($log['back_to_work_time']); ?></td>
+                                <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
+                                <td><?php echo htmlspecialchars($log['status']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6">No time logs found for this intern.</td> <!-- Adjust colspan to 6 -->
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
+</div>
+
     
 
-    <div class="content-section" id="requests">
-        <div class="req-content">
-            <div class="wrapper">
-            <button class="styled-button">Print</button>
-        </div>
+<div class="content-section" id="requests">
+    <div class="req-content">
+
+    <h1>My Daily Time Record</h1> <!-- Corrected the closing tag -->
+    <!-- Print Button -->
+          <button onclick="printTable()" class="print-btn">Print Table</button>
+
+        <div class="wrapper">
+          
+            
+            <!-- Display the time logs in a table -->
+            <table id="timeLogsTable">
+                <thead>
+                    <tr>
+                        <th>#</th> <!-- Add the Count column -->
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                        <th>Task</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Assuming $conn is your PDO database connection and $internID is already defined
+                    $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID");
+                    $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    $timeLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    if (!empty($timeLogs)):
+                        $count = 1; // Initialize counter
+                        foreach ($timeLogs as $log): ?>
+                            <tr>
+                                <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
+                                <td><?php echo htmlspecialchars($log['login_time']); ?></td>
+                                <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
+                                <td><?php echo htmlspecialchars($log['task']); ?></td>
+                                <td><?php echo htmlspecialchars($log['status']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6">No time logs found for this intern.</td> <!-- Adjust colspan to 6 -->
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+
 
     
 

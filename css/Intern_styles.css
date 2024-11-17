@@ -419,30 +419,7 @@ input[type="text"] {
 }
 /*Attendance*/
 
-.attent-content{
-    margin-left: 60px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
-.move{
-    margin-left: 250px;
-    width: calc(100% - 250px);
-}
-.attendance-container {
-    margin-left: 60px;
-    padding: 15px 100px 15px 350px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-    
-    background-color: #ffffff;
-    box-shadow: 5px 2px 5px 2px  rgba(0, 0, 0, 0.1);
-    
-    border-radius: 8px;
-    margin-top: 100px;
-    font-size: 16px;
-    font-weight: bold;
-    color: black;
-}
+
 
 /*Request*/
 .req-content{
@@ -1252,4 +1229,245 @@ label {
 
 .submit-button:hover {
     background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+.attendance-container {
+    margin-left: 30px;
+    padding: 15px 100px 15px 350px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    background-color: #ffffff;
+    box-shadow: 5px 2px 5px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;  /* Apply rounded corners to the container */
+    margin-top: 100px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.attent-content{
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+.move{
+    margin-left: 50px;
+    width: calc(100% - 50px);
+}
+.attendance-container {
+    margin-left: 30px;
+    padding: 15px 100px 15px 350px;
+    width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+    
+    background-color: #ffffff;
+    box-shadow: 5px 2px 5px 2px  rgba(0, 0, 0, 0.1);
+    
+    border-radius: 8px;
+    margin-top: 100px;
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+}
+
+/* Table Container */
+.table-container {
+    margin-top: 10px;
+    margin-left: 0;
+    border-radius: 16px;  /* Apply rounded corners to the table container */
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    margin-left: 0;
+    border-radius: 16px;  /* Apply rounded corners to the table itself */
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+/* Table Header */
+thead {
+    background-color: #4CAF50;
+    color: white;
+    text-align: left;
+    border-radius: 16px 16px 0 0;  /* Apply rounded top corners to the table header */
+}
+
+thead th {
+    padding: 12px 15px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Table Body */
+tbody {
+    background-color: #ffffff;
+}
+
+tbody tr {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+/* Alternating Row Colors */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Table Data */
+tbody td {
+    padding: 12px 15px;
+    font-size: 14px;
+    text-align: left;
+    border-right: 1px solid #f1f1f1;
+}
+
+/* Last Table Cell */
+tbody td:last-child {
+    border-right: none;
+}
+
+/* Hover Effect */
+tbody tr:hover {
+    background-color: #e9f7e9;
+    cursor: pointer;
+}
+
+/* Status Column - Color Indicator */
+td:nth-child(10) {
+    text-align: center;
+    font-weight: bold;
+    padding: 8px;
+}
+
+/* Approved Status */
+td:nth-child(10):contains("Approved") {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+/* Pending Status */
+td:nth-child(10):contains("Pending") {
+    background-color: #FFC107;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+/* Denied Status */
+td:nth-child(10):contains("Denied") {
+    background-color: #F44336;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    table {
+        font-size: 12px;
+    }
+    thead th, tbody td {
+        padding: 8px 10px;
+    }
+    tbody td {
+        display: block;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+    }
+}
+
+/* No Data Found */
+td[colspan="10"] {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #888;
+}
+
+/* Add Search and Filter Section */
+.search-container {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.search-container input {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-container input:focus {
+    border-color: #4CAF50;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 8px 15px;
+    font-size: 14px;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background-color: #45a049;
+}
+
+.action-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.print-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 7%;
+    margin-left: 1%;
+    padding: 15px 30px;
+    width: auto;
+    height: 50px;
+    font-size: 12px;
+    transition: background-color 0.3s ease; /* Optional smooth transition */
+}
+
+.print-btn:hover {
+    background-color: #45a049; /* Slightly darker shade on hover */
 }
