@@ -134,126 +134,211 @@ $stmt = $conn->prepare($sql);
 $stmt->bindParam(':faciID', $faciID);
 $stmt->execute();
 $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Count the number of pending approval requests
+$approvalCount = count($logs);
+
+
 // Handle form submission for approval, decline, and update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['approveBtn'])) {
-        // Sanitize input to avoid malicious data
-        $internID = htmlspecialchars($_POST['internID']);
-        $id = htmlspecialchars($_POST['id']); // Get the unique log ID
+   
+if (isset($_POST['approveBtn'])) {
+    // Sanitize input to avoid malicious data
+    $internID = htmlspecialchars($_POST['internID']);
+    $id = htmlspecialchars($_POST['id']); // Get the unique log ID
+
+    // Query to fetch the current record for the specified intern and log ID
+    $query = "SELECT login_time, break_time, back_to_work_time, task, logout_time FROM time_logs WHERE internID = :internID AND id = :id";
+    
+    try {
+        // Fetch the record to check if any field is empty
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Fetch the data for the specific log entry
+        $log = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Check if any of the necessary fields are empty
+        if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
+            // Set error message in the session
+            $_SESSION['alertMessage'] = "Error: All fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled before approving.";
+            $_SESSION['alertType'] = 'error'; // Set alert type as error
+
+            // Redirect to avoid form resubmission and display the message
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
 
         // Define your update query to set the status to 'approved' only for the specific row (log_id)
         $sql = "UPDATE time_logs 
-                SET status = 'approved' 
+                SET status = 'Approved' 
                 WHERE internID = :internID 
                 AND id = :id 
                 AND status = 'pending'"; // Ensure that only 'pending' logs are updated for the correct row
 
         // Prepare and execute the query using PDO
-        try {
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Bind the log_id parameter
-            $stmt->execute();
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Bind the log_id parameter
+        $stmt->execute();
 
-            // Set success message in the session
-            $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
-            $_SESSION['alertType'] = 'success';  // Set type as 'success'
+        // Set success message in the session
+        $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
+        $_SESSION['alertType'] = 'success';  // Set type as 'success'
 
-            // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        } catch (PDOException $e) {
-            // Set error message in the session if an exception occurs
-            $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
-            $_SESSION['alertType'] = 'error';  // Set type as 'error'
-        }
+        // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    } catch (PDOException $e) {
+        // Set error message in the session if an exception occurs
+        $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+        $_SESSION['alertType'] = 'error';  // Set type as 'error'
     }
+}
+    
 
+   // Handle Decline logic
+
+  // Handle Decline logic
     if (isset($_POST['submitDeclineReason'])) {
-        $internID = htmlspecialchars($_POST['internID']);
-        $id = htmlspecialchars($_POST['id']);
-        $decline_reason = htmlspecialchars($_POST['decline_reason']); // Get reason for decline
+        // Check if the required form fields are set
+        if (isset($_POST['internID'], $_POST['id'], $_POST['decline_reason'])) {
+            // Sanitize form data
+            $internID = htmlspecialchars($_POST['internID']);
+            $id = htmlspecialchars($_POST['id']);
+            $decline_reason = htmlspecialchars($_POST['decline_reason']);
 
-        // Update status to 'declined' and store reason in task
-        $sql = "UPDATE time_logs 
-                SET status = 'declined', 
-                    task = :decline_reason
-                WHERE internID = :internID 
-                AND id = :id"; // Only update the task (reason) and status
+           
 
-        try {
-            $stmt = $conn->prepare($sql);
+            // Check the current status before updating
+            $stmt = $conn->prepare("SELECT status FROM time_logs WHERE internID = :internID AND id = :id");
             $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->bindParam(':decline_reason', $updated_task, PDO::PARAM_STR); // Store the reason
             $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $_SESSION['alertMessage'] = "Time log declined and reason added for Intern ID: $internID";
-            $_SESSION['alertType'] = 'success';
-
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        } catch (PDOException $e) {
-            $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
-            $_SESSION['alertType'] = 'error';
+            if ($row) {
+               // echo "Current Status: " . htmlspecialchars($row['status']) . "<br>";
+            } else {
+               // echo "No row found with the specified internID and ID.<br>";
+            }
+            try {
+                // Debugging: Print the SQL query before execution
+                $sql = "UPDATE time_logs 
+                        SET status = 'Decline', 
+                            task = :decline_reason 
+                        WHERE internID = :internID 
+                        AND id = :id 
+                        AND LOWER(status) = LOWER('Pending')";
+               // echo "SQL Query: " . $sql . "<br>";
+                $stmt = $conn->prepare($sql);
+            
+                // Bind the parameters
+                $stmt->bindParam(':decline_reason', $decline_reason, PDO::PARAM_STR);
+                $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
+                // Execute the query
+                if ($stmt->execute()) {
+                    if ($stmt->rowCount() > 0) {
+                      echo "The status has been updated to 'Decline' and task has been updated successfully.<br>";
+                    } else {
+                       //echo "No rows were updated. Please check if the status was 'Pending' and data matches.<br>";
+                    }
+                } else {
+                   echo "Failed to execute query. Error info: " . implode(", ", $stmt->errorInfo()) . "<br>";
+                }
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+            }
+            
+        } else {
+            echo "Required form data is missing.<br>";
         }
     }
 
-    // Handle Update logic (if needed for the form/modal)
-    if (isset($_POST['updateBtn'])) {
-        // Sanitize and update the fields as needed
-        $internID = htmlspecialchars($_POST['internID']);
-        $id = htmlspecialchars($_POST['id']); // Get the log ID
 
-        // Update specific fields (depending on your form)
-        $updated_login_time = htmlspecialchars($_POST['login_time']);
-        $updated_task = htmlspecialchars($_POST['task']);
+    
 
-        // SQL query for updating values
-        $sql = "UPDATE time_logs 
-                SET login_time = :login_time, 
-                    task = :task
-                WHERE internID = :internID 
-                AND id = :id"; 
+    
+    
+   // Handle Update logic (if needed for the form/modal)
+// Handle Update logic (if needed for the form/modal)
+if (isset($_POST['updateBtn'])) {
+    // Sanitize and update the fields as needed
+    $internID = htmlspecialchars($_POST['internID']);
+    $id = htmlspecialchars($_POST['id']); // Get the log ID
 
-        try {
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT); 
-            $stmt->bindParam(':login_time', $updated_login_time, PDO::PARAM_STR);
-            $stmt->bindParam(':task', $updated_task, PDO::PARAM_STR);
-            $stmt->execute();
+    // Update specific fields (depending on your form)
+    $updated_login_time = htmlspecialchars($_POST['login_time']);
+    $updated_task = htmlspecialchars($_POST['task']);
+    $updated_break_time = htmlspecialchars($_POST['break_time']);
+    $updated_back_to_work_time = htmlspecialchars($_POST['back_to_work_time']);
+    $updated_logout_time = htmlspecialchars($_POST['logout_time']);
 
-            // Set success message
-            $_SESSION['alertMessage'] = "Log updated for Intern ID: $internID";
-            $_SESSION['alertType'] = 'success'; 
+    // Set status to 'Approved' upon update
+    $status = 'Approved';
 
-            // Redirect
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        } catch (PDOException $e) {
-            $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
-            $_SESSION['alertType'] = 'error';
-        }
+    // SQL query for updating values, including status
+    $sql = "UPDATE time_logs 
+            SET login_time = :login_time, 
+                break_time = :break_time,
+                back_to_work_time = :back_to_work_time,
+                task = :task,
+                logout_time = :logout_time,
+                status = :status
+            WHERE internID = :internID 
+            AND id = :id"; 
+
+    try {
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); 
+        $stmt->bindParam(':login_time', $updated_login_time, PDO::PARAM_STR);
+        $stmt->bindParam(':break_time', $updated_break_time, PDO::PARAM_STR);
+        $stmt->bindParam(':back_to_work_time', $updated_back_to_work_time, PDO::PARAM_STR);
+        $stmt->bindParam(':task', $updated_task, PDO::PARAM_STR);
+        $stmt->bindParam(':logout_time', $updated_logout_time, PDO::PARAM_STR);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->execute();
+
+        // Set success message
+        $_SESSION['alertMessage'] = "Log updated for Intern ID: $internID";
+        $_SESSION['alertType'] = 'success'; 
+
+        // Redirect
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    } catch (PDOException $e) {
+        $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+        $_SESSION['alertType'] = 'error';
     }
+}
+
 }
 
 
 
 
 // Query to fetch approved logs for the specific faciID
-$sql = "SELECT * FROM time_logs WHERE status = 'approved' AND faciID = :faciID";
+$sql = "SELECT * FROM time_logs WHERE status IN ('approved', 'declined') AND faciID = :faciID";
 
 try {
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT); // Bind the faciID
     $stmt->execute();
     $approvedLogs = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an associative array
+
+    $approvedCount = count($approvedLogs);
+
 } catch (PDOException $e) {
     // Handle error
     $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
     $_SESSION['alertType'] = 'error';
 }
+
 
 
 // SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
@@ -311,7 +396,44 @@ $activeInternCount = count($interns);  // Get the count of active interns
 
 
 
+// search button in intern report nga content section
+// Initialize search variables with empty strings or values from POST request
+$searchInternID = isset($_POST['internID']) ? $_POST['internID'] : '';
+$searchStatus = isset($_POST['status']) ? $_POST['status'] : '';
 
+// Modify SQL query to filter based on search criteria
+$sql = "SELECT * FROM time_logs WHERE faciID = :faciID AND status IN ('approved', 'declined')";
+
+if (!empty($searchInternID)) {
+    $sql .= " AND internID LIKE :internID";
+}
+if (!empty($searchStatus)) {
+    $sql .= " AND status = :status";
+}
+
+try {
+    // Prepare and execute the query
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
+
+    if (!empty($searchInternID)) {
+        $searchInternID = "{$searchInternID}"; // Use wildcards for LIKE search
+        $stmt->bindParam(':internID', $searchInternID, PDO::PARAM_STR);
+    }
+
+    if (!empty($searchStatus)) {
+        $stmt->bindParam(':status', $searchStatus, PDO::PARAM_STR);
+    }
+
+    $stmt->execute();
+    $approvedLogs = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an associative array
+    $logsCount = count($approvedLogs);
+
+} catch (PDOException $e) {
+    // Handle error
+    $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+    $_SESSION['alertType'] = 'error';
+}
 
 ?>
 
@@ -322,26 +444,21 @@ $activeInternCount = count($interns);  // Get the count of active interns
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task_House-Hr/ Manager</title>
-    <link rel="stylesheet" href="faci_styles.css">
+    <link rel="stylesheet" href="css/faci_styles.css">
 </head>
 <body>
     <!-- Alert Message Box - This will be displayed after form submission -->
     <?php
-    if (isset($_SESSION['alertMessage'])) {
-        // Determine the alert class based on the message type
-        $alertClass = isset($_SESSION['alertType']) && $_SESSION['alertType'] === 'error' ? 'alert-error' : 'alert-success';
-        
-        // Display the alert message
-        echo "<div class='alert-box {$alertClass}' id='alertBox'>";
-        echo "<span>" . $_SESSION['alertMessage'] . "</span>";
-        echo "<button class='close-btn' onclick='this.parentElement.style.display=\"none\"'>x</button>";
-        echo "</div>";
-
-        // Clear the alert message and type from the session
-        unset($_SESSION['alertMessage']);
-        unset($_SESSION['alertType']);
-    }
+  if (isset($_SESSION['alertMessage'])) {
+      $alertType = $_SESSION['alertType'];
+      echo "<div class='alert alert-$alertType'>" . $_SESSION['alertMessage'] . "</div>";
+      
+      // Clear the message after displaying it
+      unset($_SESSION['alertMessage']);
+      unset($_SESSION['alertType']);
+  }
 ?>
+
 
     <div class="container">
         <!-- Sidebar -->
@@ -530,18 +647,18 @@ $activeInternCount = count($interns);  // Get the count of active interns
             <h3>ACTIVE INTERN'S</h3>
             <p><?php echo $activeInternCount; ?> Active Intern's</p>
         </div>
-            <div class="card orange">
-                <h3>APPROVAL REQUESTS</h3>
-                <p>5 Active Intern's</p>
-            </div>
+        <div class="card orange">
+            <h3>APPROVAL REQUESTS</h3>
+            <p><?php echo $approvalCount; ?> Pending</p>
+        </div>
             <div class="card green">
-                <h3>APPROVAL REQUESTS</h3>
-                <p>5 Active Intern's</p>
+                <h3>Requests</h3>
+                <p><?php echo $approvedCount; ?> Approved</p>
             </div>
         </div>
 
         <div class="intern-status-dashboard">
-    <h1>Intern Status Dashboard</h1>
+        <h1 style="color: green;">Availability Status</h1>
 
 
     <?php if ($interns): ?>
@@ -566,7 +683,7 @@ $activeInternCount = count($interns);  // Get the count of active interns
                                 <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
                                 <?php else: ?>
                                 <!-- Default image if no profile image exists -->
-                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" width="150" height="150">
+                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" >
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -620,38 +737,39 @@ $activeInternCount = count($interns);  // Get the count of active interns
 
                                 <!-- Action Buttons (Approve and Decline) -->
                                 <td style="display: flex; justify-content: flex-start; align-items: center;">
-                                <form action="" method="post" style="margin-right: 10px;">
-                                    <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
-                                    <input type="hidden" name="id" value="<?php echo $log['id']; ?>" /> <!-- Unique identifier -->
+    <form action="" method="post" style="margin-right: 10px;">
+        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
+        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" /> <!-- Unique identifier -->
 
-                                    <?php 
-                                    // Check if any of the fields are empty
-                                    $disableApprove = empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time']);
-                                    ?>
+        <?php 
+        // Check if any of the fields are empty
+        $disableApprove = empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time']);
+        ?>
 
-                                    <!-- Disable approve button if any field is empty -->
-                                    <button type="submit" class="action-button approve" name="approveBtn" <?php echo ($disableApprove ? 'disabled' : ''); ?>>Approve</button>
-                                </form>
+        <!-- Disable approve button if any field is empty -->
+        <button type="submit" class="action-button approve" name="approveBtn" <?php echo ($disableApprove ? 'disabled' : ''); ?>>Approve</button>
+    </form>
 
-                                    <button type="button" class="action-button decline" id="declineBtn<?php echo $log['id']; ?>" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
-                                
-                                         <!-- Decline button -->
-                                         <form method="POST" action=" ">
-    <input type="hidden" name="internID" value="<?php echo $internID; ?>"> <!-- Hidden internID -->
-    <input type="hidden" name="id" value="<?php echo $id; ?>"> <!-- Hidden log ID -->
-    <button type="button" id="declineBtn">Decline</button>
-</form>
+    <!-- Update button -->
+    <button type="button" class="action-button update" id="updateBtn<?php echo $log['id']; ?>" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
+    
+    <!-- Decline button -->
+    <form method="POST" action="">
+        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
+        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
+        <button type="button" class="action-button decline" onclick="showDeclineForm(<?php echo $log['id']; ?>)">Decline</button>
+    </form>
 
-<!-- Decline reason form, initially hidden -->
-<form id="declineReasonForm" method="POST" action=" " style="display:none;">
-    <input type="hidden" name="internID" value="<?php echo $internID; ?>"> <!-- Hidden internID -->
-    <input type="hidden" name="id" value="<?php echo $id; ?>"> <!-- Hidden log ID -->
-    <label for="decline_reason">Enter reason for decline:</label>
-    <textarea name="decline_reason" id="decline_reason" required></textarea>
-    <button type="submit" name="submitDeclineReason">Submit Reason</button>
-</form>
-                            </div>
-                                </td>
+    <!-- Decline reason form, initially hidden -->
+    <form id="declineReasonForm<?php echo $log['id']; ?>" method="POST" action="" style="display:none;">
+        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
+        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
+        <label for="decline_reason">Enter reason for decline:</label>
+        <textarea name="decline_reason" id="decline_reason_<?php echo $log['id']; ?>" required></textarea>
+        <button type="submit" name="submitDeclineReason">Submit Reason</button>
+    </form>
+</td>
+
                                 
 
 
@@ -670,44 +788,64 @@ $activeInternCount = count($interns);  // Get the count of active interns
 
 
 <!-- Modal Structure for Decline Action -->
-<div id="declineModal" class="modal">
+
+<!-- Modal Structure for Update Action -->
+<div id="updateModal<?php echo $log['id']; ?>" class="modal" style="display: none;">
     <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h2>Decline Request</h2>
+        <span class="close-btn" onclick="closeModal(<?php echo $log['id']; ?>)">&times;</span>
+        <h2>Update Request</h2>
         <form action="" method="post">
             <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
             <input type="hidden" name="id" value="<?php echo $log['id']; ?>" /> <!-- Unique identifier -->
 
-            <!-- Include the input values for editing the data before decline -->
-            <label for="decline_login_time">Login Time:</label>
-            <input type="text" name="decline_login_time" value="<?php echo htmlspecialchars($log['login_time']); ?>" required />
+            <!-- Include the input values for editing the data before update -->
+            <label for="update_login_time">Login Time:</label>
+            <input type="text" name="login_time" value="<?php echo htmlspecialchars($log['login_time']); ?>" required />
 
-            <label for="decline_break_time">Break Time:</label>
-            <input type="text" name="decline_break_time" value="<?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?>" required />
+            <label for="update_break_time">Break Time:</label>
+            <input type="text" name="break_time" value="<?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?>" required />
 
-            <label for="decline_back_to_work_time">Back to Work Time:</label>
-            <input type="text" name="decline_back_to_work_time" value="<?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?>" required />
+            <label for="update_back_to_work_time">Back to Work Time:</label>
+            <input type="text" name="back_to_work_time" value="<?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?>" required />
 
-            <label for="decline_task">Task:</label>
-            <input type="text" name="decline_task" value="<?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?>" required />
+            <label for="update_task">Task:</label>
+            <input type="text" name="task" value="<?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?>" required />
 
-            <label for="decline_logout_time">Logout Time:</label>
-            <input type="text" name="decline_logout_time" value="<?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?>" required />
+            <label for="update_logout_time">Logout Time:</label>
+            <input type="text" name="logout_time" value="<?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?>" required />
 
-            <button type="submit" class="action-button decline" name="declineBtn">Update to Approve</button>
+            <button type="submit" class="action-button update" name="updateBtn">Update to Approve</button>
         </form>
     </div>
 </div>
 
 
 
-
 <div class="content-section" id="report">
     <div class="rep-content">
         <div class="wrapper">
-        <h2 style="font-size: 32px; font-weight: 600; color: #006400; margin-bottom: 20px; text-align: left; border-bottom: 2px solid #006400; padding-bottom: 10px;">
-            Approved Logs
-        </h2>            <?php if (count($approvedLogs) > 0): ?>
+             <!-- Search Form -->
+             <form method="POST" action="" class="search-form">
+    <label for="internID">InternID:</label>
+    <input type="text" name="internID" id="internID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search by Intern ID">
+
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+        <option value="">Select Status</option>
+        <option value="approved" <?php echo ($searchStatus == 'approved' ? 'selected' : ''); ?>>Approved</option>
+        <option value="declined" <?php echo ($searchStatus == 'declined' ? 'selected' : ''); ?>>Declined</option>
+    </select>
+    <button type="submit">
+        <img src="./image/search.png" alt="Search" />
+    </button>
+</form>
+
+     
+        <h2 class="approved-logs-header">
+                Approved Logs
+            </h2>
+      
+        <?php if (count($approvedLogs) > 0): ?>
                 <table class="approved-logs-table">
                     <thead>
                         <tr>
@@ -740,6 +878,6 @@ $activeInternCount = count($interns);  // Get the count of active interns
 </div>
 
 
-    <script src="faci_script.js"></script>
+    <script src="js/faci_script.js"></script>
 </body>
 </html>

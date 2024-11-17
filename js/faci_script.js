@@ -6,6 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const dashContent = document.querySelector(".dash-content");
     const reqContent = document.querySelector(".req-content");
     const repContent = document.querySelector(".rep-content");
+    const internStatusDashboard = document.querySelector(".intern-status-dashboard"); // Select the dashboard
+    const internStatusTable = document.querySelector(".intern-status-table"); // Select the intern status table
+
+
     let sidebarExpanded = false;
 
     // Toggle sidebar and content visibility on image click
@@ -20,9 +24,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if (sidebarExpanded) {
             sidebar.classList.add("hide-content");
             sidebar.classList.remove("show-content");
+            internStatusDashboard.classList.remove("shifted");
+            internStatusTable.classList.remove("shifted");
+
+
         } else {
             sidebar.classList.add("show-content");
             sidebar.classList.remove("hide-content");
+            internStatusDashboard.classList.add("shifted");
+            internStatusTable.classList.add("shifted");
+
+
         }
         sidebarExpanded = !sidebarExpanded;
     });
@@ -119,60 +131,59 @@ function logout() {
 }
 
 // Function to open the modal
-function openModal(logId) {
-    // Show the modal by targeting the modal with the specific log ID
-    var modal = document.getElementById('declineModal');
+function showDeclineForm(logId) {
+    // Hide all decline reason forms
+    const allForms = document.querySelectorAll('[id^="declineReasonForm"]');
+    allForms.forEach(form => form.style.display = 'none');
+    
+    // Show the form for the clicked button
+    const form = document.getElementById('declineReasonForm' + logId);
+    form.style.display = 'block';
+}
+
+
+
+// Open modal function
+function openModal(id) {
+    var modal = document.getElementById('updateModal' + id);
     modal.style.display = "block";
-
-    // Set the action URL dynamically if needed
-    var form = modal.querySelector('form');
-    form.action = "faci_facilitator.php?id=" + logId;  // Change URL if necessary
 }
 
-// Function to close the modal when the user clicks the "×" button
-var closeBtn = document.getElementsByClassName('close-btn')[0];  // Get the close button
-closeBtn.onclick = function() {
-    var modal = document.getElementById('declineModal');
-    modal.style.display = "none";  // Close the modal
+// Close modal function
+function closeModal(id) {
+    var modal = document.getElementById('updateModal' + id);
+    modal.style.display = "none";
 }
 
-// Function to close the modal
-function closeModal() {
-    document.getElementById("declineModal").style.display = "none";
-}
-
-// Close the modal when clicking outside the modal content
+// Close the modal when clicking outside of it
 window.onclick = function(event) {
-    var modal = document.getElementById("declineModal");
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-// Close the modal if the user clicks outside of the modal content
-window.onclick = function(event) {
-    var modal = document.getElementById('declineModal');
-    if (event.target == modal) {
-        modal.style.display = "none";  // Close the modal
+    var modals = document.getElementsByClassName('modal');
+    for (var i = 0; i < modals.length; i++) {
+        if (event.target == modals[i]) {
+            modals[i].style.display = "none";
+        }
     }
 }
 
-// Wait for the page to load
-window.onload = function() {
-    var alertBox = document.getElementById('alertBox');
 
-    // Check if the alert box exists on the page
-    if (alertBox) {
-        // Set a timeout of 5 seconds to hide the alert and show it again
-        setTimeout(function() {
-            alertBox.style.display = 'none'; // Hide the alert after 5 seconds
 
-            setTimeout(function() {
-                alertBox.style.display = 'block'; // Show the alert again after another 500ms
-            }, 500); // A slight delay before showing it again
+// Wait for the DOM to be fully loaded before running the script
+document.addEventListener("DOMContentLoaded", function() {
+    const alertMessage = document.querySelector('.alert');
+    
+    if (alertMessage) {
+      // Set a timeout to trigger the fade-out effect after 5 seconds
+      setTimeout(function() {
+        alertMessage.classList.add('hide'); // Fade out the alert
+      }, 5000); // 5 seconds
 
-        }, 5000); // 5000ms = 5 seconds
+      // Set a timeout to remove the alert completely after 6 seconds
+      setTimeout(function() {
+        alertMessage.style.display = 'none'; // Completely remove the alert
+      }, 6000); // 6 seconds (1 second after fade-out)
     }
-};
+  });
+  
 // Annoucement viewrer
 
 
@@ -207,5 +218,6 @@ window.onclick = function(event) {
 
 
 
-// End Kyledocument
-// Annoucement viewrer
+
+//search for intern reports
+
