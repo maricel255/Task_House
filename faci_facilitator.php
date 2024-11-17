@@ -802,7 +802,6 @@ try {
 
 
 <!-- Modal Structure for Decline Action -->
-
 <div id="updateModal<?php echo $log['id']; ?>" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal(<?php echo $log['id']; ?>)">&times;</span>
@@ -813,25 +812,24 @@ try {
 
             <!-- Include the input values for editing the data before update -->
             <label for="update_login_time">Login Time:</label>
-            <input type="datetime-local" name="login_time" value="<?php echo htmlspecialchars($log['login_time']); ?>" required />
+            <input type="datetime-local" name="login_time" value="<?php echo date('Y-m-d\TH:i', strtotime($log['login_time'])); ?>" required />
 
             <label for="update_break_time">Break Time:</label>
-            <input type="datetime-local" name="break_time" value="<?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?>" required />
+            <input type="datetime-local" name="break_time" value="<?php echo $log['break_time'] ? date('Y-m-d\TH:i', strtotime($log['break_time'])) : ''; ?>" required />
 
             <label for="update_back_to_work_time">Back to Work Time:</label>
-            <input type="datetime-local" name="back_to_work_time" value="<?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?>" required />
+            <input type="datetime-local" name="back_to_work_time" value="<?php echo $log['back_to_work_time'] ? date('Y-m-d\TH:i', strtotime($log['back_to_work_time'])) : ''; ?>" required />
 
             <label for="update_task">Task:</label>
             <input type="text" name="task" value="<?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?>" required />
 
             <label for="update_logout_time">Logout Time:</label>
-            <input type="datetime-local" name="logout_time" value="<?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?>" required />
+            <input type="datetime-local" name="logout_time" value="<?php echo $log['logout_time'] ? date('Y-m-d\TH:i', strtotime($log['logout_time'])) : ''; ?>" required />
 
             <button type="submit" class="action-button update" name="updateBtn">Update to Approve</button>
         </form>
     </div>
 </div>
-
 
 
 

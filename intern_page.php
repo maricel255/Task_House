@@ -1236,28 +1236,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 <div class="content-section" id="attendance">
     <div class="attend-content">
         <div class="attendance-container">
-            <h1>REQUIRED HOURS: 
+            <h1> Remining working hours: 
             <?php 
                 // Loop through time logs and check if any status is "Approved"
-                foreach ($timeLogs as $log) {
-                    if (strtolower($log['status']) == 'approved') {
-                        // Calculate the difference between login_time and logout_time
-                        $loginTime = strtotime($log['login_time']);
-                        $logoutTime = strtotime($log['logout_time']);
+                $totalWorkedHours = 0; // Initialize a variable to sum up total worked hours
 
-                        // Calculate the difference in seconds
-                        $timeDiff = $logoutTime - $loginTime;
+        // Loop through time logs and check if any status is "Approved"
+        foreach ($timeLogs as $log) {
+            if (strtolower($log['status']) == 'approved') {
+                // Calculate the difference between login_time and logout_time
+                $loginTime = strtotime($log['login_time']);
+                $logoutTime = strtotime($log['logout_time']);
 
-                        // Convert seconds to hours (assuming 1 hour = 3600 seconds)
-                        $hoursWorked = $timeDiff / 3600;
+                // Calculate the difference in seconds
+                $timeDiff = $logoutTime - $loginTime;
 
-                        // Subtract the calculated hours from the required hours
-                        $requiredHours -= $hoursWorked;
-                    }
-                }
+                // Convert seconds to hours (assuming 1 hour = 3600 seconds)
+                $hoursWorked = $timeDiff / 3600;
+
+                // Subtract the calculated hours from the required hours
+               
+                $totalWorkedHours += $hoursWorked;
+                $requiredHours -= $hoursWorked;
+            }
+        }
 
                 // Display the adjusted or original required hours
                 echo number_format($requiredHours, 2); 
+
             ?> HRS
             </h1>
 
