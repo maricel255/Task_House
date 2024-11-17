@@ -814,201 +814,150 @@ $timeLogsCount = $stmt->fetchColumn();
 
 
         </div>
+        <div class="content-section" id="Intern_profile">
+    <div class="intern-profile">
+        <h1>Intern Profile</h1>
 
-        <div class="content-section" id="Intern_profile"><div class="intern-profile">
-                <h1>Intern Profile</h1>
+        <!-- Search Form -->
+        <form method="post" action="">
+            <label for="searchField">Search:</label>
+            <input type="text" id="searchField" name="searchField" placeholder="Enter search term">
+            <label for="searchBy">Search By:</label>
+            <select id="searchBy" name="searchBy">
+                <!-- Search options... -->
+            </select>
+            <input type="submit" value="Search">
+        </form>
 
-                <!-- Search Form -->
-                <form method="post" action="">
-                    <label for="searchField">Search:</label>
-                    <input type="text" id="searchField" name="searchField" placeholder="Enter search term">
-                    <label for="searchBy">Search By:</label>
-                    <select id="searchBy" name="searchBy">
-                            <option value="all">All</option>
-                            <option value="internID">Intern ID</option>
-                            <option value="first_name">First Name</option>
-                            <option value="middle_name">Middle Name</option>
-                            <option value="last_name">Last Name</option>
-                            <option value="course_year_sec">Course Year/Section</option>
-                            <option value="gender">Gender</option>
-                            <option value="age">Age</option>
-                            <option value="current_address">Current Address</option>
-                            <option value="provincial_address">Provincial Address</option>
-                            <option value="tel_no">Telephone No</option>
-                            <option value="mobile_no">Mobile No</option>
-                            <option value="birth_place">Birth Place</option>
-                            <option value="birth_date">Birth Date</option>
-                            <option value="religion">Religion</option>
-                            <option value="email">Email</option>
-                            <option value="civil_status">Civil Status</option>
-                            <option value="citizenship">Citizenship</option>
-                            <option value="hr_manager">HR Manager</option>
-                            <option value="faciID">Facilitator ID</option>
-                            <option value="company">Company</option>
-                            <option value="company_address">Company Address</option>
-                            <option value="father_name">Father Name</option>
-                            <option value="father_occupation">Father Occupation</option>
-                            <option value="mother_name">Mother Name</option>
-                            <option value="mother_occupation">Mother Occupation</option>
-                            <option value="blood_type">Blood Type</option>
-                            <option value="height">Height</option>
-                            <option value="weight">Weight</option>
-                            <option value="health_problems">Health Problems</option>
-                            <option value="elementary_school">Elementary School</option>
-                            <option value="elementary_year_graduated">Elementary Year Graduated</option>
-                            <option value="elementary_honors">Elementary Honors</option>
-                            <option value="secondary_school">Secondary School</option>
-                            <option value="secondary_year_graduated">Secondary Year Graduated</option>
-                            <option value="secondary_honors">Secondary Honors</option>
-                            <option value="college">College</option>
-                            <option value="college_year_graduated">College Year Graduated</option>
-                            <option value="college_honors">College Honors</option>
-                            <option value="company_name">Company Name (Work Experience)</option>
-                            <option value="position">Position</option>
-                            <option value="inclusive_date">Inclusive Date</option>
-                            <option value="company_address_work_experience">Company Address (Work Experience)</option>
-                            <option value="skills">Skills</option>
-                            <option value="ref_name">Reference Name</option>
-                            <option value="ref_position">Reference Position</option>
-                            <option value="ref_address">Reference Address</option>
-                            <option value="ref_contact">Reference Contact</option>
-                            <option value="emergency_name">Emergency Contact Name</option>
-                            <option value="emergency_address">Emergency Address</option>
-                            <option value="emergency_contact_no">Emergency Contact No</option>
-                        </select>
+    
+       
+        <?php
 
-                    <input type="submit" value="Search">
-                </form>
+        // Prepare the base SQL query
+        $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 
-                <?php
+        // Determine the column to be displayed
+        $searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
+        $searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
 
-// Prepare the base SQL query
-$sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
-
-// Determine the column to be displayed
-$searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
-$searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
-
-// Add condition to search by the selected field
-if ($searchBy !== 'all' && !empty($searchField)) {
-    $sql .= " AND $searchBy = :searchField"; 
-}
-
-// Prepare and execute the query
-$stmt = $conn->prepare($sql);
-$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
-
-// Bind the search field parameter if it's not 'All' and searchField is set
-if ($searchBy !== 'all' && !empty($searchField)) {
-    $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // Bind the search field parameter
-}
-
-// Execute the statement
-$stmt->execute();
-
-// Check if there are results
-if ($stmt->rowCount() > 0) {
-    // Fetch all records
-    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Start the table
-    echo '<table>';
-    echo '<tr>';
-    echo '<th>#</th>'; // Add a column for numbering
-    echo '<th>Intern ID</th>';
-
-    // Dynamically create headers based on the selected search criteria
-    if ($searchBy !== 'all') {
-        echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
-    }
-
-    echo '</tr>';
-
-    // Counter for enumeration
-    $counter = 1;
-
-    // Loop through the records and display each field
-    foreach ($records as $row) {
-        echo '<tr>';
-        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
-
-        // Display the selected search column based on search criteria
-        if ($searchBy !== 'all') {
-            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+        // Add condition to search by the selected field
+        if ($searchBy !== 'all' && !empty($searchField)) {
+            $sql .= " AND $searchBy = :searchField"; 
         }
 
-        // Add a button to view more details
-        echo '<td>';
-        echo '<form method="post" action="">';
-        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-        echo '<input type="submit" value="View Details">';
-        echo '</form>';
-        echo '</td>';
+        // Prepare and execute the query
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
 
-        echo '</tr>';
-    }
+        // Bind the search field parameter if it's not 'All' and searchField is set
+        if ($searchBy !== 'all' && !empty($searchField)) {
+            $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // Bind the search field parameter
+        }
 
-    echo '</table>';
-} else {
-    echo '<p>No records found for your search!</p>';
-}
+        // Execute the statement
+        $stmt->execute();
 
-// Check if the internID is set and display the corresponding details
-if (isset($_POST['internID'])) {
-    $internID = $_POST['internID'];
+        if ($stmt->rowCount() > 0) {
+            // Fetch all records
+            $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Prepare SQL to fetch details for the selected internID from both profile_information and intacc tables
-    $detailSql = "SELECT pi.*, ia.profile_image FROM profile_information pi
-                  LEFT JOIN intacc ia ON pi.internID = ia.internID
-                  WHERE pi.internID = :internID";
-    $detailStmt = $conn->prepare($detailSql);
-    $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-    $detailStmt->execute();
-
-    // Check if the intern exists
-if ($detailStmt->rowCount() > 0) {
-    $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
-
-    echo '<div class="intern-details">';
-    echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
-
-    echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
-
-    // Check if the intern has a profile image and display it
-    if (!empty($internDetails['profile_image'])) {
-        echo '<div class="profile-image">';
-        echo '<img id="imagePreview" src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Preview" width="160"  height="150">';
-        echo '</div>';
-    } else {
-        echo '<div class="profile-image">';
-        echo '<img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" width="150" height="150">';
-        echo '</div>';
-    }
-
-    echo '<table>';
-
-    // Loop through the intern details and display each one
-    foreach ($internDetails as $key => $value) {
-        if ($key != 'profile_image') { // Skip 'profile_image' as it's already displayed
+            // Start the table
+            echo '<table id="profileTable">';
             echo '<tr>';
-            echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-            echo '<td>' . htmlspecialchars($value) . '</td>';
+            echo '<th>#</th>'; // Add a column for numbering
+            echo '<th>Intern ID</th>';
+
+            // Dynamically create headers based on the selected search criteria
+            if ($searchBy !== 'all') {
+                echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+            }
+
             echo '</tr>';
+
+            // Counter for enumeration
+            $counter = 1;
+
+            // Loop through the records and display each field
+            foreach ($records as $row) {
+                echo '<tr>';
+                echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+                echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+
+                // Display the selected search column based on search criteria
+                if ($searchBy !== 'all') {
+                    echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+                }
+
+                // Add a button to view more details
+                echo '<td>';
+                echo '<form method="post" action="">';
+                echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
+                echo '<input type="submit" value="View Details">';
+                echo '</form>';
+                echo '</td>';
+
+                echo '</tr>';
+            }
+            echo '</table>';
+        } else {
+            echo '<p>No records found for your search!</p>';
         }
-    }
 
-    echo '</table>';
-    echo '</div>';
-} else {
-    echo '<p>No details found for the selected Intern ID.</p>';
-}
+        // Check if the internID is set and display the corresponding details
+        if (isset($_POST['internID'])) {
+            $internID = $_POST['internID'];
 
-}
-?>
+            // Prepare SQL to fetch details for the selected internID from both profile_information and intacc tables
+            $detailSql = "SELECT pi.*, ia.profile_image FROM profile_information pi
+                          LEFT JOIN intacc ia ON pi.internID = ia.internID
+                          WHERE pi.internID = :internID";
+            $detailStmt = $conn->prepare($detailSql);
+            $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $detailStmt->execute();
 
-            </div>  
-        </div>
+            // Check if the intern exists
+            if ($detailStmt->rowCount() > 0) {
+                $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
+
+                echo '<div class="intern-details">';
+                echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
+
+                echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
+
+                // Check if the intern has a profile image and display it
+                if (!empty($internDetails['profile_image'])) {
+                    echo '<div class="profile-image">';
+                    echo '<img id="imagePreview" src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Preview" width="160" height="150">';
+                    echo '</div>';
+                } else {
+                    echo '<div class="profile-image">';
+                    echo '<img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" width="150" height="150">';
+                    echo '</div>';
+                }
+
+                echo '<button onclick="printDetails()" class="print-btn">Print Details</button>';
+
+                echo '<table>';
+
+                // Loop through the intern details and display each one
+                foreach ($internDetails as $key => $value) {
+                    if ($key != 'profile_image') { // Skip 'profile_image' as it's already displayed
+                        echo '<tr>';
+                        echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
+                        echo '<td>' . htmlspecialchars($value) . '</td>';
+                        echo '</tr>';
+                    }
+                }
+
+                echo '</table>';
+                echo '</div>';
+            } else {
+                echo '<p>No details found for the selected Intern ID.</p>';
+            }
+        }
+        ?>
+    </div>  
+</div>  
 
 
 
@@ -1206,17 +1155,18 @@ if ($detailStmt->rowCount() > 0) {
             
 
         <div class="content-section" id="report">
-            <h1>Report</h1>
+    <h1>Report</h1>
 
-             <!-- Search Form -->
-        <form method="GET" action="">
-            <label for="search">Search by Intern ID:</label>
-            <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-            <button type="submit">Search</button>
-        </form>
-                
+    <!-- Search Form -->
+    <form method="GET" action="">
+        <label for="search">Search by Intern ID:</label>
+        <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit">Search</button>
+    </form>
+  <!-- Print Table Button -->
+  <button onclick="printTable()" style="display: inline; margin-left: 10px;">Print Table</button>
 
-        <?php
+    <?php
     // Assuming you're already connected to the database via PDO
 
     // Get the search term if it exists
@@ -1248,7 +1198,7 @@ if ($detailStmt->rowCount() > 0) {
     ?>
 
     <?php if ($results): ?>
-        <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;">
+        <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
             <thead>
                 <tr>
                     <th>Count</th> <!-- New Count Column -->
@@ -1281,13 +1231,14 @@ if ($detailStmt->rowCount() > 0) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+
     <?php else: ?>
         <p>No records found.</p>
     <?php endif; ?>
-        </div>
+</div>
     
     
-        
+
     </div>
  
 <script src="js/admin_script.js"></script>

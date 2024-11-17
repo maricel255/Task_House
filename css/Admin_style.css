@@ -1263,3 +1263,19 @@ input[type="submit"]:hover {
 }
 
 /* -----------------------MARICEL END------------------------------------------*/
+/* Print Button */
+.print-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.print-btn:hover {
+  background-color: #45a049;
+}
