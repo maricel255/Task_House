@@ -305,13 +305,15 @@ body::before {
             color: #000543;
             margin-top: 1px;
         }
-        .announcement-board img {
-          width: 32%; /* Adjust width as needed */
-          height:80%;
-          position: absolute;
-          left: 9%;
-          top: 80%;
-          transform: translate(-50%, -50%);
+       
+
+        .anno-img {
+          position: absolute; /* Position the image absolutely within the parent */
+          top: 55%; /* Align to the top */
+          left: 0; /* Align to the right */
+          max-width: 25%; /* Set maximum width to be responsive */
+          height: auto; /* Maintain aspect ratio */
+          z-index: 9999; /* Ensure the image is always on top */
         }
 
        /* user input in annoucement */
@@ -739,6 +741,14 @@ body::before {
   border-radius: 5px; /* Optional: rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
 }
+.delete-btn-new {
+  background-color: red; /* Same as current background */
+  color: white;          /* White text */
+  border: none;          /* No border */
+  cursor: pointer;       /* Pointer cursor on hover */
+  padding: 5px 10px;     /* Same padding */
+  font-size: 14px;       /* Same font size */
+}
 .table-container {
   max-height: 300px; /* Adjust the height as needed */
   overflow-y: auto;  /* Enable vertical scrolling */
@@ -1033,21 +1043,6 @@ p {
 
 
 
-.Announcement-Image:hover {
-  transform: translate(-50%, -50%) scale(1); /* Center the image and keep its size */
-  width: 80vw; /* Full viewport width */
-  height: 80vh; /* Full viewport height */
-  position: fixed; /* Fix to the viewport */
-  top: 80%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  margin: 0; /* Reset margin */
-  border-radius: 0; /* No rounded corners */
-  box-shadow: none; /* Remove shadow */
-  z-index: 1000; /* Above other content */
-  border-radius: 25px;;
-  object-fit: fill; /* Ensure the image covers the box */
-
-}
 
 
 .active {
@@ -1107,10 +1102,11 @@ p {
   border: none;
   cursor: pointer;
   margin-left: 75%;
-  margin-top: 1px;
+  margin-bottom: 100px; /* Increased margin-bottom for more space */
   height: 60px; /* Set a specific height */
   padding: 10px 20px; /* Add padding for a balanced look */
 }
+
 
 .trash-icon {
   width: 20px; /* Adjust the size of the icon */
