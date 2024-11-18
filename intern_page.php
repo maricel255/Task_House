@@ -784,7 +784,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                                           echo '<img src="' . $filePath . '" alt="Announcement Image" class="ann_img" style="max-width: 100%; height: auto;">';
                                       } elseif (strtolower($fileExtension) === 'pdf') {
                                           $fileName = basename($filePath);
-                                          $pdfPath = "http://localhost/uploaded_files/" . rawurlencode($fileName);
+                                          $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
                                           echo '<a href="' . $pdfPath . '" target="_blank" class="pdf-link">View PDF</a>';
                                       } else {
                                           echo '<p>Unsupported file type.</p>';
@@ -1275,28 +1275,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 // Loop through time logs and check if any status is "Approved"
                 $totalWorkedHours = 0; // Initialize a variable to sum up total worked hours
 
-        // Loop through time logs and check if any status is "Approved"
-        foreach ($timeLogs as $log) {
-            if (strtolower($log['status']) == 'approved') {
-                // Calculate the difference between login_time and logout_time
-                $loginTime = strtotime($log['login_time']);
-                $logoutTime = strtotime($log['logout_time']);
+// Loop through time logs and check if any status is "Approved"
+foreach ($timeLogs as $log) {
+    if (strtolower($log['status']) == 'approved') {
+        // Calculate the difference between login_time and logout_time
+        $loginTime = strtotime($log['login_time']);
+        $logoutTime = strtotime($log['logout_time']);
 
-                // Calculate the difference in seconds
-                $timeDiff = $logoutTime - $loginTime;
+        // Make sure logout time is after login time to avoid negative time difference
+        if ($logoutTime > $loginTime) {
+            // Calculate the difference in seconds
+            $timeDiff = $logoutTime - $loginTime;
 
-                // Convert seconds to hours (assuming 1 hour = 3600 seconds)
-                $hoursWorked = $timeDiff / 3600;
+            // Convert seconds to hours (assuming 1 hour = 3600 seconds)
+            $hoursWorked = $timeDiff / 3600;
 
-                // Subtract the calculated hours from the required hours
-               
-                $totalWorkedHours += $hoursWorked;
-                $requiredHours -= $hoursWorked;
-            }
+            // Subtract the calculated hours from the required hours
+            $totalWorkedHours += $hoursWorked;
+            $requiredHours -= $hoursWorked;
         }
+    }
+}
 
-                // Display the adjusted or original required hours
-                echo number_format($requiredHours, 2); 
+// Ensure the required hours do not become negative
+$requiredHours = max($requiredHours, 0);
+
+// Display the adjusted required hours (remaining hours)
+echo number_format($requiredHours, 2); // Display the remaining required hours (formatted to 2 decimal places)
+
 
             ?> HRS
             </h1>

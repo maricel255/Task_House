@@ -1,4 +1,21 @@
+.s-intern {
+  font-size: 40px; /* Adjust the size as needed */
+  padding-left: 60px;
+  font-weight: bold; /* Makes the text bold */
 
+}
+.s-TH {
+  font-size: 40px; /* Adjust the size as needed */
+  font-weight: bold; /* Makes the text bold */
+
+  
+}
+h1 {
+  font-size: 25px; /* Small font size */
+  letter-spacing: 1px;
+  margin-top: 25px; /* Adds space above the h1 */
+
+}
 .message-box {
   position: fixed;
   top: 50%;
@@ -49,3 +66,4 @@ body {
   background-color: lightgreen;
   color: white;
 }
+

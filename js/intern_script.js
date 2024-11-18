@@ -251,22 +251,59 @@ function printTable() {
     var printContent = document.getElementById('timeLogsTable').outerHTML;
     var printWindow = window.open('', '', 'height=600,width=800');
     printWindow.document.write('<html><head><title>Print Table</title>');
-    printWindow.document.write('<style>table { width: 100%; border-collapse: collapse; } th, td { padding: 8px; text-align: left; border: 1px solid #ddd; } th { background-color: #4CAF50; color: white; }</style>');
+    printWindow.document.write('<style>');
+    
+    // Updated CSS for the print view
+    printWindow.document.write(`
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 8px 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        td { background-color: #fff; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+    `);
+
+    printWindow.document.write('</style>');
     printWindow.document.write('</head><body>');
     printWindow.document.write(printContent);
     printWindow.document.write('</body></html>');
     printWindow.document.close();
     printWindow.print();
 }
-    function printTable() {
-        var printContents = document.getElementById('attendanceTable').outerHTML;
-        var originalContents = document.body.innerHTML;
 
-        // Replace the body content with the table content for printing
-        document.body.innerHTML = printContents;
+function printTable() {
+    var printContents = document.getElementById('attendanceTable').outerHTML;
+    var originalContents = document.body.innerHTML;
 
-        window.print(); // Trigger the print dialog
+    // Create a new window for printing to apply specific print styles
+    var printWindow = window.open('', '', 'height=500, width=800');
+    
+    // Apply the print contents and styles to the print window
+    printWindow.document.write('<html><head><title>Print Table</title>');
+    printWindow.document.write('<style>');
+    
+    // CSS for printing the table
+    printWindow.document.write(`
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 8px 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        td { background-color: #fff; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+    `);
+    
+    printWindow.document.write('</style></head><body>');
+    printWindow.document.write(printContents);
+    printWindow.document.write('</body></html>');
+    
+    // Close the document and trigger print dialog
+    printWindow.document.close();
+    printWindow.print();
 
-        // Restore the original body content after printing
-        document.body.innerHTML = originalContents;
-    }
+    // Restore original content
+    document.body.innerHTML = originalContents;
+}

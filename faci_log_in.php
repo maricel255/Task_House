@@ -45,7 +45,7 @@ $conn = null; // Close the connection
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Task House - Facilitator Login</title>
+  <title>TH_Hr/Manager LOG-IN</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -67,7 +67,7 @@ $conn = null; // Close the connection
                 <form method="POST" action="">
                   <span class="s-intern">INTERN'S</span>
                   <span class="s-TH">TASK HOUSE</span>
-                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">FACILITATOR LOG-IN</h5>
+                  <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">FACILITATOR LOG-IN</h1>
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="text" id="form2Example17" name="Uname" class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">Username</label>
