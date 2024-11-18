@@ -824,8 +824,58 @@ $timeLogsCount = $stmt->fetchColumn();
             <input type="text" id="searchField" name="searchField" placeholder="Enter search term">
             <label for="searchBy">Search By:</label>
             <select id="searchBy" name="searchBy">
-                <!-- Search options... -->
-            </select>
+                    <option value="all">All</option>
+                    <option value="internID">Intern ID</option>
+                    <option value="first_name">First Name</option>
+                    <option value="middle_name">Middle Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="course_year_sec">Course Year/Section</option>
+                    <option value="gender">Gender</option>
+                    <option value="age">Age</option>
+                    <option value="current_address">Current Address</option>
+                    <option value="provincial_address">Provincial Address</option>
+                    <option value="tel_no">Telephone No</option>
+                    <option value="mobile_no">Mobile No</option>
+                    <option value="birth_place">Birth Place</option>
+                    <option value="birth_date">Birth Date</option>
+                    <option value="religion">Religion</option>
+                    <option value="email">Email</option>
+                    <option value="civil_status">Civil Status</option>
+                    <option value="citizenship">Citizenship</option>
+                    <option value="hr_manager">HR Manager</option>
+                    <option value="faciID">Facilitator ID</option>
+                    <option value="company">Company</option>
+                    <option value="company_address">Company Address</option>
+                    <option value="father_name">Father Name</option>
+                    <option value="father_occupation">Father Occupation</option>
+                    <option value="mother_name">Mother Name</option>
+                    <option value="mother_occupation">Mother Occupation</option>
+                    <option value="blood_type">Blood Type</option>
+                    <option value="height">Height</option>
+                    <option value="weight">Weight</option>
+                    <option value="health_problems">Health Problems</option>
+                    <option value="elementary_school">Elementary School</option>
+                    <option value="elementary_year_graduated">Elementary Year Graduated</option>
+                    <option value="elementary_honors">Elementary Honors</option>
+                    <option value="secondary_school">Secondary School</option>
+                    <option value="secondary_year_graduated">Secondary Year Graduated</option>
+                    <option value="secondary_honors">Secondary Honors</option>
+                    <option value="college">College</option>
+                    <option value="college_year_graduated">College Year Graduated</option>
+                    <option value="college_honors">College Honors</option>
+                    <option value="company_name">Company Name (Work Experience)</option>
+                    <option value="position">Position</option>
+                    <option value="inclusive_date">Inclusive Date</option>
+                    <option value="company_address_work_experience">Company Address (Work Experience)</option>
+                    <option value="skills">Skills</option>
+                    <option value="ref_name">Reference Name</option>
+                    <option value="ref_position">Reference Position</option>
+                    <option value="ref_address">Reference Address</option>
+                    <option value="ref_contact">Reference Contact</option>
+                    <option value="emergency_name">Emergency Contact Name</option>
+                    <option value="emergency_address">Emergency Address</option>
+                    <option value="emergency_contact_no">Emergency Contact No</option>
+                </select>
             <input type="submit" value="Search">
         </form>
 

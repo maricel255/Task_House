@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>task House</title>
+  <title>TH_ADMIN LOG-IN</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -67,9 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <!-- Single form element -->
                 <form method="POST" action="">
                   <span class="s-intern">INTERN'S</span>
-                  <span class="s-TH">TASK HOUSE</span>
-                 
-                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">ADMIN LOG-IN</h5>
+
+                  <span class="s-TH">TASKHOUSE <br></span>
+                  
+                  <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">ADMIN LOG-IN</h1>
 
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="text" id="form2Example17" name="Uname" class="form-control form-control-lg" />
