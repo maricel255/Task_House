@@ -358,28 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    try {
-        // Query without date condition for now
-        $sqlGetTasks = "SELECT task FROM time_logs WHERE internID = :internID";
-        $stmtGetTasks = $conn->prepare($sqlGetTasks);
-        $stmtGetTasks->bindParam(':internID', $internID, PDO::PARAM_STR);
-        $stmtGetTasks->execute();
-    
-        // Check if tasks are found
-        if ($stmtGetTasks->rowCount() > 0) {
-            $tasks = $stmtGetTasks->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            echo "No tasks found for this intern.";
-        }
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();  // Handle query errors
-    }
-    
-    // Debugging output
-    echo 'InternID: ' . htmlspecialchars($internID);  // Verify internID value
-    echo '<pre>';
-    print_r($tasks);  // Debug the fetched tasks
-    echo '</pre>';
+  
 // Handle profile form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
     try {
@@ -870,6 +849,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 <!-- Modal for entering task -->
 
 
+
 <div id="taskModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -883,9 +863,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 <option value="" disabled selected>Select a Task</option>
                 
                 <?php 
-                if (!empty($tasks)) {
-                    foreach ($tasks as $task) {
-                        echo '<option value="' . htmlspecialchars($task['task']) . '">' . htmlspecialchars($task['task']) . '</option>';
+                // Query to get time logs for the current intern
+                $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID");
+                $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Fetch all the time logs
+                $timeLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // Display only the 'task' column in the dropdown
+                if (!empty($timeLogs)) {
+                    foreach ($timeLogs as $log) {
+                        if (isset($log['task'])) { // Check if 'task' column exists
+                            echo '<option value="' . htmlspecialchars($log['task']) . '">' . htmlspecialchars($log['task']) . '</option>'; // Display the task value safely
+                        }
                     }
                 } else {
                     echo '<option value="">No tasks available</option>';
@@ -903,6 +894,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         <div id="taskMessage"><?php echo isset($alertMessage) ? htmlspecialchars($alertMessage) : ''; ?></div>
     </div>
 </div>
+
 
 <!-- Modal for Profile Information -->
 <div id="profileModal" class="modal">
