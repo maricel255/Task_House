@@ -735,6 +735,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     <div class="main-content">
         <div class="announcement-board">
             <h2>ANNOUNCEMENT BOARD</h2>
+            <img src="image/announce.gif" alt="Announcement Image" class="anno-img">
 
             <?php
               if (isset($_SESSION['internID'])) {
@@ -818,7 +819,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                   
 
         </div>
-          <img src="image/announce.png" alt="Announcement Image" class="anno-img">
     </div>
 
 
