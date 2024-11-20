@@ -776,10 +776,11 @@ input[type="text"] {
 }
 
 .form-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
+    max-height: 500px; /* Adjust the height as needed */
+    overflow-y: auto; /* Allows vertical scrolling if content overflows */
+    padding: 15px; /* Optional: for better spacing inside the container */
+    border: 1px solid #ccc; /* Optional: for visual clarity */
+    background-color: #fff; /* Optional: to make content readable */
 }
 
 .form-group {
@@ -1037,6 +1038,7 @@ input, select {
   
 .profile-category {
     display: none;
+   
 }
   
 .profile-category h3 {
