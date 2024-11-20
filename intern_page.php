@@ -210,7 +210,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $faciID = $stmtGetFaciID->fetchColumn();
 
     // Only perform actions if buttons are clicked
-    if (isset($_POST['login-btn'])) {
+if (isset($_POST['login-btn'])) {
+    // Check if faciID is provided
+    if (empty($faciID)) {
+        $alertMessage = "Please select a faciID.";
+    } else {
         // Check if there's an existing login record for today
         $sqlCheckLogin = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(login_time) = :currentDate";
         $stmtCheckLogin = $conn->prepare($sqlCheckLogin);
@@ -237,6 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alertMessage = "You have already logged in today.";
         }
     }
+}
+
 
     if (isset($_POST['break-btn'])) {
         // Check if there's a login record for today
@@ -290,17 +296,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Check if the task form is submitted
-    if (isset($_POST['submitTask'])) {
-        $internID = $_POST['internID'];
+   // Check if the task form is submitted
+if (isset($_POST['submitTask'])) {
+    $internID = $_POST['internID'];
 
-        // Validate the tasks input
-        if (!isset($_POST['tasks']) || count($_POST['tasks']) < 1 || count($_POST['tasks']) > 10) {
-            $alertMessage = "Please input a Task before logging out";
+    // Validate the tasks input
+    if (!isset($_POST['tasks']) || count($_POST['tasks']) < 1 || count($_POST['tasks']) > 10) {
+        $alertMessage = "Please input a Task before logging out.";
+    } else {
+        $selectedTasks = $_POST['tasks'];
+        $todayDate = date('Y-m-d'); // Get today's date
+
+        // Check if the intern has a valid login_time or back_to_work_time for today
+        $sqlCheckLoginTime = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(login_time) = :todayDate AND (back_to_work_time IS NOT NULL OR login_time IS NOT NULL)";
+        $stmtCheckLoginTime = $conn->prepare($sqlCheckLoginTime);
+        $stmtCheckLoginTime->bindParam(':internID', $internID, PDO::PARAM_STR);
+        $stmtCheckLoginTime->bindParam(':todayDate', $todayDate, PDO::PARAM_STR);
+        $stmtCheckLoginTime->execute();
+
+        if ($stmtCheckLoginTime->rowCount() == 0) {
+            // No login or back_to_work_time recorded for today
+            $alertMessage = "Cannot proceed to log out. You did not log in or return to work today. Contact your HR/Manager to update your time_logs";
+
         } else {
-            $selectedTasks = $_POST['tasks'];
-            $todayDate = date('Y-m-d'); // Get today's date
-
             // Check if a record exists for the intern for today with logout time already set
             $sqlCheckTask = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(logout_time) = :todayDate";
             $stmtCheckTask = $conn->prepare($sqlCheckTask);
@@ -357,6 +375,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+}
+
 
   
 // Handle profile form submission
@@ -612,6 +632,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intern</title>
     <link rel="stylesheet" href="css/intern_styles.css">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    
 </head>
 <body>
         <!-- Display alert message if exists -->
@@ -920,330 +943,471 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
             <div class="profile-form-container">
                 
                 <!-- Personal Data -->
-                <div id="personalData" class="profile-category">
-                    <h3>Personal Data</h3>
-                    <div class="form-container">
-                        <div class="form-row">
+            <div id="personalData" class="profile-category">
+                <h3>Personal Data</h3>
+                <div class="form-container">
+                    <!-- First row with multiple form fields -->
+                    <div class="form-row">
+                        <div class="form-group">
                             <label>First Name:</label>
                             <input type="text" name="firstName" 
+                                placeholder="e.g., John" 
                                 value="<?php echo htmlspecialchars($profileData['first_name'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
 
+                        <div class="form-group">
                             <label>Middle Name:</label>
                             <input type="text" name="middleName" 
+                                placeholder="e.g., A." 
                                 value="<?php echo htmlspecialchars($profileData['middle_name'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                               
-
-                            <label>Last Name:</label>
-                            <input type="text" name="lastName" 
-                                value="<?php echo htmlspecialchars($profileData['last_name'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                            <label>Course, Year, Sec.:</label>
-                            <input type="text" name="courseYearSec" 
-                                value="<?php echo htmlspecialchars($profileData['course_year_sec'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                                <label>School:</label>
-                            <input type="text" name="school" 
-                                value="<?php echo htmlspecialchars($profileData['school'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                            <label>Gender:</label>
-                            <?php if ($profileData): ?>
-                                <!-- Display readonly radio buttons -->
-                                <input type="radio" name="gender" value="Male" 
-                                    <?php echo ($profileData['gender'] === 'Male') ? 'checked' : ''; ?> 
-                                    onclick="return false;" disabled>Male
-                                <input type="radio" name="gender" value="Female" 
-                                    <?php echo ($profileData['gender'] === 'Female') ? 'checked' : ''; ?> 
-                                    onclick="return false;" disabled>Female
-                            <?php else: ?>
-                                <!-- Editable radio buttons -->
-                                <input type="radio" name="gender" value="Male">Male
-                                <input type="radio" name="gender" value="Female">Female
-                            <?php endif; ?>
-
-                            <label>Age:</label>
-                            <input type="number" name="age" 
-                                value="<?php echo htmlspecialchars($profileData['age'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                            <label>Current Address:</label>
-                            <input type="text" name="currentAddress" 
-                                value="<?php echo htmlspecialchars($profileData['current_address'] ?? ''); ?>"
                                 <?php echo $profileData ? 'readonly' : ''; ?>>
                         </div>
 
-                        <div class="form-row">
+                        <div class="form-group">
+                            <label>Last Name:</label>
+                            <input type="text" name="lastName" 
+                                placeholder="e.g., Doe" 
+                                value="<?php echo htmlspecialchars($profileData['last_name'] ?? ''); ?>"
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Course, Year, Sec.:</label>
+                            <input type="text" name="courseYearSec" 
+                                placeholder="e.g., BSCS 3A" 
+                                value="<?php echo htmlspecialchars($profileData['course_year_sec'] ?? ''); ?>"
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>School:</label>
+                            <input type="text" name="school" 
+                                placeholder="e.g., University of Sample" 
+                                value="<?php echo htmlspecialchars($profileData['school'] ?? ''); ?>"
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Gender:</label>
+                            <?php if ($profileData): ?>
+                                <input type="radio" name="gender" value="Male" 
+                                    <?php echo ($profileData['gender'] === 'Male') ? 'checked' : ''; ?> 
+                                    disabled> Male
+                                <input type="radio" name="gender" value="Female" 
+                                    <?php echo ($profileData['gender'] === 'Female') ? 'checked' : ''; ?> 
+                                    disabled> Female
+                            <?php else: ?>
+                                <input type="radio" name="gender" value="Male" required> Male
+                                <input type="radio" name="gender" value="Female" required> Female
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Second row with multiple form fields -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Age:</label>
+                            <input type="number" name="age" 
+                                placeholder="e.g., 20" 
+                                min="0" max="100" 
+                                value="<?php echo htmlspecialchars($profileData['age'] ?? ''); ?>"
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Current Address:</label>
+                            <input type="text" name="currentAddress" 
+                                placeholder="e.g., 123 Sample St., Sample City" 
+                                value="<?php echo htmlspecialchars($profileData['current_address'] ?? ''); ?>"
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
+
+                        <div class="form-group">
                             <label>Provincial Address:</label>
                             <input type="text" name="provincialAddress" 
+                                placeholder="e.g., Sample Province, Sample Country" 
                                 value="<?php echo htmlspecialchars($profileData['provincial_address'] ?? ''); ?>"
                                 <?php echo $profileData ? 'readonly' : ''; ?>>
+                        </div>
 
+                        <div class="form-group">
                             <label>Tel. No.:</label>
                             <input type="text" name="telNo" 
+                                placeholder="e.g., (02) 123-4567" 
                                 value="<?php echo htmlspecialchars($profileData['tel_no'] ?? ''); ?>"
                                 <?php echo $profileData ? 'readonly' : ''; ?>>
+                        </div>
 
+                        <div class="form-group">
                             <label>Mobile No.:</label>
                             <input type="text" name="mobileNo" 
+                                placeholder="e.g., 09123456789" 
+                                pattern="[0-9]{11}" 
+                                title="Enter an 11-digit mobile number" 
                                 value="<?php echo htmlspecialchars($profileData['mobile_no'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
 
+                        <div class="form-group">
                             <label>Birth Place:</label>
                             <input type="text" name="birthPlace" 
+                                placeholder="e.g., Sample City, Sample Country" 
                                 value="<?php echo htmlspecialchars($profileData['birth_place'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
+                    </div>
 
+                    <!-- Third row with multiple form fields -->
+                    <div class="form-row">
+                        <div class="form-group">
                             <label>Birth Date:</label>
                             <input type="date" name="birthDate" 
                                 value="<?php echo htmlspecialchars($profileData['birth_date'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
 
+                        <div class="form-group">
                             <label>Religion:</label>
                             <input type="text" name="religion" 
+                                placeholder="e.g., Catholic" 
                                 value="<?php echo htmlspecialchars($profileData['religion'] ?? ''); ?>"
                                 <?php echo $profileData ? 'readonly' : ''; ?>>
+                        </div>
 
+                        <div class="form-group">
                             <label>Email Address:</label>
                             <input type="email" name="email" 
+                                placeholder="e.g., sample@example.com" 
                                 value="<?php echo htmlspecialchars($profileData['email'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
 
+                        <div class="form-group">
                             <label>Civil Status:</label>
                             <input type="text" name="civilStatus" 
+                                placeholder="e.g., Single, Married" 
                                 value="<?php echo htmlspecialchars($profileData['civil_status'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
+                        </div>
 
+                        <div class="form-group">
                             <label>Citizenship:</label>
                             <input type="text" name="citizenship" 
+                                placeholder="e.g., Filipino" 
                                 value="<?php echo htmlspecialchars($profileData['citizenship'] ?? ''); ?>"
-                                <?php echo $profileData ? 'readonly' : ''; ?>>
+                                <?php echo $profileData ? 'readonly' : ''; ?> required>
                         </div>
                     </div>
                 </div>
+            </div>
+
 
                 <!-- Company Details -->
                 <div id="companyDetails" class="profile-category">
-                    <h3>Company Details</h3>
-                    <label>HR/Manager:</label>
-                    <input type="text" name="hrManager" 
-                        value="<?php echo htmlspecialchars($profileData['hr_manager'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+        <h3>Company Details</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>HR/Manager:</label>
+                <input type="text" name="hrManager" 
+                    placeholder="e.g., John Smith"
+                    value="<?php echo htmlspecialchars($profileData['hr_manager'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                        <label for="faciID">Facilitator ID:</label>
-                        <select name="faciID" id="faciID" <?php echo $profileData ? 'disabled' : ''; ?>>
-                            <option value="">Select Facilitator ID</option>
-                            <?php foreach ($faciIDs as $faci): ?>
-                                <option value="<?php echo htmlspecialchars($faci['faciID']); ?>"
-                                    <?php echo (isset($profileData['faciID']) && $profileData['faciID'] == $faci['faciID']) || (isset($_POST['faciID']) && $_POST['faciID'] == $faci['faciID']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($faci['faciID']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                <label for="faciID">Facilitator ID:</label>
+                <select name="faciID" id="faciID" <?php echo $profileData ? 'disabled' : ''; ?>>
+                    <option value="">Select Facilitator ID</option>
+                    <?php foreach ($faciIDs as $faci): ?>
+                        <option value="<?php echo htmlspecialchars($faci['faciID']); ?>"
+                            <?php echo (isset($profileData['faciID']) && $profileData['faciID'] == $faci['faciID']) || (isset($_POST['faciID']) && $_POST['faciID'] == $faci['faciID']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($faci['faciID']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
 
-                            <label>Facilitator Email:</label>
-                    <input type="email" name="facilitatorEmail" 
-                        value="<?php echo htmlspecialchars($profileData['facilitator_email'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Facilitator Email:</label>
+                <input type="email" name="facilitatorEmail" 
+                    placeholder="e.g., facilitator@example.com"
+                    value="<?php echo htmlspecialchars($profileData['facilitator_email'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Start Shift:</label>
+                <input type="time" name="startShift" 
+                    value="<?php echo htmlspecialchars($profileData['start_shift'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Start Shift:</label>
-                    <input type="time" name="startShift" 
-                        value="<?php echo htmlspecialchars($profileData['start_shift'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>End Shift:</label>
+                <input type="time" name="endShift" 
+                    value="<?php echo htmlspecialchars($profileData['end_shift'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>End Shift:</label>
-                    <input type="time" name="endShift" 
-                        value="<?php echo htmlspecialchars($profileData['end_shift'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Required Hours:</label>
+                <input type="number" name="reqHrs" 
+                    placeholder="e.g., 40"
+                    value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Date Start:</label>
+                <input type="date" name="dateStart" 
+                    value="<?php echo htmlspecialchars($profileData['date_start'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Required Hours:</label>
-                    <input type="number" name="reqHrs" 
-                        value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Date End:</label>
+                <input type="date" name="dateEnd" 
+                    value="<?php echo htmlspecialchars($profileData['date_end'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Date Start:</label>
-                    <input type="date" name="dateStart" 
-                        value="<?php echo htmlspecialchars($profileData['date_start'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Company:</label>
+                <input type="text" name="company" 
+                    placeholder="e.g., Sample Corporation"
+                    value="<?php echo htmlspecialchars($profileData['company'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Date End:</label>
-                    <input type="date" name="dateEnd" 
-                        value="<?php echo htmlspecialchars($profileData['date_end'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                            
-                            
+                <label>Company Address:</label>
+                <input type="text" name="companyAddress" 
+                    placeholder="e.g., 456 Corporate Blvd."
+                    value="<?php echo htmlspecialchars($profileData['company_address'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
 
+               <!-- Family Data -->
+    <div id="familyData" class="profile-category">
+        <h3>Family Data</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>Father's Name:</label>
+                <input type="text" name="fatherName" 
+                    placeholder="e.g., John Doe"
+                    value="<?php echo htmlspecialchars($profileData['father_name'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Company:</label>
-                    <input type="text" name="company" 
-                        value="<?php echo htmlspecialchars($profileData['company'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Occupation:</label>
+                <input type="text" name="fatherOccupation" 
+                    placeholder="e.g., Engineer"
+                    value="<?php echo htmlspecialchars($profileData['father_occupation'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Mother's Name:</label>
+                <input type="text" name="motherName" 
+                    placeholder="e.g., Jane Doe"
+                    value="<?php echo htmlspecialchars($profileData['mother_name'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Company Address:</label>
-                    <input type="text" name="companyAddress" 
-                        value="<?php echo htmlspecialchars($profileData['company_address'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+                <label>Occupation:</label>
+                <input type="text" name="motherOccupation" 
+                    placeholder="e.g., Teacher"
+                    value="<?php echo htmlspecialchars($profileData['mother_occupation'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
 
-                <!-- Family Data -->
-                <div id="familyData" class="profile-category">
-                    <h3>Family Data</h3>
-                    <label>Father's Name:</label>
-                    <input type="text" name="fatherName" 
-                        value="<?php echo htmlspecialchars($profileData['father_name'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+    <!-- Health Data -->
+    <div id="healthData" class="profile-category">
+        <h3>Health Data</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>Blood Type:</label>
+                <input type="text" name="bloodType" 
+                    placeholder="e.g., O+"
+                    value="<?php echo htmlspecialchars($profileData['blood_type'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Occupation:</label>
-                    <input type="text" name="fatherOccupation" 
-                        value="<?php echo htmlspecialchars($profileData['father_occupation'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Height:</label>
+                <input type="text" name="height" 
+                    placeholder="e.g., 5'8\""
+                    value="<?php echo htmlspecialchars($profileData['height'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Weight:</label>
+                <input type="text" name="weight" 
+                    placeholder="e.g., 150 lbs"
+                    value="<?php echo htmlspecialchars($profileData['weight'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Mother's Name:</label>
-                    <input type="text" name="motherName" 
-                        value="<?php echo htmlspecialchars($profileData['mother_name'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Health Problems:</label>
+                <input type="text" name="healthProblems" 
+                    placeholder="e.g., Asthma"
+                    value="<?php echo htmlspecialchars($profileData['health_problems'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
 
-                    <label>Occupation:</label>
-                    <input type="text" name="motherOccupation" 
-                        value="<?php echo htmlspecialchars($profileData['mother_occupation'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+    <!-- Scholastic Data -->
+    <div id="scholasticData" class="profile-category">
+        <h3>Scholastic Data</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>Elementary School:</label>
+                <input type="text" name="elementarySchool" 
+                    placeholder="e.g., ABC Elementary"
+                    value="<?php echo htmlspecialchars($profileData['elementary_school'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <!-- Health Data -->
-                <div id="healthData" class="profile-category">
-                    <h3>Health Data</h3>
-                    <label>Blood Type:</label>
-                    <input type="text" name="bloodType" 
-                        value="<?php echo htmlspecialchars($profileData['blood_type'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Height:</label>
-                    <input type="text" name="height" 
-                        value="<?php echo htmlspecialchars($profileData['height'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Weight:</label>
-                    <input type="text" name="weight" 
-                        value="<?php echo htmlspecialchars($profileData['weight'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Health Problems:</label>
-                    <input type="text" name="healthProblems" 
-                        value="<?php echo htmlspecialchars($profileData['health_problems'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+                <label>Year Graduated:</label>
+                <input type="text" name="elementaryYearGraduated" 
+                    placeholder="e.g., 2005"
+                    value="<?php echo htmlspecialchars($profileData['elementary_year_graduated'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <!-- Scholastic Data -->
-                <div id="scholasticData" class="profile-category">
-                    <h3>Scholastic Data</h3>
-                    <label>Elementary School:</label>
-                    <input type="text" name="elementarySchool" 
-                        value="<?php echo htmlspecialchars($profileData['elementary_school'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Year Graduated:</label>
-                    <input type="text" name="elementaryYearGraduated" 
-                        value="<?php echo htmlspecialchars($profileData['elementary_year_graduated'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Honors/Awards Received:</label>
-                    <input type="text" name="elementaryHonors" 
-                        value="<?php echo htmlspecialchars($profileData['elementary_honors'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Honors/Awards Received:</label>
+                <input type="text" name="elementaryHonors" 
+                    placeholder="e.g., Best in Math"
+                    value="<?php echo htmlspecialchars($profileData['elementary_honors'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Secondary School:</label>
+                <input type="text" name="secondarySchool" 
+                    placeholder="e.g., XYZ High School"
+                    value="<?php echo htmlspecialchars($profileData['secondary_school'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>Secondary School:</label>
-                    <input type="text" name="secondarySchool" 
-                        value="<?php echo htmlspecialchars($profileData['secondary_school'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Year Graduated:</label>
-                    <input type="text" name="secondaryYearGraduated" 
-                        value="<?php echo htmlspecialchars($profileData['secondary_year_graduated'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Honors/Awards Received:</label>
-                    <input type="text" name="secondaryHonors" 
-                        value="<?php echo htmlspecialchars($profileData['secondary_honors'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
+                <label>Year Graduated:</label>
+                <input type="text" name="secondaryYearGraduated" 
+                    placeholder="e.g., 2009"
+                    value="<?php echo htmlspecialchars($profileData['secondary_year_graduated'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                    <label>College:</label>
-                    <input type="text" name="college" 
-                        value="<?php echo htmlspecialchars($profileData['college'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Year Graduated:</label>
-                    <input type="text" name="collegeYearGraduated" 
-                        value="<?php echo htmlspecialchars($profileData['college_year_graduated'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Honors/Awards Received:</label>
-                    <input type="text" name="collegeHonors" 
-                        value="<?php echo htmlspecialchars($profileData['college_honors'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+                <label>Honors/Awards Received:</label>
+                <input type="text" name="secondaryHonors" 
+                    placeholder="e.g., Valedictorian"
+                    value="<?php echo htmlspecialchars($profileData['secondary_honors'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>College:</label>
+                <input type="text" name="college" 
+                    placeholder="e.g., University of ABC"
+                    value="<?php echo htmlspecialchars($profileData['college'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <!-- Work Experience -->
-                <div id="workExperience" class="profile-category">
-                    <h3>Work Experience</h3>
-                    <label>Company Name:</label>
-                    <input type="text" name="companyName" 
-                        value="<?php echo htmlspecialchars($profileData['company_name'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Position:</label>
-                    <input type="text" name="position" 
-                        value="<?php echo htmlspecialchars($profileData['position'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Inclusive Date:</label>
-                    <input type="text" name="inclusiveDate" 
-                        value="<?php echo htmlspecialchars($profileData['inclusive_date'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Address:</label>
-                    <input type="text" name="companyAddressWorkExperience" 
-                        value="<?php echo htmlspecialchars($profileData['company_address_work_experience'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+                <label>Year Graduated:</label>
+                <input type="text" name="collegeYearGraduated" 
+                    placeholder="e.g., 2013"
+                    value="<?php echo htmlspecialchars($profileData['college_year_graduated'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <!-- Special Skills -->
-                <div id="specialSkills" class="profile-category">
-                    <h3>Special Skills</h3>
-                    <label>Skills:</label>
-                    <input type="text" name="skills" 
-                        value="<?php echo htmlspecialchars($profileData['skills'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+                <label>Honors/Awards Received:</label>
+                <input type="text" name="collegeHonors" 
+                    placeholder="e.g., Cum Laude"
+                    value="<?php echo htmlspecialchars($profileData['college_honors'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
 
-                <!-- Character References -->
-                <div id="characterReferences" class="profile-category">
-                    <h3>Character References</h3>
-                    <label>Name:</label>
-                    <input type="text" name="refName" 
-                        value="<?php echo htmlspecialchars($profileData['ref_name'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Position:</label>
-                    <input type="text" name="refPosition" 
-                        value="<?php echo htmlspecialchars($profileData['ref_position'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Address:</label>
-                    <input type="text" name="refAddress" 
-                        value="<?php echo htmlspecialchars($profileData['ref_address'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Contact No.:</label>
-                    <input type="text" name="refContact" 
-                        value="<?php echo htmlspecialchars($profileData['ref_contact'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+    <!-- Work Experience -->
+    <div id="workExperience" class="profile-category">
+        <h3>Work Experience</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>Company Name:</label>
+                <input type="text" name="companyName" 
+                    placeholder="e.g., TechCorp"
+                    value="<?php echo htmlspecialchars($profileData['company_name'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <!-- Emergency Contact -->
-                <div id="emergencyContact" class="profile-category">
-                    <h3>Emergency Contact</h3>
-                    <label>Name:</label>
-                    <input type="text" name="emergencyName" 
-                        value="<?php echo htmlspecialchars($profileData['emergency_name'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Address:</label>
-                    <input type="text" name="emergencyAddress" 
-                        value="<?php echo htmlspecialchars($profileData['emergency_address'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                    <label>Contact No.:</label>
-                    <input type="text" name="emergencyContactNo" 
-                        value="<?php echo htmlspecialchars($profileData['emergency_contact_no'] ?? ''); ?>"
-                        <?php echo $profileData ? 'readonly' : ''; ?>>
-                </div>
+                <label>Position:</label>
+                <input type="text" name="position" 
+                    placeholder="e.g., Software Engineer"
+                    value="<?php echo htmlspecialchars($profileData['position'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Inclusive Date:</label>
+                <input type="text" name="inclusiveDate" 
+                    placeholder="e.g., Jan 2016 - Dec 2020"
+                    value="<?php echo htmlspecialchars($profileData['inclusive_date'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                <label>Address:</label>
+                <input type="text" name="companyAddressWorkExperience" 
+                    placeholder="e.g., 456 Corporate Blvd."
+                    value="<?php echo htmlspecialchars($profileData['company_address_work_experience'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Skills -->
+    <div id="specialSkills" class="profile-category">
+        <h3>Special Skills</h3>
+        <div class="form-container">
+            <label>Skills:</label>
+            <input type="text" name="skills" 
+                placeholder="e.g., Web Development, Graphic Design"
+                value="<?php echo htmlspecialchars($profileData['skills'] ?? ''); ?>"
+                <?php echo $profileData ? 'readonly' : ''; ?>>
+        </div>
+    </div>
+
+    <!-- Character References -->
+    <div id="characterReferences" class="profile-category">
+        <h3>Character References</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>Name:</label>
+                <input type="text" name="refName" 
+                    placeholder="e.g., Michael Smith"
+                    value="<?php echo htmlspecialchars($profileData['ref_name'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                <label>Position:</label>
+                <input type="text" name="refPosition" 
+                    placeholder="e.g., HR Manager"
+                    value="<?php echo htmlspecialchars($profileData['ref_position'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Address:</label>
+                <input type="text" name="refAddress" 
+                    placeholder="e.g., 123 Reference Rd."
+                    value="<?php echo htmlspecialchars($profileData['ref_address'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                <label>Contact No.:</label>
+                <input type="text" name="refContactNo" 
+                    placeholder="e.g., 09171234567"
+                    value="<?php echo htmlspecialchars($profileData['ref_contact_no'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Contact -->
+    <div id="emergencyContact" class="profile-category">
+        <h3>Emergency Contact</h3>
+        <div class="form-container">
+            <div class="form-row">
+                <label>Name:</label>
+                <input type="text" name="emergencyName" 
+                    placeholder="e.g., Anna Lee"
+                    value="<?php echo htmlspecialchars($profileData['emergency_name'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                <label>Relationship:</label>
+                <input type="text" name="emergencyRelationship" 
+                    placeholder="e.g., Sister"
+                    value="<?php echo htmlspecialchars($profileData['emergency_relationship'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+            <div class="form-row">
+                <label>Contact No.:</label>
+                <input type="text" name="emergencyContactNo" 
+                    placeholder="e.g., 09171234567"
+                    value="<?php echo htmlspecialchars($profileData['emergency_contact_no'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+        </div>
+    </div>
             </div>
 
             <?php if (!$profileData): ?>

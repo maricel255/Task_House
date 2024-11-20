@@ -169,6 +169,7 @@ body {
 }
 
 /* Header Styling */
+/* Header Styling */
 .header {
     width: calc(100% - 60px);
     height: 60px;
@@ -187,8 +188,9 @@ body {
 
 .header.shifted {
     left: 250px;
-    width: calc(100% - 250px);
+    width: calc(100% - 50px);
 }
+
 
 /* Logout Button Styling */
 .logout-btn {
@@ -220,6 +222,38 @@ body {
     filter: invert(100%);
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .header {
+        left: 70px; /* Adjust for smaller screens */
+        width: 100%; /* Make header full width */
+    }
+
+    .logout-btn {
+        font-size: 9px; /* Smaller font for mobile */
+        margin-right: 70px; /* Add space from the left on mobile */
+    }
+
+    .logout-icon {
+        width: 38px;
+        height: 38px;
+        
+    }
+}
+
+@media (max-width: 480px) {
+    .logout-btn {
+        font-size: 12px; /* Further reduce font size on very small screens */
+        padding: 6px 12px; /* Adjust padding for very small screens */
+
+    }
+
+    .logout-icon {
+        width: 16px;
+        height: 16px;
+    }
+}
+
 /* Main Content Styling */
 .main-content {
     margin-left: 60px;
@@ -246,6 +280,22 @@ body {
 }
 .announcement-board:hover {
     transform: translateY(-2px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .announcement-board {
+        width:  180%; /* Make the announcement board wider on mobile */
+        margin: 0 auto 30px auto; /* Center the announcement board */
+        padding: 20px; /* Optional: Adjust padding for better fit */
+    }
+    .anno-img{
+        margin-top: 120px; /* Add space from the left on mobile */
+        max-width: 38%; /* Set maximum width to be responsive */
+        height: auto; /* Maintain aspect ratio */
+        margin-right: -210px; /* Add space from the left on mobile */
+
+    }
 }
 
 .announcement-board h2 {
@@ -323,12 +373,71 @@ body {
 }
 
 .time-clock-container {
-    background: white;
+    background: lightgreen;
     padding: 25px;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     text-align: center;
 }
+
+/* Mobile Responsiveness (smaller screens) */
+@media (max-width: 768px) {
+    .time-content {
+        width: 100% !important; /* Force the width to 100% on smaller screens */
+        margin-left: 0; /* Reset margin-left for better alignment */
+        padding: 0 15px; /* Optional: Adjust padding for better fit */
+    }
+    /* Wider .time-clock-container on mobile */
+    .time-clock-container {
+       margin-top: 50px;
+        Width: 480px;
+        Height: 444px
+    }
+    .time-clock-container h3 {
+        font-size: 40px; /* Smaller font size for heading on mobile */
+    }
+
+    #time-display {
+        font-size: 6px; /* Smaller font size for time on mobile */
+    }
+
+    #day-of-week {
+        font-size: 6px; /* Smaller font size for day of the week on mobile */
+    }
+    /* Styling shifts section */
+    .shifts {
+        margin-left: 0; /* Remove left margin to make it centered */
+        width: 50%; /* Make the shifts section take full width */
+        padding: 10px; /* Add padding for spacing */
+        box-sizing: border-box; /* Include padding in width calculation */
+        font-size: 16px; /* Make text more readable */
+        background: #f0f0f0; /* Light background color to distinguish it */
+        border-radius: 10px; /* Rounded corners for aesthetic look */
+        margin-top: 20px; /* Add top margin to separate from other elements */
+    }
+
+    /* Button styles for shifts */
+   /* Button styles for shifts */
+.shifts button {
+    padding: 10px 20px; /* Adjust padding for easier clicking */
+    font-size: 16px; /* Increase font size for readability */
+    background-color: #28a745; /* Green background for buttons */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded button edges */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    width: 100%; /* Make buttons full-width for easy tapping */
+    margin-top: 10px; /* Space out buttons */
+}
+
+/* Change button color on hover */
+.shifts button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+}
+   
+
 
 
 #time-display {
@@ -409,7 +518,7 @@ input[type="text"] {
 }
  .shifts {  
     margin-left: 250px;
-    width: calc(100% - 250px);
+    width: calc(100% - 240px);
 }
 /* Content sections */
 .content-section {
@@ -499,12 +608,17 @@ input[type="text"] {
     margin-top: 9%;
     width: 30%;
   }
-  .form-group {
+  .form-row {
     display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    margin-left: 50px;
-  }
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1 1 45%; /* Adjusts size to fit two columns */
+    min-width: 300px;
+}
+ 
   
   .form-group label {
     flex: none;
@@ -850,13 +964,13 @@ input, select {
     display: none;
     position: fixed;
     z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%; /* Set to 100% of the viewport height */
+    
+    width: 500px; /* Fixed width in pixels */
+    height: 400px; /* Fixed height in pixels */
     background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
     padding-top: 60px;
-    overflow: hidden; /* Prevent scrolling */
+    overflow: auto; /* Allow scrolling if the content overflows */
+
 }
   
 .modal-content {
@@ -961,6 +1075,7 @@ input, select {
 .profile-category.active {
     display: block;
 }
+
 /* Center the button at the bottom */
 .insert-btn {
     position: absolute;
@@ -980,6 +1095,7 @@ input, select {
     background-color: #FADADD; /* Soft Pink */
 }
 
+/* Settings Button Styling */
 .settings-btn {
     display: flex;
     align-items: center;
@@ -994,6 +1110,32 @@ input, select {
     width: 24px;
     height: 24px;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .settings-btn {
+        padding: 6px; /* Adjust padding for smaller screens */
+        margin-right: 400px; /* Add space from the left on mobile */
+    }
+
+    .settings-icon {
+        width: 20px; /* Reduce icon size */
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-btn {
+        padding: 4px; /* Further reduce padding for very small screens */
+        margin-right: 6px; /* Adjust margin for smaller screens */
+    }
+
+    .settings-icon {
+        width: 18px; /* Further reduce icon size */
+        height: 18px;
+    }
+}
+
 
 #credentialsModal .form-group {
     margin-bottom: 15px;
