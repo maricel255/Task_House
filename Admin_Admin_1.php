@@ -5,25 +5,8 @@ require('db_taskHouse/Admin_connection.php');
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
-// Display any messages
-if (isset($_SESSION['message'])) {
-    ?>
-    <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-        <?php echo htmlspecialchars($_SESSION['message']); ?>
-    </div>
-    <script type="text/javascript">
-        // Hide the alert after 5 seconds
-        setTimeout(function() {
-            var alertBox = document.getElementById('alertBox');
-            if (alertBox) {
-                alertBox.style.display = 'none';
-            }
-        }, 5000);
-    </script>
-    <?php
-    // Unset the message after displaying
-    unset($_SESSION['message']);
-}  
+
+
 
 
 try {
@@ -605,6 +588,56 @@ $stmt->execute();
 $timeLogsCount = $stmt->fetchColumn(); 
     // do not change anything above----------------------------------------------------------------
 
+
+    // Start Kyle
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fetchDetails'])) {
+        $internID = $_POST['internID'];
+    
+        // Fetch details for the selected Intern ID
+        $sql = "SELECT pi.*, ia.profile_image 
+                FROM profile_information pi
+                LEFT JOIN intacc ia ON pi.internID = ia.internID
+                WHERE pi.internID = :internID";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+        $stmt->execute();
+    
+        if ($stmt->rowCount() > 0) {
+            $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            // Return the HTML to be injected dynamically
+            echo '<button class="close-btn" onclick="closeDetails()">×</button>';
+            echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
+    
+            // Show profile image
+            if (!empty($internDetails['profile_image'])) {
+                echo '<div class="profile-image">';
+                echo '<img src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Image" width="160" height="150">';
+                echo '</div>';
+            } else {
+                echo '<div class="profile-image">';
+                echo '<img src="image/USER_ICON.png" alt="Default Image" width="150" height="150">';
+                echo '</div>';
+            }
+    
+            // Display details in a table
+            echo '<table>';
+            foreach ($internDetails as $key => $value) {
+                if ($key !== 'profile_image') {
+                    echo '<tr>';
+                    echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
+                    echo '<td>' . htmlspecialchars($value) . '</td>';
+                    echo '</tr>';
+                }
+            }
+            echo '</table>';
+        } else {
+            echo '<p>No details found for the selected Intern ID.</p>';
+        }
+        exit; // Stop further processing since this is an AJAX response
+    }
+    // END KYLE
+    
 ?>
 
 <!DOCTYPE html>
@@ -614,6 +647,9 @@ $timeLogsCount = $stmt->fetchColumn();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin</title>
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-pzjw8f+ua7Kw1TIq0Vd5BqTkzXabjT2k5V1m9uX4xj0t50mhaI4M6ohwV1lX13b7" crossorigin="anonymous">
+
 </head>
 <body>
 <?php
@@ -881,6 +917,8 @@ $timeLogsCount = $stmt->fetchColumn();
 
     
        
+       
+        <!-- Start Kyle -->
         <?php
 
         // Prepare the base SQL query
@@ -912,100 +950,53 @@ $timeLogsCount = $stmt->fetchColumn();
             $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Start the table
-            echo '<table id="profileTable">';
-            echo '<tr>';
-            echo '<th>#</th>'; // Add a column for numbering
-            echo '<th>Intern ID</th>';
+            echo '<table id="profileTable" class="table table-bordered">';
+echo '<thead class="thead-light">';
+echo '<tr class="sticky-header">';
+echo '<th>#</th>'; // Add a column for numbering
+echo '<th>Intern ID</th>';
 
-            // Dynamically create headers based on the selected search criteria
-            if ($searchBy !== 'all') {
-                echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
-            }
+// Dynamically create headers based on the selected search criteria
+if ($searchBy !== 'all') {
+    echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+}
 
-            echo '</tr>';
+echo '</tr>';
+echo '</thead>';
+echo '<tbody>';
 
-            // Counter for enumeration
-            $counter = 1;
+// Counter for enumeration
+$counter = 1;
 
-            // Loop through the records and display each field
-            foreach ($records as $row) {
-                echo '<tr>';
-                echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-                echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+// Loop through the records and display each field
+foreach ($records as $row) {
+    echo '<tr>';
+    echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+    echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
 
-                // Display the selected search column based on search criteria
-                if ($searchBy !== 'all') {
-                    echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
-                }
+    // Display the selected search column based on search criteria
+    if ($searchBy !== 'all') {
+        echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+    }
 
-                // Add a button to view more details
-                echo '<td>';
-                echo '<form method="post" action="">';
-                echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-                echo '<input type="submit" value="View Details">';
-                echo '</form>';
-                echo '</td>';
+    // Add a button to view more details
+    echo '<td>';
+    echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
+    echo '</td>';
 
-                echo '</tr>';
-            }
-            echo '</table>';
+    echo '</tr>';
+}
+echo '</tbody>';
+echo '</table>';
         } else {
             echo '<p>No records found for your search!</p>';
         }
 
-        // Check if the internID is set and display the corresponding details
-        if (isset($_POST['internID'])) {
-            $internID = $_POST['internID'];
-
-            // Prepare SQL to fetch details for the selected internID from both profile_information and intacc tables
-            $detailSql = "SELECT pi.*, ia.profile_image FROM profile_information pi
-                          LEFT JOIN intacc ia ON pi.internID = ia.internID
-                          WHERE pi.internID = :internID";
-            $detailStmt = $conn->prepare($detailSql);
-            $detailStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-            $detailStmt->execute();
-
-            // Check if the intern exists
-            if ($detailStmt->rowCount() > 0) {
-                $internDetails = $detailStmt->fetch(PDO::FETCH_ASSOC);
-
-                echo '<div class="intern-details">';
-                echo '<button class="close-btn" onclick="closeDetails()">×</button>'; // Close button
-
-                echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
-
-                // Check if the intern has a profile image and display it
-                if (!empty($internDetails['profile_image'])) {
-                    echo '<div class="profile-image">';
-                    echo '<img id="imagePreview" src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Preview" width="160" height="150">';
-                    echo '</div>';
-                } else {
-                    echo '<div class="profile-image">';
-                    echo '<img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview" width="150" height="150">';
-                    echo '</div>';
-                }
-
-                echo '<button onclick="printDetails()" class="print-btn">Print Details</button>';
-
-                echo '<table>';
-
-                // Loop through the intern details and display each one
-                foreach ($internDetails as $key => $value) {
-                    if ($key != 'profile_image') { // Skip 'profile_image' as it's already displayed
-                        echo '<tr>';
-                        echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-                        echo '<td>' . htmlspecialchars($value) . '</td>';
-                        echo '</tr>';
-                    }
-                }
-
-                echo '</table>';
-                echo '</div>';
-            } else {
-                echo '<p>No details found for the selected Intern ID.</p>';
-            }
-        }
+        
         ?>
+        <div id="internDetails" class="intern-details"></div>
+         <!-- End Kyle -->
+    </div>  
     </div>  
 </div>  
 

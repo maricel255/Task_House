@@ -1,649 +1,512 @@
-/* Reset CSS */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-}
-
-/* Container styling */
-.container {
-    display: flex;
-}
-
-/* Sidebar styling */
-.sidebar {
-    background: linear-gradient(180deg, #2c3e50 0%, #27ae60 100%);
-    color: white;
-    width: 60px;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000;
-    overflow: hidden;
-    border-radius: 15px;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-}
-
-.sidebar.active {
-    width: 250px;
-}
-
-/* Hide content styling */
-.sidebar.hide-content .user-details,
-.sidebar.hide-content .navigation a {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
-}
-
-.sidebar.show-content .user-details,
-.sidebar.show-content .navigation a {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.user-name{
-    border-bottom: 2px solid yellow;
-    padding-bottom: 5px;
-}
-
-.break-btn, .back-to-work-btn {
-    border-radius: 5px;
-    padding: 8px 15px;
-    background: linear-gradient(145deg, #ffd32a, #ffc107);
-    cursor: pointer;
-    border: none;
-    color: #000;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.break-btn:hover, .back-to-work-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.user-details .btn:hover {
-    opacity: 0.7;
-}
-/* Sidebar content */
-.user-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-
-.user-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.user-icon:hover {
-    transform: scale(1.05);
-}
-
-.sidebar.active .user-icon {
-    width: 60px;
-    height: 60px;
-}
-
-.user-details {
-    opacity: 0;
-    margin-left: 10px;
-    white-space: nowrap;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.sidebar.active .user-details {
-    opacity: 1;
-}
-/* Navigation links */
-.navigation a {
-    display: block;
-    padding: 20px;
-    text-decoration: none;
-    text-align: center;
-    color: black;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s, opacity 0.3s ease-in-out;
-    white-space: nowrap;
-    width: 100%;
-}
-
-.navigation a:hover {
-    background-color: #f0f0f0;
-}
-
-.navigation a.active {
-    background-color: #ccc;
-}
-
-/* Content sections */
-.content-section {
-    display: none;
-}
-
-.content-section#dashboard {
-    display: block;
-}
-
-
-/* Sidebar navigation */
-.navigation ul {
-    list-style-type: none;
+    margin: 0;
     padding: 0;
+    background-color: #f1f1f1;
+    position: relative; /* Ensure pseudo-element is positioned relative to the body */
+    overflow: hidden; /* Prevent scrolling issues due to pseudo-element */
 }
 
-.navigation li {
-    opacity: 0;
-    padding: 15px;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.3s, opacity 0.3s ease-in-out;
-    white-space: nowrap;
-    width: 100%;
-}
-.sidebar.active .navigation li {
-    opacity: 1;
-}
-
-.navigation li:hover, .navigation li.active {
-    background-color: #034b04;
-}
-
-/* Header Styling */
-/* Header Styling */
-.header {
-    width: calc(100% - 60px);
-    height: 60px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-right: 20px;
-    position: fixed;
+body::before {
+    content: "";
+    position: absolute;
     top: 0;
-    left: 60px;
-    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-    z-index: 1001;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url('image/cot-removebg-preview.png'); /* Path to the logo image */
+    background-position: right bottom; /* Position the image in the lower right corner */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-size: 350px; /* Adjust the size of the image as needed */
+    opacity: 0.5; /* Adjust the opacity here */
+    z-index: -1; /* Ensure the pseudo-element is behind the main content */
+
 }
 
-.header.shifted {
-    left: 250px;
-    width: calc(100% - 50px);
+/*----------------------- SIDEBAR-------------------------------*/
+.sidebar {
+  height: 100%;
+  width: 60px; /* Initially collapsed width */
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: green;
+  transition: width 0.3s; /* Smooth transition for width */
+  overflow-x: hidden;
+  border-radius: 15px;
+  border-left: 3px solid red; /* Change border width and color */
+}
+
+.sidebar a {
+  padding: 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #f1f1f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s; /* Smooth transition for hover */
+}
+
+.sidebar a:hover {
+  background-color: white;
+  color: black;
+}
+
+.sidebar a span {
+  margin-left: 10px;
+  display: none; /* Text hidden initially */
+}
+
+.sidebar:hover {
+  width: 250px; /* Expanded sidebar on hover */
+}
+
+.sidebar:hover a span {
+  display: inline-block; /* Show text when sidebar is expanded */
+}
+.error-box {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+  padding: 15px;
+  margin: 20px 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.logo {
+  width: 30px;
+  height: 30px;
+  display: block;
+  margin: 20px auto;  
+  cursor: pointer;
+  transition: width 0.3s ease, height 0.3s ease; /* Smooth transition for logo width and height */
+  border-radius: 50%; /* Make the logo circular */
+}
+
+.sidebar:hover .logo {
+  width: 200px; /* Expand logo on hover */
+  height: 200px; /* Adjust height to match the width */
 }
 
 
-/* Logout Button Styling */
-.logout-btn {
-    background-color: #e8e8e8;
-    border: 2px solid navy;
-    color: navy;
-    font-size: 16px;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+.home-link {
+  margin-top: 80px; /* Adjust this value to lower the Home button */
 }
 
-.logout-btn:hover {
-    background-color: navy;
-    color: white;
+.main-content {
+  margin-left: 80px; /* Adjusted for the initial collapsed sidebar */
+  padding: 16px;
+  transition: margin-left 0.3s; /* Smooth transition when sidebar expands/collapses */
+}
+
+/* Adjust main content when sidebar is hovered */
+.sidebar:hover + .main-content {
+  margin-left: 260px; /* Shift margin when sidebar is expanded */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+  transition: margin-left 0.3s; /* Smooth transition for header */
+  height: 27px;
+}
+
+/* Adjust header when sidebar is hovered */
+.sidebar:hover ~ .header {
+  margin-left: 250px; /* Adjust margin for expanded sidebar */
+}
+
+.content-section {
+  display: none; /* Hidden by default */
+  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
+
+}
+.content-section h1 {
+  margin-left: 65px; /* Space from the left */
+  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
+}
+
+.sidebar:hover ~ .content-section {
+    margin-left: 320px; /* Adjust to match sidebar width + additional space when hovered */
+}
+.content-section.active {
+  display: block; /* Show when active */
+}
+.modal-btn {
+  cursor: pointer;
+  border-radius: 50%; /* Makes the button circular */
+  position: absolute; /* Position absolutely within the header */
+  top: 7px; /* Adjust as needed to position from the top edge */
+  right: 12%; /* Position from the right edge */
+  width: 50px; /* Set a fixed width */
+  height: 50px; /* Set a fixed height */
+  display: flex;
+  align-items: center; /* Align items vertically */
+  justify-content: center; /* Center text/icon horizontally */
+  border: 2px solid #000543; /* Add border if needed */
+  background-color: transparent; /* Background color */
+  background-image: url('../image/USER_ICON.png'); /* Adjust path if necessary */
+  background-size: cover; /* Ensures the image covers the button */
+  background-position: center; /* Centers the image */
+  transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+
+.modal-btn:hover {
+  background-color: #000543; /* Background color on hover */
+}
+
+
+
+    /* Logout button in the upper right corner */
+    .logout-btn {
+       
+        color:  #000543;
+        border-color: #000543;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+        position: absolute; /* Position absolutely within the header */
+        top: 7px; /* Adjust as needed to position from the top edge */
+        right: 16px; /* Position from the right edge */
+        display: flex;
+       align-items: center; /* Align items vertically */
 }
 
 .logout-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    transition: filter 0.3s ease;
+    width: 20px; /* Adjust size as needed */
+    height: 20px; /* Adjust size as needed */
+    margin-right: 9px; /* Space between icon and text */
 }
 
-.logout-btn:hover .logout-icon {
-    filter: invert(100%);
-}
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .header {
-        left: 70px; /* Adjust for smaller screens */
-        width: 100%; /* Make header full width */
+    .logout-btn:hover {
+      background-color: #000543;
+      color:white;
     }
-
-    .logout-btn {
-        font-size: 9px; /* Smaller font for mobile */
-        margin-right: 70px; /* Add space from the left on mobile */
-    }
-
-    .logout-icon {
-        width: 38px;
-        height: 38px;
+    .add-btn {
+       
+       color:  white;
+       background-color:green;
+       padding: 10px 20px;
+       cursor: pointer;
+       font-size: 16px;
+       border-radius: 10px;
+       position: absolute; /* Position absolutely within the header */
+       top: 150px; /* Adjust as needed to position from the top edge */
+       left: 300px; /* Position from the right edge */
+       display: flex;
+      align-items: center; /* Align items vertically */
+      }
+        .add-btn:hover {
+   
+        margin-right: 9px; /* Space between icon and text */
+        color:black;
+        background-color:white;
         
+        }
+
+    
+
+    /* Responsive for small screens */
+    @media screen and (max-width: 600px) {
+      .sidebar {
+        width: 60px;
+      }
+
+      .sidebar.active {
+        width: 100%;
+      }
+
+      .main-content, .header {
+        margin-left: 60px;
+      }
+
+      .shifted {
+        margin-left: 100%;
+      }
+    }
+    .dbmain-content {
+            margin-left: 25px;
+            padding: 3px;
+        }
+        .dashboard-title {
+            font-size: 32px;
+            color: #000543;
+            margin-bottom: 20px;
+        }
+        .dashboard-cards {
+            display: flex;
+            justify-content: space-between;
+            border-color:gray;
+            padding: 10px;
+            gap: 20px;
+            text-align:left;
+        }
+        .card {
+            width: 22%;
+            padding: 20px;
+            text-align: left;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ddd;
+            border-radius: 5px;
+        }
+        .card.course {
+            border-left-color: #f25c5c;
+        }
+        .card.course:hover{
+          background-color: #f25c5c;
+          color:white;
+          
+        }
+        .card.shift {
+            border-left-color:  #000543;
+        }
+        .card.shift:hover{
+          background-color:  #000543;
+          color:white;
+        }
+        
+        .card.intern {
+            border-left-color: #f2b25c;
+        }
+        .card.intern:hover{
+          background-color: #f2b25c;
+          color:white;
+        }
+        .card.company {
+            border-left-color: #5cf274;
+        }
+        .card.company:hover{
+          background-color: #5cf274;
+          color:white;
+        }
+        .announcement-board {
+          margin-top: 40px;
+          background-color: #fff;
+          padding: 30px;
+          text-align: center;
+          border-radius: 10px;
+          position: relative;
+          border: 1px solid #bc2649;
+          height: 250px;
+          width: 70%;
+      }
+
+        .announcement-board h2 {
+            font-size: 24px;
+            color: #000543;
+            margin-top: 1px;
+        }
+       
+
+        .anno-img {
+          position: absolute; /* Position the image absolutely within the parent */
+          top: 55%; /* Align to the top */
+          left: 0; /* Align to the right */
+          max-width: 25%; /* Set maximum width to be responsive */
+          height: auto; /* Maintain aspect ratio */
+          z-index: 9999; /* Ensure the image is always on top */
+        }
+
+       /* user input in annoucement */
+        
+          .input-container {
+            margin-bottom: 15px; /* Space between inputs */
+         }
+
+         .styled-input {
+          width: 100%; /* Full width */
+          padding: 12px; /* Padding inside the input */
+          border: 1px solid #ced4da; /* Border color */
+          border-radius: 5px; /* Rounded corners */
+          font-size: 16px; /* Font size for input text */
+          transition: border-color 0.3s; /* Transition for border color */
+      }
+      .styled-inputann {
+        width: 100%; /* Full width */
+        padding: 12px; /* Padding inside the input */
+        margin-top: 3px;
+        font-size: 16px; /* Font size for input text */
+        transition: border-color 0.3s; /* Transition for border color */
+        margin-left: 15%;
+       }
+       .styled-inputannup{
+        width: 100%; /* Full width */
+        padding: 12px; /* Padding inside the input */
+        margin-top: 3px;
+        font-size: 16px; /* Font size for input text */
+        transition: border-color 0.3s; /* Transition for border color */
+        margin-left: 18%;
+
+       }
+      
+
+          .styled-input::placeholder {
+            color: #888;
+            font-style: italic;
+          }
+
+          .styled-input:focus {
+            border-color: #007BFF;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+          }
+          .post-button {
+            width: 30%; /* Full width */
+            padding: 12px; /* Padding inside the button */
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size for button text */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s; /* Transition for background color */
+            position: absolute; /* Positioning to place it at bottom right */
+            bottom: 20px; /* Adjust as needed for spacing from the bottom */
+            right: 20px; /* Adjust as needed for spacing from the right */
+        }
+        
+        .post-button:hover {
+          background-color: #0056b3; /* Darker blue on hover */
+      }
+             /* end here user input in annoucement */
+
+          #detail {
+            display: none; /* Initially hidden */
+            color: white;
+            text-align: center;
+            font-size: 15px;
+            border-bottom: 5px solid #dcb455;  
+            border-radius: 25px;
+        }
+        
+        /* Show admin details when the sidebar is hovered */
+        .sidebar:hover #detail {
+            display: block; /* Show the detail section on hover */
+        }
+        
+  /* Modal Content */
+/* Overlay to blur the background */
+/* Overlay to blur the background */
+.overlay {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Below modal */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width of the viewport */
+  height: 100%; /* Full height of the viewport */
+  backdrop-filter: blur(8px); /* Apply blur effect to the background */
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: darken the background for contrast */
+}
+
+/* Modal Background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top of the overlay */
+  left: 50%; /* Center from the left */
+  top: 50%; /* Center from the top */
+  width: 40%; /* Adjust width for portrait */
+  height: 80%; /* Adjust height for portrait */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: transparent; /* Fully transparent background */
+  padding-top: 20px; /* Space above the modal content */
+  border-radius: 10px; /* Optional: add rounded corners */
+  transform: translate(-50%, -50%); /* Center the modal */
+  box-shadow: none; /* No shadow for full-screen modal */
+}
+
+
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe; /* Light background for the modal content */
+    margin: 5% auto; /* Center modal content */
+    padding: 20px; /* Padding inside the modal */
+    border: 1px solid #888; /* Border for the content */
+    border-radius: 10px; /* Optional: rounded corners */
+    width: 90%; /* Ensure the content width is responsive */
+    height: auto; /* Let height be determined by content */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%; /* Make modal content 90% width on smaller screens */
     }
 }
 
 @media (max-width: 480px) {
-    .logout-btn {
-        font-size: 12px; /* Further reduce font size on very small screens */
-        padding: 6px 12px; /* Adjust padding for very small screens */
-
-    }
-
-    .logout-icon {
-        width: 16px;
-        height: 16px;
+    .modal-content {
+        width: 95%; /* Adjust to 95% on very small screens */
+        padding: 15px; /* Reduce padding for smaller screens */
     }
 }
 
-/* Main Content Styling */
-.main-content {
-    margin-left: 60px;
-    padding: 70px 20px 20px 20px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
-
-.main-content.shift {
-    margin-left: 250px;
-    width: calc(100% - 250px);
-}
-
-
-/* Enhanced Announcement Board */
-.announcement-board {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    border: solid 4px #dc3545; /* Solid red border */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-    transition: transform 0.3s ease;
-}
-.announcement-board:hover {
-    transform: translateY(-2px);
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .announcement-board {
-        width:  180%; /* Make the announcement board wider on mobile */
-        margin: 0 auto 30px auto; /* Center the announcement board */
-        padding: 20px; /* Optional: Adjust padding for better fit */
-    }
-    .anno-img{
-        margin-top: 120px; /* Add space from the left on mobile */
-        max-width: 38%; /* Set maximum width to be responsive */
-        height: auto; /* Maintain aspect ratio */
-        margin-right: -210px; /* Add space from the left on mobile */
-
-    }
-}
-
-.announcement-board h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #e15c15;
-    text-align: center; /* Center the heading */
-
-
-}
-.anno-img {
-    position: absolute; /* Position the image absolutely within the parent */
-    top: 25%; /* Align to the top */
-    right: 0; /* Align to the right */
-    max-width: 18%; /* Set maximum width to be responsive */
-    height: auto; /* Maintain aspect ratio */
-    transform: scaleX(-1); /* This mirrors the image horizontally */
-    z-index: 9999; /* Ensure the image is always on top */
+  
+  .Accmodal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 35%;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+    margin-top: 15%;
   }
   
-
-
-.announcement-slider {
-    position: relative;
-    width: 100%;
-    max-width: 800px; /* Adjust as needed */
-    margin: 0 auto;
-    background-color: #CFFFE5; /* Pastel Mint Green */
-    border: 1px solid #ccc; /* Optional border */
-    border-radius: 8px; /* Rounded corners */
-    overflow: hidden; /* Hide overflow */
-}
-
-.slider-container {
-    display: flex; /* Use flexbox for layout */
-    transition: transform 0.5s ease; /* Smooth transition */
-}
-
-.announcement-item {
-    min-width: 100%; /* Each item takes full width */
-    display: none; /* Hide all items by default */
-    padding: 20px; /* Optional padding */
-    text-align: center; /* Center text */
-    background-color: white;
-
-}
-
-.announcement-item.active {
-    display: block; /* Show only the active item */
-
-}
-
-.prev, .next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #ffffff; /* White background */
-    border: none;
-    border-radius: 35px; /* Rounded corners */
-    cursor: pointer;
-    padding: 10px; /* Padding */
-}
-
-.prev {
-    left: 10px; /* Position left */
-}
-
-.next {
-    right: 10px; /* Position right */
-}
-
-/* Hover effects for buttons */
-.prev:hover, .next:hover {
-    background-color: #e0e0e0; /* Light gray on hover */
-}
-
-.time-clock-container {
-    background: lightgreen;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-/* Mobile Responsiveness (smaller screens) */
-@media (max-width: 768px) {
-    .time-content {
-        width: 100% !important; /* Force the width to 100% on smaller screens */
-        margin-left: 0; /* Reset margin-left for better alignment */
-        padding: 0 15px; /* Optional: Adjust padding for better fit */
-    }
-    /* Wider .time-clock-container on mobile */
-    .time-clock-container {
-       margin-top: 50px;
-        Width: 480px;
-        Height: 444px
-    }
-    .time-clock-container h3 {
-        font-size: 40px; /* Smaller font size for heading on mobile */
-    }
-
-    #time-display {
-        font-size: 6px; /* Smaller font size for time on mobile */
-    }
-
-    #day-of-week {
-        font-size: 6px; /* Smaller font size for day of the week on mobile */
-    }
-    /* Styling shifts section */
-    .shifts {
-        margin-left: 0; /* Remove left margin to make it centered */
-        width: 50%; /* Make the shifts section take full width */
-        padding: 10px; /* Add padding for spacing */
-        box-sizing: border-box; /* Include padding in width calculation */
-        font-size: 16px; /* Make text more readable */
-        background: #f0f0f0; /* Light background color to distinguish it */
-        border-radius: 10px; /* Rounded corners for aesthetic look */
-        margin-top: 20px; /* Add top margin to separate from other elements */
-    }
-
-    /* Button styles for shifts */
-   /* Button styles for shifts */
-.shifts button {
-    padding: 10px 20px; /* Adjust padding for easier clicking */
-    font-size: 16px; /* Increase font size for readability */
-    background-color: #28a745; /* Green background for buttons */
-    color: white; /* White text */
-    border: none; /* Remove default border */
-    border-radius: 5px; /* Rounded button edges */
-    cursor: pointer; /* Add a pointer cursor on hover */
-    width: 100%; /* Make buttons full-width for easy tapping */
-    margin-top: 10px; /* Space out buttons */
-}
-
-/* Change button color on hover */
-.shifts button:hover {
-    background-color: #218838; /* Darker green on hover */
-}
-
-}
-   
-
-
-
-#time-display {
-    font-size: 2em;
-    font-weight: 600;
-    color: #2c3e50;
-    margin: 15px 0;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
-}
-
-.tasks button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-input[type="text"] {
-    width: 100%;
-    padding: 30px 10px 30px 10px ;
-    margin-bottom: 20px;
-    border: 2px solid navy;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    background-color: #f9f9f9;
-    outline: none;
-    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-/* Style for the alert box */
-.alert-box {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #f8d7da; /* Light red background */
-    color: #721c24; /* Dark red text */
-    border: 1px solid #f5c6cb; /* Red border */
-    padding: 15px;
-    border-radius: 5px;
-    font-size: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
-    width: 300px;
-    max-width: 80%;
-    opacity: 1;
-    transition: opacity 1s ease-out;
-}
-
-/* Optional: Style for the close button */
-.alert-box .close-btn {
-    background: none;
-    border: none;
-    font-size: 18px;
+  
+  /* Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
     font-weight: bold;
-    color: #721c24;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-
-.login-btn { background-color: #4CAF50; }
-.logut-butn { background-color: #f44336; }
-
-.tasks button:hover {
-    opacity: 0.8;
-}
-.time-content{
-    margin-left: 60px;
-    padding: 0 520px 0 20px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-    height: 500px; /* Adjust this value as needed */
-
-}
- .shifts {  
-    margin-left: 250px;
-    width: calc(100% - 240px);
-}
-/* Content sections */
-.content-section {
-    display: none;
-}
-
-.content-section#dashboard {
-    display: block;
-}
-/*Attendance*/
-
-
-
-/*Request*/
-.req-content{
-    margin-left: 60px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
-.moves{
-    margin-left: 250px;
-    width: calc(100% - 250px);
-}
-/* CSS for the styled button */
-/* Wrapper styling */
-.wrapper {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100vh;
-    padding-left: 20px;
-    
-}
-
-/* CSS for the styled button */
-.styled-button {
-    background-color: #1e1b7e;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 20px 50px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-    outline: none;
-}
-
-.styled-button:hover {
-    background-color: navy;
-    color: white;
-}
-.styled-button:hover{
-    filter: invert(100%);
-}
-
-
-/* Profile Button */
-
-.profile-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: #FF920C;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
     text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    font-size: 16px;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    z-index: 1000;
-  }
-  .profile-button:hover {
-    background-color: #000543;
   }
   
-  .profile-button i {
-    margin-right: 8px;
+  /* Form Styles */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
-  .profile-details{
-    margin-top: 9%;
-    width: 30%;
-  }
-  .form-row {
+  
+  .form-group {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
-
-.form-group {
-    flex: 1 1 45%; /* Adjusts size to fit two columns */
-    min-width: 300px;
-}
- 
   
   .form-group label {
     flex: none;
-    width: 150px;
+    width: 150px; /* Adjust width as needed */
     margin-right: 5px;
-    text-align: left;
+    text-align: left; /* Align labels to the right */
   }
   
   .form-group input,
-.form-group select {
+  .form-group select {
     flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #fff;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-.form-group input:focus,
-.form-group select:focus {
-    border-color: #27ae60;
-    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-    outline: none;
-}
+    padding: 8px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+  }
   
   .form-group input[type="radio"],
   .form-group input[type="checkbox"] {
@@ -671,949 +534,769 @@ input[type="text"] {
   .form-group input[type="number"] {
     width: 100%;
   }
-  .profile-input {
-    font-size: 20px;
-    padding: 5px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    width: 150px;
-    box-sizing: border-box;
-  }
-  .profile-cont{
-    margin-left: 60px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
-.moved{
-    margin-left: 250px;
-    width: calc(100% - 250px);
-}
-.Coverimg{
+  
+  /* Ensure form width adapts to content */
+  .modal-content form {
     width: 100%;
-    height: 20%;
-    background: linear-gradient(110.1deg, rgb(34, 126, 34) 2.9%, rgb(168, 251, 60) 90.3%);
-    border-radius: 25px;
-    border-style:1px solid;
-    align-items: center;
-    width: calc(100% - 60px);
-    transition: all 0.3s ease;
-  }
-
-  .myprofileimg {
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 7px solid #f1f1f1;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-}
-.myprofileimg:hover {
-    transform: translateX(-50%) scale(1.05);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-.Coverimg {
-    width: calc(100% - 60px);
-    height: 20%;
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-    border-radius: 25px;
-    border: none;
-    align-items: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-  .Coverimg .input{
-    border-radius: 25px;
   }
   
-  /* Enhanced Update Button */
-.update-btn {
-    background: linear-gradient(145deg, #27ae60, #2ecc71);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 8px;
-    margin-top: 20px;
+  .modal-content button {
     display: block;
-    width: fit-content;
     margin: 20px auto 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
-}
-
-  
-.update-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
-    background: linear-gradient(145deg, #2ecc71, #27ae60);
-}
-
-  /* Modal Styles */
-  .modal-contentT {
-    background-color: #fefefe;
-    margin: 3% auto;
-    padding: 25px;
-    border: none;
-    width: 90%;
-    max-width: 1000px;
-    border-radius: 15px;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    animation: modalSlideIn 0.3s ease;
-}
-@keyframes modalSlideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.form-container {
-    max-height: 500px; /* Adjust the height as needed */
-    overflow-y: auto; /* Allows vertical scrolling if content overflows */
-    padding: 15px; /* Optional: for better spacing inside the container */
-    border: 1px solid #ccc; /* Optional: for visual clarity */
-    background-color: #fff; /* Optional: to make content readable */
-}
-
-.form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    background: transparent;
-    position: relative;
-    padding: 5px;
-}tyling the label to have a fixed width */
-label {
-    width: 150px;
-    margin-right: 10px;
-    text-align: right;
-}
-
-input, select {
-    flex: 1;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    box-sizing: border-box;
-}
-
-.modal-footer {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.modal-footer button {
     padding: 10px 20px;
-    font-size: 16px;
+    border: none;
     background-color: #4CAF50;
     color: white;
-    border: none;
-    border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
-}
-
-.modal-footer button:hover {
+  }
+  
+  .modal-content button:hover {
     background-color: #45a049;
-}
-
-/* Close button styling */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover, .close:focus {
-    color: black;
-    cursor: pointer;
-}
-
-/* Modal background */
-.modal.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    animation: modalFadeIn 0.3s ease;
-}
-
-@keyframes modalFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}view-image {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-    margin-top: 10px;
-    border-radius: 5px;
-}
-
-@media (max-width: 480px) {
-    .anno-img {
-        max-width: 40%; /* Further increase size on mobile */
-    }
-}
-
-
-
+  }
   
-/* Responsive Design Improvements */
-@media (max-width: 768px) {
-    .form-container {
-        grid-template-columns: 1fr;
-    }
-    .anno-img {
-        max-width: 30%; /* Increase size on smaller screens */
-    }
-    
-    .modal-content {
-        width: 95%;
-        margin: 5% auto;
-        padding: 15px;
-    }
-    
-    .form-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .form-group label {
-        margin-bottom: 5px;
-    }
-}.tot {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    background: #27ae60; /* Green for success */
-    color: white;
-    border-radius: 8px;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s ease;
-}
 
-.toast.show {
-    transform: translateY(0);
-    opacity: 1;
-}
+ .form-control {
+    align-items: center;
+    gap: 150px; /* Space between label and input */
+   border-radius: 15px;
+  }
 
-.toast.error {
-    background: #e74c3c; /* Red for error */
-}
-.carousel-item {
+  .form-inline {
     display: flex;
-    justify-content: center; /* Center the announcement */
-    align-items: center; /* Center content vertically */
+    align-items: center;
+}
+  .intern_acc{
+    background-color:  #FF920C; /* Green background */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 55px 715px; /* Padding */
     text-align: center; /* Center text */
-    min-height: 400px; /* Adjust height as needed */
-}
-
-.announcement {
-    max-width: 600px; /* Limit the width of the announcement content */
-    margin: auto; /* Center the announcement box */
-}
-
-.ann_img {
-    max-width: 100%; /* Make the image responsive */
-    height: auto; /* Maintain aspect ratio */
-}
-
-.pdf-link {
-    display: inline-block;
-    margin-top: 10px; /* Space above the link */
-    padding: 10px 15px; /* Padding for clickable area */
-    background-color: #CFFFE5; /* Light pastel mint green background */
-    color: #333; /* Darker text color for contrast */
-    border: 2px solid #FADADD; /* Soft pink border */
-    border-radius: 30px; /* Rounded edges for a softer look */
-    text-decoration: none; /* Remove underline from link */
-    font-weight: bold; /* Bold text for emphasis */
-    transition: background-color 0.3s ease, transform 0.2s; /* Smooth transitions */
-}
-
-.pdf-link:hover {
-    background-color: #dc3545; /* Change background on hover */
-    color: #fff; /* Change text color on hover */
-    transform: translateY(-2px); /* Slight lift effect on hover */
-}
-
-.pdf-link:focus {
-    outline: 2px solid #FADADD; /* Outline for accessibility */
-    outline-offset: 2px; /* Space between outline and element */
-}
-
-/* Basic Modal Styling *//* Basic Modal Styling */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Inline block for button styling */
+    font-size: 16px; /* Font size */
+    margin: 4px 2px; /* Margins */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 4px; /* Rounded corners */
     
-    width: 500px; /* Fixed width in pixels */
-    height: 400px; /* Fixed height in pixels */
-    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
-    padding-top: 60px;
-    overflow: auto; /* Allow scrolling if the content overflows */
-
+  }
+  .intern_acc:hover {
+    background-color:  #000543;
 }
+.faci_acc{
+  background-color:  #000543; /* Green background */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  padding: 55px 715px; /* Padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  display: inline-block; /* Inline block for button styling */
+  font-size: 16px; /* Font size */
+  margin: 4px 2px; /* Margins */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 4px; /* Rounded corners */
+}
+.faci_acc:hover {
+  background-color:  #FF920C;
+}
+.db_Details{
+ text-align: center;
+  font-size: 55px;
+  margin-top: 10%;
+}
+
+/* Add this to your external CSS file */
+
+/* Container for positioning */
+.bottom-right-corner {
+  position: fixed; /* Fixes the button's position relative to the viewport */
+  bottom: 20px; /* Adjust the distance from the bottom */
+  right: 20px; /* Adjust the distance from the right */
+  z-index: 1000; /* Ensures the button stays above other content */
+}
+
+
+.profile-button {
+  position: absolute; /* Position relative to the sidebar */
+  bottom: 20px; /* Distance from the bottom of the sidebar */
+  right: 20px; /* Distance from the right of the sidebar */
+  background-color: #FF920C; /* Button background color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Padding */
+  text-align: center; /* Center text */
+  text-decoration: none; /* Remove underline */
+  display: inline-flex; /* Flexbox for centering icon and text */
+  align-items: center; /* Vertically center the content */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 4px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+  z-index: 1000; /* Ensure button is above other content */
+}
+
+.profile-button:hover {
+  background-color: #000543; /* Background color on hover */
+}
+
+.profile-button i {
+  margin-right: 8px; /* Space between icon and text */
+}
+.Coverimg{
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(110.1deg, rgb(34, 126, 34) 2.9%, rgb(168, 251, 60) 90.3%);
+  border-radius: 25px;
+  border-style:1px solid;
+  align-items: center;
+  width: calc(100% - 60px); /* Initial width when sidebar is collapsed */
+  transition: all 0.3s ease; /* Smooth transition */
+
   
-.modal-content {
-    background-color: lightgreen;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 800px;
-    border-radius: 10px;
-    height: 80%; /* Adjusted to 80% of viewport height */
-    overflow: hidden; /* Prevent scrolling */
-    }
-
-/* Close button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Profile Sidebar */
-.profile-sidebar {
-    width: 20%;
-    float: left;
-    padding-right: 20px;
-    margin-right: 20px;
-}
   
-.profile-sidebar button {
-    background-color: #CFFFE5; /* Mint Green */
-    border: none;
-    padding: 12px 20px;
-    text-align: left;
-    width: 100%;
-    margin-bottom: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-  
-.profile-sidebar button:hover {
-    background-color: #FADADD; /* Soft Pink */
-}
-  
-.profile-sidebar button.active {
-    background-color: #FFB6C1; /* Lighter Pink */
-}
-  
-/* Profile Form Container */
-.profile-form-container {
-    width: 75%;
-    float: left;
-}
-  
-.profile-category {
-    display: none;
-   
-}
-  
-.profile-category h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
-}
-  
-.profile-category label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
-}
-  
-.profile-category input[type="text"],
-.profile-category input[type="number"],
-.profile-category input[type="date"],
-.profile-category input[type="email"],
-.profile-category input[type="radio"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-  
-.profile-category input[type="radio"] {
-    width: auto;
-    margin-right: 10px;
-}
-  
-.profile-category input[type="radio"]:first-child {
-    margin-left: 10px;
-}
-  
-/* Styling for active category */
-.profile-category.active {
-    display: block;
-}
-
-/* Center the button at the bottom */
-.insert-btn {
-    position: absolute;
-    bottom: 20px; /* Position it 20px from the bottom of the modal */
-    left: 50%;
-    transform: translateX(-50%); /* Center it horizontally */
-    background-color: #FFB6C1; /* Lighter Pink */
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.insert-btn:hover {
-    background-color: #FADADD; /* Soft Pink */
-}
-
-/* Settings Button Styling */
-.settings-btn {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-right: 10px; /* Add space between settings and logout */
-}
-
-.settings-icon {
-    width: 24px;
-    height: 24px;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-    .settings-btn {
-        padding: 6px; /* Adjust padding for smaller screens */
-        margin-right: 400px; /* Add space from the left on mobile */
-    }
-
-    .settings-icon {
-        width: 20px; /* Reduce icon size */
-        height: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .settings-btn {
-        padding: 4px; /* Further reduce padding for very small screens */
-        margin-right: 6px; /* Adjust margin for smaller screens */
-    }
-
-    .settings-icon {
-        width: 18px; /* Further reduce icon size */
-        height: 18px;
-    }
 }
 
 
-#credentialsModal .form-group {
-    margin-bottom: 15px;
+.myprofileimg {
+  position: absolute; /* Position absolutely within the sidebar */
+  top: 15%; /* Distance from the bottom of the container */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust horizontal centering */
+  width: 200px; /* Adjust the width to make the image bigger */
+  height: 200px; /* Maintain aspect ratio */
+  border-radius: 50%; /* Optional: make it circular */
+  cursor: pointer; /* Pointer cursor on hover */
+  border: 7px solid #f1f1f1;
+  align-items: center;
+
+
+}
+.sidebar.active .Coverimg {
+  width: calc(100% - 250px); /* Adjust width for expanded sidebar */
+  margin-left: 250px; /* Adjust margin for expanded sidebar */
 }
 
-#credentialsModal input[readonly] {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    color: #666;
-    cursor: not-allowed;
+.Coverimg .input{
+  border-radius: 25px;
 }
 
-#credentialsModal .update-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+
+
+
+.profile-details{
+  margin-top: 9%;
+  width: 30%;
 }
 
-#credentialsModal .update-button:hover {
-    background-color: #219a52;
+.profile-input {
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 10px; /* Border radius for input fields */
+  border: 1px solid #ccc;
+  width: 150px; /* Adjusted smaller width */
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+.update-btn {
+  background-color: #4CAF50; /* Green background */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+  padding: 10px 20px; /* Padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  margin-top: 20px; /* Space above the button */
+  display: block; /* Make button a block-level element for centering */
+  width: fit-content; /* Adjust width to fit the content */
+  margin-left: auto; /* Center the button horizontally */
+  margin-right: auto; /* Center the button horizontally */
+  transition: background-color 0.3s; /* Smooth transition for background color */
 }
 
-/* Credentials Modal Base */
-#credentialsModal {
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    display: none; /* Hidden by default */
+.update-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+.intern-accounts-table, .faccacc-table { /* Assuming you had a class for facilitator accounts */
+  width: 100%; /* or your desired width */
+  border-collapse: collapse;
+}
+.table-header {
+  background-color: #f2f2f2; /* Light grey background */
+  text-align: left;
+  padding: 10px;
 }
 
-/* Modal Content */
-#credentialsModal .modal-content {
-    background-color: #ffffff;
-    margin: 8% auto; /* Center the modal */
-    padding: 30px;
-    width: 90%; /* Responsive width */
-    max-width: 600px; /* Max width for larger screens */
-   
-    border-radius: 20px;
-    position: relative;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    animation: modalSlideIn 0.3s ease; /* Animation */
+
+.table-actions {
+  text-align: right; /* Align actions to the right */
 }
 
-/* Modal Header */
-#credentialsModal h2 {
-    color: #1a237e;
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 30px;
-    text-align: center;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #e0e0e0;
+.table-header {
+  background-color: #4CAF50; /* Green background for header */
+  color: white; /* White text color for header */
 }
 
-/* Form Groups */
-#credentialsModal .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
+.table-row:hover {
+  background-color: #f1f1f1; /* Light gray on row hover */
 }
 
-/* Labels */
-#credentialsModal label {
-    width: 130px;
-    color: #2c3e50;
-    font-size: 15px;
-    font-weight: 500;
-    text-align: right;
-    flex-shrink: 0;
+.password-input {
+  padding: 8px; /* Padding for password input */
+  margin-right: 10px; /* Space between input and button */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Rounded corners for input */
 }
-
-/* Inputs */
-#credentialsModal input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 14px;
-    transition: all 0.3s ease;
+.action-form {
+  display: flex; /* Align items in a row */
+  gap: 10px; /* Optional: space between buttons */
+  align-items: center; /* Aligns items vertically within the form */
 }
-
-#credentialsModal input:focus {
-    border-color: #27ae60;
-    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
-    outline: none;
+.update-button, .delete-button {
+  padding: 5px 5px; /* Adjust padding for better appearance */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Optional: rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
 }
-
-#credentialsModal input[readonly] {
-    background-color: #f8f9fa;
-    border-color: #e9ecef;
-    color: #6c757d;
-    cursor: not-allowed;
+.delete-btn-new {
+  background-color: red; /* Same as current background */
+  color: white;          /* White text */
+  border: none;          /* No border */
+  cursor: pointer;       /* Pointer cursor on hover */
+  padding: 5px 10px;     /* Same padding */
+  font-size: 14px;       /* Same font size */
 }
-
-/* Update Button - Fixed styling */
-#credentialsModal button[type="submit"],
-#credentialsModal input[type="submit"] {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.2);
-}
-
-#credentialsModal button[type="submit"]:hover,
-#credentialsModal input[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
-}
-
-/* Close Button */
-#credentialsModal .close {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 24px;
-    color: #666;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: none;
-    border: none;
-    padding: 5px;
-}
-
-#credentialsModal .close:hover {
-    color: #333;
-}
-
-/* Animation */
-@keyframes modalSlideIn {
-    from {
-        transform: translateY(-30px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-/* Responsive Design */
-@media (max-width: 768px) {
-    #credentialsModal .modal-content {
-        width: 95%; /* Adjust width for smaller screens */
-        margin: 5% auto; /* Center the modal */
-    }
-}
-/* Image Upload Styles */
-.image-upload-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-.image-upload-container img {
-    width: 100px; /* Set the desired width */
-    height: 100px; /* Set the desired height */
-    border-radius: 50%; /* This makes the image circular */
-    object-fit: cover; /* Ensures the image covers the area without distortion */
-    border: 2px solid #fff; /* Optional: Add a border for better visibility */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow for depth */
-}
-.profile-image {
-    width: 80px; /* Smaller image size */
-    height: 80px; /* Smaller image size */
-    border-radius: 50%; /* Circular image */
-    object-fit: cover; /* Cover the area */
-    margin-bottom: 10px;
-}
-
-.choose-image-btn {
-    background-color: #27ae60; /* Green */
-    color: white;
-    border: none;
-    padding: 8px 15px; /* Smaller padding */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 14px; /* Smaller font size */
-}
-
-.choose-image-btn:hover {
-    background-color: #219150; /* Darker green */
-}
-
-/* Form Styles */
-.credentials-form {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.input-field {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px; /* Smaller font size */
-}
-
-/* Update Button */
-.submit-button {
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-    color: white;
-    border: none;
-    padding: 10px; /* Smaller padding */
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-size: 14px; /* Smaller font size */
-}
-
-.submit-button:hover {
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
-}
-.attendance-container {
-    margin-left: 30px;
-    padding: 15px 100px 15px 350px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-    background-color: #ffffff;
-    box-shadow: 5px 2px 5px 2px rgba(0, 0, 0, 0.1);
-    border-radius: 16px;  /* Apply rounded corners to the container */
-    margin-top: 100px;
-    font-size: 16px;
-    font-weight: bold;
-    color: black;
-    max-width: 100%;
-    overflow: hidden;
-}
-
-.attent-content{
-    margin-left: 60px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
-.move{
-    margin-left: 50px;
-    width: calc(100% - 50px);
-}
-.attendance-container {
-    margin-left: 30px;
-    padding: 15px 100px 15px 350px;
-    width: calc(100% - 60px);
-    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-    
-    background-color: #ffffff;
-    box-shadow: 5px 2px 5px 2px  rgba(0, 0, 0, 0.1);
-    
-    border-radius: 8px;
-    margin-top: 100px;
-    font-size: 16px;
-    font-weight: bold;
-    color: black;
-}
-
-/* Table Container */
 .table-container {
-    margin-top: 10px;
-    margin-left: 0;
-    border-radius: 16px;  /* Apply rounded corners to the table container */
-    overflow: hidden;
-    background-color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 100%;
-    overflow-x: auto;
+  max-height: 300px; /* Adjust the height as needed */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+  margin-top: 10px; /* Optional: Space above the table */
+}
+
+.update-button {
+  background-color: #4CAF50; /* Green background for buttons */
+  color: white; /* White text color for buttons */
+  border: none; /* No border */
+  padding: 10px 15px; /* Padding for buttons */
+  text-align: center; /* Centered text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline-block for buttons */
+  border-radius: 4px; /* Rounded corners for buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-left: 5px; /* Space between buttons */
+}
+
+.update-button:hover {
+  background-color: #45a049; /* Darker green on button hover */
+}
+
+.delete-button {
+  background-color: #f44336; /* Red background for delete button */
+  margin-left: 5px; /* Space between buttons */
+}
+
+.delete-button:hover {
+  background-color: #e53935; /* Darker red on hover for delete button */
+}
+
+/* Table styling */
+.intern-accounts-table {
+    width: 100%;
+    border-collapse: collapse; /* Eliminate double borders */
+    margin-bottom: 20px; /* Space below the table */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-radius: 8px; /* Rounded corners for table */
+    overflow: hidden; /* Ensure corners are clipped */
+    background-color: white; /* White background for the table */
+}
+
+/* Table headers styling */
+.table-header {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #4CAF50; /* Bold border for header */
+    background-color: #4CAF50; /* Green background for header */
+    color: white; /* White text color for header */
+    font-weight: bold; /* Bold text for header */
+}
+
+/* Table row styling */
+.table-row {
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.table-data {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Light border between rows */
+}
+
+/* Hover effect for rows */
+.table-row:hover {
+    background-color: #f1f1f1; /* Light gray background on row hover */
+}
+
+/* Input field styling */
+.password-input {
+    padding: 8px; /* Padding for password input */
+    margin-right: 10px; /* Space between input and button */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners for input */
+    width: 200px; /* Fixed width for input */
+}
+
+/* Button styling */
+.update-button,
+.delete-button {
+    border: none; /* No border */
+    padding: 10px 15px; /* Padding for buttons */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline-block for buttons */
+    border-radius: 4px; /* Rounded corners for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-weight: bold; /* Bold text for buttons */
+}
+
+/* Green background for update button */
+.update-button {
+    background-color: #4CAF50; /* Green background for update button */
+    color: white; /* White text color for buttons */
+}
+
+.update-button:hover {
+    background-color: #45a049; /* Darker green on button hover */
+}
+
+/* Red background for delete button */
+.delete-button {
+    background-color: #f44336; /* Red background for delete button */
+    color: white; /* White text color for buttons */
+}
+
+.delete-button:hover {
+    background-color: #e53935; /* Darker red on hover for delete button */
+}
+
+/* Message styling */
+p {
+    font-size: 16px; /* Slightly larger font for messages */
+    color: #333; /* Darker text for visibility */
+}
+.pagination {
+  margin-top: 20px;
+}
+
+.pagination a {
+  padding: 8px 16px;
+  margin: 0 5px;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  color: #007bff;
+}
+
+.pagination a.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination a:hover {
+  background-color: #e7e7e7;
+}
+.highlight {
+  background-color: #f9f9f9; /* Optional: a light background for better visibility */
+  box-shadow: 0 0 10px green; /* Optional: adds a glowing effect around the border */
+}
+
+ /* Search button */
+ .search-input {
+  padding: 10px;
+  border: 2px solid #007BFF; /* Set border color and thickness */
+  border-radius: 4px; /* Rounded corners */
+  margin-right: 10px;
+  width: 200px; /* Adjust width as needed */
+  transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+.search-input:focus {
+  border-color: #000543;
+  outline: none; /* Remove default outline */
+}
+
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #007BFF; /* Blue background */
+  color: white; /* White text */
+  border-color: #000543;
+
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+.announcement-slider {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 350px;
+  height: 50%;
+  width: 22%;
+  background-color: #dc3545;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 1000;
+  border: none;
+  transition: right 0.3s ease; /* Smooth transition for sidebar hover effect */
+}
+.sidebar:hover + .announcement-slider {
+  right: 250px; /* Adjust this value based on sidebar width */
+}
+
+.slider-container {
+  position: relative;
+  height: 100%; /* Make the slider fill the height of the container */
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 90px; /* Space below the image */
+}
+
+.Announcement-Image {
+  display: inline-block;
+  width: 45%; /* Set fixed width */
+  height:45%; /* Set fixed height to match width for a square shape */
+  border-radius: 15px; /* Rounded corners */
+  margin-bottom:  28%; /* Remove space above the image */
+  margin-left: 15%; /* Center the image horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+  position: relative; /* Relative position for z-index */
+  cursor: pointer; /* Change cursor to pointer */
+  background-color: transparent; /* Set transparent background */
+
+  
+}
+.Announcement-Image img {
+  width: 90%; /* Make image fill the container width */
+  height: 90%; /* Make image fill the container height */
+  transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition for effects */
+  margin-top: -35%; /* Remove space above the image */
+  margin-left: 40%; /* Center the image horizontally */
+  border: solid 4px #dc3545; /* Solid red border */
+  border-radius: 5px; /* Rounded corners */
+
+
+}
+
+
+
+.announcement-item {
+  display: none; /* Hide all items by default */
+  padding: 15px;
+  text-align: left; /* Align text to the left for better readability */
+  background-color: #f9f9f9; /* Light background for the announcement text */
+  border-radius: 10px;
+  margin: 10px; /* Spacing between announcements */
+  height: 70%;
 }
 
 /* Table Styles */
 table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-top: 20px;
-    margin-left: 0;
-    border-radius: 16px;  /* Apply rounded corners to the table itself */
-    overflow: hidden;
-    table-layout: fixed;
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Remove gaps between cells */
+  margin-top: 20px; /* Space between the form and the table */
+
 }
 
-/* Table Header */
-thead {
-    background-color: #4CAF50;
-    color: white;
-    text-align: left;
-    border-radius: 16px 16px 0 0;  /* Apply rounded top corners to the table header */
+th, td {
+  padding: 12px; /* Padding for cells */
+  text-align: left; /* Left-align text */
+  border-bottom: 1px solid #ddd; /* Bottom border for rows */
 }
 
-thead th {
-    padding: 12px 15px;
-    font-size: 16px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+th {
+  background-color: #81C784; /* Soft Pink header */
+  color: #333; /* Dark text color for headers */
 }
 
-/* Table Body */
-tbody {
-    background-color: #ffffff;
+tr:hover {
+  background-color: #f1f1f1; /* Light gray on row hover */
 }
 
-tbody tr {
-    border-bottom: 1px solid #f1f1f1;
+/* Profile Image */
+img {
+  border-radius: 50%; /* Make images circular */
 }
 
-/* Alternating Row Colors */
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+/* Message Style */
+p {
+  font-size: 18px; /* Increase font size for messages */
 }
 
-/* Table Data */
-tbody td {
-    padding: 12px 15px;
-    font-size: 14px;
-    text-align: left;
-    border-right: 1px solid #f1f1f1;
-}
-
-/* Last Table Cell */
-tbody td:last-child {
-    border-right: none;
-}
-
-/* Hover Effect */
-tbody tr:hover {
-    background-color: #e9f7e9;
-    cursor: pointer;
-}
-
-/* Status Column - Color Indicator */
-td:nth-child(10) {
-    text-align: center;
-    font-weight: bold;
-    padding: 8px;
-}
-
-/* Approved Status */
-td:nth-child(10):contains("Approved") {
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 20px;
-    padding: 5px 10px;
-}
-
-/* Pending Status */
-td:nth-child(10):contains("Pending") {
-    background-color: #FFC107;
-    color: white;
-    border-radius: 20px;
-    padding: 5px 10px;
-}
-
-/* Denied Status */
-td:nth-child(10):contains("Denied") {
-    background-color: #F44336;
-    color: white;
-    border-radius: 20px;
-    padding: 5px 10px;
-}
-
-/* Responsive Table */
+/* Responsive Styles */
 @media (max-width: 768px) {
-    table {
-        font-size: 12px;
-    }
-    thead th, tbody td {
-        padding: 8px 10px;
-    }
-    tbody td {
-        display: block;
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-    }
-    tbody td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        font-weight: bold;
-    }
+  h1 {
+      font-size: 20px; /* Smaller font for headings on mobile */
+  }
+
+  th, td {
+      padding: 10px; /* Reduced padding for smaller screens */
+      font-size: 14px; /* Smaller font size for table text */
+  }
+
+  img {
+      width: 40px; /* Smaller images on mobile */
+      height: 40px;
+  }
 }
 
-/* No Data Found */
-td[colspan="10"] {
-    text-align: center;
-    padding: 20px;
-    font-style: italic;
-    color: #888;
+
+
+
+
+
+.active {
+  display: block; /* Show the active item */
 }
 
-/* Add Search and Filter Section */
-.search-container {
-    margin-bottom: 20px;
-    text-align: right;
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+  color: #fff; /* White color for better contrast */
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
-.search-container input {
-    padding: 10px 15px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    width: 200px;
-    outline: none;
-    transition: border-color 0.3s ease;
+.prev {
+  left: 10px;
 }
 
-.search-container input:focus {
-    border-color: #4CAF50;
+.next {
+  right: 10px;
 }
 
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+.prev:hover, .next:hover {
+  background-color: #333; /* Darker background on hover for better visual feedback */
 }
 
-.action-buttons button {
-    padding: 8px 15px;
-    font-size: 14px;
-    color: white;
-    background-color: #4CAF50;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+
+.pdf-link {
+  display: inline-block; /* Make it block-level for padding and margin */
+  background-color: #28a745; /* Green background color */
+  color: white; /* Text color */
+  padding: 10px 15px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* Remove underline from the link */
+  font-size: 16px; /* Slightly larger font size */
+  text-align: center; /* Center text within the button */
+  margin-top: 190px; /* Space above the link */
+  border: solid 4px #dc3545; /* Solid red border */
+  border-radius: 5px; /* Rounded corners */
+
 }
 
-.action-buttons button:hover {
-    background-color: #45a049;
+
+
+.delete-button {  
+  background: orange;
+  border: none;
+  cursor: pointer;
+  margin-left: 75%;
+  margin-bottom: 100px; /* Increased margin-bottom for more space */
+  height: 60px; /* Set a specific height */
+  padding: 10px 20px; /* Add padding for a balanced look */
 }
 
-.action-buttons button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+
+.trash-icon {
+  width: 20px; /* Adjust the size of the icon */
+  height: auto; /* Maintain aspect ratio */
+}
+.Announcement-Image:hover + .delete-form {
+  display: none; /* Hide form */
 }
 
+.delete-form {
+  margin-top: 15px; /* Adjust as needed */
+}
+
+/* General body styles */
+
+
+/* Content section styles */
+.intern-profile {
+  background-color: #FFFFFF; /* White background for contrast */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+
+/* Label styles */
+label {
+  font-weight: bold; /* Make labels stand out */
+}
+
+/* Input field styles */
+input[type="text"],
+select {
+  padding: 10px; /* Padding for comfort */
+  border: 2px solid #A5D6A7; /* Light green border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Larger font for better readability */
+}
+
+/* Input focus styles */
+input[type="text"]:focus,
+select:focus {
+  border-color: #66BB6A; /* Medium green on focus */
+  outline: none; /* Remove default outline */
+}
+
+/* Submit button styles */
+input[type="submit"] {
+  background-color: #81C784; /* Medium green background */
+  color: #FFFFFF; /* White text color */
+  border: none; /* Remove default border */
+  padding: 10px; /* Padding for button */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Larger font for better readability */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Submit button hover effect */
+input[type="submit"]:hover {
+  background-color: #4CAF50; /* Darker green on hover */
+}
+
+
+/* ------------------------MARICEL------------------------------------------*/
+/* Container for intern details, positioned off-screen initially */
+.intern-details {
+  
+  max-width: 500px;
+  height: 90vh;
+  position: fixed;
+  top: 8%;
+  right: -500px; /* Start off-screen to the right */
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  padding: 20px;
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+  transition: right 0.3s ease; /* Smooth slide-in effect */
+}
+
+/* Add a class to slide it in */
+.intern-details.show {
+  right: 0; /* Slide into view */
+}
+
+/* Header section */
+.intern-details h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+/* Table style */
+.intern-details table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.intern-details th,
+.intern-details td {
+  text-align: left;
+  padding: 10px;
+}
+
+.intern-details th {
+  font-weight: bold;
+  color: #666;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.intern-details td {
+  color: #333;
+}
+
+/* Profile picture (if added later) */
+.profile-picture {
+  display: block;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  border: 3px solid #ddd;
+  object-fit: cover;
+}
+
+/* Table row hover effect */
+.intern-details tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+.close-btn:hover {
+  color: #888;
+}
+
+/* -----------------------MARICEL END------------------------------------------*/
+/* Print Button */
 .print-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 7%;
-    margin-left: 1%;
-    padding: 15px 30px;
-    width: auto;
-    height: 50px;
-    font-size: 12px;
-    transition: background-color 0.3s ease; /* Optional smooth transition */
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
 .print-btn:hover {
-    background-color: #45a049; /* Slightly darker shade on hover */
+  background-color: #45a049;
+}
+.alert-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #f44336; /* Red background for error messages */
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
