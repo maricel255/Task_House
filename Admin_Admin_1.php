@@ -604,11 +604,11 @@ $timeLogsCount = $stmt->fetchColumn();
     
         if ($stmt->rowCount() > 0) {
             $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+        
             // Return the HTML to be injected dynamically
             echo '<button class="close-btn" onclick="closeDetails()">×</button>';
             echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
-    
+        
             // Show profile image
             if (!empty($internDetails['profile_image'])) {
                 echo '<div class="profile-image">';
@@ -619,7 +619,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 echo '<img src="image/USER_ICON.png" alt="Default Image" width="150" height="150">';
                 echo '</div>';
             }
-    
+        
             // Display details in a table
             echo '<table>';
             foreach ($internDetails as $key => $value) {
@@ -631,10 +631,15 @@ $timeLogsCount = $stmt->fetchColumn();
                 }
             }
             echo '</table>';
+        
+            // Add the resize handle here
+            echo ' <div class="intern-details-resize-handle"></div>'; // Resize handle for the intern details panel
+        
         } else {
             echo '<p>No details found for the selected Intern ID.</p>';
         }
         exit; // Stop further processing since this is an AJAX response
+        
     }
     // END KYLE
     
@@ -994,7 +999,8 @@ echo '</table>';
 
         
         ?>
-        <div id="internDetails" class="intern-details"></div>
+        <div id="internDetails" class="intern-details">
+        </div>
          <!-- End Kyle -->
     </div>  
     </div>  

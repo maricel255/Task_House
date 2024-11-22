@@ -1174,7 +1174,6 @@ input[type="submit"]:hover {
 /* ------------------------MARICEL------------------------------------------*/
 /* Container for intern details, positioned off-screen initially */
 .intern-details {
-  
   max-width: 500px;
   height: 90vh;
   position: fixed;
@@ -1187,7 +1186,41 @@ input[type="submit"]:hover {
   font-family: Arial, sans-serif;
   overflow-y: auto;
   transition: right 0.3s ease; /* Smooth slide-in effect */
+  display: flex;
+  flex-direction: column;
+  resize: horizontal;
+  border-radius: 5%; /* Make the corners rounded */
+
+  cursor: ew-resize; /* Show resize cursor */
 }
+
+/* Ensure responsiveness */
+@media screen and (max-width: 768px) {
+  .intern-details {
+   top: 30%;
+    max-width: 70%; /* Allow full width on small screens */
+    height: 80vh; /* Adjust height on smaller screens */
+    border-radius: 5%; /* Make the corners rounded */
+    right: -80%; /* Add space from the right edge */
+
+
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .intern-details {
+    margin-top: 5%;
+
+    height: 70vh; /* Further adjust height on very small screens */
+    border-radius: 5%; /* Make the corners rounded */
+        right: 5%; /* Less space from the right on very small screens */
+
+
+  }
+}
+
+
+
 
 /* Add a class to slide it in */
 .intern-details.show {

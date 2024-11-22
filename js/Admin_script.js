@@ -155,3 +155,72 @@ function closeDetails() {
     document.querySelector('.intern-details').classList.remove('show');
 }
 //MARICEL END
+
+   // Start kyle
+   document.addEventListener("DOMContentLoaded", function () {
+    // Attach event listeners to all View Details buttons
+    document.querySelectorAll(".view-details-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+            const internID = this.getAttribute("data-intern-id");
+            const detailsDiv = document.getElementById("internDetails");
+
+            // Fetch and show details
+            fetch("", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                    fetchDetails: true,
+                    internID: internID
+                }),
+            })
+            .then((response) => response.text())
+            .then((data) => {
+                detailsDiv.innerHTML = data; // Inject the fetched data
+                detailsDiv.classList.add("show"); // Show the details
+            })
+            .catch((error) => {
+                console.error("Error fetching details:", error);
+            });
+        });
+    });
+
+    // Close button functionality
+    const closeButton = document.querySelector(".close-btn");
+    closeButton.addEventListener("click", function () {
+        const detailsDiv = document.getElementById("internDetails");
+        detailsDiv.classList.remove("show"); // Hide the details
+        detailsDiv.innerHTML = ""; // Clear the content
+    });
+
+    // Resize handle functionality
+    const internDetails = document.querySelector('.intern-details');
+    const resizeHandle = document.querySelector('.intern-details-resize-handle');
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+        });
+    });
+
+    function handleMouseMove(e) {
+        if (isResizing) {
+            const newWidth = e.clientX - internDetails.getBoundingClientRect().left;
+            internDetails.style.width = `${newWidth}px`;
+        }
+    }
+});
+
+
+// Function to close the details section
+function closeDetails() {
+    const detailsDiv = document.getElementById("internDetails");
+    detailsDiv.classList.remove("show"); // Hide the details
+    detailsDiv.innerHTML = ""; // Clear the content
+}
+//end kyle
