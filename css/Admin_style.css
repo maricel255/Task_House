@@ -34,7 +34,7 @@ body::before {
   transition: width 0.3s; /* Smooth transition for width */
   overflow-x: hidden;
   border-radius: 15px;
-  border-left: 3px solid red; /* Change border width and color */
+
 }
 
 .sidebar a {
@@ -105,6 +105,31 @@ body::before {
   margin-left: 260px; /* Shift margin when sidebar is expanded */
 }
 
+
+.content-section {
+  display: none; /* Hidden by default */
+  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
+
+}
+
+.content-section h1 {
+  margin-left: 65px; /* Space from the left */
+  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
+}
+/* Responsive adjustment for small screens (phones) */
+@media (max-width: 480px) {
+  .content-section h1 {
+    margin-left: 15px; /* Further reduce the margin for very small screens */
+    font-size: 18px; /* Optional: Adjust font size for better readability */
+  }
+}
+.sidebar:hover ~ .content-section {
+    margin-left: 320px; /* Adjust to match sidebar width + additional space when hovered */
+}
+.content-section.active {
+  display: block; /* Show when active */
+}
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
@@ -114,6 +139,8 @@ body::before {
   border-bottom: 1px solid #ccc;
   transition: margin-left 0.3s; /* Smooth transition for header */
   height: 27px;
+  width: 100%; /* Ensure it spans the full width of the screen */
+
 }
 
 /* Adjust header when sidebar is hovered */
@@ -121,22 +148,6 @@ body::before {
   margin-left: 250px; /* Adjust margin for expanded sidebar */
 }
 
-.content-section {
-  display: none; /* Hidden by default */
-  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
-
-}
-.content-section h1 {
-  margin-left: 65px; /* Space from the left */
-  transition: margin-left 0.5s ease-in-out; /* Smooth transition */
-}
-
-.sidebar:hover ~ .content-section {
-    margin-left: 320px; /* Adjust to match sidebar width + additional space when hovered */
-}
-.content-section.active {
-  display: block; /* Show when active */
-}
 .modal-btn {
   cursor: pointer;
   border-radius: 50%; /* Makes the button circular */
@@ -156,40 +167,96 @@ body::before {
   transition: background-color 0.3s; /* Transition for hover effect */
 }
 
-
 .modal-btn:hover {
   background-color: #000543; /* Background color on hover */
 }
 
-
-
-    /* Logout button in the upper right corner */
-    .logout-btn {
-       
-        color:  #000543;
-        border-color: #000543;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 16px;
-        border-radius: 5px;
-        position: absolute; /* Position absolutely within the header */
-        top: 7px; /* Adjust as needed to position from the top edge */
-        right: 16px; /* Position from the right edge */
-        display: flex;
-       align-items: center; /* Align items vertically */
+/* Logout button styles */
+.logout-btn {
+  color: #000543;
+  border: 2px solid #000543;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  position: absolute; /* Position absolutely within the header */
+  top: 7px; /* Adjust as needed to position from the top edge */
+  right: 16px; /* Position from the right edge */
+  display: flex;
+  align-items: center; /* Align items vertically */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
 }
 
 .logout-icon {
-    width: 20px; /* Adjust size as needed */
-    height: 20px; /* Adjust size as needed */
-    margin-right: 9px; /* Space between icon and text */
+  width: 20px; /* Adjust size as needed */
+  height: 20px; /* Adjust size as needed */
+  margin-right: 9px; /* Space between icon and text */
+}
+
+.logout-btn:hover {
+  background-color: #000543;
+  color: white;
+}
+
+/* Responsive adjustments using media queries */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px;
+    width: 100%; /* Ensure it spans the full width of the screen */
+
+  }
+  
+  .modal-btn {
+    top: 3px;
+    right: 65%; /* Adjust for smaller screens */
+    width: 40px;
+    height: 40px;
+  }
+  
+  
+  .logout-btn {
+    font-size: 14px; /* Adjust font size */
+    padding: 8px 16px; /* Adjust padding */
+    right: 10px;
+  }
+  
+  .logout-icon {
+    width: 18px; /* Scale down icon size */
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 10px;
+    width: 100%; /* Ensure it spans the full width of the screen */
+
+  }
+  
+  .modal-btn {
+    top: 3px;
+    right: 56%; /* Adjust for smaller screens */
+    width: 40px;
+    height: 40px;
+  }
+  
+  .logout-btn {
+    top: 3px;
+    font-size: 0px; /* Further adjust font size */
+    padding: 6px 12px; /* Further adjust padding */
+    right: 0%;
+  }
+  
+  .logout-icon {
+    top: 2px;
+
+    width: 23px; /* Further reduce icon size */
+    height: 23px;
+  }
 }
 
 
-    .logout-btn:hover {
-      background-color: #000543;
-      color:white;
-    }
+
     .add-btn {
        
        color:  white;
@@ -249,6 +316,10 @@ body::before {
             gap: 20px;
             text-align:left;
         }
+       
+
+        
+        
         .card {
             width: 22%;
             padding: 20px;
@@ -288,6 +359,69 @@ body::before {
           background-color: #5cf274;
           color:white;
         }
+
+        
+
+       /* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+    .dashboard-cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .card {
+        width: 45%; /* Cards take up 45% width on tablets and mid-sized screens */
+        height: 150px; /* Set a fixed height for the cards */
+        max-height: 150px; /* Prevent the cards from being taller than this */
+        overflow: hidden; /* Hide anything overflowing */
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-cards {
+        display: block; /* Stack the cards in a single column */
+    }
+
+    .card {
+        width: 100%; /* Cards take up 100% width on smaller screens */
+        height: 130px; /* Reduce height for smaller screens */
+        max-height: 130px; /* Prevent the cards from being taller than this */
+        padding: 10px; /* Reduce padding to make cards more compact */
+        margin-bottom: 15px; /* Add spacing between cards */
+        overflow: hidden; /* Hide any content overflowing the card */
+    }
+}
+
+@media (max-width: 480px) {
+ 
+  .dashboard-cards {
+    position: relative; /* Enable the use of 'top' property */
+    top: 2px; /* Move the container 5px from the top */
+    display: block; /* Stack the cards vertically */
+    margin-top: 0; /* Remove any top margin to reduce space from the top */
+    padding-top: 0; /* Remove any extra padding from the top */
+}
+
+    .card {
+        width: 41%; /* Full width on very small screens */
+        padding: 10px; /* Reduce padding */
+        height: 47px; /* Further reduce height */
+        max-height: 110px; /* Prevent the cards from being taller than this */
+        margin-bottom: 10px; /* Reduce spacing between cards */
+        overflow: hidden; /* Hide any overflow */
+    }
+
+    .card h2 {
+        font-size: 0.9rem; /* Smaller headings for small screens */
+    }
+
+    .card strong {
+        font-size: 1rem; /* Slightly smaller count font size */
+    }
+}
+
         .announcement-board {
           margin-top: 40px;
           background-color: #fff;
@@ -377,6 +511,64 @@ body::before {
         .post-button:hover {
           background-color: #0056b3; /* Darker blue on hover */
       }
+
+
+      
+@media screen and (max-width: 480px) {
+  .announcement-board {
+      width: 100%; /* Full width on very small screens */
+      padding: 15px; /* Reduce padding */
+      height: auto; /* Allow height to adjust based on content */
+  }
+
+  .anno-img {
+      max-width: 50%; /* Further adjust image size */
+      top: 40%; /* Adjust image positioning */
+  }
+
+  .styled-inputann, .styled-inputannup {
+      width: 100%; /* Full width inputs on small screens */
+      margin-left: 0;
+  }
+
+  .post-button {
+      width: 60%; /* Wider button for small screens */
+      bottom: 10px; /* Adjust button position */
+      right: 10px; /* Adjust button position */
+  }
+}
+@media screen and (max-width: 480px) {
+  .announcement-board {
+    position: relative; /* Ensure it's properly positioned */
+    top: 0; /* Add spacing from the top */
+    width: 81%; /* Full width on very small screens */
+    padding: 15px; /* Reduce padding */
+    height: 90%; /* Allow height to adjust based on content */
+}
+
+
+    .anno-img {
+        max-width: 150%; /* Further adjust image size */
+        top: 40%; /* Adjust image positioning */
+    }
+
+    .styled-inputann {
+      width: 100%; /* Full width inputs on small screens */
+      margin-left: 0;
+      display: block; /* Ensure they are stacked vertically */
+      margin-bottom: 15px; /* Add space between inputs */
+  }
+  
+  .styled-inputannup {
+      margin-top: 10px; /* Optional: Add some space above the 'Upload File' input */
+  }
+
+    .post-button {
+        width: 60%; /* Wider button for small screens */
+        bottom: 10px; /* Adjust button position */
+        right: 10px; /* Adjust button position */
+    }
+}
              /* end here user input in annoucement */
 
           #detail {
@@ -989,6 +1181,8 @@ p {
   margin: 10px; /* Spacing between announcements */
   height: 70%;
 }
+
+
 
 /* Table Styles */
 table {
