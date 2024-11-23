@@ -765,7 +765,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 <h1>Dashboard</h1>
                 <div class="dashboard-cards">
                 <div class="card course">
-                        <h2>Pmaricel</h2>
+                        <h2>Updated</h2>
                         <strong><?php echo $profileCount; ?></strong>
                     </div>
 
