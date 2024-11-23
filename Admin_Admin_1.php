@@ -1291,6 +1291,6 @@ echo '</table>';
 
     </div>
  
-<script src="js/admin_script.js"></script>
+<script src="js/Admin_script.js"></script>
 </body>
 </html>
