@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the session
-require_once('db_taskHouse/Admin_connection.php');
+require('db_taskHouse/Admin_connection.php');
 
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
