@@ -1572,6 +1572,6 @@ echo number_format($requiredHours, 2); // Display the remaining required hours (
 
    
 
-    <script src="js/Intern_script.js"></script>
+    <script src="js/intern_script.js"></script>
 </body>
 </html>
