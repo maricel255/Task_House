@@ -414,64 +414,63 @@ $totalAccounts = $stmt->fetchColumn();
 
 // Check if form is submitted in posting a announcement 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $message = ''; // Initialize message variable
-    
-        if (isset($_POST['title']) && isset($_POST['announcement'])) {
-            $title = trim($_POST['title']);
-            $announcement = trim($_POST['announcement']);
-            
-            // Ensure file upload is handled
-            if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
-                // Process file upload
-                $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-                $fileName = $_FILES['fileUpload']['name'];
-                $fileSize = $_FILES['fileUpload']['size'];
-                $fileType = $_FILES['fileUpload']['type'];
-    
-                // Define the path where the file will be uploaded
-                $uploadFileDir = __DIR__ . '/uploaded_files/';
-                $dest_path = $uploadFileDir . $fileName;
-    
-                // Move the file to the desired directory
-                if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                    // File successfully uploaded
-                    // Prepare the SQL statement
-                    $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
-                    $stmt = $conn->prepare($sql);
-    
-                    // Bind the parameters
-                    $stmt->bindValue(':title', $title, PDO::PARAM_STR);
-                    $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
-                    $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
-                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
-    
-                    // Execute the statement
-                    if ($stmt->execute()) {
-                        $message = "Announcement posted successfully!";
-                    } else {
-                        $message = "Error posting announcement.";
-                    }
+    $message = ''; // Initialize message variable
+
+    if (isset($_POST['title']) && isset($_POST['announcement'])) {
+        $title = trim($_POST['title']);
+        $announcement = trim($_POST['announcement']);
+        
+        // Ensure file upload is handled
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+            // Process file upload
+            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+            $fileName = $_FILES['fileUpload']['name'];
+            $fileSize = $_FILES['fileUpload']['size'];
+            $fileType = $_FILES['fileUpload']['type'];
+
+            // Define the path where the file will be uploaded
+            $uploadFileDir = __DIR__ . '/uploaded_files/';
+            $dest_path = $uploadFileDir . $fileName;
+
+            // Move the file to the desired directory
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                // File successfully uploaded
+                // Prepare the SQL statement
+                $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
+                $stmt = $conn->prepare($sql);
+
+                // Bind the parameters
+                $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+                $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
+                $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
+
+                // Execute the statement
+                if ($stmt->execute()) {
+                    $message = "Announcement posted successfully!";
                 } else {
-                    $message = "Error uploading the file.";
+                    $message = "Error posting announcement.";
                 }
             } else {
-                $message = "No file uploaded or there was an upload error.";
+                $message = "Error uploading the file.";
             }
+        } else {
+            $message = "No file uploaded or there was an upload error.";
         }
-    
-        // Redirect to avoid form resubmission on page refresh, passing the message as a query parameter
-        header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
-        exit();
     }
-    
-    // Get message from the query string (if present)
-    if (isset($_GET['message'])) {
-        $message = $_GET['message'];
-        echo "<script>alert('$message');</script>"; // Display alert with the message
-    }
+
+    // Redirect to avoid form resubmission on page refresh, passing the message as a query parameter
+    header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
+    exit();
 }
 
+// Get message from the query string (if present)
+if (isset($_GET['message'])) {
+    $message = $_GET['message'];
+    // Using json_encode for safe JavaScript injection
+    $message = json_encode($message); 
+    echo "<script>alert($message);</script>"; // Display alert with the message
+}
 
 
 
