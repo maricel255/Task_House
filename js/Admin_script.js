@@ -150,18 +150,18 @@ function validateForm() {
     }
 //MARICEL START
 document.addEventListener('DOMContentLoaded', () => {
-    const internDetails = document.querySelector('.intern-details');
-    if (internDetails) {
-        console.log("Element found:", internDetails);
-        internDetails.classList.toggle('show');
+    const container = document.querySelector('.container'); // Replace '.container' with your desired parent element
+    if (container) {
+        const newElement = document.createElement('div');
+        newElement.className = 'intern-details';
+        newElement.textContent = 'This is the intern-details content.';
+        container.appendChild(newElement);
+        console.log("Element .intern-details added to the DOM.");
     } else {
-        console.error("Element with class 'intern-details' not found.");
+        console.error("Parent container not found.");
     }
 });
 
-function closeDetails() {
-    document.querySelector('.intern-details').classList.remove('show');
-}
 //MARICEL END
 
    // Start kyle
