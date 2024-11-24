@@ -657,58 +657,43 @@ $timeLogsCount = $stmt->fetchColumn();
 </head>
 <body>
 <?php
-// Check if the session message is set
-if (isset($_SESSION['message'])) {
-    // Set default message type if not set
-    $messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';
-    
-    // Determine alert class based on message type
-    switch($messageType) {
-        case 'error':
-            $alertClass = 'alert-danger';
-            $bgColor = '#ff4444';
-            break;
-        case 'success':
-            $alertClass = 'alert-success';
-            $bgColor = '#00C851';
-            break;
-        default:
-            $alertClass = 'alert-info';
-            $bgColor = '#f2b25c';
+    // Check if the session message is set
+    if (isset($_SESSION['message'])) {
+        // Set default message type if not set
+        $messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';
+        ?>
+        <div class="alert <?php echo $messageType; ?>" role="alert" 
+             style="position: fixed; 
+                    top: 70px; 
+                    right: 30px; 
+                    z-index: 1000; 
+                    background-color: #f2b25c; 
+                    color: white; 
+                    padding: 15px; 
+                    border-radius: 5px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);" 
+             id="alertBox">
+            <?php echo htmlspecialchars($_SESSION['message']); ?>
+        </div>
+        <script type="text/javascript">
+            // Hide the alert after 5 seconds
+            setTimeout(function() {
+                var alertBox = document.getElementById('alertBox');
+                if (alertBox) {
+                    alertBox.style.opacity = '0';
+                    alertBox.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(function() {
+                        alertBox.style.display = 'none';
+                    }, 500);
+                }
+            }, 5000);
+        </script>
+        <?php
+        // Unset the message after displaying
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
     }
     ?>
-    <div class="alert <?php echo $alertClass; ?>" role="alert" 
-         style="position: fixed; 
-                top: 70px; 
-                right: 30px; 
-                z-index: 1000; 
-                background-color: <?php echo $bgColor; ?>; 
-                color: white; 
-                padding: 15px; 
-                border-radius: 5px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);" 
-         id="alertBox">
-        <?php echo htmlspecialchars($_SESSION['message']); ?>
-    </div>
-    <script type="text/javascript">
-        // Hide the alert after 5 seconds
-        setTimeout(function() {
-            var alertBox = document.getElementById('alertBox');
-            if (alertBox) {
-                alertBox.style.opacity = '0';
-                alertBox.style.transition = 'opacity 0.5s ease-out';
-                setTimeout(function() {
-                    alertBox.style.display = 'none';
-                }, 500);
-            }
-        }, 5000);
-    </script>
-    <?php
-    // Unset the message after displaying
-    unset($_SESSION['message']);
-    unset($_SESSION['message_type']);
-}
-?>  
    
 
 
