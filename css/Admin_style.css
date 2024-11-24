@@ -1403,7 +1403,6 @@ input[type="submit"]:hover {
   transition: right 0.3s ease; /* Smooth slide-in effect */
   display: flex;
   flex-direction: column;
-  resize: horizontal;
   border-radius: 5%; /* Make the corners rounded */
 
   cursor: ew-resize; /* Show resize cursor */
