@@ -412,7 +412,7 @@ $totalAccounts = $stmt->fetchColumn();
 
 
 
-// Check if form is submitted for posting an announcement
+// Debugging: Check if session is being set
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Initialize message variable
     $message = '';
@@ -449,6 +449,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Execute the statement
                 if ($stmt->execute()) {
                     $_SESSION['message'] = "Announcement posted successfully!";
+                    // Debugging: Check if message is being set
+                    echo 'Message set: ' . $_SESSION['message'];
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
                 }
@@ -465,12 +467,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit();
 }
 
-// Check if a message exists in session and display it, then clear the message
+// Debugging: Check if session message exists and is being displayed
 if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
     echo "<script>alert('$message');</script>"; // Display the message in an alert box
     unset($_SESSION['message']); // Clear the message so it won't show after page refresh
+} else {
+    echo "No message to display."; // Debugging message to check if session is empty
 }
+
 
 
 
