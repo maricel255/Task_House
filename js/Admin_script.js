@@ -233,14 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
         let isResizing = false;
 
-    resizeHandle.addEventListener('mousedown', (e) => {
-        isResizing = true;
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', () => {
-            isResizing = false;
-            document.removeEventListener('mousemove', handleMouseMove);
-        });
-    });
 
     function handleMouseMove(e) {
         if (isResizing) {
