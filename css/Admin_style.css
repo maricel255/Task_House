@@ -421,17 +421,19 @@ body::before {
     }
 }
 
-        .announcement-board {
-          margin-top: 40px;
-          background-color: #fff;
-          padding: 30px;
-          text-align: center;
-          border-radius: 10px;
-          position: relative;
-          border: 1px solid #bc2649;
-          height: 250px;
-          width: 70%;
-      }
+.announcement-board {
+  margin-top: 40px;
+  background-color: #fff;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  position: absolute; /* Positioning it relative to its nearest positioned ancestor */
+  border: 1px solid #bc2649;
+  height: 250px;
+  width: 70%;
+  z-index: -1; /* Places it behind other elements */
+}
+
 
         .announcement-board h2 {
             font-size: 24px;
@@ -446,7 +448,6 @@ body::before {
           left: 0; /* Align to the right */
           max-width: 25%; /* Set maximum width to be responsive */
           height: auto; /* Maintain aspect ratio */
-          z-index: 9999; /* Ensure the image is always on top */
         }
 
        /* user input in annoucement */
