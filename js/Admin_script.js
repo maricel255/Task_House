@@ -195,12 +195,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close button functionality
-    const closeButton = document.querySelector(".close-btn");
-    closeButton.addEventListener("click", function () {
-        const detailsDiv = document.getElementById("internDetails");
-        detailsDiv.classList.remove("show"); // Hide the details
-        detailsDiv.innerHTML = ""; // Clear the content
+    document.addEventListener("DOMContentLoaded", () => {
+        const closeButton = document.getElementById("closeButton");
+        if (closeButton) {
+            closeButton.addEventListener("click", function () {
+                const detailsDiv = document.getElementById("internDetails");
+                if (detailsDiv) {
+                    detailsDiv.classList.remove("show"); // Hide the details
+                    detailsDiv.innerHTML = ""; // Clear the content
+                } else {
+                    console.error("Element with ID 'internDetails' not found.");
+                }
+            });
+        } else {
+            console.error("Element with ID 'closeButton' not found.");
+        }
     });
+    
 
     // Resize handle functionality
     const internDetails = document.querySelector('.intern-details');
