@@ -412,62 +412,53 @@ $totalAccounts = $stmt->fetchColumn();
 
 
 
-// Check if form is submitted for posting an announcement
+// Check if form is submitted in posting a announcement 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Initialize message variable
-    $message = '';
-
-    // Debugging: Check if form fields are set
-    if (isset($_POST['title']) && isset($_POST['announcement'])) {
-        $title = trim($_POST['title']);
-        $announcement = trim($_POST['announcement']);
-        
-        // Ensure file upload is handled
-        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
-            // Process file upload
-            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-            $fileName = $_FILES['fileUpload']['name'];
-            $fileSize = $_FILES['fileUpload']['size'];
-            $fileType = $_FILES['fileUpload']['type'];
-
-            // Define the path where the file will be uploaded
-            $uploadFileDir = __DIR__ . '/uploaded_files/';
-            $dest_path = $uploadFileDir . $fileName;
-
-            // Move the file to the desired directory
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                // File successfully uploaded
-                // Prepare the SQL statement
-                $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
-                $stmt = $conn->prepare($sql);
-
-                // Bind the parameters
-                $stmt->bindValue(':title', $title, PDO::PARAM_STR);
-                $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
-                $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
-                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
-
-                // Execute the statement
-                if ($stmt->execute()) {
-                    $_SESSION['message'] = "Announcement posted successfully!";
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST['title']) && isset($_POST['announcement'])) {
+            $title = trim($_POST['title']);
+            $announcement = trim($_POST['announcement']);
+            
+            // Ensure file upload is handled
+            if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+                // Process file upload
+                $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+                $fileName = $_FILES['fileUpload']['name'];
+                $fileSize = $_FILES['fileUpload']['size'];
+                $fileType = $_FILES['fileUpload']['type'];
+    
+                // Define the path where the file will be uploaded
+                $uploadFileDir = __DIR__ . '/uploaded_files/';
+                $dest_path = $uploadFileDir . $fileName;
+    
+                // Move the file to the desired directory
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    // File successfully uploaded
+                    // Prepare the SQL statement
+                    $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
+                    $stmt = $conn->prepare($sql);
+    
+                    // Bind the parameters
+                    $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+                    $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
+                    $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
+    
+                    // Execute the statement
+                    if ($stmt->execute()) {
+                        echo "<script>alert('Announcement posted successfully!');</script>";
+                    } else {
+                        echo "<script>alert('Error posting announcement.');</script>";
+                    }
                 } else {
-                    $_SESSION['message'] = "Error posting announcement.";
+                    echo "<script>alert('Error uploading the file.');</script>";
                 }
             } else {
-                $_SESSION['message'] = "Error uploading the file.";
+                echo "<script>alert('No file uploaded or there was an upload error.');</script>";
             }
-        } else {
-            $_SESSION['message'] = "No file uploaded or there was an upload error.";
         }
     }
-
-   
-
-    // Redirect to avoid form resubmission on page refresh
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
 }
-
 
 
 
@@ -755,36 +746,24 @@ if (isset($_SESSION['message'])) {
                     
                 <img src="image/announce.gif" alt="Announcement Image" class="anno-img">
                 <div class="form-container">
-    <h2>Announcement Board</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="title" class="styled-inputann">Title:</label>
-            <input type="text" id="title" name="title" class="styled-input" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="announcement" class="styled-inputann">Announcement:</label>
-            <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
-        </div>
-        
-        <div class="form-group">
-            <label for="fileUpload" class="styled-inputannup">Upload File:</label>
-            <input type="file" id="fileUpload" name="fileUpload">
-        </div>
-        
-        <button type="submit" class="post-button">Submit</button>
-    </form>
-</div>
-
-<!-- Display message if set -->
-<?php
-if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
-    echo "<script>alert('$message');</script>"; // Display the message in an alert box
-    unset($_SESSION['message']); // Clear the message so it won't show after page refresh
-}
-?>
-
+                    <h2>Announcement Board</h2>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                        <label for="title"  class="styled-inputann">Title:</label>
+                        <input type="text" id="title" name="title" class="styled-input"required>
+                        </div>
+                        <div class="form-group">
+                        <label for="announcement" class="styled-inputann">Announcement:</label>
+                        <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
+                        </div>
+                        <div class="form-group">
+                        <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
+                        <input type="file" id="fileUpload" name="fileUpload">
+                        </div>
+                        <button type="submit" class="post-button">Submit</button>
+                        
+                    </form>
+                </div>
                 <div class="announcement-slider">
                     <div class="slider-container">
                         <?php if ($announcements): ?>
