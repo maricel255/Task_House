@@ -150,15 +150,18 @@ function validateForm() {
     }
 //MARICEL START
 document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.container'); // Select the parent container
     if (container) {
         const newElement = document.createElement('div');
-        newElement.className = 'intern-details';
-        newElement.textContent = 'This is the intern-details content.';
-        container.appendChild(newElement);
-        console.log("Element .intern-details added to the DOM.");
-    } 
+        newElement.id = 'internDetails'; // Set the ID
+        newElement.className = 'intern-details'; // Set the class
+        newElement.textContent = 'This is the intern-details content.'; // Example content
+        container.appendChild(newElement); // Append the new element to the container
+        console.log("Element #internDetails added to the DOM.");
+    } else {
+        console.error("Parent container not found.");
+    }
 });
-
 //MARICEL END
 
    // Start kyle
