@@ -802,8 +802,10 @@ try {
                                         ?>
 
                                         <!-- Disable approve button if any field is empty -->
-                                        <button type="submit" class="action-button approve" name="approveBtn" <?php echo ($disableApprove ? 'disabled' : ''); ?>>Approve</button>
-                                    </form>
+                                        <button type="submit" class="action-button approve" name="approveBtn" <?php echo ($disableApprove ? 'disabled' : ''); ?>>
+                                            Approve
+                                        </button>                                   
+                                     </form>
 
                                     <!-- Update button -->
                                     <button type="button" class="action-button update" id="updateBtn<?php echo $log['id']; ?>" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
