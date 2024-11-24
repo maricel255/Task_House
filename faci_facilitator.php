@@ -394,6 +394,7 @@ AND (
 
 
 
+
 // Prepare the query
 $stmt = $conn->prepare($query);
 
