@@ -630,8 +630,9 @@ $timeLogsCount = $stmt->fetchColumn();
                 if ($key !== 'profile_image') {
                     echo '<tr>';
                     echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-                    echo '<td>' . htmlspecialchars($value) . '</td>';
-                    echo '</tr>';
+                    $safeValue = is_null($someValue) ? '' : $someValue;
+                    echo htmlspecialchars($safeValue, ENT_QUOTES, 'UTF-8');
+                                        echo '</tr>';
                 }
             }
             echo '</table>';
