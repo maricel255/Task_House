@@ -145,62 +145,68 @@ $approvalCount = count($logs);
 // Handle form submission for approval, decline, and update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['approveBtn'])) {
-        // Sanitize input to avoid malicious data
-        $internID = htmlspecialchars($_POST['internID']);
-        $id = htmlspecialchars($_POST['id']); // Get the unique log ID
-    
-        // Query to fetch the current record for the specified intern and log ID
-        $query = "SELECT login_time, break_time, back_to_work_time, task, logout_time FROM time_logs WHERE internID = :internID AND id = :id";
-        
-        try {
-            // Fetch the record to check if any field is empty
-            $stmt = $conn->prepare($query);
-            $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-    
-            // Fetch the data for the specific log entry
-            $log = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-            // Check if any of the necessary fields are empty
-            // Check if any of the necessary fields are empty
-                if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
-                    // Set error message in the session
-                    $_SESSION['alertMessage'] = "All time fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled in before approving.";
-                    $_SESSION['alertType'] = 'error'; // Set alert type as error
+      // Initialize $disableApprove to false
+$disableApprove = false;
 
-                    // Redirect to avoid form resubmission and display the message
-                    header("Location: " . $_SERVER['PHP_SELF']);
-                    exit();
-                }
+// Check if the form is submitted
+if (isset($_POST['approveBtn'])) {
+    // Sanitize input to avoid malicious data
+    $internID = htmlspecialchars($_POST['internID']);
+    $id = htmlspecialchars($_POST['id']); // Get the unique log ID
+    
+    // Query to fetch the current record for the specified intern and log ID
+    $query = "SELECT login_time, break_time, back_to_work_time, task, logout_time FROM time_logs WHERE internID = :internID AND id = :id";
+    
+    try {
+        // Fetch the record to check if any field is empty
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-    
-            // Define your update query to set the status to 'approved' only for the specific row (log_id)
-            $sql = "UPDATE time_logs 
-                    SET status = 'Approved' 
-                    WHERE internID = :internID 
-                    AND id = :id 
-                    AND status = 'pending'"; // Ensure that only 'pending' logs are updated for the correct row
-    
-            // Prepare and execute the query using PDO
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Bind the log_id parameter
-            $stmt->execute();
-    
-            // Set success message in the session
-            $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
-            $_SESSION['alertType'] = 'success';  // Set type as 'success'
-    
-            // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
+        // Fetch the data for the specific log entry
+        $log = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Check if any of the necessary fields are empty
+        if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
+            // Set error message in the session
+            $_SESSION['alertMessage'] = "All time fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled in before approving.";
+            $_SESSION['alertType'] = 'error'; // Set alert type as error
+            
+            // Set $disableApprove to true to disable the button
+            $disableApprove = true;
+
+            // Redirect to avoid form resubmission and display the message
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
-        } catch (PDOException $e) {
-            // Set error message in the session if an exception occurs
-            $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
-            $_SESSION['alertType'] = 'error';  // Set type as 'error'
         }
+
+        // Define your update query to set the status to 'approved' only for the specific row (log_id)
+        $sql = "UPDATE time_logs 
+                SET status = 'Approved' 
+                WHERE internID = :internID 
+                AND id = :id 
+                AND status = 'pending'"; // Ensure that only 'pending' logs are updated for the correct row
+
+        // Prepare and execute the query using PDO
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Bind the log_id parameter
+        $stmt->execute();
+
+        // Set success message in the session
+        $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
+        $_SESSION['alertType'] = 'success';  // Set type as 'success'
+
+        // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    } catch (PDOException $e) {
+        // Set error message in the session if an exception occurs
+        $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+        $_SESSION['alertType'] = 'error';  // Set type as 'error'
     }
+}
     
     
 
