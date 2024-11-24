@@ -856,7 +856,7 @@ try {
             <input type="datetime-local" name="back_to_work_time" value="<?php echo $log['back_to_work_time'] ? date('Y-m-d\TH:i', strtotime($log['back_to_work_time'])) : ''; ?>" required />
 
             <label for="update_task">Task:</label>
-            <input type="text" name="task" value="<?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?>"  />
+            <input type="text" name="task" value="<?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?>" required />
 
             <label for="update_logout_time">Logout Time:</label>
             <input type="datetime-local" name="logout_time" value="<?php echo $log['logout_time'] ? date('Y-m-d\TH:i', strtotime($log['logout_time'])) : ''; ?>" required />
