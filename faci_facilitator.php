@@ -391,7 +391,7 @@ AND (
 
 
 // Assuming you have a valid query
-$query = "SELECT * FROM your_table WHERE faciID = :faciID";
+$query = "SELECT * FROM time_logs WHERE faciID = :faciID";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -421,7 +421,6 @@ try {
     // Handle any error that occurs during query execution
     echo "Error: " . $e->getMessage();
 }
-
 
 // Prepare and execute the query to get the count of active interns
 $stmt = $conn->prepare($query);
