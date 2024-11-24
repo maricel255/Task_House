@@ -1002,8 +1002,12 @@ echo '</table>';
 
         
         ?>
-        <div id="internDetails" class="intern-details">
+        <div class="container">
+            <div id="internDetails" class="intern-details">
+                <!-- Content for intern details will go here -->
+            </div>
         </div>
+
          <!-- End Kyle -->
     </div>  
     </div>  
