@@ -656,7 +656,7 @@ $timeLogsCount = $stmt->fetchColumn();
     <title>Admin</title>
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 <!-- Bootstrap CSS -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-pzjw8f+ua7Kw1TIq0Vd5BqTkzXabjT2k5V1m9uX4xj0t50mhaI4M6ohwV1lX13b7" crossorigin="anonymous">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 <body>
