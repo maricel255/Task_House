@@ -630,7 +630,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 if ($key !== 'profile_image') {
                     echo '<tr>';
                     echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-                    echo '<td>' . htmlspecialchars($value) . '</td>';
+                    echo '<td>' . htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8') . '</td>'; // Ensure value is not null
                     echo '</tr>';
                 }
             }
