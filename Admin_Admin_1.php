@@ -154,14 +154,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 // Handle adding intern account
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
     // Get and sanitize user input
     $internID = trim($_POST['internID'] ?? '');
     $InternPass = trim($_POST['InternPass'] ?? '');
 
     // Validate input for creating an account
     if (empty($internID) || empty($InternPass)) {
-        $_SESSION['message'] = 'Page Refreshed.';
         $_SESSION['message'] = 'Intern ID and password are required.';
     } else {
         // Optional: Check password length
@@ -180,13 +179,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['message'] = 'Intern ID already exists.';
             } else {
                 // Prepare SQL query to insert data
-                $sql = "INSERT INTO intacc (internID, Internpass, adminID) VALUES (:internID, :InternPass, :adminID)"; 
+                $sql = "INSERT INTO intacc (internID, Internpass, adminID) VALUES (:internID, :InternPass, :adminID)";
 
                 try {
                     $stmt = $conn->prepare($sql);
                     $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
                     $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
-                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); 
+                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR);
 
                     if ($stmt->execute()) {
                         $_SESSION['message'] = 'Intern account added successfully!';
@@ -200,6 +199,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
 
 
 // Handle deleting and updating intern account
