@@ -412,8 +412,8 @@ $totalAccounts = $stmt->fetchColumn();
 
 
 
+// Check if form is submitted for posting an announcement
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     // Initialize message variable
     $message = '';
 
@@ -471,8 +471,6 @@ if (isset($_SESSION['message'])) {
     echo "<script>alert('$message');</script>"; // Display the message in an alert box
     unset($_SESSION['message']); // Clear the message so it won't show after page refresh
 }
-
-
 
 
 
