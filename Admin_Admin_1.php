@@ -152,56 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
-
-// Handle adding intern account
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) {
-    // Get and sanitize user input
-    $internID = trim($_POST['internID'] ?? '');
-    $InternPass = trim($_POST['InternPass'] ?? '');
-
-    // Validate input for creating an account
-    if (empty($internID) || empty($InternPass)) {
-        $_SESSION['message'] = 'Intern ID and password are required.';
-    } else {
-        // Optional: Check password length
-        if (strlen($InternPass) < 6) {
-            $_SESSION['message'] = 'Password must be at least 6 characters long.';
-        } else {
-            // Check if the internID already exists
-            $checkQuery = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
-            $checkStmt = $conn->prepare($checkQuery);
-            $checkStmt->bindParam(':internID', $internID, PDO::PARAM_STR);
-            $checkStmt->execute();
-            $exists = $checkStmt->fetchColumn();
-
-            if ($exists > 0) {
-                // Intern ID already exists
-                $_SESSION['message'] = 'Intern ID already exists.';
-            } else {
-                // Prepare SQL query to insert data
-                $sql = "INSERT INTO intacc (internID, Internpass, adminID) VALUES (:internID, :InternPass, :adminID)";
-
-                try {
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                    $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
-                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-
-                    if ($stmt->execute()) {
-                        $_SESSION['message'] = 'Intern account added successfully!';
-                    } else {
-                        $_SESSION['message'] = 'Error: Could not add intern account.';
-                    }
-                } catch (PDOException $e) {
-                    $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
-                }
-            }
-        }
-    }
-}
-
-
-
 // Handle deleting and updating intern account
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Check if internID is set for actions
@@ -210,7 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $internID = trim($_POST['internID']);
         $InternPass = trim($_POST['InternPass'] ?? ''); // Use null coalescing operator to avoid undefined index
         $action = $_POST['action'] ?? '';
-
+    
+        // Ensure adminID is available (retrieve from session or some other source)
+        $adminID = $_SESSION['adminID'] ?? ''; // Assuming adminID is stored in session
+    
         // Validate input for update or delete actions
         if ($action === 'update') {
             // Validate internID and new password if provided
@@ -223,13 +176,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 } else {
                     // Prepare SQL query to update data
                     $sql = "UPDATE intacc SET InternPass = :InternPass WHERE internID = :internID AND adminID = :adminID"; 
-
+    
                     try {
                         $stmt = $conn->prepare($sql);
                         $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
                         $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
                         $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
-
+    
                         if ($stmt->execute()) {
                             $_SESSION['message'] = 'Intern account updated successfully!';
                         } else {
@@ -243,22 +196,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         } elseif ($action === 'delete') {
             // Prepare SQL query to delete data
             $sql = "DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID"; 
-
+    
             try {
                 $stmt = $conn->prepare($sql);
                 $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
                 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
-
+    
                 if ($stmt->execute()) {
                     $_SESSION['message'] = 'Intern account deleted successfully!';
                 } else {
-                    $_SESSION['$errorMessages'] = 'Error: Could not delete intern account.';
+                    $_SESSION['message'] = 'Error: Could not delete intern account.'; // Fixed typo
                 }
             } catch (PDOException $e) {
                 $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
             }
         }
-    } 
+    }
+    
 }
 
 
