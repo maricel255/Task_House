@@ -361,24 +361,22 @@ try {
 
 // Assuming you have a valid query
 
-// SQL query to join time_logs with profile_information based on faciID
- $query = "SELECT time_logs.*, 
+$query = "SELECT time_logs.*, 
 profile_information.first_name,
 CASE
-    -- If logout_time is not NULL or empty, show 'Logged Out'
-    WHEN (time_logs.logout_time IS NOT NULL AND time_logs.logout_time != '') THEN 'Logged Out'
+    -- If logout_time is not NULL, show 'Logged Out'
+    WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
     
-    -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
-    WHEN (time_logs.break_time IS NOT NULL AND time_logs.break_time != '') 
-         AND (time_logs.back_to_work_time IS NULL OR time_logs.back_to_work_time = '') THEN 'On Break'
+    -- If break_time is NOT NULL and back_to_work_time IS NULL, show 'On Break'
+    WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
     
-    -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
-    WHEN (time_logs.login_time IS NOT NULL AND time_logs.login_time != '') 
-         AND (time_logs.back_to_work_time IS NULL OR time_logs.back_to_work_time = '') 
-         AND (time_logs.logout_time IS NULL OR time_logs.logout_time = '') THEN 'Active Now'
+    -- If login_time is NOT NULL, back_to_work_time IS NULL, and logout_time IS NULL, show 'Active Now'
+    WHEN time_logs.login_time IS NOT NULL 
+         AND time_logs.back_to_work_time IS NULL 
+         AND time_logs.logout_time IS NULL THEN 'Active Now'
     
-    -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
-    WHEN (time_logs.back_to_work_time IS NOT NULL AND time_logs.back_to_work_time != '') THEN 'Active Now'
+    -- If back_to_work_time IS NOT NULL, show 'Active Now'
+    WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
     
     -- Default to 'Unknown' if no status is detected
     ELSE 'Unknown'
@@ -711,16 +709,7 @@ try {
                     <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                     <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
                     <td class="<?php echo strtolower($intern['status']); ?>">
-                        <strong>Status:</strong> <?php echo htmlspecialchars($intern['status']); ?><br>
-
-                        <?php if ($intern['status'] == 'Active Now'): ?>
-                            <strong>Login Time:</strong> <?php echo htmlspecialchars($intern['login_time']); ?><br>
-                            <strong>Back to Work Time:</strong> <?php echo htmlspecialchars($intern['back_to_work_time']); ?><br>
-                        <?php elseif ($intern['status'] == 'On Break'): ?>
-                            <strong>Break Time:</strong> <?php echo htmlspecialchars($intern['break_time']); ?><br>
-                        <?php elseif ($intern['status'] == 'Logged Out'): ?>
-                            <strong>Logout Time:</strong> <?php echo htmlspecialchars($intern['logout_time']); ?><br>
-                        <?php endif; ?>
+                        <strong>Status:</strong> <?php echo htmlspecialchars($intern['status']); ?>
                     </td>
                     <td>
                         <?php if (!empty($intern['profile_image'])): ?>
