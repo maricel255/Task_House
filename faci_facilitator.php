@@ -358,25 +358,14 @@ try {
 // SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
 $query = "
 SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
-       CASE
-           -- If logout_time is not NULL or empty, show 'Logged Out' (highest priority)
-           WHEN (i.logout_time IS NOT NULL AND i.logout_time != '') THEN 'Logged Out'
-           
-           -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
-           WHEN (i.break_time IS NOT NULL AND i.break_time != '') 
-                AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') THEN 'On Break'
-           
-           -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
-           WHEN (i.login_time IS NOT NULL AND i.login_time != '') 
-                AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') 
-                AND (i.logout_time IS NULL OR i.logout_time = '') THEN 'Active Now'
-           
-           -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
-           WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Active Now'
-           
-           -- Default to 'Unknown' if no status is detected
-           ELSE 'Unknown'
-       END AS status
+     CASE
+    WHEN (i.logout_time IS NOT NULL AND i.logout_time != '') THEN 'Logged Out'
+    WHEN (i.break_time IS NOT NULL AND i.break_time != '') AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') THEN 'On Break'
+    WHEN (i.login_time IS NOT NULL AND i.login_time != '') AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') AND (i.logout_time IS NULL OR i.logout_time = '') THEN 'Active Now'
+    WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Active Now'
+    ELSE 'Unknown'
+END AS status
+
 FROM time_logs i
 JOIN profile_information p ON i.internID = p.internID
 JOIN intacc ia ON i.internID = ia.internID  -- Join with intacc table for profile_image
@@ -720,7 +709,18 @@ try {
                 <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
                     <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                     <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
-                    <td class="<?php echo strtolower($intern['status']); ?>"><?php echo htmlspecialchars($intern['status']); ?></td>
+                    <td class="<?php echo strtolower($intern['status']); ?>">
+                        <strong>Status:</strong> <?php echo htmlspecialchars($intern['status']); ?><br>
+
+                        <?php if ($intern['status'] == 'Active Now'): ?>
+                            <strong>Login Time:</strong> <?php echo htmlspecialchars($intern['login_time']); ?><br>
+                            <strong>Back to Work Time:</strong> <?php echo htmlspecialchars($intern['back_to_work_time']); ?><br>
+                        <?php elseif ($intern['status'] == 'On Break'): ?>
+                            <strong>Break Time:</strong> <?php echo htmlspecialchars($intern['break_time']); ?><br>
+                        <?php elseif ($intern['status'] == 'Logged Out'): ?>
+                            <strong>Logout Time:</strong> <?php echo htmlspecialchars($intern['logout_time']); ?><br>
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <?php if (!empty($intern['profile_image'])): ?>
                             <!-- Display profile image -->
