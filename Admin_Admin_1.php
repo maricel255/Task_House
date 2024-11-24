@@ -278,7 +278,9 @@ try {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($_POST['InternPass'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
-    $adminID = $_SESSION['adminID']; // Get adminID from session
+    
+    // Get the adminID from the user data we fetched earlier
+    $adminID = $user['adminID']; // This comes from the earlier user query
 
     try {
         // Check if the internID already exists
@@ -299,7 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':internID', $internID);
             $stmt->bindParam(':InternPass', $InternPass);
-            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Ensure adminID is bound as integer
 
             if ($stmt->execute()) {
                 $_SESSION['message'] = "Intern account added successfully!";
