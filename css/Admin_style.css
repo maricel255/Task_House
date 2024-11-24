@@ -613,7 +613,7 @@ body::before {
   left: 10px; /* Align to the left with some padding */
   bottom: 10px; /* Align to the bottom with some padding */
   width: 40%; /* Adjust width for portrait */
-  max-width: 90%; /* Make it responsive on smaller screens */
+  max-width: 40%; /* Make it responsive on smaller screens */
   height: auto; /* Let height adjust based on content */
   max-height: 80%; /* Limit height to avoid overflow */
   overflow: auto; /* Enable scroll if needed */
