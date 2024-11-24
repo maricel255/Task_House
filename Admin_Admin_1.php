@@ -472,14 +472,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit();
 }
 
-// Check if a message exists in session and display it, then clear the message
-if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
-    echo "<script>alert('$message');</script>"; // Display the message in an alert box
-    unset($_SESSION['message']); // Clear the message so it won't show after page refresh
-} else {
-    echo "No message to display.";  // Debugging message
-}
+
 
 
 
