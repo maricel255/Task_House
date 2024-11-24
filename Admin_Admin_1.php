@@ -278,6 +278,7 @@ try {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($_POST['InternPass'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
+    $adminID = $_SESSION['adminID']; // Get adminID from session
 
     try {
         // Check if the internID already exists
