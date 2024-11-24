@@ -215,8 +215,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Resize handle functionality
     const internDetails = document.querySelector('.intern-details');
-    const resizeHandle = document.querySelector('.intern-details-resize-handle');
-    let isResizing = false;
+    document.addEventListener('DOMContentLoaded', () => {
+        const resizeHandle = document.querySelector('.resizeHandle'); // Use class if applicable
+        
+        if (resizeHandle) {
+            resizeHandle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', () => {
+                    isResizing = false;
+                    document.removeEventListener('mousemove', handleMouseMove);
+                });
+            });
+        } else {
+            console.error("resizeHandle element not found.");
+        }
+    });
+        let isResizing = false;
 
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
