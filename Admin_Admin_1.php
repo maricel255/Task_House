@@ -784,8 +784,10 @@ $timeLogsCount = $stmt->fetchColumn();
                                                 <?php
                                                 // Extract the file name and construct the file path
                                                 $fileName = basename($filePath);
-                                                $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
-                                                ?>
+                                                $pdfPath = "https://taskhouseintern.com/uploaded_files/" . rawurlencode($fileName);
+
+                                                // Now you can use $pdfPath wherever needed, such as inserting it into your database or showing it in a link.
+                                                                                                ?>
                                                 <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
                                             <?php else: ?>
                                                 <p>Unsupported file type.</p>
