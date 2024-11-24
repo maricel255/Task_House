@@ -283,43 +283,40 @@ try {
 // Handle adding facilitator account
 
 if (isset($_POST['submitFacilitator'])) {
-    $faciID = $_POST['faciID'];
-    $faciPass = $_POST['faciPass'];
-
-   
+    $faciID = trim($_POST['faciID']);
+    $faciPass = trim($_POST['faciPass']);
+    $adminID = $_SESSION['adminID']; // Get adminID from session
+    
     try {
         // Check if the faciID already exists
-        $checkSql = "SELECT COUNT(*) FROM facacc WHERE faciID = :faciID";
+        $checkSql = "SELECT COUNT(*) FROM facacc WHERE faciID = ?";
         $checkStmt = $conn->prepare($checkSql);
-        $checkStmt->bindParam(':faciID', $faciID);
-        $checkStmt->execute();
-
+        $checkStmt->execute([$faciID]);
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            $_SESSION['message'] = "Error: The Facilitator ID '$faciID' already exists. Please use a different ID.";
+            $_SESSION['message'] = "Error: Facilitator ID already exists!";
+            $_SESSION['message_type'] = "error";
         } else {
-            // Create the SQL query to insert into the facacc table
-            $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (:faciID, :faciPass, :adminID)";
-            
-            // Prepare and execute the statement
+            // Insert new facilitator
+            $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':faciID', $faciID);
-            $stmt->bindParam(':faciPass', $faciPass);
-            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
-
-            if ($stmt->execute()) {
+            
+            if ($stmt->execute([$faciID, $faciPass, $adminID])) {
                 $_SESSION['message'] = "Facilitator account added successfully!";
+                $_SESSION['message_type'] = "success";
+                // Redirect to refresh the page
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
             } else {
                 $_SESSION['message'] = "Error: Could not add facilitator account.";
+                $_SESSION['message_type'] = "error";
             }
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message'] = "Database Error: Please try again.";
+        $_SESSION['message_type'] = "error";
     }
-
-
-
 }
 
 // Handle deleting and updating facilitator account
