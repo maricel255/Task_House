@@ -606,14 +606,16 @@ body::before {
 
 /* Modal Background */
 /* Modal Background */
+/* Modal Background */
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1000; /* Ensure it appears on top */
-  left: 10px; /* Align to the left with some padding */
-  bottom: 10px; /* Align to the bottom with some padding */
+  z-index: 9999; /* Ensure it appears on top of other content */
+  top: 10px; /* Place the modal 10px from the top */
+  left: 50%; /* Center the modal horizontally */
+  transform: translateX(-50%); /* Align the modal in the center horizontally */
   width: 40%; /* Adjust width for portrait */
-  max-width: 40%; /* Make it responsive on smaller screens */
+  max-width: 90%; /* Make it responsive on smaller screens */
   height: auto; /* Let height adjust based on content */
   max-height: 80%; /* Limit height to avoid overflow */
   overflow: auto; /* Enable scroll if needed */
@@ -632,6 +634,9 @@ body::before {
   width: 100%; /* Ensure the content width is responsive */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
 }
+
+
+/* Modal Content */
 
   .Accmodal-content {
     background-color: #fefefe;
