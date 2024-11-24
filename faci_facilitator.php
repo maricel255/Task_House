@@ -410,17 +410,17 @@ try {
         // Process the results
         foreach ($interns as $intern) {
             // Display first name and status
-            echo "<p><strong>First Name:</strong> " . htmlspecialchars($intern['first_name']) . "</p>";
-            echo "<p><strong>Status:</strong> " . htmlspecialchars($intern['status']) . "</p>";
+           // echo "<p><strong>First Name:</strong> " . htmlspecialchars($intern['first_name']) . "</p>";
+           // echo "<p><strong>Status:</strong> " . htmlspecialchars($intern['status']) . "</p>";
         }
     } else {
         // No records for today's time logs
-        echo "<p style='color: red; font-weight: bold;'>No Time Records for today</p>";
+       // echo "<p style='color: red; font-weight: bold;'>No Time Records for today</p>";
     }
     
 } catch (PDOException $e) {
     // Handle any error that occurs during query execution
-    echo "<p>Error: " . $e->getMessage() . "</p>";
+   // echo "<p>Error: " . $e->getMessage() . "</p>";
 }
 
 
