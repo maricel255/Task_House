@@ -149,8 +149,15 @@ function validateForm() {
         };
     }
 //MARICEL START
+document.addEventListener('DOMContentLoaded', () => {
+    const internDetails = document.querySelector('.intern-details');
+    if (internDetails) {
+        internDetails.classList.toggle('show');
+    } else {
+        console.error("Element with class 'intern-details' not found.");
+    }
+});
 
-document.querySelector('.intern-details').classList.toggle('show');
 function closeDetails() {
     document.querySelector('.intern-details').classList.remove('show');
 }
