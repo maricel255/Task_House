@@ -150,16 +150,13 @@ function validateForm() {
     }
 //MARICEL START
 document.addEventListener('DOMContentLoaded', () => {
-    const container = document.querySelector('.container'); // Replace '.container' with your desired parent element
     if (container) {
         const newElement = document.createElement('div');
         newElement.className = 'intern-details';
         newElement.textContent = 'This is the intern-details content.';
         container.appendChild(newElement);
         console.log("Element .intern-details added to the DOM.");
-    } else {
-        console.error("Parent container not found.");
-    }
+    } 
 });
 
 //MARICEL END
