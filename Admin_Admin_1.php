@@ -413,10 +413,12 @@ $totalAccounts = $stmt->fetchColumn();
 
 
 // Debugging: Check if session is being set
+// Check if form is submitted for posting an announcement
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Initialize message variable
     $message = '';
 
+    // Debugging: Check if form fields are set
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
         $title = trim($_POST['title']);
         $announcement = trim($_POST['announcement']);
@@ -449,8 +451,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Execute the statement
                 if ($stmt->execute()) {
                     $_SESSION['message'] = "Announcement posted successfully!";
-                    // Debugging: Check if message is being set
-                    echo 'Message set: ' . $_SESSION['message'];
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
                 }
@@ -462,20 +462,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Debugging: Check if session message is set
+    if (isset($_SESSION['message'])) {
+        echo 'Session message set: ' . $_SESSION['message'];  // Debugging session message
+    }
+
     // Redirect to avoid form resubmission on page refresh
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-// Debugging: Check if session message exists and is being displayed
+// Check if a message exists in session and display it, then clear the message
 if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
     echo "<script>alert('$message');</script>"; // Display the message in an alert box
     unset($_SESSION['message']); // Clear the message so it won't show after page refresh
 } else {
-    echo "No message to display."; // Debugging message to check if session is empty
+    echo "No message to display.";  // Debugging message
 }
-
 
 
 
