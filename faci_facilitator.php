@@ -391,36 +391,36 @@ AND (
 
 
 // Assuming you have a valid query
-$query = "SELECT * FROM time_logs WHERE faciID = :faciID";
 
-// Prepare the query
-$stmt = $conn->prepare($query);
-
-// Bind the parameter
-$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
-
-try {
-    // Execute the query
-    $stmt->execute();
-    
-    // Fetch all the results
-    $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Check if there are results
-    if ($interns) {
-        // Process the results
-        foreach ($interns as $intern) {
-            // You can access each intern's data here, e.g.:
-            echo $intern['column_name']; // Replace column_name with actual column name
+// Assuming $interns contains the result set after executing your query
+if ($interns) {
+    foreach ($interns as $intern) {
+        echo "<tr>";
+        // Display internID
+        echo "<td>" . htmlspecialchars($intern['internID']) . "</td>";
+        
+        // Display first_name
+        echo "<td>" . htmlspecialchars($intern['first_name']) . "</td>";
+        
+        // Display status with dynamic class based on status value (e.g., 'active', 'inactive')
+        echo "<td class='" . strtolower($intern['status']) . "'>" . htmlspecialchars($intern['status']) . "</td>";
+        
+        // Display profile image or default if not available
+        echo "<td>";
+        if (!empty($intern['profile_image'])) {
+            echo "<img id='imagePreview' src='uploaded_files/" . htmlspecialchars($intern['profile_image']) . "' alt='Profile Preview' style='width: 160px; height: 160px; border-radius: 50%;'>";
+        } else {
+            echo "<img id='imagePreview' src='image/USER_ICON.png' alt='Default Profile Preview'>";
         }
-    } else {
-        echo "No records found.";
+        echo "</td>";
+
+        echo "</tr>";
     }
-    
-} catch (PDOException $e) {
-    // Handle any error that occurs during query execution
-    echo "Error: " . $e->getMessage();
+} else {
+    echo "<tr><td colspan='4'>No records found.</td></tr>";
 }
+
+
 
 // Prepare and execute the query to get the count of active interns
 $stmt = $conn->prepare($query);
