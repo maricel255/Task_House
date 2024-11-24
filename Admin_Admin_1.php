@@ -274,6 +274,45 @@ try {
 }
 
 
+// Handle adding intern account
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($_POST['InternPass'])) {
+    $internID = trim($_POST['internID']);
+    $InternPass = trim($_POST['InternPass']);
+
+    try {
+        // Check if the internID already exists
+        $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bindParam(':internID', $internID);
+        $checkStmt->execute();
+
+        $count = $checkStmt->fetchColumn();
+
+        if ($count > 0) {
+            $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+        } else {
+            // Create the SQL query to insert into the intacc table
+            $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
+            
+            // Prepare and execute the statement
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':internID', $internID);
+            $stmt->bindParam(':InternPass', $InternPass);
+            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Intern account added successfully!";
+                header("Location: " . $_SERVER['PHP_SELF']); // Refresh the page
+                exit();
+            } else {
+                $_SESSION['message'] = "Error: Could not add intern account.";
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+    }
+}
+
 
 
 
@@ -1027,7 +1066,7 @@ echo '</table>';
                                                 <label for="InternPass">Password:</label>
                                                 <input type="password" id="InternPass" name="InternPass" required>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
                                         </form>
                                         
                                     </div>
