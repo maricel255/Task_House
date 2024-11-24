@@ -768,7 +768,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 <h1>Dashboard</h1>
                 <div class="dashboard-cards">
                 <div class="card course">
-                        <h2>Maricel</h2>
+                        <h2>Profile </h2>
                         <strong><?php echo $profileCount; ?></strong>
                     </div>
 
@@ -802,7 +802,7 @@ $timeLogsCount = $stmt->fetchColumn();
                         </div>
                         <div class="form-group">
                         <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
-                        <input type="file" id="fileUpload" name="fileUpload" required>
+                        <input type="file" id="fileUpload" name="fileUpload">
                         </div>
                         <button type="submit" class="post-button">Submit</button>
                         
@@ -840,7 +840,7 @@ $timeLogsCount = $stmt->fetchColumn();
                                         <!-- Delete Button Form -->
                                         <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
                                                 <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
-                                                <button type="submit" class="delete-button">Delete</button>
+                                                <button type="submit" class="deleter-button">Delete</button>
                                         </form>
                                 </div>
                             

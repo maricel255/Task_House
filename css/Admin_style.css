@@ -208,7 +208,7 @@ body::before {
   
   .modal-btn {
     top: 3px;
-    right: 65%; /* Adjust for smaller screens */
+    right: 45%; /* Adjust for smaller screens */
     width: 40px;
     height: 40px;
   }
@@ -235,7 +235,7 @@ body::before {
   
   .modal-btn {
     top: 3px;
-    right: 56%; /* Adjust for smaller screens */
+    right: 10%; /* Adjust for smaller screens */
     width: 40px;
     height: 40px;
   }
@@ -244,7 +244,7 @@ body::before {
     top: 3px;
     font-size: 0px; /* Further adjust font size */
     padding: 6px 12px; /* Further adjust padding */
-    right: 0%;
+    right: -12%;
   }
   
   .logout-icon {
@@ -405,20 +405,20 @@ body::before {
 }
 
     .card {
-        width: 41%; /* Full width on very small screens */
+        width: 60%; /* Full width on very small screens */
         padding: 10px; /* Reduce padding */
-        height: 47px; /* Further reduce height */
+        height: 45px; /* Further reduce height */
         max-height: 110px; /* Prevent the cards from being taller than this */
         margin-bottom: 10px; /* Reduce spacing between cards */
         overflow: hidden; /* Hide any overflow */
     }
 
     .card h2 {
-        font-size: 0.9rem; /* Smaller headings for small screens */
+        font-size: 14px; /* Smaller headings for small screens */
     }
 
     .card strong {
-        font-size: 1rem; /* Slightly smaller count font size */
+        font-size: 11px; /* Slightly smaller count font size */
     }
 }
 
@@ -507,6 +507,13 @@ body::before {
             bottom: 20px; /* Adjust as needed for spacing from the bottom */
             right: 20px; /* Adjust as needed for spacing from the right */
         }
+        @media (max-width: 480px) {
+          .post-button {
+            top:87%;
+            right: auto;
+            
+          }
+        }
         
         .post-button:hover {
           background-color: #0056b3; /* Darker blue on hover */
@@ -522,8 +529,9 @@ body::before {
   }
 
   .anno-img {
-      max-width: 50%; /* Further adjust image size */
-      top: 40%; /* Adjust image positioning */
+    height: 20%;
+    width: 30%;
+    top:  5%; /* Adjust image positioning */
   }
 
   .styled-inputann, .styled-inputannup {
@@ -547,10 +555,7 @@ body::before {
 }
 
 
-    .anno-img {
-        max-width: 150%; /* Further adjust image size */
-        top: 40%; /* Adjust image positioning */
-    }
+   
 
     .styled-inputann {
       width: 100%; /* Full width inputs on small screens */
@@ -1134,6 +1139,21 @@ p {
 .sidebar:hover + .announcement-slider {
   right: 250px; /* Adjust this value based on sidebar width */
 }
+@media (max-width: 480px) {
+  .announcement-slider {
+    right: auto;
+    top:63%;
+    left: 70px; /* Move to the lower-left of the page */
+    width: 63%;
+    height: 30%;
+  }
+  .deleter-button { 
+    top:88%;
+    left: 45%;
+    width: 28%;
+   }
+
+}
 
 .slider-container {
   position: relative;
@@ -1290,15 +1310,17 @@ p {
 }
 
 
-
-.delete-button {  
+.deleter-button {  
+  position: fixed; /* Fixed positioning ensures the button stays in the same place */
+  bottom: 100px; /* Distance from the bottom of the viewport */
+  right: 20px; /* Distance from the right edge of the viewport */
   background: orange;
   border: none;
   cursor: pointer;
-  margin-left: 75%;
-  margin-bottom: 100px; /* Increased margin-bottom for more space */
   height: 60px; /* Set a specific height */
   padding: 10px 20px; /* Add padding for a balanced look */
+  z-index: 1000; /* Ensure the button appears above other elements */
+  border-radius: 10px;
 }
 
 
@@ -1407,10 +1429,9 @@ input[type="submit"]:hover {
 
     height: 70vh; /* Further adjust height on very small screens */
     border-radius: 5%; /* Make the corners rounded */
-        right: 5%; /* Less space from the right on very small screens */
-
-
+    right: 5%; /* Less space from the right on very small screens */
   }
+  
 }
 
 
