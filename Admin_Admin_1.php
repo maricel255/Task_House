@@ -766,24 +766,36 @@ if (isset($_SESSION['message'])) {
                     
                 <img src="image/announce.gif" alt="Announcement Image" class="anno-img">
                 <div class="form-container">
-                    <h2>Announcement Board</h2>
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="form-group">
-                        <label for="title"  class="styled-inputann">Title:</label>
-                        <input type="text" id="title" name="title" class="styled-input"required>
-                        </div>
-                        <div class="form-group">
-                        <label for="announcement" class="styled-inputann">Announcement:</label>
-                        <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
-                        </div>
-                        <div class="form-group">
-                        <label for="fileUpload"  class="styled-inputannup" >Upload File:</label>
-                        <input type="file" id="fileUpload" name="fileUpload">
-                        </div>
-                        <button type="submit" class="post-button">Submit</button>
-                        
-                    </form>
-                </div>
+    <h2>Announcement Board</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title" class="styled-inputann">Title:</label>
+            <input type="text" id="title" name="title" class="styled-input" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="announcement" class="styled-inputann">Announcement:</label>
+            <textarea id="announcement" name="announcement" class="styled-input" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="fileUpload" class="styled-inputannup">Upload File:</label>
+            <input type="file" id="fileUpload" name="fileUpload">
+        </div>
+        
+        <button type="submit" class="post-button">Submit</button>
+    </form>
+</div>
+
+<!-- Display message if set -->
+<?php
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    echo "<script>alert('$message');</script>"; // Display the message in an alert box
+    unset($_SESSION['message']); // Clear the message so it won't show after page refresh
+}
+?>
+
                 <div class="announcement-slider">
                     <div class="slider-container">
                         <?php if ($announcements): ?>
