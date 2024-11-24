@@ -1405,7 +1405,6 @@ input[type="submit"]:hover {
   flex-direction: column;
   border-radius: 5%; /* Make the corners rounded */
 
-  cursor: ew-resize; /* Show resize cursor */
 }
 
 /* Ensure responsiveness */
