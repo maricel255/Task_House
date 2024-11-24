@@ -282,11 +282,11 @@ try {
 
 // Handle adding facilitator account
 
-// Handle adding facilitator account
 if (isset($_POST['submitFacilitator'])) {
     $faciID = $_POST['faciID'];
     $faciPass = $_POST['faciPass'];
 
+   
     try {
         // Check if the faciID already exists
         $checkSql = "SELECT COUNT(*) FROM facacc WHERE faciID = :faciID";
@@ -299,7 +299,7 @@ if (isset($_POST['submitFacilitator'])) {
         if ($count > 0) {
             $_SESSION['message'] = "Error: The Facilitator ID '$faciID' already exists. Please use a different ID.";
         } else {
-            // Create the SQL query to insert into the facacc table - removed faci_image field
+            // Create the SQL query to insert into the facacc table
             $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (:faciID, :faciPass, :adminID)";
             
             // Prepare and execute the statement
@@ -317,6 +317,9 @@ if (isset($_POST['submitFacilitator'])) {
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
     }
+
+
+
 }
 
 // Handle deleting and updating facilitator account
