@@ -414,6 +414,9 @@ $totalAccounts = $stmt->fetchColumn();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    // Initialize message variable
+    $message = '';
+
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
         $title = trim($_POST['title']);
         $announcement = trim($_POST['announcement']);
@@ -445,29 +448,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Execute the statement
                 if ($stmt->execute()) {
-                    $message = "Announcement posted successfully!";
+                    $_SESSION['message'] = "Announcement posted successfully!";
                 } else {
-                    $message = "Error posting announcement.";
+                    $_SESSION['message'] = "Error posting announcement.";
                 }
             } else {
-                $message = "Error uploading the file.";
+                $_SESSION['message'] = "Error uploading the file.";
             }
         } else {
-            $message = "No file uploaded or there was an upload error.";
+            $_SESSION['message'] = "No file uploaded or there was an upload error.";
         }
     }
 
-    // Redirect to avoid form resubmission on page refresh, passing the message as a query parameter
-    header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
+    // Redirect to avoid form resubmission on page refresh
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
-// Get message from the query string (if present)
-if (isset($_GET['message'])) {
-    $message = $_GET['message'];
-    // Using json_encode for safe JavaScript injection
-    $message = json_encode($message); 
-    echo "<script>alert($message);</script>"; // Display alert with the message
+// Check if a message exists in session and display it, then clear the message
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    echo "<script>alert('$message');</script>"; // Display the message in an alert box
+    unset($_SESSION['message']); // Clear the message so it won't show after page refresh
 }
 
 
