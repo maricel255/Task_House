@@ -446,24 +446,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
                     // Execute the statement
                     if ($stmt->execute()) {
-                        $_SESSION['message'] = 'Announcement posted successfully!';
-                        $_SESSION['message_type'] = 'success';  // Optionally set the message type
+                        echo "<script>alert('Announcement posted successfully!');</script>";
                     } else {
-                        $_SESSION['message'] = "Error posting announcement.";
-                        $_SESSION['message_type'] = 'error';
+                        echo "<script>alert('Error posting announcement.');</script>";
                     }
                 } else {
-                    $_SESSION['message'] = "Error uploading the file.";
-                    $_SESSION['message_type'] = 'error';
+                    echo "<script>alert('Error uploading the file.');</script>";
                 }
             } else {
-                $_SESSION['message'] = "No file uploaded or there was an upload error.";
-                $_SESSION['message_type'] = 'error';
+                echo "<script>alert('No file uploaded or there was an upload error.');</script>";
             }
-    
-            // Redirect to avoid resubmission on page refresh
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
         }
     }
 }
