@@ -415,6 +415,8 @@ $totalAccounts = $stmt->fetchColumn();
 // Check if form is submitted in posting a announcement 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $message = ''; // Initialize message variable
+    
         if (isset($_POST['title']) && isset($_POST['announcement'])) {
             $title = trim($_POST['title']);
             $announcement = trim($_POST['announcement']);
@@ -446,17 +448,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
                     // Execute the statement
                     if ($stmt->execute()) {
-                        echo "<script>alert('Announcement posted successfully!');</script>";
+                        $message = "Announcement posted successfully!";
                     } else {
-                        echo "<script>alert('Error posting announcement.');</script>";
+                        $message = "Error posting announcement.";
                     }
                 } else {
-                    echo "<script>alert('Error uploading the file.');</script>";
+                    $message = "Error uploading the file.";
                 }
             } else {
-                echo "<script>alert('No file uploaded or there was an upload error.');</script>";
+                $message = "No file uploaded or there was an upload error.";
             }
         }
+    
+        // Redirect to avoid form resubmission on page refresh, passing the message as a query parameter
+        header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
+        exit();
+    }
+    
+    // Get message from the query string (if present)
+    if (isset($_GET['message'])) {
+        $message = $_GET['message'];
+        echo "<script>alert('$message');</script>"; // Display alert with the message
     }
 }
 
