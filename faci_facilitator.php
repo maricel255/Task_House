@@ -390,13 +390,37 @@ AND (
 ";
 
 
-// Prepare and execute the query
-$stmt = $conn->prepare($query);
-$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
-$stmt->execute();
+// Assuming you have a valid query
+$query = "SELECT * FROM your_table WHERE faciID = :faciID";
 
-// Fetch the results
-$interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Prepare the query
+$stmt = $conn->prepare($query);
+
+// Bind the parameter
+$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
+
+try {
+    // Execute the query
+    $stmt->execute();
+    
+    // Fetch all the results
+    $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Check if there are results
+    if ($interns) {
+        // Process the results
+        foreach ($interns as $intern) {
+            // You can access each intern's data here, e.g.:
+            echo $intern['column_name']; // Replace column_name with actual column name
+        }
+    } else {
+        echo "No records found.";
+    }
+    
+} catch (PDOException $e) {
+    // Handle any error that occurs during query execution
+    echo "Error: " . $e->getMessage();
+}
 
 
 // Prepare and execute the query to get the count of active interns
