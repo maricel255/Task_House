@@ -412,7 +412,6 @@ $totalAccounts = $stmt->fetchColumn();
 
 
 
-// Check if form is submitted in posting a announcement 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
@@ -461,13 +460,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Redirect to avoid form resubmission on page refresh, passing the message as a query parameter
     header("Location: " . $_SERVER['PHP_SELF'] . "?message=" . urlencode($message));
     exit();
-    // Get message from the query string (if present)
+}
+
+// Get message from the query string (if present)
 if (isset($_GET['message'])) {
     $message = $_GET['message'];
     // Using json_encode for safe JavaScript injection
     $message = json_encode($message); 
     echo "<script>alert($message);</script>"; // Display alert with the message
-}
 }
 
 
