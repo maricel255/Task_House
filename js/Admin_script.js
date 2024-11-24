@@ -150,6 +150,7 @@ function validateForm() {
     }
 //MARICEL START
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded");
     const internDetails = document.querySelector('.intern-details');
     if (internDetails) {
         internDetails.classList.toggle('show');
