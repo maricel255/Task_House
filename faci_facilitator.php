@@ -355,49 +355,38 @@ try {
 
 
 
-// SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
-$query = "
-SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
-     CASE
-        -- If logout_time is not NULL or empty, show 'Logged Out'
-        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '') THEN 'Logged Out'
-        
-        -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
-        WHEN (i.break_time IS NOT NULL AND i.break_time != '') 
-             AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') THEN 'On Break'
-        
-        -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
-        WHEN (i.login_time IS NOT NULL AND i.login_time != '') 
-             AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') 
-             AND (i.logout_time IS NULL OR i.logout_time = '') THEN 'Active Now'
-        
-        -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
-        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Active Now'
-        
-        -- Default to 'Unknown' if no status is detected
-        ELSE 'Unknown'
-     END AS status
-FROM time_logs i
-JOIN profile_information p ON i.internID = p.internID
-JOIN intacc ia ON i.internID = ia.internID  -- Join with intacc table for profile_image
-WHERE i.faciID = :faciID
-AND (
-    DATE(i.login_time) = CURDATE() OR
-    DATE(i.break_time) = CURDATE() OR
-    DATE(i.back_to_work_time) = CURDATE() OR
-    DATE(i.logout_time) = CURDATE()
-)
-";
+
 
 
 
 // Assuming you have a valid query
 
 // SQL query to join time_logs with profile_information based on faciID
-$query = "SELECT time_logs.*, profile_information.first_name
-          FROM time_logs
-          JOIN profile_information ON time_logs.faciID = profile_information.faciID
-          WHERE time_logs.faciID = :faciID";
+ $query = "SELECT time_logs.*, 
+profile_information.first_name,
+CASE
+    -- If logout_time is not NULL or empty, show 'Logged Out'
+    WHEN (time_logs.logout_time IS NOT NULL AND time_logs.logout_time != '') THEN 'Logged Out'
+    
+    -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
+    WHEN (time_logs.break_time IS NOT NULL AND time_logs.break_time != '') 
+         AND (time_logs.back_to_work_time IS NULL OR time_logs.back_to_work_time = '') THEN 'On Break'
+    
+    -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
+    WHEN (time_logs.login_time IS NOT NULL AND time_logs.login_time != '') 
+         AND (time_logs.back_to_work_time IS NULL OR time_logs.back_to_work_time = '') 
+         AND (time_logs.logout_time IS NULL OR time_logs.logout_time = '') THEN 'Active Now'
+    
+    -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
+    WHEN (time_logs.back_to_work_time IS NOT NULL AND time_logs.back_to_work_time != '') THEN 'Active Now'
+    
+    -- Default to 'Unknown' if no status is detected
+    ELSE 'Unknown'
+END AS status
+FROM time_logs
+JOIN profile_information ON time_logs.faciID = profile_information.faciID
+WHERE time_logs.faciID = :faciID";
+
 
 // Prepare the query
 $stmt = $conn->prepare($query);
