@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded");
     const internDetails = document.querySelector('.intern-details');
     if (internDetails) {
+        console.log("Element found:", internDetails);
         internDetails.classList.toggle('show');
     } else {
         console.error("Element with class 'intern-details' not found.");
