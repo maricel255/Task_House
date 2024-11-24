@@ -409,13 +409,10 @@ try {
     if (!empty($interns)) {
         // Process the results
         foreach ($interns as $intern) {
-            // Display first name and status
-           // echo "<p><strong>First Name:</strong> " . htmlspecialchars($intern['first_name']) . "</p>";
-           // echo "<p><strong>Status:</strong> " . htmlspecialchars($intern['status']) . "</p>";
+           
         }
     } else {
-        // No records for today's time logs
-       // echo "<p style='color: red; font-weight: bold;'>No Time Records for today</p>";
+       
     }
     
 } catch (PDOException $e) {
@@ -701,8 +698,9 @@ try {
 
         <div class="intern-status-dashboard">
         <h2 >Availability Status</h2>
-
-        <?php if ($interns): ?>
+        <?php
+        $displayedInternIDs = []; 
+         if ($interns): ?>
     <table class="intern-status-table">
         <thead>
             <tr>
@@ -714,6 +712,14 @@ try {
         </thead>
         <tbody>
             <?php foreach ($interns as $intern): ?>
+                <?php
+                // Skip this intern if the internID has already been displayed
+                if (in_array($intern['internID'], $displayedInternIDs)) {
+                    continue;
+                }
+                // Mark the current internID as displayed
+                $displayedInternIDs[] = $intern['internID'];
+                ?>
                 <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
                     <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                     <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
@@ -722,10 +728,8 @@ try {
                     </td>
                     <td>
                         <?php if (!empty($intern['profile_image'])): ?>
-                            <!-- Display profile image -->
                             <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
                         <?php else: ?>  
-                            <!-- Default image if no profile image exists -->
                             <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
                         <?php endif; ?>
                     </td>
