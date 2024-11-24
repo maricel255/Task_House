@@ -361,6 +361,7 @@ try {
 
 // Assuming you have a valid query
 
+
 $query = "SELECT time_logs.*, 
 profile_information.first_name,
 CASE
@@ -383,8 +384,13 @@ CASE
 END AS status
 FROM time_logs
 JOIN profile_information ON time_logs.faciID = profile_information.faciID
-WHERE time_logs.faciID = :faciID";
-
+WHERE time_logs.faciID = :faciID
+  AND (
+      DATE(time_logs.login_time) = CURDATE() OR
+      DATE(time_logs.logout_time) = CURDATE() OR
+      DATE(time_logs.break_time) = CURDATE() OR
+      DATE(time_logs.back_to_work_time) = CURDATE()
+  )";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -400,21 +406,24 @@ try {
     $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Check if there are results
-    if ($interns) {
+    if (!empty($interns)) {
         // Process the results
         foreach ($interns as $intern) {
-            // Display first name from profile_information table and other time_logs columns
-         //   echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
-         //   echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
+            // Display first name and status
+            echo "<p><strong>First Name:</strong> " . htmlspecialchars($intern['first_name']) . "</p>";
+            echo "<p><strong>Status:</strong> " . htmlspecialchars($intern['status']) . "</p>";
         }
     } else {
-        echo "No records found.";
+        // No records for today's time logs
+        echo "<p style='color: red; font-weight: bold;'>No Time Records for today</p>";
     }
     
 } catch (PDOException $e) {
     // Handle any error that occurs during query execution
-    echo "Error: " . $e->getMessage();
+    echo "<p>Error: " . $e->getMessage() . "</p>";
 }
+
+
 
 // Prepare and execute the query to get the count of active interns
 $stmt = $conn->prepare($query);
@@ -709,7 +718,7 @@ try {
                     <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                     <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
                     <td class="<?php echo strtolower($intern['status']); ?>">
-                        <strong>Status:</strong> <?php echo htmlspecialchars($intern['status']); ?>
+                        <strong> <?php echo htmlspecialchars($intern['status']); ?></strong>
                     </td>
                     <td>
                         <?php if (!empty($intern['profile_image'])): ?>
