@@ -448,11 +448,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Redirect to the same page to avoid resubmission on refresh
                     if (isset($_GET['status']) && $_GET['status'] === 'success') {
                         echo "<script>alert('Announcement successfully posted!');</script>";
-                        header("Location: " . $_SERVER['PHP_SELF'];
-                        exit;  // Ensure no further code is executed after the redirect
-
                     }
-                } else {
+\                } else {
                     echo "<script>alert('Error posting announcement.');</script>";
                 }
             } else {
