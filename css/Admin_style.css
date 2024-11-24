@@ -650,7 +650,7 @@ body::before {
   /* Close Button */
 .close {
   color: #aaa;
-  float: left; /* Move the close button to the left */
+ left:3px; /* Move the close button to the left */
   font-size: 28px;
   font-weight: bold;
 }
