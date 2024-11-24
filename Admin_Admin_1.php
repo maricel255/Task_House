@@ -698,10 +698,9 @@ $timeLogsCount = $stmt->fetchColumn();
                 <div class="modal-content">
                     <span class="close" onclick="closeModal('myModal')">&times;</span>
                     <h2>My Profile</h2>
-
-                    <form id="updateProfileForm" method="POST" action=" " enctype="multipart/form-data">
-                        <!-- Display error messages if any -->
-                        <?php if (!empty($messages)): ?>
+                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data">
+                        <!-- Display error messages if any (only after form submission) -->
+                        <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($messages)): ?>
                             <div class="error-messages" style="color: red;">
                                 <?php foreach ($messages as $message): ?>
                                     <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
@@ -737,6 +736,7 @@ $timeLogsCount = $stmt->fetchColumn();
                         <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>
+
                 </div>
             </div>
     </div>
