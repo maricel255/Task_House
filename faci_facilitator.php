@@ -355,41 +355,28 @@ try {
 
 
 
-// Ensure that invalid '0000-00-00 00:00:00' values are replaced by 'NA' in PHP before preparing the query
-
-// Modify the query to only use valid values
+// SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
 $query = "
-SELECT i.internID, p.first_name, ia.profile_image, 
-    CASE
-        WHEN (i.logout_time = '0000-00-00 00:00:00' OR i.logout_time IS NULL) THEN 'NA'
-        ELSE i.logout_time
-    END AS logout_time,
-    
-    CASE
-        WHEN (i.break_time = '0000-00-00 00:00:00' OR i.break_time IS NULL) THEN 'NA'
-        ELSE i.break_time
-    END AS break_time,
-    
-    CASE
-        WHEN (i.back_to_work_time = '0000-00-00 00:00:00' OR i.back_to_work_time IS NULL) THEN 'NA'
-        ELSE i.back_to_work_time
-    END AS back_to_work_time,
-    
-    CASE
-        WHEN (i.login_time = '0000-00-00 00:00:00' OR i.login_time IS NULL) THEN 'NA'
-        ELSE i.login_time
-    END AS login_time,
-
-    CASE
-        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '' AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
-        WHEN (i.break_time IS NOT NULL AND i.break_time != '' AND i.break_time != '0000-00-00 00:00:00') 
-             AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') THEN 'On Break'
-        WHEN (i.login_time IS NOT NULL AND i.login_time != '' AND i.login_time != '0000-00-00 00:00:00') 
-             AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') 
-             AND (i.logout_time IS NULL OR i.logout_time = '' OR i.logout_time = '0000-00-00 00:00:00') THEN 'Active Now'
-        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '' AND i.back_to_work_time != '0000-00-00 00:00:00') THEN 'Active Now'
+SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
+     CASE
+        -- If logout_time is not NULL or empty, show 'Logged Out'
+        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '') THEN 'Logged Out'
+        
+        -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
+        WHEN (i.break_time IS NOT NULL AND i.break_time != '') 
+             AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') THEN 'On Break'
+        
+        -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
+        WHEN (i.login_time IS NOT NULL AND i.login_time != '') 
+             AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') 
+             AND (i.logout_time IS NULL OR i.logout_time = '') THEN 'Active Now'
+        
+        -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
+        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Active Now'
+        
+        -- Default to 'Unknown' if no status is detected
         ELSE 'Unknown'
-    END AS status
+     END AS status
 FROM time_logs i
 JOIN profile_information p ON i.internID = p.internID
 JOIN intacc ia ON i.internID = ia.internID  -- Join with intacc table for profile_image
@@ -401,6 +388,16 @@ AND (
     DATE(i.logout_time) = CURDATE()
 )
 ";
+
+
+
+// Assuming you have a valid query
+
+// SQL query to join time_logs with profile_information based on faciID
+$query = "SELECT time_logs.*, profile_information.first_name
+          FROM time_logs
+          JOIN profile_information ON time_logs.faciID = profile_information.faciID
+          WHERE time_logs.faciID = :faciID";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -419,18 +416,18 @@ try {
     if ($interns) {
         // Process the results
         foreach ($interns as $intern) {
-            // Display first name and status
-            echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
-            echo "<p>Status: " . htmlspecialchars($intern['status']) . "</p>";
+            // Display first name from profile_information table and other time_logs columns
+         //   echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
+         //   echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
         }
     } else {
         echo "No records found.";
     }
+    
 } catch (PDOException $e) {
     // Handle any error that occurs during query execution
     echo "Error: " . $e->getMessage();
 }
-
 
 // Prepare and execute the query to get the count of active interns
 $stmt = $conn->prepare($query);
