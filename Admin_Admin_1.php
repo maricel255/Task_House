@@ -305,8 +305,6 @@ if (isset($_POST['addIntern'])) {
 
             if ($stmt->execute()) {
                 $_SESSION['message'] = "Intern account added successfully!";
-                header("Location: " . $_SERVER['PHP_SELF']); // Refresh the page
-                exit();
             } else {
                 $_SESSION['message'] = "Error: Could not add intern account.";
             }
