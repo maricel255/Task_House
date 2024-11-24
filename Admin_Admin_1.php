@@ -418,7 +418,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
         $title = trim($_POST['title']);
         $announcement = trim($_POST['announcement']);
-
+    
         // Ensure the file upload is handled correctly
         if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
             // Process file upload
@@ -426,28 +426,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $fileName = $_FILES['fileUpload']['name'];
             $fileSize = $_FILES['fileUpload']['size'];
             $fileType = $_FILES['fileUpload']['type'];
-
+    
             // Define the path where the file will be uploaded
             $uploadFileDir = __DIR__ . '/uploaded_files/';
             $dest_path = $uploadFileDir . $fileName;
-
+    
             // Move the file to the desired directory
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                 // File is successfully uploaded
                 // Prepare the SQL statement
                 $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
                 $stmt = $conn->prepare($sql);
-
+    
                 // Bind the parameters
                 $stmt->bindValue(':title', $title, PDO::PARAM_STR);
                 $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR); // Store the file path in the database
                 $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
                 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Replace with the actual admin ID
-
+    
                 // Execute the statement
                 if ($stmt->execute()) {
                     $_SESSION['message'] = 'Announcement posted successfully!';
-                   
                 } else {
                     $_SESSION['message'] = "Error posting announcement.";
                 }
@@ -457,8 +456,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $_SESSION['message'] = "No file uploaded or there was an upload error.";
         }
-        
+    
+        // Redirect to avoid resubmission on page refresh
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     }
+    
     
 }
 
