@@ -391,7 +391,12 @@ AND (
 
 
 // Assuming you have a valid query
-$query = "SELECT * FROM time_logs WHERE faciID = :faciID";
+
+// SQL query to join time_logs with profile_information based on faciID
+$query = "SELECT time_logs.*, profile_information.first_name
+          FROM time_logs
+          JOIN profile_information ON time_logs.faciID = profile_information.faciID
+          WHERE time_logs.faciID = :faciID";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -410,8 +415,9 @@ try {
     if ($interns) {
         // Process the results
         foreach ($interns as $intern) {
-            // You can access each intern's data here, e.g.:
-            echo $intern['column_name']; // Replace column_name with actual column name
+            // Display first name from profile_information table and other time_logs columns
+            echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
+            echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
         }
     } else {
         echo "No records found.";
