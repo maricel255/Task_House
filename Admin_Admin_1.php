@@ -161,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate input for creating an account
     if (empty($internID) || empty($InternPass)) {
+        $_SESSION['message'] = 'Page Refreshed.';
         $_SESSION['message'] = 'Intern ID and password are required.';
     } else {
         // Optional: Check password length
