@@ -605,7 +605,6 @@ body::before {
 }
 
 /* Modal Background */
-/* Modal Background */
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -621,6 +620,7 @@ body::before {
   border-radius: 10px; /* Optional: add rounded corners */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Optional shadow for focus */
 }
+
 
 /* Modal Content */
 .modal-content {
