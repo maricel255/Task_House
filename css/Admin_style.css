@@ -608,33 +608,31 @@ body::before {
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 2; /* Sit on top of the overlay */
+  z-index: 1000; /* Ensure it appears on top */
   left: 50%; /* Center from the left */
   top: 50%; /* Center from the top */
   width: 40%; /* Adjust width for portrait */
-  height: 80%; /* Adjust height for portrait */
+  max-width: 90%; /* Make it responsive on smaller screens */
+  height: auto; /* Let height adjust based on content */
+  max-height: 80%; /* Limit height to avoid overflow */
   overflow: auto; /* Enable scroll if needed */
   background-color: transparent; /* Fully transparent background */
-  padding-top: 20px; /* Space above the modal content */
   border-radius: 10px; /* Optional: add rounded corners */
   transform: translate(-50%, -50%); /* Center the modal */
-  box-shadow: none; /* No shadow for full-screen modal */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Optional shadow for focus */
 }
 
-
-
-  /* Modal Content */
-  .modal-content {
-    background-color: #fefefe; /* Light background for the modal content */
-    margin: 5% auto; /* Center modal content */
-    padding: 20px; /* Padding inside the modal */
-    border: 1px solid #888; /* Border for the content */
-    border-radius: 10px; /* Optional: rounded corners */
-    width: 90%; /* Ensure the content width is responsive */
-    height: auto; /* Let height be determined by content */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe; /* Light background for the modal content */
+  margin: 0 auto; /* Center modal content horizontally */
+  padding: 20px; /* Padding inside the modal */
+  border: 1px solid #888; /* Border for the content */
+  border-radius: 10px; /* Optional: rounded corners */
+  width: 100%; /* Ensure the content width is responsive */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
 }
-  
+
   .Accmodal-content {
     background-color: #fefefe;
     margin: auto;
