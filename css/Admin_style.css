@@ -595,7 +595,7 @@ body::before {
 .overlay {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Below modal */
+  z-index: 1000; /* Below modal */
   left: 0;
   top: 0;
   width: 100%; /* Full width of the viewport */
@@ -631,6 +631,9 @@ body::before {
   border-radius: 10px; /* Optional: rounded corners */
   width: 100%; /* Ensure the content width is responsive */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+}
+.myModal{
+
 }
 
   .Accmodal-content {
