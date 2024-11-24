@@ -163,15 +163,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $log = $stmt->fetch(PDO::FETCH_ASSOC);
     
             // Check if any of the necessary fields are empty
-            if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
-                // Set error message in the session
-                $_SESSION['alertMessage'] = "All time fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled in before approving.";
-                $_SESSION['alertType'] = 'error'; // Set alert type as error
-    
-                // Redirect to avoid form resubmission and display the message
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
+            // Check if any of the necessary fields are empty
+                if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
+                    // Set error message in the session
+                    $_SESSION['alertMessage'] = "All time fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled in before approving.";
+                    $_SESSION['alertType'] = 'error'; // Set alert type as error
+
+                    // Redirect to avoid form resubmission and display the message
+                    header("Location: " . $_SERVER['PHP_SELF']);
+                    exit();
+                }
+
     
             // Define your update query to set the status to 'approved' only for the specific row (log_id)
             $sql = "UPDATE time_logs 
