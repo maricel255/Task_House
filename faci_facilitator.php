@@ -416,8 +416,8 @@ try {
         // Process the results
         foreach ($interns as $intern) {
             // Display first name from profile_information table and other time_logs columns
-            echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
-            echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
+         //   echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
+         //   echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
         }
     } else {
         echo "No records found.";
