@@ -428,7 +428,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $fileType = $_FILES['fileUpload']['type'];
 
             // Define the path where the file will be uploaded
-            $uploadFileDir = './uploaded_files/';
+            $uploadFileDir = __DIR__ . '/uploaded_files/';
             $dest_path = $uploadFileDir . $fileName;
 
             // Move the file to the desired directory
