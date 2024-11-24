@@ -414,55 +414,58 @@ $totalAccounts = $stmt->fetchColumn();
 
 // Check if form is submitted in posting a announcement 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the posted values
-    if (isset($_POST['title']) && isset($_POST['announcement'])) {
-        $title = trim($_POST['title']);
-        $announcement = trim($_POST['announcement']);
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST['title']) && isset($_POST['announcement'])) {
+            $title = trim($_POST['title']);
+            $announcement = trim($_POST['announcement']);
+            
+            // Ensure file upload is handled
+            if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+                // Process file upload
+                $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+                $fileName = $_FILES['fileUpload']['name'];
+                $fileSize = $_FILES['fileUpload']['size'];
+                $fileType = $_FILES['fileUpload']['type'];
     
-        // Ensure the file upload is handled correctly
-        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
-            // Process file upload
-            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-            $fileName = $_FILES['fileUpload']['name'];
-            $fileSize = $_FILES['fileUpload']['size'];
-            $fileType = $_FILES['fileUpload']['type'];
+                // Define the path where the file will be uploaded
+                $uploadFileDir = __DIR__ . '/uploaded_files/';
+                $dest_path = $uploadFileDir . $fileName;
     
-            // Define the path where the file will be uploaded
-            $uploadFileDir = __DIR__ . '/uploaded_files/';
-            $dest_path = $uploadFileDir . $fileName;
+                // Move the file to the desired directory
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    // File successfully uploaded
+                    // Prepare the SQL statement
+                    $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
+                    $stmt = $conn->prepare($sql);
     
-            // Move the file to the desired directory
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                // File is successfully uploaded
-                // Prepare the SQL statement
-                $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
-                $stmt = $conn->prepare($sql);
+                    // Bind the parameters
+                    $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+                    $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
+                    $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
     
-                // Bind the parameters
-                $stmt->bindValue(':title', $title, PDO::PARAM_STR);
-                $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR); // Store the file path in the database
-                $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
-                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Replace with the actual admin ID
-    
-                // Execute the statement
-                if ($stmt->execute()) {
-                    $_SESSION['message'] = 'Announcement posted successfully!';
+                    // Execute the statement
+                    if ($stmt->execute()) {
+                        $_SESSION['message'] = 'Announcement posted successfully!';
+                        $_SESSION['message_type'] = 'success';  // Optionally set the message type
+                    } else {
+                        $_SESSION['message'] = "Error posting announcement.";
+                        $_SESSION['message_type'] = 'error';
+                    }
                 } else {
-                    $_SESSION['message'] = "Error posting announcement.";
+                    $_SESSION['message'] = "Error uploading the file.";
+                    $_SESSION['message_type'] = 'error';
                 }
             } else {
-                $_SESSION['message'] = "Error uploading the file.";
+                $_SESSION['message'] = "No file uploaded or there was an upload error.";
+                $_SESSION['message_type'] = 'error';
             }
-        } else {
-            $_SESSION['message'] = "No file uploaded or there was an upload error.";
+    
+            // Redirect to avoid resubmission on page refresh
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
         }
-    
-        // Redirect to avoid resubmission on page refresh
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
     }
-    
-    
 }
 
 
@@ -620,24 +623,27 @@ $timeLogsCount = $stmt->fetchColumn();
 <body>
 <?php
             
-            if (isset($_SESSION['message'])) {
-                ?>
-                <div class="alert alert-success" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-                    <?php echo htmlspecialchars($_SESSION['message']); ?>
-                </div>
-                <script type="text/javascript">
-                    // Hide the alert after 5 seconds
-                    setTimeout(function() {
-                        var alertBox = document.getElementById('alertBox');
-                        if (alertBox) {
-                            alertBox.style.display = 'none';
-                        }
-                    }, 5000);
-                </script>
-                <?php
-                // Unset the message after displaying
-                unset($_SESSION['message']);
-            }  
+           // Check if the session message is set
+if (isset($_SESSION['message'])) {
+    $alertClass = ($_SESSION['message_type'] == 'error') ? 'alert-danger' : 'alert-success';
+    ?>
+    <div class="alert <?php echo $alertClass; ?>" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
+        <?php echo htmlspecialchars($_SESSION['message']); ?>
+    </div>
+    <script type="text/javascript">
+        // Hide the alert after 5 seconds
+        setTimeout(function() {
+            var alertBox = document.getElementById('alertBox');
+            if (alertBox) {
+                alertBox.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+    <?php
+    // Unset the message after displaying
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']);
+}
         ?>   
    
 
