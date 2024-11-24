@@ -355,6 +355,7 @@ try {
 
 
 
+
 // SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
 $query = "
 SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
@@ -389,15 +390,6 @@ AND (
 )
 ";
 
-
-// Assuming you have a valid query
-
-// SQL query to join time_logs with profile_information based on faciID
-$query = "SELECT time_logs.*, profile_information.first_name
-          FROM time_logs
-          JOIN profile_information ON time_logs.faciID = profile_information.faciID
-          WHERE time_logs.faciID = :faciID";
-
 // Prepare the query
 $stmt = $conn->prepare($query);
 
@@ -411,22 +403,8 @@ try {
     // Fetch all the results
     $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Check if there are results
-    if ($interns) {
-        // Process the results
-        foreach ($interns as $intern) {
-            // Display first name from profile_information table and other time_logs columns
-         //   echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
-         //   echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
-        }
-    } else {
-        echo "No records found.";
-    }
-    
-} catch (PDOException $e) {
-    // Handle any error that occurs during query execution
-    echo "Error: " . $e->getMessage();
-}
+    // Output the results directly in the main view
+    if ($interns):
 
 // Prepare and execute the query to get the count of active interns
 $stmt = $conn->prepare($query);
