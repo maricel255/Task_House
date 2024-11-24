@@ -25,13 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Verify password (use hashing in production)
         if ($faciPass === $user['faciPass']) {
-            $_SESSION['Uname'] = $faciID;
-            // Redirect to the dashboard or next page
-            header("Location: faci_facilitator.php");
-            exit();
-        } else {
-            echo "Password does not match.<br>"; // Debugging line (remove in production)
-        }
+          $_SESSION['Uname'] = $faciID; // Store the username in the session
+          header("Location: faci_facilitator.php"); // Redirect to the facilitator page
+          exit(); // Prevent further code execution
+      } else {
+          echo "Password does not match.<br>"; // Debugging line (remove in production)
+      }
     } else {
         echo "No user found with the provided FaciID.<br>"; // Debugging line (remove in production)
     }
