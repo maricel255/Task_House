@@ -1,7 +1,10 @@
 <?php
-require('db_taskHouse/Admin_connection.php');
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start(); // Start the session
+require('db_Taskhouse/Admin_connection.php');
 
 // Check if 'Uname' (faciID) is set in the session
 if (isset($_SESSION['Uname'])) {
