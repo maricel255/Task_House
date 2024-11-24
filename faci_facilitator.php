@@ -360,19 +360,19 @@ $query = "
 SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
      CASE
         -- If logout_time is not NULL or empty, show 'Logged Out'
-        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '' AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
+        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
         
         -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
-        WHEN (i.break_time IS NOT NULL AND i.break_time != '' AND i.break_time != '0000-00-00 00:00:00') 
+        WHEN (i.break_time IS NOT NULL AND i.break_time != '0000-00-00 00:00:00') 
              AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') THEN 'On Break'
         
         -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
-        WHEN (i.login_time IS NOT NULL AND i.login_time != '' AND i.login_time != '0000-00-00 00:00:00') 
+        WHEN (i.login_time IS NOT NULL AND i.login_time != '0000-00-00 00:00:00') 
              AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') 
              AND (i.logout_time IS NULL OR i.logout_time = '' OR i.logout_time = '0000-00-00 00:00:00') THEN 'Active Now'
         
         -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
-        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '' AND i.back_to_work_time != '0000-00-00 00:00:00') THEN 'Active Now'
+        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '0000-00-00 00:00:00') THEN 'Active Now'
         
         -- Default to 'Unknown' if no status is detected
         ELSE 'Unknown'
@@ -388,6 +388,7 @@ AND (
     DATE(i.logout_time) = CURDATE()
 )
 ";
+
 
 
 
