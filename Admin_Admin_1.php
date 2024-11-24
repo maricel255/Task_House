@@ -414,7 +414,6 @@ $totalAccounts = $stmt->fetchColumn();
 
 // Check if form is submitted in posting a announcement 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $message = ''; // Initialize message variable
 
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
         $title = trim($_POST['title']);
