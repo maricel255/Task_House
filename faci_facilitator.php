@@ -355,34 +355,34 @@ try {
 
 
 
-// SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
 $query = "
 SELECT i.internID, p.first_name, ia.profile_image, 
     CASE
-        -- If logout_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        -- Replace '0000-00-00 00:00:00' with 'NA' for logout_time
         WHEN (i.logout_time = '0000-00-00 00:00:00' OR i.logout_time IS NULL) THEN 'NA'
         ELSE i.logout_time
     END AS logout_time,
     
     CASE
-        -- If break_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        -- Replace '0000-00-00 00:00:00' with 'NA' for break_time
         WHEN (i.break_time = '0000-00-00 00:00:00' OR i.break_time IS NULL) THEN 'NA'
         ELSE i.break_time
     END AS break_time,
     
     CASE
-        -- If back_to_work_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        -- Replace '0000-00-00 00:00:00' with 'NA' for back_to_work_time
         WHEN (i.back_to_work_time = '0000-00-00 00:00:00' OR i.back_to_work_time IS NULL) THEN 'NA'
         ELSE i.back_to_work_time
     END AS back_to_work_time,
     
     CASE
-        -- If login_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        -- Replace '0000-00-00 00:00:00' with 'NA' for login_time
         WHEN (i.login_time = '0000-00-00 00:00:00' OR i.login_time IS NULL) THEN 'NA'
         ELSE i.login_time
     END AS login_time,
 
     CASE
+        -- Check if logout_time exists (logged out), break_time (on break), etc.
         WHEN (i.logout_time IS NOT NULL AND i.logout_time != '' AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
         WHEN (i.break_time IS NOT NULL AND i.break_time != '' AND i.break_time != '0000-00-00 00:00:00') 
              AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') THEN 'On Break'
@@ -403,7 +403,6 @@ AND (
     DATE(i.logout_time) = CURDATE()
 )
 ";
-
 
 
 // Prepare the query
