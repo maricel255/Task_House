@@ -1273,16 +1273,17 @@ echo '</table>';
                 foreach ($results as $row): 
                 ?>
                     <tr>
-                        <td><?php echo $count++; ?></td> <!-- Display count and increment -->
-                        <td><?php echo htmlspecialchars($row['internID']); ?></td>
-                        <td><?php echo htmlspecialchars($row['faciID']); ?></td>
-                        <td><?php echo htmlspecialchars($row['start_shift']); ?></td>
-                        <td><?php echo htmlspecialchars($row['end_shift']); ?></td>
-                        <td><?php echo htmlspecialchars($row['login_time']); ?></td>
-                        <td><?php echo htmlspecialchars($row['task']); ?></td>
-                        <td><?php echo htmlspecialchars($row['logout_time']); ?></td>
-                        <td><?php echo htmlspecialchars($row['status']); ?></td>
-                    </tr>
+    <td><?php echo $count++; ?></td> <!-- Display count and increment -->
+    <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+</tr>
+
                 <?php endforeach; ?>
             </tbody>
         </table>
