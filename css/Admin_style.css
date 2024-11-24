@@ -14,7 +14,6 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: url('image/cot-removebg-preview.png'); /* Path to the logo image */
     background-position: right bottom; /* Position the image in the lower right corner */
     background-repeat: no-repeat; /* Prevent the image from repeating */
     background-size: 350px; /* Adjust the size of the image as needed */
