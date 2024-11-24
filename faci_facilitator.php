@@ -355,34 +355,32 @@ try {
 
 
 
+// Ensure that invalid '0000-00-00 00:00:00' values are replaced by 'NA' in PHP before preparing the query
+
+// Modify the query to only use valid values
 $query = "
 SELECT i.internID, p.first_name, ia.profile_image, 
     CASE
-        -- Replace '0000-00-00 00:00:00' with 'NA' for logout_time
         WHEN (i.logout_time = '0000-00-00 00:00:00' OR i.logout_time IS NULL) THEN 'NA'
         ELSE i.logout_time
     END AS logout_time,
     
     CASE
-        -- Replace '0000-00-00 00:00:00' with 'NA' for break_time
         WHEN (i.break_time = '0000-00-00 00:00:00' OR i.break_time IS NULL) THEN 'NA'
         ELSE i.break_time
     END AS break_time,
     
     CASE
-        -- Replace '0000-00-00 00:00:00' with 'NA' for back_to_work_time
         WHEN (i.back_to_work_time = '0000-00-00 00:00:00' OR i.back_to_work_time IS NULL) THEN 'NA'
         ELSE i.back_to_work_time
     END AS back_to_work_time,
     
     CASE
-        -- Replace '0000-00-00 00:00:00' with 'NA' for login_time
         WHEN (i.login_time = '0000-00-00 00:00:00' OR i.login_time IS NULL) THEN 'NA'
         ELSE i.login_time
     END AS login_time,
 
     CASE
-        -- Check if logout_time exists (logged out), break_time (on break), etc.
         WHEN (i.logout_time IS NOT NULL AND i.logout_time != '' AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
         WHEN (i.break_time IS NOT NULL AND i.break_time != '' AND i.break_time != '0000-00-00 00:00:00') 
              AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') THEN 'On Break'
@@ -404,7 +402,6 @@ AND (
 )
 ";
 
-
 // Prepare the query
 $stmt = $conn->prepare($query);
 
@@ -422,18 +419,18 @@ try {
     if ($interns) {
         // Process the results
         foreach ($interns as $intern) {
-            // Display first name from profile_information table and other time_logs columns
-         //   echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
-         //   echo "<p>Other Column: " . htmlspecialchars($intern['other_column']) . "</p>";  // Replace 'other_column' with the actual column name from time_logs table
+            // Display first name and status
+            echo "<p>First Name: " . htmlspecialchars($intern['first_name']) . "</p>";
+            echo "<p>Status: " . htmlspecialchars($intern['status']) . "</p>";
         }
     } else {
         echo "No records found.";
     }
-    
 } catch (PDOException $e) {
     // Handle any error that occurs during query execution
     echo "Error: " . $e->getMessage();
 }
+
 
 // Prepare and execute the query to get the count of active interns
 $stmt = $conn->prepare($query);
