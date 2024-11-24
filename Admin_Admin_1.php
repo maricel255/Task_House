@@ -778,24 +778,12 @@ if (isset($_SESSION['message'])) {
 
 <!-- Display message if set -->
 <?php
-            
-           // Check if the session message is set
 if (isset($_SESSION['message'])) {
-    $alertClass = ($_SESSION['message_type'] == 'error') ? 'alert-danger' : 'alert-success';
-    ?>
-    <div class="alert <?php echo $alertClass; ?>" role="alert" style="position: fixed; top: 70px; right: 30px; z-index: 1000; background-color: #f2b25c; color: white; padding: 15px; border-radius: 5px;" id="alertBox">
-        <?php echo htmlspecialchars($_SESSION['message']); ?>
-    </div>
-    <script type="text/javascript">
-        // Hide the alert after 5 seconds
-        setTimeout(function() {
-            var alertBox = document.getElementById('alertBox');
-            if (alertBox) {
-                alertBox.style.display = 'none';
-            }
-        }, 5000);
-    </script>
-    <?php
+    $message = $_SESSION['message'];
+    echo "<script>alert('$message');</script>"; // Display the message in an alert box
+    unset($_SESSION['message']); // Clear the message so it won't show after page refresh
+}
+?>
 
                 <div class="announcement-slider">
                     <div class="slider-container">
