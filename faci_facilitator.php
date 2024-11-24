@@ -144,8 +144,7 @@ $approvalCount = count($logs);
 
 // Handle form submission for approval, decline, and update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['approveBtn'])) {
-      // Initialize $disableApprove to false
+   
 $disableApprove = false;
 
 // Check if the form is submitted
