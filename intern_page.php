@@ -885,7 +885,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
             <!-- Dropdown to select an existing task -->
             <label for="task">Select Existing Task:</label>
-            <select name="tasks[]" required>
+            <select name="tasks[]" >
                 <option value="" disabled selected>Select a Task</option>
                 
                 <?php 
