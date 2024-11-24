@@ -357,26 +357,41 @@ try {
 
 // SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
 $query = "
-SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
-     CASE
-        -- If logout_time is not NULL or empty, show 'Logged Out'
-        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
-        
-        -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
-        WHEN (i.break_time IS NOT NULL AND i.break_time != '0000-00-00 00:00:00') 
+SELECT i.internID, p.first_name, ia.profile_image, 
+    CASE
+        -- If logout_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        WHEN (i.logout_time = '0000-00-00 00:00:00' OR i.logout_time IS NULL) THEN 'NA'
+        ELSE i.logout_time
+    END AS logout_time,
+    
+    CASE
+        -- If break_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        WHEN (i.break_time = '0000-00-00 00:00:00' OR i.break_time IS NULL) THEN 'NA'
+        ELSE i.break_time
+    END AS break_time,
+    
+    CASE
+        -- If back_to_work_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        WHEN (i.back_to_work_time = '0000-00-00 00:00:00' OR i.back_to_work_time IS NULL) THEN 'NA'
+        ELSE i.back_to_work_time
+    END AS back_to_work_time,
+    
+    CASE
+        -- If login_time is '0000-00-00 00:00:00' or NULL, return 'NA', otherwise return the value
+        WHEN (i.login_time = '0000-00-00 00:00:00' OR i.login_time IS NULL) THEN 'NA'
+        ELSE i.login_time
+    END AS login_time,
+
+    CASE
+        WHEN (i.logout_time IS NOT NULL AND i.logout_time != '' AND i.logout_time != '0000-00-00 00:00:00') THEN 'Logged Out'
+        WHEN (i.break_time IS NOT NULL AND i.break_time != '' AND i.break_time != '0000-00-00 00:00:00') 
              AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') THEN 'On Break'
-        
-        -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
-        WHEN (i.login_time IS NOT NULL AND i.login_time != '0000-00-00 00:00:00') 
+        WHEN (i.login_time IS NOT NULL AND i.login_time != '' AND i.login_time != '0000-00-00 00:00:00') 
              AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '' OR i.back_to_work_time = '0000-00-00 00:00:00') 
              AND (i.logout_time IS NULL OR i.logout_time = '' OR i.logout_time = '0000-00-00 00:00:00') THEN 'Active Now'
-        
-        -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
-        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '0000-00-00 00:00:00') THEN 'Active Now'
-        
-        -- Default to 'Unknown' if no status is detected
+        WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '' AND i.back_to_work_time != '0000-00-00 00:00:00') THEN 'Active Now'
         ELSE 'Unknown'
-     END AS status
+    END AS status
 FROM time_logs i
 JOIN profile_information p ON i.internID = p.internID
 JOIN intacc ia ON i.internID = ia.internID  -- Join with intacc table for profile_image
@@ -388,11 +403,6 @@ AND (
     DATE(i.logout_time) = CURDATE()
 )
 ";
-
-
-
-
-
 
 
 
