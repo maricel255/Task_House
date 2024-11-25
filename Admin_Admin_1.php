@@ -152,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
+
 // Handle deleting and updating intern account
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Check if internID is set for actions
@@ -224,22 +225,24 @@ $searchInternID = '';
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
     $searchInternID = trim($_GET['searchInternID']);
     
-    // Query to fetch intern accounts matching the search ID
-    $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :internID"; 
+    if (!empty($searchInternID)) {
+        // Query to fetch intern accounts matching the search ID
+        $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :internID"; 
+        $stmt = $conn->prepare($sql);
+        $likeInternID = '%' . $searchInternID . '%'; // Use LIKE for partial matching
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->bindParam(':internID', $likeInternID, PDO::PARAM_STR);
+        $stmt->execute();
+        $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} else {
+    // Default query to fetch all intern accounts
+    $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
     $stmt = $conn->prepare($sql);
-    $likeInternID = '%' . $searchInternID . '%'; // Use LIKE for partial matching
     $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-    $stmt->bindParam(':internID', $likeInternID, PDO::PARAM_STR);
     $stmt->execute();
     $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Check if any accounts were found
-    if (empty($internAccounts)) {
-        $searchMessage = "No intern found with ID: " . htmlspecialchars($searchInternID);
-    }
 }
-
-
 // Pagination settings
 $recordsPerPage = 10; // Number of records to display per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
@@ -1045,17 +1048,32 @@ echo '</table>';
                                 <h2>Existing Intern Accounts</h2>
 
                                 <!-- Search Form Positioned in Upper Right of the Table -->
-                                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                                    <form method="GET" action="">
-                                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
-                                        <button type="submit" class="search-button">Search</button>
-                                    </form>
-                                </div>
+                                <!-- Search Form -->
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                                <form method="GET" action="" class="search-form">
+                                    <input type="text" 
+                                        name="searchInternID" 
+                                        value="<?php echo htmlspecialchars($searchInternID); ?>" 
+                                        placeholder="Search Intern ID" 
+                                        class="search-input" />
+                                    <button type="submit" class="search-button">Search</button>
+                                    <?php if (!empty($searchInternID)): ?>
+                                        <a href="?<?php echo http_build_query(array_merge($_GET, ['searchInternID' => ''])); ?>" 
+                                        class="clear-search">Clear Search</a>
+                                    <?php endif; ?>
+                                </form>
+                            </div>
 
-                                <!-- Message Display for Search Results -->
-                                <?php if ($searchInternID): ?>
-                                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-                                <?php endif; ?>
+                            <!-- Add this right after the search form to show search results status -->
+                            <?php if (!empty($searchInternID)): ?>
+                                <div class="search-status">
+                                    <?php if (empty($internAccounts)): ?>
+                                        <p>No results found for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+                                    <?php else: ?>
+                                        <p>Showing results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
 
                                 <!-- Intern Accounts Table -->
                                 <?php if (!empty($internAccounts)): ?>
