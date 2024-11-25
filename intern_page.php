@@ -1236,9 +1236,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
     <!-- Scholastic Data -->
     <div id="scholasticData" class="profile-category">
-        <h3>Scholastic Data</h3>
-        <div class="form-container">
-            <div class="form-row">
+    <h3>Scholastic Data</h3>
+    <div class="form-container">
+        <div class="form-row">
+            <div class="form-column">
                 <label>Elementary School:</label>
                 <input type="text" name="elementarySchool" 
                     placeholder="e.g., ABC Elementary"
@@ -1256,14 +1257,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     placeholder="e.g., Best in Math"
                     value="<?php echo htmlspecialchars($profileData['elementary_honors'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
-            </div>
-            <div class="form-row">
+
                 <label>Secondary School:</label>
                 <input type="text" name="secondarySchool" 
                     placeholder="e.g., XYZ High School"
                     value="<?php echo htmlspecialchars($profileData['secondary_school'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
 
+            <div class="form-column">
                 <label>Year Graduated:</label>
                 <input type="text" name="secondaryYearGraduated" 
                     placeholder="e.g., 2009"
@@ -1275,8 +1277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     placeholder="e.g., Valedictorian"
                     value="<?php echo htmlspecialchars($profileData['secondary_honors'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
-            </div>
-            <div class="form-row">
+
                 <label>College:</label>
                 <input type="text" name="college" 
                     placeholder="e.g., University of ABC"
@@ -1288,15 +1289,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     placeholder="e.g., 2013"
                     value="<?php echo htmlspecialchars($profileData['college_year_graduated'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                <label>Honors/Awards Received:</label>
-                <input type="text" name="collegeHonors" 
-                    placeholder="e.g., Cum Laude"
-                    value="<?php echo htmlspecialchars($profileData['college_honors'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
             </div>
         </div>
     </div>
+</div>
+
 
     <!-- Work Experience -->
     <div id="workExperience" class="profile-category">
