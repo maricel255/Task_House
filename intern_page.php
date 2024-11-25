@@ -1437,7 +1437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 <div class="content-section" id="attendance">
     <div class="attend-content">
         <div class="attendance-container">
-            <h1> Remining working hours: 
+            <h1> Remaining working hours: 
             <?php 
                 // Loop through time logs and check if any status is "Approved"
                 $totalWorkedHours = 0; // Initialize a variable to sum up total worked hours
