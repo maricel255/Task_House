@@ -430,7 +430,7 @@ body::before {
   border-radius: 10px;
   position: absolute; /* Positioning it relative to its nearest positioned ancestor */
   border: 1px solid #bc2649;
-  height: 250px;
+  height: 255px;
   width: 70%;
   z-index: -1; /* Places it behind other elements */
 }
