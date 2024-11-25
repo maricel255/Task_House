@@ -78,79 +78,80 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
+
     // Handle file upload if provided
-    $newFileName = null; // Initialize to null
-    if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] == 0) {
-        $fileTmpPath = $_FILES['newProfileImage']['tmp_name'];
-        $fileName = $_FILES['newProfileImage']['name'];
-        $fileSize = $_FILES['newProfileImage']['size'];
-        $fileType = $_FILES['newProfileImage']['type'];
-        $fileNameCmps = explode(".", $fileName);
-        $fileExtension = strtolower(end($fileNameCmps));
+$newFileName = null; // Initialize to null
+$uploadFileDir = __DIR__ . '/uploads/'; // Full path to the upload directory
 
-        // Validate file extension and size
-        $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg'];
-        if (in_array($fileExtension, $allowedfileExtensions) && $fileSize < 2000000) { // limit to 2MB
-            // Set a new file name and directory
-            $newFileName = md5(time() . $fileName) . '.' . $fileExtension; // unique file name
-            $uploadFileDir = './uploads/';
-            
-            // Ensure the upload directory exists
-            if (!is_dir($uploadFileDir)) {
-                mkdir($uploadFileDir, 0755, true); // Create directory if it doesn't exist
-            }
-            
-            $dest_path = $uploadFileDir . $newFileName;
+if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
+    $fileTmpPath = $_FILES['newProfileImage']['tmp_name'];
+    $fileName = $_FILES['newProfileImage']['name'];
+    $fileSize = $_FILES['newProfileImage']['size'];
+    $fileType = $_FILES['newProfileImage']['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
 
-            // Move the file to the uploads directory
-            if (!move_uploaded_file($fileTmpPath, $dest_path)) {
-                $messages[] = "Error moving the uploaded file.";
+    // Validate file extension and size
+    $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg'];
+    if (in_array($fileExtension, $allowedfileExtensions) && $fileSize < 2000000) { // Limit to 2MB
+        // Set a new unique file name
+        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+
+        // Ensure the upload directory exists
+        if (!is_dir($uploadFileDir)) {
+            if (!mkdir($uploadFileDir, 0755, true)) {
+                echo "<script>alert('Error creating upload directory.');</script>";
+                exit();
             }
-        } else {
-            $messages[] = "Invalid file type or file size too large.";
         }
-    }
 
-    // If there are no errors, update user info in the database
-    if (empty($messages)) {
-        try {
-            // Build the query
-            $query = "UPDATE users SET Firstname = :firstname";
-            if (!empty($newUpass)) {
-                $query .= ", Upass = :password"; // Include password only if not empty
-            }
-            if (!empty($newFileName)) {
-                $query .= ", admin_profile = :profile"; // Include profile only if not empty
-            }
-            $query .= " WHERE Uname = :Uname"; // Finalize the WHERE clause
-            
-            $stmt = $conn->prepare($query);
-            
-            // Bind parameters
-            $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
-            if (!empty($newUpass)) {
-                $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
-            }
-            if (!empty($newFileName)) {
-                $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
-            }
-            $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
-            
-            // Execute the query
-            $stmt->execute();
-            
-            // Redirect to the admin page or display success message
-            header("Location: Admin_Admin_1.php"); // Adjust the redirect as needed
-            exit();
+        $dest_path = $uploadFileDir . $newFileName;
 
-        } catch (PDOException $e) {
-            // Log the error message instead of echoing it
-            error_log("Error updating user data: " . $e->getMessage());
-            echo "There was an error updating your data. Please try again later.";
+        // Attempt to move the file to the uploads directory
+        if (!move_uploaded_file($fileTmpPath, $dest_path)) {
+            echo "<script>alert('Error moving the uploaded file.');</script>";
+            $newFileName = null; // Reset on failure
         }
+    } else {
+        echo "<script>alert('Invalid file type or file size too large.');</script>";
+        $newFileName = null;
     }
 }
 
+// If there are no issues, update user info in the database
+if ($newFileName !== null) {
+    try {
+        // Build the query
+        $query = "UPDATE users SET Firstname = :firstname";
+        if (!empty($newUpass)) {
+            $query .= ", Upass = :password"; // Include password only if not empty
+        }
+        $query .= ", admin_profile = :profile WHERE Uname = :Uname"; // Include profile
+
+        $stmt = $conn->prepare($query);
+
+        // Bind parameters
+        $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
+        if (!empty($newUpass)) {
+            $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
+        }
+        $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
+        $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Redirect to the admin page or display success message
+        header("Location: Admin_Admin_1.php?status=success"); // Adjust the redirect as needed
+        exit();
+
+    } catch (PDOException $e) {
+        error_log("Error updating user data: " . $e->getMessage());
+        echo "<script>alert('There was an error updating your data. Please try again later.');</script>";
+    }
+} else {
+    echo "<script>alert('File upload failed. Data not updated.');</script>";
+}
 
 // Handle deleting and updating intern account
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
