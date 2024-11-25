@@ -24,7 +24,8 @@ body {
     left: 0;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     border-radius: 15px;
     flex-direction: column;
     align-items: center;
@@ -33,8 +34,34 @@ body {
 }
 
 .sidebar.active {
+    transform: translateX(0); /* Slide in */
     width: 250px;
+    
 }
+/* Profile button styling */
+.bottom-right-corner.profile-button {
+    display: none; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show profile button when sidebar is active */
+.sidebar.active .bottom-right-corner.profile-button {
+    display: block;
+    opacity: 1;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .bottom-right-corner.profile-button {
+        position: relative;
+        width: 90%;
+        margin: 20px auto;
+        padding: 15px;
+        text-align: center;
+    }
+}
+
 
 /* Hide content styling */
 .sidebar.hide-content .user-details,
@@ -50,6 +77,8 @@ body {
     visibility: visible;
     transition: opacity 0.3s ease-in-out;
 }
+
+
 
 .user-name{
     border-bottom: 2px solid yellow;
@@ -171,7 +200,7 @@ body {
 /* Header Styling */
 /* Header Styling */
 .header {
-    width: calc(100% - 60px);
+    width: 100%;
     height: 60px;
     background-color: #ffffff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -181,15 +210,12 @@ body {
     padding-right: 20px;
     position: fixed;
     top: 0;
-    left: 60px;
-    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-    z-index: 1001;
+    left: 0;
+    transition: 0;
+    z-index: 1;
 }
 
-.header.shifted {
-    left: 250px;
-    width: calc(100% - 50px);
-}
+
 
 
 /* Logout Button Styling */
@@ -254,9 +280,6 @@ body {
     }
 }
 
-.form-column {
-    flex: 1; /* Equal width for both columns */
-}
 /* Main Content Styling */
 .main-content {
     margin-left: 60px;
@@ -982,17 +1005,7 @@ input, select {
 
 }
   
-.modal-content {
-    background-color: lightgreen;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 800px;
-    border-radius: 10px;
-    height: 80%; /* Adjusted to 80% of viewport height */
-    overflow: hidden; /* Prevent scrolling */
-    }
+
 
 /* Close button */
 .close {
@@ -1192,9 +1205,11 @@ input, select {
     padding: 30px;
     width: 90%; /* Responsive width */
     max-width: 600px; /* Max width for larger screens */
-   
+    height: auto;
+    max-height: 80vh;
     border-radius: 20px;
     position: relative;
+    overflow-y: auto;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     animation: modalSlideIn 0.3s ease; /* Animation */
 }
@@ -1292,6 +1307,24 @@ input, select {
 #credentialsModal .close:hover {
     color: #333;
 }
+/* Responsive Design */
+@media (max-width: 768px) {
+    #credentialsModal .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 20px;
+    }
+
+    #credentialsModal input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    #credentialsModal button[type="submit"] {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
 
 /* Animation */
 @keyframes modalSlideIn {
@@ -1315,6 +1348,7 @@ input, select {
 .image-upload-container {
     text-align: center;
     margin-bottom: 20px;
+    width: 100%;
 }
 .image-upload-container img {
     width: 100px; /* Set the desired width */
@@ -1624,4 +1658,8 @@ td[colspan="10"] {
 
 .print-btn:hover {
     background-color: #45a049; /* Slightly darker shade on hover */
+}
+
+.form-column {
+    flex: 1; /* Each column takes up equal space */
 }
