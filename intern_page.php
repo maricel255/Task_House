@@ -810,7 +810,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                                           echo '<img src="' . $filePath . '" alt="Announcement Image" class="ann_img" style="max-width: 100%; height: auto;">';
                                       } elseif (strtolower($fileExtension) === 'pdf') {
                                           $fileName = basename($filePath);
-                                          $pdfPath = "http://localhost/Task_House/uploaded_files/" . rawurlencode($fileName);
+                                          $pdfPath = "/uploaded_files/" . rawurlencode($fileName);
                                           echo '<a href="' . $pdfPath . '" target="_blank" class="pdf-link">View PDF</a>';
                                       } else {
                                           echo '<p>Unsupported file type.</p>';
