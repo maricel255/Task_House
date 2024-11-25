@@ -329,36 +329,37 @@ body::before {
             border-radius: 5px;
         }
         .card.course {
-            border-left-color: #f25c5c;
-        }
-        .card.course:hover{
+          border-left: 8px solid #f25c5c; /* 8px thick red border */
+      }
+      .card.course:hover {
           background-color: #f25c5c;
-          color:white;
-          
-        }
-        .card.shift {
-            border-left-color:  #000543;
-        }
-        .card.shift:hover{
-          background-color:  #000543;
-          color:white;
-        }
-        
-        .card.intern {
-            border-left-color: #f2b25c;
-        }
-        .card.intern:hover{
+          color: white;
+      }
+      
+      .card.shift {
+          border-left: 8px solid #000543; /* 8px thick dark blue border */
+      }
+      .card.shift:hover {
+          background-color: #000543;
+          color: white;
+      }
+      
+      .card.intern {
+          border-left: 8px solid #f2b25c; /* 8px thick orange border */
+      }
+      .card.intern:hover {
           background-color: #f2b25c;
-          color:white;
-        }
-        .card.company {
-            border-left-color: #5cf274;
-        }
-        .card.company:hover{
+          color: white;
+      }
+      
+      .card.company {
+          border-left: 8px solid #5cf274; /* 8px thick green border */
+      }
+      .card.company:hover {
           background-color: #5cf274;
-          color:white;
-        }
-
+          color: white;
+      }
+      
         
 
        /* Media Queries for Responsiveness */
