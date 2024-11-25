@@ -254,6 +254,9 @@ body {
     }
 }
 
+.form-column {
+    flex: 1; /* Equal width for both columns */
+}
 /* Main Content Styling */
 .main-content {
     margin-left: 60px;

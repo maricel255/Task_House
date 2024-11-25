@@ -1105,18 +1105,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 </div>
             </div>
 
-
-                <!-- Company Details -->
-                <div id="companyDetails" class="profile-category">
-        <h3>Company Details</h3>
-        <div class="form-container">
-            <div class="form-row">
+               <!-- Company Details -->
+<div id="companyDetails" class="profile-category">
+    <h3>Company Details</h3>
+    <div class="form-container">
+        <div class="form-row">
+            <div class="form-column">
                 <label>HR/Manager:</label>
                 <input type="text" name="hrManager" 
                     placeholder="e.g., John Smith"
                     value="<?php echo htmlspecialchars($profileData['hr_manager'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
+                <label>Facilitator Email:</label>
+                <input type="email" name="facilitatorEmail" 
+                    placeholder="e.g., facilitator@example.com"
+                    value="<?php echo htmlspecialchars($profileData['facilitator_email'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                <label>Start Shift:</label>
+                <input type="time" name="startShift" 
+                    value="<?php echo htmlspecialchars($profileData['start_shift'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                <label>Required Hours:</label>
+                <input type="number" name="reqHrs" 
+                    placeholder="e.g., 40"
+                    value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+            </div>
+
+            <div class="form-column">
                 <label for="faciID">Facilitator ID:</label>
                 <select name="faciID" id="faciID" <?php echo $profileData ? 'disabled' : ''; ?>>
                     <option value="">Select Facilitator ID</option>
@@ -1128,38 +1147,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     <?php endforeach; ?>
                 </select>
 
-                <label>Facilitator Email:</label>
-                <input type="email" name="facilitatorEmail" 
-                    placeholder="e.g., facilitator@example.com"
-                    value="<?php echo htmlspecialchars($profileData['facilitator_email'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
-            </div>
-            <div class="form-row">
-                <label>Start Shift:</label>
-                <input type="time" name="startShift" 
-                    value="<?php echo htmlspecialchars($profileData['start_shift'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
-
                 <label>End Shift:</label>
                 <input type="time" name="endShift" 
                     value="<?php echo htmlspecialchars($profileData['end_shift'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <label>Required Hours:</label>
-                <input type="number" name="reqHrs" 
-                    placeholder="e.g., 40"
-                    value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
-            </div>
-            <div class="form-row">
                 <label>Date Start:</label>
                 <input type="date" name="dateStart" 
                     value="<?php echo htmlspecialchars($profileData['date_start'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                <label>Date End:</label>
-                <input type="date" name="dateEnd" 
-                    value="<?php echo htmlspecialchars($profileData['date_end'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
                 <label>Company:</label>
@@ -1167,15 +1162,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     placeholder="e.g., Sample Corporation"
                     value="<?php echo htmlspecialchars($profileData['company'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
-
-                <label>Company Address:</label>
-                <input type="text" name="companyAddress" 
-                    placeholder="e.g., 456 Corporate Blvd."
-                    value="<?php echo htmlspecialchars($profileData['company_address'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
             </div>
         </div>
     </div>
+</div>
+                     
 
                <!-- Family Data -->
     <div id="familyData" class="profile-category">
