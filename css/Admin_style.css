@@ -951,7 +951,7 @@ body::before {
   overflow-y: auto;  /* Enable vertical scrolling */
   border: 1px solid #ccc; /* Optional: Add a border for better visibility */
   margin-top: 10px; /* Space above the table */
-  margin-left: 20px; /* Space from the left */
+  margin-left: 40px; /* Space from the left */
 }
 
 
