@@ -950,8 +950,10 @@ body::before {
   max-height: 300px; /* Adjust the height as needed */
   overflow-y: auto;  /* Enable vertical scrolling */
   border: 1px solid #ccc; /* Optional: Add a border for better visibility */
-  margin-top: 10px; /* Optional: Space above the table */
+  margin-top: 10px; /* Space above the table */
+  margin-left: 20px; /* Space from the left */
 }
+
 
 .update-button {
   background-color: #4CAF50; /* Green background for buttons */
