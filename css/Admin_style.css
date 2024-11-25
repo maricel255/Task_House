@@ -137,7 +137,7 @@ body::before {
   background-color: white;
   border-bottom: 1px solid #ccc;
   transition: margin-left 0.3s; /* Smooth transition for header */
-  height: 37px;
+  height: 67px;
   width: 100%; /* Ensure it spans the full width of the screen */
 
 }
