@@ -241,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
 
 
 // Pagination settings
-$recordsPerPage = 30; // Number of records to display per page
+$recordsPerPage = 100; // Number of records to display per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
 $offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
 
