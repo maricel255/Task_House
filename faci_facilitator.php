@@ -372,26 +372,18 @@ try {
 $query = "SELECT time_logs.*, 
 profile_information.first_name,
 CASE
-    -- If logout_time is not NULL, show 'Logged Out'
     WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
-    
-    -- If break_time is NOT NULL and back_to_work_time IS NULL, show 'On Break'
     WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
-    
-    -- If login_time is NOT NULL, back_to_work_time IS NULL, and logout_time IS NULL, show 'Active Now'
     WHEN time_logs.login_time IS NOT NULL 
          AND time_logs.back_to_work_time IS NULL 
          AND time_logs.logout_time IS NULL THEN 'Active Now'
-    
-    -- If back_to_work_time IS NOT NULL, show 'Active Now'
     WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
-    
-    -- Default to 'Unknown' if no status is detected
     ELSE 'Unknown'
 END AS status
 FROM time_logs
 JOIN profile_information ON time_logs.faciID = profile_information.faciID
 WHERE time_logs.faciID = :faciID
+  AND time_logs.status != 'Declined'
   AND (
       DATE(time_logs.login_time) = CURDATE() OR
       DATE(time_logs.logout_time) = CURDATE() OR
@@ -926,7 +918,7 @@ try {
                     </table>
                 </div>
             <?php else: ?>
-                <p>No approved logs fsdadsdfsound.</p>
+                <p>No approved logs Found.</p>
             <?php endif; ?>
         </div>
     </div>
