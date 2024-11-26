@@ -333,39 +333,32 @@ if (isset($_POST['addIntern'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            $_SESSION['message'] = "The Intern ID already exists. Please use a different ID.";
-            $_SESSION['message_type'] = 'warning';
-            header("Location: Admin_Admin_1.php");
-            exit();
-        } else {
-            // Create the SQL query to insert into the intacc table
-            $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
-            
-            // Prepare and execute the statement
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':internID', $internID);
-            $stmt->bindParam(':InternPass', $InternPass);
-            $stmt->bindParam(':adminID', $adminID);
-
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Intern account added successfully!";
-                $_SESSION['message_type'] = 'success';
-            } else {
-                $_SESSION['message'] = "Error adding intern account.";
-                $_SESSION['message_type'] = 'warning';
-            }
-            
-            header("Location: Admin_Admin_1.php");
+            echo json_encode(['status' => 'error', 'message' => 'The Intern ID already exists. Please use a different ID.']);
             exit();
         }
+
+        // Create the SQL query to insert into the intacc table
+        $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
+        
+        // Prepare and execute the statement
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID);
+        $stmt->bindParam(':InternPass', $InternPass);
+        $stmt->bindParam(':adminID', $adminID);
+
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Intern account added successfully!";
+            $_SESSION['message_type'] = 'success';
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Error adding intern account.']);
+        }
+        
     } catch (PDOException $e) {
-        // Log the error and show a user-friendly message
         error_log("Error adding intern account: " . $e->getMessage());
-        $_SESSION['message'] = "An error occurred while adding the intern account. Please try again.";
-        $_SESSION['message_type'] = 'warning';
-        header("Location: Admin_Admin_1.php");
-        exit();
+        echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the intern account. Please try again.']);
     }
+    exit();
 }
 
 
@@ -1089,17 +1082,17 @@ echo '</table>';
                                         <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
                                         <h2>Add Intern Account</h2>
-                                        <form id="addInterAccForm" method="POST" action="">
-    <div class="form-group">
-        <label for="internID">Intern ID:</label>
-        <input type="text" id="internID" name="internID" required>
-    </div>
-    <div class="form-group">
-        <label for="InternPass">Password:</label>
-        <input type="password" id="InternPass" name="InternPass" required>
-    </div>
-    <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
-</form>
+                                        <form id="addInterAccForm" method="POST" onsubmit="return submitInternForm(event)">
+                                            <div class="form-group">
+                                                <label for="internID">Intern ID:</label>
+                                                <input type="text" id="internID" name="internID" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="InternPass">Password:</label>
+                                                <input type="password" id="InternPass" name="InternPass" required>
+                                            </div>
+                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+                                        </form>
                                         
                                     </div>
                                 </div>

@@ -269,3 +269,30 @@ function deleteIntern(internID) {
         xhr.send('internID=' + encodeURIComponent(internID) + '&action=delete');
     }
 }
+
+function submitInternForm(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('addInterAccForm');
+    const formData = new FormData(form);
+    formData.append('addIntern', 'true');
+
+    fetch('Admin_Admin_1.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Close the modal
+        closeModal('InternAccModal');
+        
+        // Refresh the page to show updated data
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while adding the intern account. Please try again.');
+    });
+
+    return false;
+}
