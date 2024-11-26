@@ -308,8 +308,22 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindParam(':adminID', $user['adminID']);
 
             if ($stmt->execute()) {
+                // Make sure session is started
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                
+                // Set the success message
                 $_SESSION['message'] = "Intern account added successfully!";
                 $_SESSION['message_type'] = 'success';
+                
+                // Debug line - remove in production
+                error_log("Session message set: " . $_SESSION['message']);
+                
+                // Ensure output buffering is clean before redirect
+                ob_clean();
+                
+                // Redirect with the session message
                 header("Location: Admin_Admin_1.php");
                 exit();
             } else {
@@ -326,6 +340,7 @@ if (isset($_POST['addIntern'])) {
         exit();
     }
 }
+
 
 
 
