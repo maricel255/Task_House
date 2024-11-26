@@ -1,18 +1,24 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* Include padding and border in total width/height */
+  box-sizing: border-box;
 }
 
-html, body {
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: 'Arial', sans-serif;
 }
 
 /* Header Styling */
 .header-container {
-  background-color: green; /* Green Bar */
+  background-color: green;
   color: white;
-  padding: 20px;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,396 +26,281 @@ html, body {
   width: 100%;
   top: 0;
   left: 0;
-  z-index: 1000; /* Ensure header stays above other content */
-  height: 100px; /* Adjust this value if needed */
+  z-index: 1000;
+  height: auto;
+  min-height: 70px;
+  flex-wrap: wrap;
 }
 
-/* Padding for main content to avoid overlap with the header */
-#main-section {
-  padding-top: 120px; /* Same as header height */
-  height: 150%;
+.logotext {
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
-/* Custom styles for navigation buttons */
+/* Navigation Buttons */
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 20px; /* Space between buttons */
+  gap: 0.8rem;
+  flex-wrap: wrap;
 }
 
 .nav-buttons a,
 .nav-buttons button,
-.nav-buttons .dropdown {
+.nav-buttons .dropdown-toggle {
   background-color: green;
   color: white;
-  padding: 10px 20px;
-  border: none;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
   cursor: pointer;
-  margin-left: 10px; /* Ensures the buttons are spaced evenly */
-  text-decoration: none; /* Remove underline from links */
-  font-size: 16px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
 }
 
 .nav-buttons a:hover,
 .nav-buttons button:hover,
-.nav-buttons .dropdown .btn:hover {
-  background-color: darkgreen; /* Hover effect */
-}
-
-.dropdown-menu {
-  min-width: 150px; /* Adjust width of dropdown */
-}
-
-.nav-buttons .dropdown-toggle {
-  background-color: green;
-  border: none;
-}
-
 .nav-buttons .dropdown-toggle:hover {
   background-color: darkgreen;
+  transform: translateY(-2px);
 }
 
-/* Main Section and Other Styles */
-.container {
-  margin-top: 20px; /* Adjust if needed */
+/* Main Section */
+#main-section {
+  padding-top: 100px;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
 }
 
 .main-text {
-  font-size: 50px;
+  font-size: 3rem;
   font-weight: bold;
-}
-
-.interns {
-  color: #333333; /* Dark Gray text color */
+  line-height: 1.2;
 }
 
 .task-house {
-  color: #333333;
+  color: #333;
   position: relative;
+  margin-bottom: 1rem;
 }
 
-/* Right Side Text and other styling */
-.lorem-container {
-  height: 500px; /* Adjust height as needed */
-  width: 500px;
-  padding: 50px;
-  margin-left: -260px;
-  border: 1px solid #ddd; /* Optional: Add a border for visibility */
-}
-
-/* Horizontal orange line under TASK HOUSE */
 .task-house::after {
   content: "";
   display: block;
   width: 100px;
   height: 4px;
   background-color: orange;
-  margin-top: 0px;
+  margin-top: 0.5rem;
 }
 
-.capstone-title {
-  font-size: 18px;
-  color: black;
-  margin-top: 0px;
+/* Abstract Section */
+.lorem-container {
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .separator {
   width: 4px;
   height: 160px;
   background-color: orange;
-  margin-left: -500px;
-  margin-right: 20px;
+  margin: 0 1rem;
 }
 
-.right-text {
-  font-size: 16px;
-  margin-top: 60px;
-}
-
-/* Documents Section Styles */
+/* Documents Section */
 .documents-section {
-  background-color: #f9f9f9; /* Light background for documents */
-  padding: 20px; /* Padding inside the section */
-  border-radius: 10px; /* Rounded corners */
-  margin-top: 80px; /* Space between line and heading */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow for depth */
-}
-html {
-  scroll-behavior: smooth; /* Enables smooth scrolling */
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  margin: 2rem auto;
+  max-width: 1200px;
 }
 
-.line {
-
-  width: 100%; /* Adjust width as necessary */
-  height: 4px; /* Adjust thickness */
-  background-color: orange; /* Change to your desired color */
-  margin-top: 80px; /* Space between line and heading */
-}
-
-/* Title Styles within Documents Section */
 .documents-section h4 {
-  font-size: 24px; /* Title size */
-  color: orange /* Dark blue color for the heading */;
-  margin-bottom: 15px; /* Space below the title */
-  font-weight: bold; /* Bold text for emphasis */
+  color: orange;
+  font-size: 1.5rem;
+  margin: 1rem 0;
 }
 
-/* Paragraph Styles within Documents Section */
-.documents-section p {
-  font-size: 16px; /* Paragraph text size */
-  color: #333; /* Dark gray text color */
-  margin-bottom: 20px; /* Space below each paragraph */
-}
-
-/* List Styles within Documents Section */
 .documents-section ul {
-  list-style-type: none; /* Remove default list styling */
-  padding-left: 0; /* Remove left padding */
+  list-style: none;
+  padding: 0;
 }
 
 .documents-section ul li {
-  padding: 10px 0; /* Space between list items */
-  font-size: 16px; /* List item text size */
+  margin: 1rem 0;
 }
 
 .documents-section ul li a {
-  text-decoration: none; /* Remove underline from links */
-  color: #007bff; /* Link color */
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.documents-section ul li a:hover {
-  text-decoration: underline; /* Underline on hover */
-  color: #0056b3; /* Darker link color on hover */
-}
-
-/* About Us Section Styles */
+/* About Us Section */
 .about-us-section {
-  padding: 40px; /* Adjust padding for the section */
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .about-us-section .row {
-  display: flex; /* Use flexbox for alignment */
-  flex-wrap: wrap; /* Allow items to wrap */
-  gap: 20px; /* Space between cards */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
 }
 
 .about-us-section .col-md-3 {
-  flex: 0 0 23%; /* Set width for portrait orientation */
-  max-width: 23%; /* Limit the maximum width */
-  position: relative; /* For positioning the overlay */
-  overflow: hidden; /* Hide overflow for rounded corners */
-  border-radius: 10px; /* Rounded corners */
-  transition: transform 0.3s; /* Smooth scaling effect */
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  margin-bottom: 1.5rem;
 }
 
 .about-us-section img {
-  width: 100%; /* Ensure the image takes full width */
-  height: 250px; /* Fixed height for uniformity */
-  object-fit: cover; /* Ensure the image covers the area without distortion */
-  border-radius: 10px; /* Rounded corners for images */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
-  filter: grayscale(100%); /* Apply black and white filter */
-  transition: filter 0.3s ease; /* Smooth transition for the filter effect */
-}
-
-.about-us-section .col-md-3:hover {
-  transform: scale(1.05); /* Scale up on hover */
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  filter: grayscale(100%);
 }
 
 .about-us-section .col-md-3:hover img {
-  filter: grayscale(0%); /* Remove filter on hover to show original color */
+  filter: grayscale(0%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.3);
 }
 
-.about-us-section .col-md-3:hover {
-  transform: scale(1.05); /* Scale up on hover */
-  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.5); /* Green highlight shadow on hover */
-  border-color: rgba(0, 255, 0, 0.5); /* Green border color on hover */
-}
-.about-us-section img {
-  width: 100%; /* Ensure the image takes full width */
-  height: auto; /* Maintain aspect ratio */
-  max-height: 400px; /* Limit height for portrait effect */
-  object-fit: cover; /* Ensure the image covers the area */
-  border-radius: 10px; /* Rounded corners for images */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
-}
-
-.about-us-section p {
-  text-align: center; /* Center align descriptions */
-  margin-top: 20px; /* Space above description */
-  font-size: 14px; /* Adjust font size */
-  color: #333; /* Dark text color */
-}
-
-/* Footer Styles */
+/* Footer */
 .footer {
-  background-color: green; /* Footer color */
-  color: white; /* Footer text color */
+  background-color: green;
+  color: white;
   text-align: center;
-  padding: 10px 0; /* Padding above and below */
-  position: relative; /* Position footer normally */
+  padding: 1rem;
+  margin-top: 2rem;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .header-container {
-    flex-direction: column; /* Stack header elements on smaller screens */
-    height: auto; /* Adjust header height */
-    padding: 10px; /* Less padding */
-  }
-
-  .nav-buttons {
-    flex-direction: column; /* Stack buttons */
-    gap: 10px; /* Reduced space between buttons */
-  }
-
-  .about-us-section .col-md-3 {
-    flex: 0 0 46%; /* Wider on smaller screens */
-    max-width: 46%; /* Limit max width */
-  }
-
-  .documents-section {
-    padding: 15px; /* Reduce padding */
+/* Responsive Design */
+@media (max-width: 992px) {
+  html {
+    font-size: 14px;
   }
 
   .main-text {
-    font-size: 36px; /* Smaller main text */
+    font-size: 2.5rem;
   }
 
   .lorem-container {
-    width: 100%; /* Full width on small screens */
-    margin-left: 0; /* Center it */
+    margin: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0.5rem;
+    justify-content: center;
+    text-align: center;
   }
 
-  .right-text {
-    font-size: 14px; /* Smaller text */
-    margin-top: 30px; /* Adjust margin */
+  .nav-buttons {
+    margin-top: 0.5rem;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #main-section {
+    flex-direction: column;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .main-text {
+    font-size: 2rem;
+  }
+
+  .separator {
+    display: none;
+  }
+
+  .lorem-container {
+    margin-top: 1rem;
+    padding: 1rem;
+  }
+
+  .about-us-section .col-md-3 {
+    min-width: 200px;
   }
 }
 
 @media (max-width: 480px) {
-  .about-us-section .col-md-3 {
-    flex: 0 0 100%; /* Full width for the cards */
-    max-width: 100%; /* Full width */
+  .header-container {
+    height: auto;
+  }
+
+  .logotext {
+    font-size: 1rem;
+  }
+
+  .nav-buttons a,
+  .nav-buttons button,
+  .nav-buttons .dropdown-toggle {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 
   .main-text {
-    font-size: 28px; /* Further reduce main text size */
+    font-size: 1.5rem;
   }
 
-  .capstone-title {
-    font-size: 16px; /* Smaller capstone title */
+  .documents-section {
+    padding: 1rem;
+  }
+
+  .about-us-section {
+    padding: 1rem;
+  }
+
+  .about-us-section img {
+    height: 200px;
   }
 }
 
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
 
-/* Modal container */
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
-  }
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
 
-  .modal-content {
-    background-color: #fff;
-    margin: 5% auto; /* Further reduced margin from the top */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 40%; /* Adjusted width to make the modal smaller */
-    max-width: 400px; /* Set a smaller max width for larger screens */
-    position: relative; /* Create a positioning context */
-  }
-  body.modal-open {
-    overflow: hidden; /* Disable scrolling */
-  }
-  .close {
-    color: #aaa;
-    float: right; /* Align to the right */
-    font-size: 28px;
-    font-weight: bold;
-    position: absolute; /* Positioning absolute to the modal content */
-    right: 20px; /* 20px from the right */
-    top: 10px; /* Adjust as necessary */
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .form-group {
-    margin-bottom: 15px; /* Space between form fields */
-  }
-
-  label {
-    display: block; /* Make labels block level */
-    margin-bottom: 5px; /* Space below the label */
-    font-weight: bold; /* Bold label */
-  }
-
-  input[type="text"],
-  input[type="password"] {
-    width: 100%; /* Full width */
-    padding: 10px; /* Padding inside input */
-    border: 1px solid #ccc; /* Border for input */
-    border-radius: 5px; /* Rounded corners for inputs */
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
-    transition: border-color 0.3s; /* Smooth border transition */
-  }
-
-  input[type="text"]:focus,
-  input[type="password"]:focus {
-    border-color: #007BFF; /* Highlight border on focus */
-    outline: none; /* Remove outline */
-  }
-
-  button {
-    padding: 10px 15px; /* Button padding */
-    background-color: #007BFF; /* Primary button color */
-    color: white; /* Text color for button */
-    border: none; /* Remove default border */
-    border-radius: 5px; /* Rounded corners for button */
-    cursor: pointer; /* Pointer cursor for button */
-    transition: background-color 0.3s; /* Smooth background transition */
-  }
-
-  button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-  }
-
-  .forgot-password {
-    text-align: center; /* Center align the forgot password link */
-    margin-top: 15px; /* Space above the link */
-  }
-
-  .forgot-password a {
-    color: #007BFF; /* Link color */
-    text-decoration: none; /* No underline */
-    transition: color 0.3s; /* Smooth color transition */
-  }
-
-  .forgot-password a:hover {
-    text-decoration: underline; /* Underline on hover */
-  }
-  .modal-header {
-    display: flex; /* Use flexbox */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically (optional) */
-    padding: 20px; /* Optional padding */
-  }
-  
-  .profile-image {
-    width: 225px; /* Set a larger width */
-    height: 225px; /* Set a larger height */
-    border-radius: 50%; /* Make it circular if desired */
-    object-fit: cover; /* Ensure the image covers the area without distortion */
-    margin: 10px; /* Space around the image */
-  }
+.close {
+  position: absolute;
+  right: 1rem;
+  top: 0.5rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
