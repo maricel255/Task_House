@@ -275,9 +275,12 @@ try {
 
 
 // Handle adding intern account
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($_POST['InternPass'])) {
+if (isset($_POST['addIntern'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
+    
+    // Get the adminID from the user data we fetched earlier
+    $adminID = $user['adminID']; // This comes from the earlier user query
 
     try {
         // Check if the internID already exists
@@ -298,12 +301,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':internID', $internID);
             $stmt->bindParam(':InternPass', $InternPass);
-            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
+            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
                 $_SESSION['message'] = "Intern account added successfully!";
-                header("Location: " . $_SERVER['PHP_SELF']); // Refresh the page
-                exit();
             } else {
                 $_SESSION['message'] = "Error: Could not add intern account.";
             }
@@ -653,33 +654,13 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<?php
-// Check if the session message is set
-if (isset($_SESSION['message'])) {
-    // Set default message type if not set
-    $messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';
-    
-    // Determine alert class based on message type
-    switch($messageType) {
-        case 'error':
-            $alertClass = 'alert-danger';
-            $bgColor = '#ff4444';
-            break;
-        case 'success':
-            $alertClass = 'alert-success';
-            $bgColor = '#00C851';
-            break;
-        default:
-            $alertClass = 'alert-info';
-            $bgColor = '#f2b25c';
-    }
-    ?>
-    <div class="alert <?php echo $alertClass; ?>" role="alert" 
+<?php if (isset($_SESSION['message'])): ?>
+    <div class="alert" role="alert" 
          style="position: fixed; 
                 top: 70px; 
                 right: 30px; 
                 z-index: 1000; 
-                background-color: <?php echo $bgColor; ?>; 
+                background-color: #f2b25c; 
                 color: white; 
                 padding: 15px; 
                 border-radius: 5px;
@@ -687,25 +668,13 @@ if (isset($_SESSION['message'])) {
          id="alertBox">
         <?php echo htmlspecialchars($_SESSION['message']); ?>
     </div>
-    <script type="text/javascript">
-        // Hide the alert after 5 seconds
+    <script>
         setTimeout(function() {
-            var alertBox = document.getElementById('alertBox');
-            if (alertBox) {
-                alertBox.style.opacity = '0';
-                alertBox.style.transition = 'opacity 0.5s ease-out';
-                setTimeout(function() {
-                    alertBox.style.display = 'none';
-                }, 500);
-            }
+            document.getElementById('alertBox').style.display = 'none';
         }, 5000);
     </script>
-    <?php
-    // Unset the message after displaying
-    unset($_SESSION['message']);
-    unset($_SESSION['message_type']);
-}
-?>  
+    <?php unset($_SESSION['message']); ?>
+<?php endif; ?>
    
 
 
@@ -1057,17 +1026,17 @@ echo '</table>';
                                         <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
                                         <h2>Add Intern Account</h2>
-                                        <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
-                                            <div class="form-group">
-                                                <label for="internID">Intern ID:</label>
-                                                <input type="text" id="internID" name="internID" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="InternPass">Password:</label>
-                                                <input type="password" id="InternPass" name="InternPass" required>
-                                            </div>
-                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
-                                        </form>
+                                        <form id="addInterAccForm" method="POST" action="">
+    <div class="form-group">
+        <label for="internID">Intern ID:</label>
+        <input type="text" id="internID" name="internID" required>
+    </div>
+    <div class="form-group">
+        <label for="InternPass">Password:</label>
+        <input type="password" id="InternPass" name="InternPass" required>
+    </div>
+    <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+</form>
                                         
                                     </div>
                                 </div>
