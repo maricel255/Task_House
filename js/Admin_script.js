@@ -165,90 +165,81 @@ document.addEventListener('DOMContentLoaded', () => {
 //MARICEL END
 
    // Start kyle
-   document.addEventListener("DOMContentLoaded", function () {
+  // Intern Details Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Remove the duplicate container creation since it should already exist in HTML
+    
     // Attach event listeners to all View Details buttons
     document.querySelectorAll(".view-details-btn").forEach((button) => {
-        button.addEventListener("click", function () {
+        button.addEventListener("click", function() {
             const internID = this.getAttribute("data-intern-id");
-            const detailsDiv = document.getElementById("internDetails");
-
-            // Fetch and show details
-            fetch("", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: new URLSearchParams({
-                    fetchDetails: true,
-                    internID: internID
-                }),
-            })
-            .then((response) => response.text())
-            .then((data) => {
-                detailsDiv.innerHTML = data; // Inject the fetched data
-                detailsDiv.classList.add("show"); // Show the details
-            })
-            .catch((error) => {
-                console.error("Error fetching details:", error);
-            });
+            fetchInternDetails(internID);
         });
     });
+});
 
-    // Close button functionality
-    document.addEventListener("DOMContentLoaded", () => {
-        const closeButton = document.getElementById("closeButton");
-        if (closeButton) {
-            closeButton.addEventListener("click", function () {
-                const detailsDiv = document.getElementById("internDetails");
-                if (detailsDiv) {
-                    detailsDiv.classList.remove("show"); // Hide the details
-                    detailsDiv.innerHTML = ""; // Clear the content
-                } else {
-                    console.error("Element with ID 'internDetails' not found.");
-                }
-            });
-        } else {
-            console.error("Element with ID 'closeButton' not found.");
-        }
-    });
+function fetchInternDetails(internID) {
+    const detailsDiv = document.getElementById("internDetails");
     
+    // Show the details panel
+    detailsDiv.style.display = 'block';
+    
+    // Add loading indicator
+    detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
 
-    // Resize handle functionality
-    const internDetails = document.querySelector('.intern-details');
-    document.addEventListener('DOMContentLoaded', () => {
-        const resizeHandle = document.querySelector('.resizeHandle'); // Use class if applicable
-        
-        if (resizeHandle) {
-            resizeHandle.addEventListener('mousedown', (e) => {
-                isResizing = true;
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', () => {
-                    isResizing = false;
-                    document.removeEventListener('mousemove', handleMouseMove);
-                });
-            });
-        } else {
-            console.error("resizeHandle element not found.");
-        }
+    // Fetch the details
+    fetch("Admin_Admin_1.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `fetchDetails=true&internID=${encodeURIComponent(internID)}`,
+    })
+    .then(response => response.text())
+    .then(data => {
+        detailsDiv.innerHTML = data;
+        detailsDiv.classList.add("show");
+    })
+    .catch(error => {
+        console.error("Error fetching details:", error);
+        detailsDiv.innerHTML = '<p class="error">Error loading details. Please try again.</p>';
     });
-        let isResizing = false;
+}
 
+// Function to close the details panel
+function closeDetails() {
+    const detailsDiv = document.getElementById("internDetails");
+    detailsDiv.style.display = 'none';
+    detailsDiv.classList.remove("show");
+    detailsDiv.innerHTML = '';
+}
+
+// Resize functionality for the details panel
+document.addEventListener('DOMContentLoaded', function() {
+    const internDetails = document.querySelector('.intern-details');
+    const resizeHandle = document.querySelector('.intern-details-resize-handle');
+    let isResizing = false;
+
+    if (resizeHandle && internDetails) {
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', stopResizing);
+        });
+    }
 
     function handleMouseMove(e) {
-        if (isResizing) {
-            const newWidth = e.clientX - internDetails.getBoundingClientRect().left;
-            internDetails.style.width = `${newWidth}px`;
-        }
+        if (!isResizing) return;
+        const newWidth = window.innerWidth - e.clientX;
+        internDetails.style.width = `${newWidth}px`;
+    }
+
+    function stopResizing() {
+        isResizing = false;
+        document.removeEventListener('mousemove', handleMouseMove);
     }
 });
 
-
-// Function to close the details section
-function closeDetails() {
-    const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.classList.remove("show"); // Hide the details
-    detailsDiv.innerHTML = ""; // Clear the content
-}
 //end kyle
 
 // Add this to your existing js/Admin_script.js file or in a <script> tag at the bottom of the page
