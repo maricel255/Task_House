@@ -251,26 +251,26 @@ $offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
 // Fetch total number of intern accounts for pagination
 try {
     if (isset($adminID)) {
-        $sql = "SELECT COUNT(*) FROM intacc WHERE adminID = :adminID"; 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-        $stmt->execute();
-        $totalRecords = $stmt->fetchColumn(); // Total number of records
-        $totalPages = ceil($totalRecords / $recordsPerPage); // Total number of pages
-
-        // Fetch the current page records
-        $sql = "SELECT * FROM intacc WHERE adminID = :adminID LIMIT :limit OFFSET :offset"; 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-        $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT); // Set limit
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT); // Set offset
+        if (!empty($searchInternID)) {
+            // Query with search
+            $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :searchTerm";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+            $stmt->bindParam(':searchTerm', '%' . $searchInternID . '%', PDO::PARAM_STR);
+        } else {
+            // Query without search - show all records for current adminID
+            $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        }
+        
         $stmt->execute();
         $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
         $_SESSION['message'] = 'Admin ID is not set.';
         $internAccounts = [];
     }
-    } catch (PDOException $e) {
+} catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
     $internAccounts = [];
