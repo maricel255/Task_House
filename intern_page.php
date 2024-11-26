@@ -406,7 +406,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
             secondary_honors, college, college_year_graduated, college_honors,
             company_name, position, inclusive_date, company_address_work_experience,
             skills, ref_name, ref_position, ref_address, ref_contact,
-            emergency_name, emergency_address, emergency_contact_no
+            emergency_name, emergency_relationship, emergency_address, emergency_contact_no
         ) VALUES (
             :internID, :adminID, :firstName, :middleName, :lastName,
             :courseYearSec, :school, :gender, :age, :currentAddress, :provincialAddress,
@@ -420,7 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
             :secondaryHonors, :college, :collegeYearGraduated, :collegeHonors,
             :companyName, :position, :inclusiveDate, :companyAddressWorkExperience,
             :skills, :refName, :refPosition, :refAddress, :refContact,
-            :emergencyName, :emergencyAddress, :emergencyContactNo
+            :emergencyName, :emergencyRelationship, :emergencyAddress, :emergencyContactNo
         )";
 
         $stmt = $conn->prepare($sql);
@@ -482,6 +482,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
         $stmt->bindParam(':refAddress', $_POST['refAddress']);
         $stmt->bindParam(':refContact', $_POST['refContact']);
         $stmt->bindParam(':emergencyName', $_POST['emergencyName']);
+        $stmt->bindParam(':emergencyRelationship', $_POST['emergencyRelationship']);
         $stmt->bindParam(':emergencyAddress', $_POST['emergencyAddress']);
         $stmt->bindParam(':emergencyContactNo', $_POST['emergencyContactNo']);
 
@@ -1367,7 +1368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 <label>Contact No.:</label>
                 <input type="text" name="refContactNo" 
                     placeholder="e.g., 09171234567"
-                    value="<?php echo htmlspecialchars($profileData['ref_contact_no'] ?? ''); ?>"
+                    value="<?php echo htmlspecialchars($profileData['ref_contact'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
             </div>
         </div>
