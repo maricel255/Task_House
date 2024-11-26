@@ -706,7 +706,11 @@ try {
     <h2>Availability Status</h2>
     <?php
     $displayedInternIDs = []; // Track displayed internIDs
-    if (!empty($interns)): ?>
+    $declinedInterns = array_filter($interns, function($intern) {
+        return strtolower($intern['status']) === 'declined'; // Filter for interns with "Declined" status
+    });
+
+    if (!empty($declinedInterns)): ?>
         <table class="intern-status-table">
             <thead>
                 <tr>
@@ -718,19 +722,19 @@ try {
             </thead>
             <tbody>
                 <?php
-                $hasActiveInterns = false; // Track if there are active interns
-                foreach ($interns as $intern):
+                $hasDeclinedInterns = false; // Track if there are declined interns
+                foreach ($declinedInterns as $intern):
                     // Skip this intern if the internID has already been displayed
                     if (in_array($intern['internID'], $displayedInternIDs)) {
                         continue;
                     }
                     $displayedInternIDs[] = $intern['internID']; // Mark internID as displayed
-                    $hasActiveInterns = true; // Mark that at least one intern is active today
+                    $hasDeclinedInterns = true; // Mark that at least one intern is declined today
                 ?>
-                    <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
+                    <tr class="declined">
                         <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                         <td><?php echo htmlspecialchars($intern['first_name'] ?? 'N/A'); ?></td>
-                        <td class="<?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
+                        <td class="declined">
                             <strong><?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?></strong>
                         </td>
                         <td>
@@ -746,10 +750,11 @@ try {
         </table>
     <?php endif; ?>
 
-    <?php if (empty($interns) || !$hasActiveInterns): ?>
-        <p>No interns found under your facilitation that are active today.</p>
+    <?php if (empty($declinedInterns) || !$hasDeclinedInterns): ?>
+        <p>No interns found under your facilitation that are marked as 'Declined'.</p>
     <?php endif; ?>
 </div>
+
 
 </div>
 </div>
