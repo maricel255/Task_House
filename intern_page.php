@@ -1366,7 +1366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
                 <label>Contact No.:</label>
-                <input type="text" name="refContactNo" 
+                <input type="text" name="refContact" 
                     placeholder="e.g., 09171234567"
                     value="<?php echo htmlspecialchars($profileData['ref_contact'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
