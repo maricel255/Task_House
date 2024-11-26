@@ -309,18 +309,12 @@ if (isset($_POST['addIntern'])) {
 
             if ($stmt->execute()) {
                 $_SESSION['message'] = "Intern account added successfully!";
-                $_SESSION['message_type'] = 'success';
-                // Redirect to prevent form resubmission
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
             } else {
-                $_SESSION['message'] = "Could not add intern account.";
-                $_SESSION['message_type'] = 'warning';
+                $_SESSION['message'] = "Error: Could not add intern account.";
             }
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
-        $_SESSION['message_type'] = 'warning';
     }
 }
 
