@@ -246,15 +246,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $conn->commit();
                     $_SESSION['message'] = 'Intern account and related data deleted successfully!';
                     $_SESSION['message_type'] = 'success';
-                    // Add redirect after successful deletion
-                    header("Location: Admin_Admin_1.php");
+                    echo "<script>
+                        alert('Intern account deleted successfully!');
+                        window.location.href = 'Admin_Admin_1.php';
+                    </script>";
                     exit();
                 } else {
                     $conn->rollBack();
                     $_SESSION['message'] = 'Error: Could not delete intern account.';
                     $_SESSION['message_type'] = 'warning';
-                    // Add redirect even if deletion fails
-                    header("Location: Admin_Admin_1.php");
+                    echo "<script>
+                        alert('Error: Could not delete intern account.');
+                        window.location.href = 'Admin_Admin_1.php';
+                    </script>";
                     exit();
                 }
             } catch (PDOException $e) {
@@ -262,8 +266,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 error_log("Error deleting intern account: " . $e->getMessage());
                 $_SESSION['message'] = 'Error deleting account. Please try again later.';
                 $_SESSION['message_type'] = 'warning';
-                // Add redirect after error
-                header("Location: Admin_Admin_1.php");
+                echo "<script>
+                    alert('Error deleting account. Please try again later.');
+                    window.location.href = 'Admin_Admin_1.php';
+                </script>";
                 exit();
             }
         }
