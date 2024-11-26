@@ -369,27 +369,28 @@ try {
 // Assuming you have a valid queryfor availability statud
 
 
-$query = "SELECT time_logs.*, 
-profile_information.first_name,
-CASE
-    WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
-    WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
-    WHEN time_logs.login_time IS NOT NULL 
-         AND time_logs.back_to_work_time IS NULL 
-         AND time_logs.logout_time IS NULL THEN 'Active Now'
-    WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
-    ELSE 'Unknown'
-END AS status
+$query = "SELECT DISTINCT 
+    time_logs.internID,
+    profile_information.first_name,
+    profile_information.profile_image,
+    time_logs.login_time,
+    time_logs.break_time,
+    time_logs.back_to_work_time,
+    time_logs.logout_time,
+    CASE
+        WHEN time_logs.logout_time IS NOT NULL AND DATE(time_logs.logout_time) = CURDATE() THEN 'Logged Out'
+        WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL 
+            AND DATE(time_logs.break_time) = CURDATE() THEN 'On Break'
+        WHEN (time_logs.login_time IS NOT NULL AND DATE(time_logs.login_time) = CURDATE())
+            OR (time_logs.back_to_work_time IS NOT NULL AND DATE(time_logs.back_to_work_time) = CURDATE()) THEN 'Active Now'
+        ELSE NULL
+    END AS status
 FROM time_logs
-JOIN profile_information ON time_logs.faciID = profile_information.faciID
+JOIN profile_information ON time_logs.internID = profile_information.internID
 WHERE time_logs.faciID = :faciID
-  AND time_logs.status != 'Declined'
-  AND (
-      DATE(time_logs.login_time) = CURDATE() OR
-      DATE(time_logs.logout_time) = CURDATE() OR
-      DATE(time_logs.break_time) = CURDATE() OR
-      DATE(time_logs.back_to_work_time) = CURDATE()
-  )";
+    AND time_logs.status != 'Declined'
+    AND DATE(COALESCE(time_logs.logout_time, time_logs.break_time, time_logs.back_to_work_time, time_logs.login_time)) = CURDATE()
+ORDER BY time_logs.login_time DESC";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -697,7 +698,7 @@ try {
         <div class="intern-status-dashboard">
     <h2>Availability Status</h2>
     <?php
-    $displayedInternIDs = []; // Track displayed internIDs
+    $displayedInternIDs = [];
     if (!empty($interns)): ?>
         <table class="intern-status-table">
             <thead>
@@ -710,35 +711,34 @@ try {
             </thead>
             <tbody>
                 <?php
-                $hasActiveInterns = false; // Track if there are active interns
                 foreach ($interns as $intern):
-                    // Skip this intern if the internID has already been displayed
-                    if (in_array($intern['internID'], $displayedInternIDs)) {
-                        continue;
-                    }
-                    $displayedInternIDs[] = $intern['internID']; // Mark internID as displayed
-                    $hasActiveInterns = true; // Mark that at least one intern is active today
+                    // Only display interns with a valid status for today
+                    if (!empty($intern['status']) && !in_array($intern['internID'], $displayedInternIDs)):
+                        $displayedInternIDs[] = $intern['internID'];
                 ?>
                     <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
                         <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                         <td><?php echo htmlspecialchars($intern['first_name'] ?? 'N/A'); ?></td>
-                        <td class="<?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
-                            <strong><?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?></strong>
+                        <td class="status-<?php echo strtolower($intern['status']); ?>">
+                            <strong><?php echo htmlspecialchars($intern['status']); ?></strong>
                         </td>
                         <td>
                             <?php if (!empty($intern['profile_image'])): ?>
-                                <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
+                                <img src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" 
+                                     alt="Profile Preview" 
+                                     style="width: 160px; height: 160px; border-radius: 50%;">
                             <?php else: ?>
-                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
+                                <img src="image/USER_ICON.png" alt="Default Profile Preview">
                             <?php endif; ?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php 
+                    endif;
+                endforeach; 
+                ?>
             </tbody>
         </table>
-    <?php endif; ?>
-
-    <?php if (empty($interns) || !$hasActiveInterns): ?>
+    <?php else: ?>
         <p>No interns found under your facilitation that are active today.</p>
     <?php endif; ?>
 </div>
