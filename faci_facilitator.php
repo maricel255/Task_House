@@ -370,7 +370,7 @@ try {
 
 
 $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work_time, t.logout_time,
-    p.first_name, p.profile_image,
+    i.first_name, i.profile_image,
     CASE
         WHEN t.logout_time IS NOT NULL AND DATE(t.logout_time) = CURDATE() THEN 'Logged Out'
         WHEN t.break_time IS NOT NULL AND t.back_to_work_time IS NULL 
@@ -380,7 +380,7 @@ $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work
         ELSE 'Unknown'
     END AS status
 FROM time_logs t
-LEFT JOIN profile_information p ON t.internID = p.internID
+LEFT JOIN intacc i ON t.internID = i.internID
 WHERE t.faciID = :faciID
     AND DATE(t.login_time) = CURDATE()
     AND t.status != 'Declined'
