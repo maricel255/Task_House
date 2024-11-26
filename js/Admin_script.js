@@ -289,7 +289,6 @@ function submitInternForm(event) {
             // Refresh the page to show updated data
             location.reload();
         } else {
-            // Show error message
             alert(data.message || 'An error occurred while adding the intern account.');
         }
     })

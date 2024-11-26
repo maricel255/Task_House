@@ -344,7 +344,7 @@ if (isset($_POST['addIntern'])) {
         $stmt = $conn->prepare($sql);
         $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
         $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
-        $stmt->bindValue(':adminID', $user['adminID'], PDO::PARAM_STR); // Using adminID from user data
+        $stmt->bindValue(':adminID', $_SESSION['adminID'], PDO::PARAM_STR);
 
         if ($stmt->execute()) {
             $_SESSION['message'] = "Intern account added successfully!";
@@ -1090,7 +1090,7 @@ echo '</table>';
         <label for="InternPass">Password:</label>
         <input type="password" id="InternPass" name="InternPass" required>
     </div>
-    <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
                                         
                                     </div>
