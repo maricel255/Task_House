@@ -252,13 +252,32 @@ function closeDetails() {
 //end kyle
 
 // Add this to your existing js/Admin_script.js file or in a <script> tag at the bottom of the page
-function deleteIntern(form) {
-    if (confirm('Are you sure you want to delete this record?')) {
+function deleteIntern(internID) {
+    if (confirm('Are you sure you want to delete this intern account?')) {
+        // Create and submit a form programmatically
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'Admin_Admin_1.php';
+
+        // Add internID input
+        const internInput = document.createElement('input');
+        internInput.type = 'hidden';
+        internInput.name = 'internID';
+        internInput.value = internID;
+
+        // Add action input
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'delete';
+
+        // Append inputs to form
+        form.appendChild(internInput);
+        form.appendChild(actionInput);
+
+        // Append form to document and submit
+        document.body.appendChild(form);
         form.submit();
-        setTimeout(function() {
-            window.location.href = 'Admin_Admin_1.php';
-        }, 100);
-        return true;
     }
     return false;
 }
