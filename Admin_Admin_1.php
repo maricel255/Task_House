@@ -5,6 +5,146 @@ error_reporting(E_ALL);
 session_start(); // Start the session
 require('db_Taskhouse/Admin_connection.php');
 
+// Handle all form submissions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // For Intern Account Management
+    if (isset($_POST['addIntern'])) {
+        handleInternAccountAdd($conn, $adminID);
+    }
+    else if (isset($_POST['action'])) {
+        handleInternAccountAction($conn, $adminID);
+    }
+    // For Facilitator Account Management
+    else if (isset($_POST['submitFacilitator'])) {
+        handleFacilitatorAdd($conn, $adminID);
+    }
+    else if (isset($_POST['faciAction'])) {
+        handleFacilitatorAction($conn, $adminID);
+    }
+    // For Announcements
+    else if (isset($_FILES['fileUpload'])) {
+        handleAnnouncementSubmission($conn, $adminID);
+    }
+    // For Profile Updates
+    else if (isset($_POST['newFirstname'])) {
+        handleProfileUpdate($conn);
+    }
+}
+
+// Helper Functions
+function handleInternAccountAdd($conn, $adminID) {
+    try {
+        $internID = trim($_POST['internID']);
+        $InternPass = trim($_POST['InternPass']);
+
+        // Validation
+        if (empty($internID) || empty($InternPass)) {
+            $_SESSION['message'] = "All fields are required.";
+            $_SESSION['message_type'] = 'error';
+        } else {
+            // Check for existing intern
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = ?");
+            $stmt->execute([$internID]);
+            if ($stmt->fetchColumn() > 0) {
+                $_SESSION['message'] = "Intern ID already exists.";
+                $_SESSION['message_type'] = 'error';
+            } else {
+                // Insert new intern
+                $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (?, ?, ?)");
+                if ($stmt->execute([$internID, $InternPass, $adminID])) {
+                    $_SESSION['message'] = "Intern account created successfully.";
+                    $_SESSION['message_type'] = 'success';
+                }
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'error';
+    }
+    
+    // Redirect back with appropriate section
+    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
+    exit();
+}
+
+function handleInternAccountAction($conn, $adminID) {
+    try {
+        $action = $_POST['action'];
+        $internID = $_POST['internID'];
+
+        if ($action === 'update' && isset($_POST['InternPass'])) {
+            $stmt = $conn->prepare("UPDATE intacc SET InternPass = ? WHERE internID = ? AND adminID = ?");
+            if ($stmt->execute([$_POST['InternPass'], $internID, $adminID])) {
+                $_SESSION['message'] = "Password updated successfully.";
+                $_SESSION['message_type'] = 'success';
+            }
+        } 
+        else if ($action === 'delete') {
+            $stmt = $conn->prepare("DELETE FROM intacc WHERE internID = ? AND adminID = ?");
+            if ($stmt->execute([$internID, $adminID])) {
+                $_SESSION['message'] = "Account deleted successfully.";
+                $_SESSION['message_type'] = 'success';
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'error';
+    }
+    
+    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
+    exit();
+}
+
+function handleFacilitatorAdd($conn, $adminID) {
+    try {
+        $faciID = trim($_POST['faciID']);
+        $faciPass = trim($_POST['faciPass']);
+
+        if (empty($faciID) || empty($faciPass)) {
+            $_SESSION['message'] = "All fields are required.";
+            $_SESSION['message_type'] = 'error';
+        } else {
+            $stmt = $conn->prepare("INSERT INTO facacc (faciID, faciPass, adminID) VALUES (?, ?, ?)");
+            if ($stmt->execute([$faciID, $faciPass, $adminID])) {
+                $_SESSION['message'] = "Facilitator account created successfully.";
+                $_SESSION['message_type'] = 'success';
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'error';
+    }
+    
+    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Facilitator_Account");
+    exit();
+}
+
+function handleAnnouncementSubmission($conn, $adminID) {
+    try {
+        $title = $_POST['title'];
+        $announcement = $_POST['announcement'];
+        $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+        $fileName = $_FILES['fileUpload']['name'];
+        
+        $uploadFileDir = __DIR__ . '/uploaded_files/';
+        $dest_path = $uploadFileDir . $fileName;
+
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $stmt = $conn->prepare("INSERT INTO announcements (title, imagePath, content, adminID) VALUES (?, ?, ?, ?)");
+            if ($stmt->execute([$title, $dest_path, $announcement, $adminID])) {
+                $_SESSION['message'] = "Announcement posted successfully.";
+                $_SESSION['message_type'] = 'success';
+            }
+        } else {
+            $_SESSION['message'] = "Error uploading file.";
+            $_SESSION['message_type'] = 'error';
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'error';
+    }
+}
+
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
