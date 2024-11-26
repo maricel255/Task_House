@@ -368,57 +368,47 @@ try {
 
 // Assuming you have a valid queryfor availability statud
 
+// Add this debugging code before your table display
+echo "Debug Information:<br>";
+echo "Current Date: " . date('Y-m-d') . "<br>";
+echo "FaciID: " . $faciID . "<br>";
 
 $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work_time, t.logout_time,
     p.first_name, i.profile_image,
     CASE
         WHEN t.login_time IS NOT NULL 
              AND t.logout_time IS NULL 
-             AND t.break_time IS NULL
-             AND DATE(t.login_time) = CURRENT_DATE() THEN 'Active Now'
-        WHEN t.logout_time IS NOT NULL 
-             AND DATE(t.logout_time) = CURRENT_DATE() THEN 'Logged Out'
+             AND t.break_time IS NULL THEN 'Active Now'
+        WHEN t.logout_time IS NOT NULL THEN 'Logged Out'
         WHEN t.break_time IS NOT NULL 
-             AND t.back_to_work_time IS NULL 
-             AND DATE(t.break_time) = CURRENT_DATE() THEN 'On Break'
+             AND t.back_to_work_time IS NULL THEN 'On Break'
         ELSE 'Unknown'
     END AS status
 FROM time_logs t
 LEFT JOIN intacc i ON t.internID = i.internID
 LEFT JOIN profile_information p ON t.internID = p.internID
 WHERE t.faciID = :faciID
-    AND DATE(t.login_time) = CURRENT_DATE()
-    AND LOWER(t.status) = 'pending'
+    AND t.status LIKE 'Pe%'  /* Changed to match 'Pending' */
 ORDER BY t.login_time DESC";
 
-// Prepare the query
-$stmt = $conn->prepare($query);
-
-// Bind the parameter
-$stmt->bindParam(':faciID', $faciID, PDO::PARAM_STR);
-
 try {
-    // Execute the query
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':faciID', $faciID, PDO::PARAM_STR);
     $stmt->execute();
-    
-    // Fetch all the results
     $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Check if there are results
-    if (!empty($interns)) {
-        // Process the results
-        foreach ($interns as $intern) {
-           
-        }
-    } else {
-       
-    }
     
+    echo "Query Results:<br>";
+    echo "Number of records found: " . count($interns) . "<br>";
+    if (!empty($interns)) {
+        foreach ($interns as $intern) {
+            echo "InternID: " . $intern['internID'] . "<br>";
+            echo "Login Time: " . $intern['login_time'] . "<br>";
+            echo "Status: " . $intern['status'] . "<br>";
+        }
+    }
 } catch (PDOException $e) {
-    // Handle any error that occurs during query execution
-   // echo "<p>Error: " . $e->getMessage() . "</p>";
+    echo "Error: " . $e->getMessage() . "<br>";
 }
-
 
 
 // Prepare and execute the query to get the count of active interns
