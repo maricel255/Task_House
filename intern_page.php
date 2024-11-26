@@ -1462,10 +1462,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     </div>
             </div>
 
+        <!-- Profile form buttons -->
+        <div class="form-buttons">
             <?php if (!$profileData): ?>
                 <button type="submit" name="insert-btn" class="insert-btn">Add Information</button>
-
             <?php endif; ?>
+        </div>
+
         </form>
 
     </div>
