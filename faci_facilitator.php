@@ -487,7 +487,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hr/Manager</title>
+    <title>Hr/Managers</title>
     <link rel="stylesheet" href="css/faci_styles.css">
 </head>
 <body>
