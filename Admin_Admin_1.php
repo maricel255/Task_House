@@ -282,9 +282,6 @@ if (isset($_POST['addIntern'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
     
-    // Get the adminID from the user data we fetched earlier
-    $adminID = $user['adminID']; // This comes from the earlier user query
-
     try {
         // Check if the internID already exists
         $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
@@ -305,13 +302,12 @@ if (isset($_POST['addIntern'])) {
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':internID', $internID);
             $stmt->bindParam(':InternPass', $InternPass);
-            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
+            $stmt->bindParam(':adminID', $user['adminID']);
 
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Intern account added successfully!";
-            } else {
-                $_SESSION['message'] = "Error: Could not add intern account.";
-            }
+            $stmt->execute();
+            $_SESSION['message'] = "Intern account added successfully!";
+            header("Location: Admin_Admin_1.php");
+            exit();
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
