@@ -853,7 +853,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     
         <div class="time-content">
             <div class="time-clock-container">
-                <h3>Offline Time Clock</h3>
+                <h3>Online Time Clock</h3>
                 <p id="time-display">
                     March 20, 2024 13:41:51<br>
                     <span id="day-of-week">Wednesday</span>
