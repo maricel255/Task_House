@@ -244,26 +244,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 if ($stmtIntacc->execute()) {
                     $conn->commit();
-                    echo "<script>
-                        alert('Intern account deleted successfully!');
-                        window.location.href = 'Admin_Admin_1.php';
-                    </script>";
+                    echo '<script>
+                        alert("Intern account deleted successfully!");
+                        document.location = "Admin_Admin_1.php";
+                    </script>';
                     exit();
                 } else {
                     $conn->rollBack();
-                    echo "<script>
-                        alert('Error: Could not delete intern account.');
-                        window.location.href = 'Admin_Admin_1.php';
-                    </script>";
+                    echo '<script>
+                        alert("Error: Could not delete intern account.");
+                        document.location = "Admin_Admin_1.php";
+                    </script>';
                     exit();
                 }
             } catch (PDOException $e) {
                 $conn->rollBack();
                 error_log("Error deleting intern account: " . $e->getMessage());
-                echo "<script>
-                    alert('Error deleting account. Please try again later.');
-                    window.location.href = 'Admin_Admin_1.php';
-                </script>";
+                echo '<script>
+                    alert("Error deleting account. Please try again later.");
+                    document.location = "Admin_Admin_1.php";
+                </script>';
                 exit();
             }
         }
@@ -1176,17 +1176,13 @@ echo '</table>';
                                                 <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
                                                 <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
                                                 <td class="table-actions">
-                                                <form method="POST" action="" style="display: flex; align-items: center;">
-                                                    <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
-                                                    <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
-                                                    <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="if(confirm('Are you sure you want to delete this record?')) { 
-                                                        window.location.href='Admin_Admin_1.php'; 
-                                                        return true; 
-                                                    } 
-                                                    return false;">Delete</button>
+                                                    <form method="POST" action="" style="display: inline;">
+                                                        <input type="hidden" name="internID" value="<?php echo htmlspecialchars($account['internID']); ?>" />
+                                                        <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
+                                                        <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
+                                                        <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" 
+                                                            onclick="return confirm('Are you sure you want to delete this intern account?');">Delete</button>
                                                     </form>
-
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
