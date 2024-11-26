@@ -481,7 +481,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
         $stmt->bindParam(':citizenship', $_POST['citizenship']);
         $stmt->bindParam(':hrManager', $_POST['hrManager']);
         $stmt->bindParam(':faciID', $_POST['faciID']);
-        $stmt->bindParam(':facilitatorEmail', $_POST['facilitatorEmail']);
+        
         $stmt->bindParam(':startShift', $_POST['startShift']);
         $stmt->bindParam(':endShift', $_POST['endShift']);
         $stmt->bindParam(':reqHrs', $_POST['reqHrs']);
