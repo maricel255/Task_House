@@ -236,24 +236,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 // Commit the transaction
                 $conn->commit();
                 
-                // Use a simple JavaScript redirect
-                ?>
-                <script>
-                    alert('Intern account deleted successfully!');
-                    window.location = 'Admin_Admin_1.php';
-                </script>
-                <?php
+                if (!headers_sent()) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true]);
+                }
                 exit();
                 
             } catch (PDOException $e) {
                 // Rollback the transaction
                 $conn->rollBack();
-                ?>
-                <script>
-                    alert('Error deleting account. Please try again.');
-                    window.location = 'Admin_Admin_1.php';
-                </script>
-                <?php
+                
+                if (!headers_sent()) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+                }
                 exit();
             }
         }
@@ -1171,7 +1167,7 @@ echo '</table>';
                                                         <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
                                                         <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
                                                         <button type="button" class="delete-btn-new" 
-                                                        onclick="deleteIntern('<?php echo htmlspecialchars($account['internID']); ?>')">Delete</button>
+                                                            onclick="deleteIntern('<?php echo htmlspecialchars($account['internID']); ?>')">Delete</button>
                                                     </form>
                                                 </td>
                                             </tr>
