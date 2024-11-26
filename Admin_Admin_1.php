@@ -240,38 +240,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
 }
 
 
-// Pagination settings
-$recordsPerPage = 20; // Number of records to display per page
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
-$offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
-
-// Fetch total number of intern accounts for pagination
-try {
-    if (isset($adminID)) {
-        $sql = "SELECT COUNT(*) FROM intacc WHERE adminID = :adminID"; 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-        $stmt->execute();
-        $totalRecords = $stmt->fetchColumn(); // Total number of records
-        $totalPages = ceil($totalRecords / $recordsPerPage); // Total number of pages
-
-        // Fetch the current page records
-        $sql = "SELECT * FROM intacc WHERE adminID = :adminID LIMIT :limit OFFSET :offset"; 
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-        $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT); // Set limit
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT); // Set offset
-        $stmt->execute();
-        $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        $_SESSION['message'] = 'Admin ID is not set.';
-        $internAccounts = [];
-    }
-    } catch (PDOException $e) {
-    error_log("Database error: " . $e->getMessage());
-    $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
-    $internAccounts = [];
-}
 
 
 // Handle adding intern account
