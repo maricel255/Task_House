@@ -1082,17 +1082,17 @@ echo '</table>';
                                         <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
                                         <h2>Add Intern Account</h2>
-                                        <form id="addInterAccForm" method="POST" onsubmit="return submitInternForm(event)">
-                                            <div class="form-group">
-                                                <label for="internID">Intern ID:</label>
-                                                <input type="text" id="internID" name="internID" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="InternPass">Password:</label>
-                                                <input type="password" id="InternPass" name="InternPass" required>
-                                            </div>
-                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
-                                        </form>
+<form id="addInterAccForm" method="POST" onsubmit="return submitInternForm(event)">
+    <div class="form-group">
+        <label for="internID">Intern ID:</label>
+        <input type="text" id="internID" name="internID" required>
+    </div>
+    <div class="form-group">
+        <label for="InternPass">Password:</label>
+        <input type="password" id="InternPass" name="InternPass" required>
+    </div>
+    <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+</form>
                                         
                                     </div>
                                 </div>

@@ -281,13 +281,17 @@ function submitInternForm(event) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
-        // Close the modal
-        closeModal('InternAccModal');
-        
-        // Refresh the page to show updated data
-        location.reload();
+        if (data.status === 'success') {
+            // Close the modal
+            closeModal('InternAccModal');
+            // Refresh the page to show updated data
+            location.reload();
+        } else {
+            // Show error message
+            alert(data.message || 'An error occurred while adding the intern account.');
+        }
     })
     .catch(error => {
         console.error('Error:', error);
