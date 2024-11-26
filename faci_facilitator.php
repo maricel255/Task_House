@@ -372,11 +372,15 @@ try {
 $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work_time, t.logout_time,
     p.first_name, i.profile_image,
     CASE
-        WHEN t.logout_time IS NOT NULL AND DATE(t.logout_time) = CURDATE() THEN 'Logged Out'
-        WHEN t.break_time IS NOT NULL AND t.back_to_work_time IS NULL 
+        WHEN t.login_time IS NOT NULL 
+             AND t.logout_time IS NULL 
+             AND t.break_time IS NULL
+             AND DATE(t.login_time) = CURDATE() THEN 'Active Now'
+        WHEN t.logout_time IS NOT NULL 
+             AND DATE(t.logout_time) = CURDATE() THEN 'Logged Out'
+        WHEN t.break_time IS NOT NULL 
+             AND t.back_to_work_time IS NULL 
              AND DATE(t.break_time) = CURDATE() THEN 'On Break'
-        WHEN t.login_time IS NOT NULL AND DATE(t.login_time) = CURDATE() 
-             AND (t.logout_time IS NULL OR DATE(t.logout_time) != CURDATE()) THEN 'Active Now'
         ELSE 'Unknown'
     END AS status
 FROM time_logs t
