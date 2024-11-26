@@ -245,12 +245,14 @@ body {
 }
 
 /* Lorem Container Style */
+/* Lorem Container Style */
 .lorem-container {
   background-color: var(--white);
   border-radius: 15px;
   padding: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-top: 4.5rem; /* Aligns with INTERN'S text */
+  margin-left: 2rem; /* Adds space from the left side */
   width: 350px;
 }
 
