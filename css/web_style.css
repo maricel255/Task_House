@@ -245,15 +245,14 @@ body {
 }
 
 /* Lorem Container Style */
-/* Lorem Container Style */
 .lorem-container {
   background-color: var(--white);
   border-radius: 15px;
   padding: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin-top: 4.5rem; /* Aligns with INTERN'S text */
-  margin-left: 2rem; /* Adds space from the left side */
-  width: 350px;
+  margin-top: 4.5rem;
+  width: 100%;
+  max-width: 350px;
 }
 
 .abstract-title {
@@ -261,21 +260,21 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  margin-left: -15rem;
 }
 
 .lorem-container p {
   color: #666;
   font-size: 0.9rem;
-  line-height: 4px;
-  width: 15px;;
+  line-height: 1.6;
+  width: 100%;
+  margin: 0;
 }
 
 /* Responsive Design */
-@media (min-width: 992px) {
-  .col-md-3 {
-    display: flex;
-    align-items: center;
+@media (max-width: 1200px) {
+  .lorem-container {
+    margin-top: 2rem;
+    max-width: 300px;
   }
 }
 
@@ -292,41 +291,39 @@ body {
   }
 
   .lorem-container {
-    margin-top: 1rem;
+    margin: 1rem auto;
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .abstract-title {
+    text-align: center;
+    margin-left: 0;
   }
 }
 
 @media (max-width: 768px) {
-  .main-text {
-    font-size: 3rem;
+  .lorem-container {
+    padding: 1.2rem;
   }
 
-  .col-md-3 img.img-fluid {
-    width: 200%;
-    margin: 0 auto;
-  }
-
-  .capstone-title {
-    font-size: 1.5rem;
-    text-align: center;
+  .lorem-container p {
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 576px) {
-  .main-text {
-    font-size: 2.5rem;
-  }
-
-  .col-md-3 img.img-fluid {
-    width: 150%;
-  }
-
   .lorem-container {
+    width: 95%;
     padding: 1rem;
   }
 
   .abstract-title {
     font-size: 1.2rem;
+  }
+
+  .lorem-container p {
+    font-size: 0.8rem;
   }
 }
 
@@ -385,10 +382,10 @@ body {
 }
 
 .about-us-section .row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
 }
 
 .about-us-section .col-md-3 {
@@ -554,25 +551,19 @@ body {
 
 /* Photocard Styles */
 .col-md-3.text-center {
-  padding: 15px;
   display: flex;
-  justify-content: center;
-}
-
-/* Photocard Container */
-.col-md-3.text-center {
-  position: relative;
+  flex-direction: column;
   background: var(--white);
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
   overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 0 auto;
   width: 100%;
   max-width: 280px;
-  margin: 15px;
 }
 
-/* Image Styling */
+/* Photocard Image Container */
 .col-md-3.text-center img.img-fluid {
   width: 100%;
   height: 350px;
@@ -581,61 +572,64 @@ body {
   transition: transform 0.3s ease;
 }
 
-/* Description Text */
+/* Photocard Description */
 .col-md-3.text-center p {
-  padding: 15px;
+  padding: 1rem;
   margin: 0;
   background: var(--white);
-  color: var(--accent);
+  color: #228B22; /* Forest Green */
   font-weight: 500;
-  border-radius: 0 0 15px 15px;
+  font-size: 1rem;
 }
 
 /* Hover Effects */
 .col-md-3.text-center:hover {
   transform: translateY(-10px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .col-md-3.text-center:hover img.img-fluid {
   transform: scale(1.05);
 }
 
-/* Responsive Grid */
-@media (min-width: 1200px) {
-  .about-us-section .row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
   .col-md-3.text-center {
-    flex: 0 0 calc(25% - 30px);
-    max-width: 280px;
-  }
-}
-
-@media (max-width: 1199px) {
-  .col-md-3.text-center {
-    flex: 0 0 calc(33.333% - 30px);
+    max-width: 260px;
   }
 }
 
 @media (max-width: 991px) {
-  .col-md-3.text-center {
-    flex: 0 0 calc(50% - 30px);
+  .about-us-section .row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-md-3.text-center img.img-fluid {
+    height: 300px;
   }
 }
 
 @media (max-width: 576px) {
+  .about-us-section .row {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
   .col-md-3.text-center {
-    flex: 0 0 calc(100% - 30px);
-    max-width: 260px;
+    max-width: 100%;
   }
 
   .col-md-3.text-center img.img-fluid {
-    height: 320px;
+    height: 380px;
+  }
+
+  .col-md-3.text-center p {
+    font-size: 0.9rem;
+    padding: 0.8rem;
   }
 }
 
