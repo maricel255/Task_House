@@ -146,58 +146,55 @@ $approvalCount = count($logs);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    
     if (isset($_POST['approveBtn'])) {
-    // Sanitize input
+    // Sanitize input to avoid malicious data
     $internID = htmlspecialchars($_POST['internID']);
-    $id = htmlspecialchars($_POST['id']);
+    $id = htmlspecialchars($_POST['id']); // Get the unique log ID
     
-    // First, check if all required fields are filled
-    $checkSql = "SELECT * FROM time_logs WHERE internID = :internID AND id = :id";
+    // Query to fetch the current record for the specified intern and log ID
+    $query = "SELECT login_time, break_time, back_to_work_time, task, logout_time FROM time_logs WHERE internID = :internID AND id = :id";
     
     try {
-        $stmt = $conn->prepare($checkSql);
+        // Fetch the record to check if any field is empty
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
+        // Fetch the data for the specific log entry
         $log = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Check if any required field is empty or null
-        if (empty($log['login_time']) || 
-            empty($log['break_time']) || 
-            empty($log['back_to_work_time']) || 
-            empty($log['task']) || 
-            empty($log['logout_time'])) {
-            
-            $_SESSION['alertMessage'] = "All time fields must be filled in before approving.";
-            $_SESSION['alertType'] = 'error';
+        // Check if any of the necessary fields are empty
+        if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
+            // Set error message in the session
+            $_SESSION['alertMessage'] = "All time fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled in before approving.";
+            $_SESSION['alertType'] = 'error'; // Set alert type as error
         } else {
-            // All fields are filled, proceed with approval
-            $updateSql = "UPDATE time_logs 
-                         SET status = 'Approved' 
-                         WHERE internID = :internID 
-                         AND id = :id 
-                         AND status = 'pending'";
+            // Define your update query to set the status to 'approved' only for the specific row (log_id)
+            $sql = "UPDATE time_logs 
+                    SET status = 'Approved' 
+                    WHERE internID = :internID 
+                    AND id = :id 
+                    AND status = 'pending'"; // Ensure that only 'pending' logs are updated for the correct row
             
-            $updateStmt = $conn->prepare($updateSql);
-            $updateStmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
+            // Prepare and execute the query using PDO
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Bind the log_id parameter
+            $stmt->execute();
             
-            if ($updateStmt->execute()) {
-                $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
-                $_SESSION['alertType'] = 'success';
-            } else {
-                throw new Exception('Database update failed');
-            }
+            // Set success message in the session
+            $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
+            $_SESSION['alertType'] = 'success';  // Set type as 'success'
         }
         
+        // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     } catch (PDOException $e) {
+        // Set error message in the session if an exception occurs
         $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
-        $_SESSION['alertType'] = 'error';
+        $_SESSION['alertType'] = 'error';  // Set type as 'error'
     }
-    
-    // Redirect after processing
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
 }
     
 
@@ -371,48 +368,57 @@ try {
 
 // Assuming you have a valid queryfor availability statud
 
-// SQL query to fetch intern data and determine status based on login_time, break_time, and logout_time
-$query = "
-SELECT i.internID, p.first_name, ia.profile_image, i.login_time, i.break_time, i.back_to_work_time, i.logout_time,
-       CASE
-           -- If logout_time is not NULL or empty, show 'Logged Out' (highest priority)
-           WHEN (i.logout_time IS NOT NULL AND i.logout_time != '') THEN 'Logged Out'
-           
-           -- If break_time is present and back_to_work_time is NULL or empty, show 'On Break'
-           WHEN (i.break_time IS NOT NULL AND i.break_time != '') 
-                AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') THEN 'On Break'
-           
-           -- If login_time is present, back_to_work_time is NULL or empty, and logout_time is NULL, show 'Active Now'
-           WHEN (i.login_time IS NOT NULL AND i.login_time != '') 
-                AND (i.back_to_work_time IS NULL OR i.back_to_work_time = '') 
-                AND (i.logout_time IS NULL OR i.logout_time = '') THEN 'Active Now'
-           
-           -- If back_to_work_time is present (indicating the intern is back to work), show 'Active Now'
-           WHEN (i.back_to_work_time IS NOT NULL AND i.back_to_work_time != '') THEN 'Active Now'
-           
-           -- Default to 'Unknown' if no status is detected
-           ELSE 'Unknown'
-       END AS status
-FROM time_logs i
-JOIN profile_information p ON i.internID = p.internID
-JOIN intacc ia ON i.internID = ia.internID  -- Join with intacc table for profile_image
-WHERE i.faciID = :faciID
-AND (
-    DATE(i.login_time) = CURDATE() OR
-    DATE(i.break_time) = CURDATE() OR
-    DATE(i.back_to_work_time) = CURDATE() OR
-    DATE(i.logout_time) = CURDATE()
-)
-";
 
+$query = "SELECT time_logs.*, 
+profile_information.first_name,
+CASE
+    WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
+    WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
+    WHEN time_logs.login_time IS NOT NULL 
+         AND time_logs.back_to_work_time IS NULL 
+         AND time_logs.logout_time IS NULL THEN 'Active Now'
+    WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
+    ELSE 'Unknown'
+END AS status
+FROM time_logs
+JOIN profile_information ON time_logs.faciID = profile_information.faciID
+WHERE time_logs.faciID = :faciID
+  AND time_logs.status != 'Declined'
+  AND (
+      DATE(time_logs.login_time) = CURDATE() OR
+      DATE(time_logs.logout_time) = CURDATE() OR
+      DATE(time_logs.break_time) = CURDATE() OR
+      DATE(time_logs.back_to_work_time) = CURDATE()
+  )";
 
-// Prepare and execute the query
+// Prepare the query
 $stmt = $conn->prepare($query);
-$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
-$stmt->execute();
 
-// Fetch the results
-$interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Bind the parameter
+$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
+
+try {
+    // Execute the query
+    $stmt->execute();
+    
+    // Fetch all the results
+    $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Check if there are results
+    if (!empty($interns)) {
+        // Process the results
+        foreach ($interns as $intern) {
+           
+        }
+    } else {
+       
+    }
+    
+} catch (PDOException $e) {
+    // Handle any error that occurs during query execution
+   // echo "<p>Error: " . $e->getMessage() . "</p>";
+}
+
 
 
 // Prepare and execute the query to get the count of active interns
@@ -421,6 +427,8 @@ $stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
 $stmt->execute();
 $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);  // Fetch all interns' details
 $activeInternCount = count($interns);  // Get the count of active interns
+
+
 
 
 
@@ -687,41 +695,52 @@ try {
             </div>
         </div>
         <div class="intern-status-dashboard">
-                    <h2 >Availability Status</h2>
+    <h2>Availability Status</h2>
+    <?php
+    $displayedInternIDs = []; // Track displayed internIDs
+    if (!empty($interns)): ?>
+        <table class="intern-status-table">
+            <thead>
+                <tr>
+                    <th>Intern ID</th>
+                    <th>Intern Name</th>
+                    <th>Status</th>
+                    <th>Profile Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $hasActiveInterns = false; // Track if there are active interns
+                foreach ($interns as $intern):
+                    // Skip this intern if the internID has already been displayed
+                    if (in_array($intern['internID'], $displayedInternIDs)) {
+                        continue;
+                    }
+                    $displayedInternIDs[] = $intern['internID']; // Mark internID as displayed
+                    $hasActiveInterns = true; // Mark that at least one intern is active today
+                ?>
+                    <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
+                        <td><?php echo htmlspecialchars($intern['internID']); ?></td>
+                        <td><?php echo htmlspecialchars($intern['first_name'] ?? 'N/A'); ?></td>
+                        <td class="<?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
+                            <strong><?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?></strong>
+                        </td>
+                        <td>
+                            <?php if (!empty($intern['profile_image'])): ?>
+                                <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
+                            <?php else: ?>
+                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 
-                    <?php if ($interns): ?>
-                <table class="intern-status-table">
-                    <thead>
-                        <tr>
-                            <th>Intern ID</th>
-                            <th>Intern Name</th>
-                            <th>Status</th>
-                            <th>Profile Image</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($interns as $intern): ?>
-                            <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
-                                <td><?php echo htmlspecialchars($intern['internID']); ?></td>
-                                <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
-                                <td class="<?php echo strtolower($intern['status']); ?>"><?php echo htmlspecialchars($intern['status']); ?></td>
-                                <td>
-                                    <?php if (!empty($intern['profile_image'])): ?>
-                                        <!-- Display profile image -->
-                                        <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
-                                    <?php else: ?>  
-                                        <!-- Default image if no profile image exists -->
-                                        <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No interns found under your facilitation.</p>
-            <?php endif; ?>
-
+    <?php if (empty($interns) || !$hasActiveInterns): ?>
+        <p>No interns found under your facilitation that are active today.</p>
+    <?php endif; ?>
 </div>
 
 </div>
@@ -908,4 +927,4 @@ try {
 
     <script src="js/faci_script.js"></script>
 </body>
-</html> 
+</html>
