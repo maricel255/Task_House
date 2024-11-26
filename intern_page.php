@@ -263,7 +263,7 @@ if (isset($_POST['break-btn'])) {
     $stmtCheckStatus->execute();
     $status = $stmtCheckStatus->fetchColumn();
 
-    if ($status == 'declined') {
+    if ($status == 'Declined') {
         $alertMessage = "Your request has been declined, you can't click this button.";
     } else {
         if ($stmtCheckBreak->rowCount() == 0) {
@@ -294,7 +294,7 @@ if (isset($_POST['back-to-work-btn'])) {
     $stmtCheckStatus->execute();
     $status = $stmtCheckStatus->fetchColumn();
 
-    if ($status == 'declined') {
+    if ($status == 'Declined') {
         $alertMessage = "Your request has been declined, you can't click this button.";
     } else {
         // Proceed with back to work functionality
@@ -342,7 +342,7 @@ if (isset($_POST['submitTask'])) {
         $stmtCheckStatus->execute();
         $status = $stmtCheckStatus->fetchColumn();
 
-        if ($status == 'declined') {
+        if ($status == 'Declined') {
             $alertMessage = "Your request has been declined, you can't click this button.";
         } else {
             // Proceed with task logging functionality
