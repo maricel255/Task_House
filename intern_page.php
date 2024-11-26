@@ -1129,11 +1129,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     value="<?php echo htmlspecialchars($profileData['start_shift'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <label>Required Hours:</label>
-                <input type="number" name="reqHrs" 
-                    placeholder="e.g., 40"
-                    value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
+                    <label>Date Start:</label>
+                <input type="date" name="dateStart" 
+                    value="<?php echo htmlspecialchars($profileData['date_start'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>Company:</label>
+                <input type="text" name="company" 
+                    placeholder="e.g., Sample Corporation"
+                    value="<?php echo htmlspecialchars($profileData['company'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
+
+               
             </div>
 
             <div class="form-column">
@@ -1147,21 +1154,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         </option>
                     <?php endforeach; ?>
                 </select>
+                <label>Required Hours:</label>
+                <input type="number" name="reqHrs" 
+                    placeholder="e.g., 40"
+                    value="<?php echo htmlspecialchars($profileData['required_hours'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
 
                 <label>End Shift:</label>
                 <input type="time" name="endShift" 
                     value="<?php echo htmlspecialchars($profileData['end_shift'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <label>Date Start:</label>
-                <input type="date" name="dateStart" 
-                    value="<?php echo htmlspecialchars($profileData['date_start'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
+                    <label>Date End:</label>
+                        <input type="date" name="dateEnd" 
+                         value="<?php echo htmlspecialchars($profileData['date_end'] ?? ''); ?>"
+                         <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <label>Company:</label>
-                <input type="text" name="company" 
-                    placeholder="e.g., Sample Corporation"
-                    value="<?php echo htmlspecialchars($profileData['company'] ?? ''); ?>"
+                
+
+                    <label>Company Address:</label>
+                <input type="text" name="companyAddress" 
+                    placeholder="e.g., 123 Business District, City"
+                    value="<?php echo htmlspecialchars($profileData['company_address'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
             </div>
         </div>
