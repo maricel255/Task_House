@@ -707,7 +707,7 @@ try {
     <?php
     $displayedInternIDs = []; // Track displayed internIDs
     $declinedInterns = array_filter($interns, function($intern) {
-        return strtolower($intern['status']) === 'declined'; // Filter for interns with "Declined" status
+        return strtolower($intern['status']) === 'Declined'; // Filter for interns with "Declined" status
     });
 
     if (!empty($declinedInterns)): ?>
