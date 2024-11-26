@@ -329,6 +329,16 @@ if (isset($_POST['submitIntern'])) {
         $_SESSION['message_type'] = 'warning';
     } else {
         try {
+            // First, make sure we have the adminID
+            if (empty($adminID)) {
+                // Fetch adminID if not already set
+                $stmt = $conn->prepare("SELECT adminID FROM users WHERE Uname = :Uname");
+                $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
+                $stmt->execute();
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $adminID = $result['adminID'];
+            }
+
             // Check if the internID already exists
             $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
             $checkStmt = $conn->prepare($checkSql);
@@ -351,6 +361,13 @@ if (isset($_POST['submitIntern'])) {
                 $stmt->bindParam(':adminID', $adminID);
 
                 if ($stmt->execute()) {
+                    // Also create an entry in profile_information table
+                    $profileSql = "INSERT INTO profile_information (internID, adminID) VALUES (:internID, :adminID)";
+                    $profileStmt = $conn->prepare($profileSql);
+                    $profileStmt->bindParam(':internID', $internID);
+                    $profileStmt->bindParam(':adminID', $adminID);
+                    $profileStmt->execute();
+
                     $_SESSION['message'] = "Intern account added successfully!";
                     $_SESSION['message_type'] = 'success';
                 } else {
@@ -1089,16 +1106,16 @@ echo '</table>';
         <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
         <h2>Add Intern Account</h2>
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <div class="form-group">
-                <label for="internID">Intern ID:</label>
-                <input type="text" id="internID" name="internID" required>
-            </div>
-            <div class="form-group">
-                <label for="InternPass">Password:</label>
-                <input type="password" id="InternPass" name="InternPass" required>
-            </div>
-            <button type="submit" name="submitIntern" class="btn btn-primary">Submit</button>
-        </form>
+    <div class="form-group">
+        <label for="internID">Intern ID:</label>
+        <input type="text" id="internID" name="internID" required>
+    </div>
+    <div class="form-group">
+        <label for="InternPass">Password:</label>
+        <input type="password" id="InternPass" name="InternPass" required>
+    </div>
+    <button type="submit" name="submitIntern" class="btn btn-primary">Submit</button>
+</form>
     </div>
     </div>
                                 <!-- Display Existing Intern Accounts Outside the Modal -->
