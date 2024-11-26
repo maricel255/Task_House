@@ -382,16 +382,28 @@ $query = "SELECT DISTINCT
         WHEN t.break_time IS NOT NULL AND t.back_to_work_time IS NULL 
             AND DATE(t.break_time) = CURDATE() THEN 'On Break'
         WHEN (t.login_time IS NOT NULL AND DATE(t.login_time) = CURDATE())
-            OR (t.back_to_work_time IS NOT NULL AND DATE(t.back_to_work_time) = CURDATE()) THEN 'Active Now'
-        ELSE NULL
+            OR (t.back_to_work_time IS NOT NULL AND DATE(t.back_to_work_time) = CURDATE()) 
+            AND (t.logout_time IS NULL OR DATE(t.logout_time) != CURDATE()) THEN 'Active Now'
+        ELSE 'Inactive'
     END AS status
 FROM time_logs t
 JOIN profile_information p ON t.internID = p.internID
 JOIN intacc i ON t.internID = i.internID
 WHERE t.faciID = :faciID
-    AND t.status != 'Declined'
-    AND DATE(COALESCE(t.logout_time, t.break_time, t.back_to_work_time, t.login_time)) = CURDATE()
-ORDER BY t.login_time DESC";
+    AND (
+        DATE(t.login_time) = CURDATE() 
+        OR DATE(t.break_time) = CURDATE()
+        OR DATE(t.back_to_work_time) = CURDATE()
+        OR DATE(t.logout_time) = CURDATE()
+    )
+ORDER BY 
+    CASE 
+        WHEN status = 'Active Now' THEN 1
+        WHEN status = 'On Break' THEN 2
+        WHEN status = 'Logged Out' THEN 3
+        ELSE 4
+    END,
+    t.login_time DESC";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
