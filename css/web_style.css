@@ -251,6 +251,7 @@ body {
   padding: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-top: 4.5rem; /* Aligns with INTERN'S text */
+  width: 410px;
 }
 
 .abstract-title {
