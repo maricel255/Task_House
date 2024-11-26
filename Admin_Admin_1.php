@@ -5,6 +5,20 @@ error_reporting(E_ALL);
 session_start(); // Start the session
 require('db_Taskhouse/Admin_connection.php');
 
+// Get adminID from the logged-in user's session
+$Uname = $_SESSION['Uname'] ?? null;
+if ($Uname) {
+    try {
+        $stmt = $conn->prepare("SELECT adminID FROM users WHERE Uname = :Uname");
+        $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $adminID = $result['adminID'] ?? null;
+    } catch (PDOException $e) {
+        error_log("Error fetching adminID: " . $e->getMessage());
+    }
+}
+
 // Handle all form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // For Intern Account Management
@@ -34,35 +48,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Helper Functions
 function handleInternAccountAdd($conn, $adminID) {
     try {
+        if (!$adminID) {
+            setMessage("Error: Admin session not found.", "error");
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+
         $internID = trim($_POST['internID']);
         $InternPass = trim($_POST['InternPass']);
 
-        // Validation
+        // Validate inputs
         if (empty($internID) || empty($InternPass)) {
-            $_SESSION['message'] = "All fields are required.";
-            $_SESSION['message_type'] = 'error';
+            setMessage("All fields are required.", "error");
         } else {
-            // Check for existing intern
-            $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = ?");
-            $stmt->execute([$internID]);
+            // Check if intern ID already exists
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = :internID");
+            $stmt->bindParam(':internID', $internID);
+            $stmt->execute();
+            
             if ($stmt->fetchColumn() > 0) {
-                $_SESSION['message'] = "Intern ID already exists.";
-                $_SESSION['message_type'] = 'error';
+                setMessage("Intern ID already exists.", "error");
             } else {
-                // Insert new intern
-                $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (?, ?, ?)");
-                if ($stmt->execute([$internID, $InternPass, $adminID])) {
-                    $_SESSION['message'] = "Intern account created successfully.";
-                    $_SESSION['message_type'] = 'success';
+                // Insert new intern account with the current adminID
+                $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
+                $stmt->bindParam(':internID', $internID);
+                $stmt->bindParam(':InternPass', $InternPass);
+                $stmt->bindParam(':adminID', $adminID);
+                
+                if ($stmt->execute()) {
+                    // Also create entry in profile_information table
+                    $profileStmt = $conn->prepare("INSERT INTO profile_information (internID, adminID) VALUES (:internID, :adminID)");
+                    $profileStmt->bindParam(':internID', $internID);
+                    $profileStmt->bindParam(':adminID', $adminID);
+                    $profileStmt->execute();
+                    
+                    setMessage("Intern account created successfully.", "success");
+                } else {
+                    setMessage("Error creating intern account.", "error");
                 }
             }
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
-        $_SESSION['message_type'] = 'error';
+        setMessage("Database error: " . $e->getMessage(), "error");
     }
     
-    // Redirect back with appropriate section
     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
     exit();
 }
@@ -1167,16 +1196,17 @@ echo '</table>';
 
                                         <h2>Add Intern Account</h2>
                                         <form id="addInterAccForm" method="POST" action="">
-    <div class="form-group">
-        <label for="internID">Intern ID:</label>
-        <input type="text" id="internID" name="internID" required>
-    </div>
-    <div class="form-group">
-        <label for="InternPass">Password:</label>
-        <input type="password" id="InternPass" name="InternPass" required>
-    </div>
-    <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
-</form>
+                                            <input type="hidden" name="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
+                                            <div class="form-group">
+                                                <label for="internID">Intern ID:</label>
+                                                <input type="text" id="internID" name="internID" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="InternPass">Password:</label>
+                                                <input type="password" id="InternPass" name="InternPass" required>
+                                            </div>
+                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+                                        </form>
                                         
                                     </div>
                                 </div>
