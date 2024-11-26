@@ -1457,8 +1457,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 // Loop through time logs and check if any status is "Approved"
                 $totalWorkedHours = 0; // Initialize a variable to sum up total worked hours
 
-// Loop through time logs and check if any status is "Approved"
-foreach ($timeLogs as $log) {
+        // Loop through time logs and check if any status is "Approved"
+        foreach ($timeLogs as $log) {
     if (strtolower($log['status']) == 'approved') {
         // Calculate the difference between login_time and logout_time
         $loginTime = strtotime($log['login_time']);
@@ -1526,6 +1526,7 @@ echo number_format($requiredHours, 2); // Display the remaining required hours (
             </table>
         </div>
     </div>
+</div>
 </div>
 
     
