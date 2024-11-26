@@ -1417,6 +1417,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     placeholder="e.g., 09171234567"
                     value="<?php echo htmlspecialchars($profileData['emergency_contact_no'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
+                    <div class="form-row">
+                <label>Emergency Address:</label>
+                <input type="text" name="emergencyAddress" 
+                    placeholder="e.g., 123 Emergency Rd."
+                    value="<?php echo htmlspecialchars($profileData['emergency_address'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
             </div>
         </div>
     </div>
