@@ -304,13 +304,22 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindParam(':InternPass', $InternPass);
             $stmt->bindParam(':adminID', $user['adminID']);
 
-            $stmt->execute();
-            $_SESSION['message'] = "Intern account added successfully!";
-            header("Location: Admin_Admin_1.php");
-            exit();
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Intern account added successfully!";
+                $_SESSION['message_type'] = 'success';
+                echo "<script>
+                    alert('Intern account added successfully!');
+                    window.location.href = 'Admin_Admin_1.php';
+                </script>";
+                exit();
+            } else {
+                $_SESSION['message'] = "Error adding intern account.";
+                $_SESSION['message_type'] = 'warning';
+            }
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'warning';
     }
 }
 
