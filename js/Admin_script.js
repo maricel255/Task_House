@@ -254,24 +254,23 @@ function closeDetails() {
 // Add this to your existing js/Admin_script.js file or in a <script> tag at the bottom of the page
 function deleteIntern(internID) {
     if (confirm('Are you sure you want to delete this intern account?')) {
-        var formData = new FormData();
-        formData.append('internID', internID);
-        formData.append('action', 'delete');
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'Admin_Admin_1.php';
 
-        fetch('Admin_Admin_1.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                alert('Error deleting account');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error deleting account');
-        });
+        var input1 = document.createElement('input');
+        input1.type = 'hidden';
+        input1.name = 'internID';
+        input1.value = internID;
+
+        var input2 = document.createElement('input');
+        input2.type = 'hidden';
+        input2.name = 'action';
+        input2.value = 'delete';
+
+        form.appendChild(input1);
+        form.appendChild(input2);
+        document.body.appendChild(form);
+        form.submit();
     }
 }

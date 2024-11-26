@@ -218,52 +218,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
         } elseif ($action === 'delete') {
-            try {
-                // Begin transaction
-                $conn->beginTransaction();
+            // Delete from time_logs
+            $sql1 = "DELETE FROM time_logs WHERE internID = :internID";
+            $stmt1 = $conn->prepare($sql1);
+            $stmt1->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $stmt1->execute();
 
-                // Check if internID exists before deletion
-                $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
-                $checkStmt = $conn->prepare($checkSql);
-                $checkStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                $checkStmt->execute();
-                
-                if ($checkStmt->fetchColumn() > 0) {
-                    // Delete from time_logs first
-                    $sql1 = "DELETE FROM time_logs WHERE internID = :internID";
-                    $stmt1 = $conn->prepare($sql1);
-                    $stmt1->bindValue(':internID', $internID, PDO::PARAM_STR);
-                    $stmt1->execute();
+            // Delete from profile_information
+            $sql2 = "DELETE FROM profile_information WHERE internID = :internID";
+            $stmt2 = $conn->prepare($sql2);
+            $stmt2->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $stmt2->execute();
 
-                    // Delete from profile_information
-                    $sql2 = "DELETE FROM profile_information WHERE internID = :internID";
-                    $stmt2 = $conn->prepare($sql2);
-                    $stmt2->bindValue(':internID', $internID, PDO::PARAM_STR);
-                    $stmt2->execute();
+            // Delete from intacc
+            $sql3 = "DELETE FROM intacc WHERE internID = :internID";
+            $stmt3 = $conn->prepare($sql3);
+            $stmt3->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $stmt3->execute();
 
-                    // Finally delete from intacc
-                    $sql3 = "DELETE FROM intacc WHERE internID = :internID";
-                    $stmt3 = $conn->prepare($sql3);
-                    $stmt3->bindValue(':internID', $internID, PDO::PARAM_STR);
-                    
-                    if ($stmt3->execute()) {
-                        $conn->commit();
-                        $_SESSION['message'] = "Intern account deleted successfully!";
-                        header("Location: Admin_Admin_1.php");
-                        exit();
-                    } else {
-                        throw new PDOException("Failed to delete intern account");
-                    }
-                } else {
-                    throw new PDOException("Intern account not found");
-                }
-                
-            } catch (PDOException $e) {
-                $conn->rollBack();
-                $_SESSION['message'] = "Error deleting account: " . $e->getMessage();
-                header("Location: Admin_Admin_1.php");
-                exit();
-            }
+            header("Location: Admin_Admin_1.php");
+            exit();
         }
     }
 }
@@ -1178,8 +1152,7 @@ echo '</table>';
                                                         <input type="hidden" name="internID" value="<?php echo htmlspecialchars($account['internID']); ?>" />
                                                         <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
                                                         <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                                        <button type="button" class="delete-btn-new" 
-                                onclick="deleteIntern('<?php echo htmlspecialchars($account['internID']); ?>')">Delete</button>
+                                                        <button type="button" onclick="deleteIntern('<?php echo htmlspecialchars($account['internID']); ?>')" class="delete-button">Delete</button>
                                                     </form>
                                                 </td>
                                             </tr>
