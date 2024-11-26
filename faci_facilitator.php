@@ -150,61 +150,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $internID = htmlspecialchars($_POST['internID']);
     $id = htmlspecialchars($_POST['id']);
     
-    // Query to fetch the current record with proper DATETIME handling
-    $query = "SELECT 
-        CASE 
-            WHEN login_time = '' OR login_time IS NULL THEN NULL 
-            ELSE login_time 
-        END as login_time,
-        CASE 
-            WHEN break_time = '' OR break_time IS NULL THEN NULL 
-            ELSE break_time 
-        END as break_time,
-        CASE 
-            WHEN back_to_work_time = '' OR back_to_work_time IS NULL THEN NULL 
-            ELSE back_to_work_time 
-        END as back_to_work_time,
-        CASE 
-            WHEN task = '' OR task IS NULL THEN NULL 
-            ELSE task 
-        END as task,
-        CASE 
-            WHEN logout_time = '' OR logout_time IS NULL THEN NULL 
-            ELSE logout_time 
-        END as logout_time
-        FROM time_logs 
-        WHERE internID = :internID AND id = :id";
+    // First, check if all required fields are filled
+    $checkSql = "SELECT * FROM time_logs WHERE internID = :internID AND id = :id";
     
     try {
-        // Fetch the record to check if any field is empty
-        $stmt = $conn->prepare($query);
+        $stmt = $conn->prepare($checkSql);
         $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
         $log = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Check if any of the necessary fields are NULL
-        if ($log['login_time'] === NULL || 
-            $log['break_time'] === NULL || 
-            $log['back_to_work_time'] === NULL || 
-            $log['task'] === NULL || 
-            $log['logout_time'] === NULL) {
+        // Check if any required field is empty or null
+        if (empty($log['login_time']) || 
+            empty($log['break_time']) || 
+            empty($log['back_to_work_time']) || 
+            empty($log['task']) || 
+            empty($log['logout_time'])) {
+            
             $_SESSION['alertMessage'] = "All time fields must be filled in before approving.";
             $_SESSION['alertType'] = 'error';
         } else {
-            // Update status to approved
-            $sql = "UPDATE time_logs 
-                    SET status = 'Approved' 
-                    WHERE internID = :internID 
-                    AND id = :id 
-                    AND status = 'pending'";
+            // All fields are filled, proceed with approval
+            $updateSql = "UPDATE time_logs 
+                         SET status = 'Approved' 
+                         WHERE internID = :internID 
+                         AND id = :id 
+                         AND status = 'pending'";
             
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+            $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
             
-            if ($stmt->execute()) {
+            if ($updateStmt->execute()) {
                 $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
                 $_SESSION['alertType'] = 'success';
             } else {
@@ -212,14 +190,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
         
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
     } catch (PDOException $e) {
         $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
         $_SESSION['alertType'] = 'error';
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
     }
+    
+    // Redirect after processing
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
     
 
@@ -930,4 +908,4 @@ try {
 
     <script src="js/faci_script.js"></script>
 </body>
-</html>
+</html> 
