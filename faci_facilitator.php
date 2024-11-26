@@ -920,7 +920,12 @@ try {
                                         <?php echo htmlspecialchars($log['status'] ?? 'N/A'); ?>
                                     </td>
                                     <td style="display: flex; justify-content: space-evenly; align-items: center;">
-                                        
+                                        <!-- Delete Button -->
+                                        <form method="POST" action="" style="margin: 0;">
+                                            <input type="hidden" name="internID" value="<?php echo htmlspecialchars($log['internID'] ?? ''); ?>">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($log['id'] ?? ''); ?>">
+                                            <button type="submit" class="action-button delete" name="deleteBtn" onclick="return confirm('Are you sure you want to delete this log?')">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -928,7 +933,7 @@ try {
                     </table>
                 </div>
             <?php else: ?>
-                <p>No approved logs found.</p>
+                <p>No approved logs fsdadsdfsound.</p>
             <?php endif; ?>
         </div>
     </div>
