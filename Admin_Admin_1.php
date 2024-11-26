@@ -1100,7 +1100,7 @@ echo '</table>';
             <button type="submit" name="submitIntern" class="btn btn-primary">Submit</button>
         </form>
     </div>
-     </div>
+    </div>
                                 <!-- Display Existing Intern Accounts Outside the Modal -->
                                 <h2>Existing Intern Accounts</h2>
 
