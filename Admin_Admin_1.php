@@ -152,108 +152,67 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 
-
 // Handle deleting and updating intern account
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Check if internID is set for actions
     if (isset($_POST['internID'])) {
         // Get and sanitize user input
         $internID = trim($_POST['internID']);
-        $InternPass = trim($_POST['InternPass'] ?? '');
+        $InternPass = trim($_POST['InternPass'] ?? ''); // Use null coalescing operator to avoid undefined index
         $action = $_POST['action'] ?? '';
     
-        // Ensure adminID is available
-        if (empty($_SESSION['adminID'])) {
-            $_SESSION['message'] = 'Error: Admin session not found.';
-            $_SESSION['message_type'] = 'warning';
-            exit();
-        }
-        
-        $adminID = $_SESSION['adminID'];
+        // Ensure adminID is available (retrieve from session or some other source)
+        $adminID = $_SESSION['adminID'] ?? ''; // Assuming adminID is stored in session
     
         // Validate input for update or delete actions
         if ($action === 'update') {
             // Validate internID and new password if provided
             if (empty($internID) || empty($InternPass)) {
                 $_SESSION['message'] = 'Intern ID and new password are required for update.';
-                $_SESSION['message_type'] = 'warning';
             } else {
-                // Check password length
+                // Optional: Check password length
                 if (strlen($InternPass) < 6) {
                     $_SESSION['message'] = 'Password must be at least 6 characters long.';
-                    $_SESSION['message_type'] = 'warning';
                 } else {
+                    // Prepare SQL query to update data
+                    $sql = "UPDATE intacc SET InternPass = :InternPass WHERE internID = :internID AND adminID = :adminID"; 
+    
                     try {
-                        // First verify the intern exists
-                        $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID AND adminID = :adminID";
-                        $checkStmt = $conn->prepare($checkSql);
-                        $checkStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                        $checkStmt->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-                        $checkStmt->execute();
-
-                        if ($checkStmt->fetchColumn() > 0) {
-                            // Prepare SQL query to update data
-                            $sql = "UPDATE intacc SET InternPass = :InternPass WHERE internID = :internID AND adminID = :adminID";
-                            $stmt = $conn->prepare($sql);
-                            $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
-                            $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-
-                            if ($stmt->execute()) {
-                                $_SESSION['message'] = 'Intern account updated successfully!';
-                                $_SESSION['message_type'] = 'success';
-                            } else {
-                                $_SESSION['message'] = 'Error: Could not update intern account.';
-                                $_SESSION['message_type'] = 'warning';
-                            }
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
+                        $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
+    
+                        if ($stmt->execute()) {
+                            $_SESSION['message'] = 'Intern account updated successfully!';
                         } else {
-                            $_SESSION['message'] = 'Error: Intern account not found.';
-                            $_SESSION['message_type'] = 'warning';
+                            $_SESSION['message'] = 'Error: Could not update intern account.';
                         }
                     } catch (PDOException $e) {
-                        error_log("Error updating intern account: " . $e->getMessage());
-                        $_SESSION['message'] = 'Error updating account. Please try again later.';
-                        $_SESSION['message_type'] = 'warning';
+                        $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
                     }
                 }
             }
         } elseif ($action === 'delete') {
+            // Prepare SQL query to delete data
+            $sql = "DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID"; 
+    
             try {
-                // Begin transaction
-                $conn->beginTransaction();
-
-                // Delete from all related tables
-                $tables = ['profile_information', 'time_logs', 'intacc'];
-                
-                foreach ($tables as $table) {
-                    $sql = "DELETE FROM $table WHERE internID = :internID AND adminID = :adminID";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-                    $stmt->execute();
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
+    
+                if ($stmt->execute()) {
+                    $_SESSION['message'] = 'Intern account deleted successfully!';
+                } else {
+                    $_SESSION['message'] = 'Error: Could not delete intern account.'; // Fixed typo
                 }
-
-                // Commit the transaction
-                $conn->commit();
-                
-                if (!headers_sent()) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['success' => true]);
-                }
-                exit();
-                
             } catch (PDOException $e) {
-                // Rollback the transaction
-                $conn->rollBack();
-                
-                if (!headers_sent()) {
-                    header('Content-Type: application/json');
-                    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-                }
-                exit();
+                $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
             }
         }
     }
+    
 }
 
 
@@ -265,24 +224,22 @@ $searchInternID = '';
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
     $searchInternID = trim($_GET['searchInternID']);
     
-    if (!empty($searchInternID)) {
-        // Query to fetch intern accounts matching the search ID
-        $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :internID"; 
-        $stmt = $conn->prepare($sql);
-        $likeInternID = '%' . $searchInternID . '%'; // Use LIKE for partial matching
-        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-        $stmt->bindParam(':internID', $likeInternID, PDO::PARAM_STR);
-        $stmt->execute();
-        $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-} else {
-    // Default query to fetch all intern accounts
-    $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
+    // Query to fetch intern accounts matching the search ID
+    $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :internID"; 
     $stmt = $conn->prepare($sql);
+    $likeInternID = '%' . $searchInternID . '%'; // Use LIKE for partial matching
     $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+    $stmt->bindParam(':internID', $likeInternID, PDO::PARAM_STR);
     $stmt->execute();
     $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Check if any accounts were found
+    if (empty($internAccounts)) {
+        $searchMessage = "No intern found with ID: " . htmlspecialchars($searchInternID);
+    }
 }
+
+
 // Pagination settings
 $recordsPerPage = 10; // Number of records to display per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
@@ -291,27 +248,26 @@ $offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
 // Fetch total number of intern accounts for pagination
 try {
     if (isset($adminID)) {
-        if (!empty($searchInternID)) {
-            // Query with search
-            $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :searchTerm";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Changed from bindParam to bindValue
-            $searchTerm = '%' . $searchInternID . '%';
-            $stmt->bindValue(':searchTerm', $searchTerm, PDO::PARAM_STR); // Changed from bindParam to bindValue
-        } else {
-            // Query without search - show all records for current adminID
-            $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Changed from bindParam to bindValue
-        }
-        
+        $sql = "SELECT COUNT(*) FROM intacc WHERE adminID = :adminID"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->execute();
+        $totalRecords = $stmt->fetchColumn(); // Total number of records
+        $totalPages = ceil($totalRecords / $recordsPerPage); // Total number of pages
+
+        // Fetch the current page records
+        $sql = "SELECT * FROM intacc WHERE adminID = :adminID LIMIT :limit OFFSET :offset"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT); // Set limit
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT); // Set offset
         $stmt->execute();
         $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
         $_SESSION['message'] = 'Admin ID is not set.';
         $internAccounts = [];
     }
-} catch (PDOException $e) {
+    } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
     $internAccounts = [];
@@ -319,72 +275,44 @@ try {
 
 
 // Handle adding intern account
-if (isset($_POST['submitIntern'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['internID']) && isset($_POST['InternPass'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
 
-    // Validate inputs
-    if (empty($internID) || empty($InternPass)) {
-        $_SESSION['message'] = "Error: All fields are required.";
-        $_SESSION['message_type'] = 'warning';
-    } else {
-        try {
-            // First, make sure we have the adminID
-            if (empty($adminID)) {
-                // Fetch adminID if not already set
-                $stmt = $conn->prepare("SELECT adminID FROM users WHERE Uname = :Uname");
-                $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
-                $stmt->execute();
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $adminID = $result['adminID'];
-            }
+    try {
+        // Check if the internID already exists
+        $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bindParam(':internID', $internID);
+        $checkStmt->execute();
 
-            // Check if the internID already exists
-            $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
-            $checkStmt = $conn->prepare($checkSql);
-            $checkStmt->bindParam(':internID', $internID);
-            $checkStmt->execute();
+        $count = $checkStmt->fetchColumn();
 
-            $count = $checkStmt->fetchColumn();
+        if ($count > 0) {
+            $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+        } else {
+            // Create the SQL query to insert into the intacc table
+            $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
+            
+            // Prepare and execute the statement
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':internID', $internID);
+            $stmt->bindParam(':InternPass', $InternPass);
+            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
 
-            if ($count > 0) {
-                $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
-                $_SESSION['message_type'] = 'warning';
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Intern account added successfully!";
+                header("Location: " . $_SERVER['PHP_SELF']); // Refresh the page
+                exit();
             } else {
-                // Create the SQL query to insert into the intacc table
-                $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
-                
-                // Prepare and execute the statement
-                $stmt = $conn->prepare($sql);
-                $stmt->bindParam(':internID', $internID);
-                $stmt->bindParam(':InternPass', $InternPass);
-                $stmt->bindParam(':adminID', $adminID);
-
-                if ($stmt->execute()) {
-                    // Also create an entry in profile_information table
-                    $profileSql = "INSERT INTO profile_information (internID, adminID) VALUES (:internID, :adminID)";
-                    $profileStmt = $conn->prepare($profileSql);
-                    $profileStmt->bindParam(':internID', $internID);
-                    $profileStmt->bindParam(':adminID', $adminID);
-                    $profileStmt->execute();
-
-                    $_SESSION['message'] = "Intern account added successfully!";
-                    $_SESSION['message_type'] = 'success';
-                } else {
-                    $_SESSION['message'] = "Error: Could not add intern account.";
-                    $_SESSION['message_type'] = 'warning';
-                }
+                $_SESSION['message'] = "Error: Could not add intern account.";
             }
-        } catch (PDOException $e) {
-            $_SESSION['message'] = "Error: " . $e->getMessage();
-            $_SESSION['message_type'] = 'warning';
         }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
     }
-    
-    // Redirect back to the same page
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
 }
+
 
 
 
@@ -725,36 +653,59 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<?php if (isset($_SESSION['message'])): ?>
-    <div class="alert <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'warning'; ?>" 
-         role="alert" 
+<?php
+// Check if the session message is set
+if (isset($_SESSION['message'])) {
+    // Set default message type if not set
+    $messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';
+    
+    // Determine alert class based on message type
+    switch($messageType) {
+        case 'error':
+            $alertClass = 'alert-danger';
+            $bgColor = '#ff4444';
+            break;
+        case 'success':
+            $alertClass = 'alert-success';
+            $bgColor = '#00C851';
+            break;
+        default:
+            $alertClass = 'alert-info';
+            $bgColor = '#f2b25c';
+    }
+    ?>
+    <div class="alert <?php echo $alertClass; ?>" role="alert" 
          style="position: fixed; 
                 top: 70px; 
                 right: 30px; 
                 z-index: 1000; 
-                background-color: <?php echo isset($_SESSION['message_type']) && $_SESSION['message_type'] === 'success' ? '#4CAF50' : '#f2b25c'; ?>; 
+                background-color: <?php echo $bgColor; ?>; 
                 color: white; 
                 padding: 15px; 
                 border-radius: 5px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                transition: opacity 0.5s ease-in-out;" 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);" 
          id="alertBox">
         <?php echo htmlspecialchars($_SESSION['message']); ?>
     </div>
-    <script>
+    <script type="text/javascript">
+        // Hide the alert after 5 seconds
         setTimeout(function() {
             var alertBox = document.getElementById('alertBox');
-            alertBox.style.opacity = '0';
-            setTimeout(function() {
-                alertBox.style.display = 'none';
-            }, 500);
+            if (alertBox) {
+                alertBox.style.opacity = '0';
+                alertBox.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(function() {
+                    alertBox.style.display = 'none';
+                }, 500);
+            }
         }, 5000);
     </script>
-    <?php 
+    <?php
+    // Unset the message after displaying
     unset($_SESSION['message']);
-    unset($_SESSION['message_type']); 
-    ?>
-<?php endif; ?>
+    unset($_SESSION['message_type']);
+}
+?>  
    
 
 
@@ -1100,54 +1051,42 @@ echo '</table>';
                                 <h1>Intern Logins</h1>
                                 <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
-<!-- Intern Modal -->
-<div id="InternAccModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
-        <h2>Add Intern Account</h2>
-        <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-    <div class="form-group">
-        <label for="internID">Intern ID:</label>
-        <input type="text" id="internID" name="internID" required>
-    </div>
-    <div class="form-group">
-        <label for="InternPass">Password:</label>
-        <input type="password" id="InternPass" name="InternPass" required>
-    </div>
-    <button type="submit" name="submitIntern" class="btn btn-primary">Submit</button>
-</form>
-    </div>
-    </div>
+                                <!-- Intern Modal -->
+                                <div id="InternAccModal" class="modal">
+                                    <div class="modal-content">
+                                        <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
+
+                                        <h2>Add Intern Account</h2>
+                                        <form id="addInterAccForm" method="POST" action="" onsubmit="return validateForm()">
+                                            <div class="form-group">
+                                                <label for="internID">Intern ID:</label>
+                                                <input type="text" id="internID" name="internID" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="InternPass">Password:</label>
+                                                <input type="password" id="InternPass" name="InternPass" required>
+                                            </div>
+                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
+
                                 <!-- Display Existing Intern Accounts Outside the Modal -->
                                 <h2>Existing Intern Accounts</h2>
 
                                 <!-- Search Form Positioned in Upper Right of the Table -->
-                                <!-- Search Form -->
-                            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                                <form method="GET" action="" class="search-form">
-                                    <input type="text" 
-                                        name="searchInternID" 
-                                        value="<?php echo htmlspecialchars($searchInternID); ?>" 
-                                        placeholder="Search Intern ID" 
-                                        class="search-input" />
-                                    <button type="submit" class="search-button">Search</button>
-                                    <?php if (!empty($searchInternID)): ?>
-                                        <a href="?<?php echo http_build_query(array_merge($_GET, ['searchInternID' => ''])); ?>" 
-                                        class="clear-search">Clear Search</a>
-                                    <?php endif; ?>
-                                </form>
-                            </div>
-
-                            <!-- Add this right after the search form to show search results status -->
-                            <?php if (!empty($searchInternID)): ?>
-                                <div class="search-status">
-                                    <?php if (empty($internAccounts)): ?>
-                                        <p>No results found for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-                                    <?php else: ?>
-                                        <p>Showing results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-                                    <?php endif; ?>
+                                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                                    <form method="GET" action="">
+                                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
                                 </div>
-                            <?php endif; ?>
+
+                                <!-- Message Display for Search Results -->
+                                <?php if ($searchInternID): ?>
+                                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+                                <?php endif; ?>
 
                                 <!-- Intern Accounts Table -->
                                 <?php if (!empty($internAccounts)): ?>
@@ -1180,13 +1119,13 @@ echo '</table>';
                                                 <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
                                                 <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
                                                 <td class="table-actions">
-                                                    <form method="POST" action="" style="display: inline;">
-                                                        <input type="hidden" name="internID" value="<?php echo htmlspecialchars($account['internID']); ?>" />
-                                                        <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
-                                                        <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                                        <button type="button" class="delete-btn-new" 
-                            onclick="deleteIntern('<?php echo htmlspecialchars($account['internID']); ?>')">Delete</button>
+                                                <form method="POST" action="" style="display: flex; align-items: center;">
+                                                    <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                                                    <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
+                                                    <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
+                                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
                                                     </form>
+
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -1278,11 +1217,7 @@ echo '</table>';
                                                                     <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
                                                                     <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
                                                                     <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
-                                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="if(confirm('Are you sure you want to delete this record?')) { 
-                                                                        window.location.href='Admin_Admin_1.php'; 
-                                                                        return true; 
-                                                                    } 
-                                                                    return false;">Delete</button>
+                                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
                                                                 </form>
                                                         
                                                             </td>
