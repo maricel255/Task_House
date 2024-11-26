@@ -1452,81 +1452,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 <div class="content-section" id="attendance">
     <div class="attend-content">
         <div class="attendance-container">
-            <h1> Remaining working hours: 
-            <?php 
-                // Loop through time logs and check if any status is "Approved"
-                $totalWorkedHours = 0; // Initialize a variable to sum up total worked hours
+                <h1> Remaining working hours: 
+                <?php 
+                    // Loop through time logs and check if any status is "Approved"
+                    $totalWorkedHours = 0; // Initialize a variable to sum up total worked hours
 
-        // Loop through time logs and check if any status is "Approved"
-        foreach ($timeLogs as $log) {
-    if (strtolower($log['status']) == 'approved') {
-        // Calculate the difference between login_time and logout_time
-        $loginTime = strtotime($log['login_time']);
-        $logoutTime = strtotime($log['logout_time']);
+            // Loop through time logs and check if any status is "Approved"
+            foreach ($timeLogs as $log) {
+        if (strtolower($log['status']) == 'approved') {
+            // Calculate the difference between login_time and logout_time
+            $loginTime = strtotime($log['login_time']);
+            $logoutTime = strtotime($log['logout_time']);
 
-        // Make sure logout time is after login time to avoid negative time difference
-        if ($logoutTime > $loginTime) {
-            // Calculate the difference in seconds
-            $timeDiff = $logoutTime - $loginTime;
+            // Make sure logout time is after login time to avoid negative time difference
+            if ($logoutTime > $loginTime) {
+                // Calculate the difference in seconds
+                $timeDiff = $logoutTime - $loginTime;
 
-            // Convert seconds to hours (assuming 1 hour = 3600 seconds)
-            $hoursWorked = $timeDiff / 3600;
+                // Convert seconds to hours (assuming 1 hour = 3600 seconds)
+                $hoursWorked = $timeDiff / 3600;
 
-            // Subtract the calculated hours from the required hours
-            $totalWorkedHours += $hoursWorked;
-            $requiredHours -= $hoursWorked;
+                // Subtract the calculated hours from the required hours
+                $totalWorkedHours += $hoursWorked;
+                $requiredHours -= $hoursWorked;
+            }
         }
     }
-}
 
-// Ensure the required hours do not become negative
-$requiredHours = max($requiredHours, 0);
+    // Ensure the required hours do not become negative
+    $requiredHours = max($requiredHours, 0);
 
-// Display the adjusted required hours (remaining hours)
-echo number_format($requiredHours, 2); // Display the remaining required hours (formatted to 2 decimal places)
+    // Display the adjusted required hours (remaining hours)
+    echo number_format($requiredHours, 2); // Display the remaining required hours (formatted to 2 decimal places)
 
 
-            ?> HRS
-            </h1>
+                ?> HRS
+                </h1>
 
-            <!-- Print Button -->
-            <button onclick="printTable()" class="print-btn">Print Table</button>
+                <!-- Print Button -->
+                <button onclick="printTable()" class="print-btn">Print Table</button>
 
-            <!-- Display the time logs in a table -->
-            <table id="attendanceTable">
-                <thead>
-                    <tr>
-                        <th>#</th> <!-- Add the Count column -->
-                        <th>Login Time</th>
-                        <th>Break Time</th>
-                        <th>Back to Work Time</th>
-                        <th>Logout Time</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($timeLogs)): ?>
-                        <?php $count = 1; // Initialize counter ?>
-                        <?php foreach ($timeLogs as $log): ?>
-                            <tr>
-                                <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
-                                <td><?php echo htmlspecialchars($log['login_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['break_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['back_to_work_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['status']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                <!-- Display the time logs in a table -->
+                <table id="attendanceTable">
+                    <thead>
                         <tr>
-                            <td colspan="6">No time logs found for this intern.</td> <!-- Adjust colspan to 6 -->
+                            <th>#</th> <!-- Add the Count column -->
+                            <th>Login Time</th>
+                            <th>Break Time</th>
+                            <th>Back to Work Time</th>
+                            <th>Logout Time</th>
+                            <th>Status</th>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($timeLogs)): ?>
+                            <?php $count = 1; // Initialize counter ?>
+                            <?php foreach ($timeLogs as $log): ?>
+                                <tr>
+                                    <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
+                                    <td><?php echo htmlspecialchars($log['login_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($log['break_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($log['back_to_work_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($log['status']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6">No time logs found for this intern.</td> <!-- Adjust colspan to 6 -->
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
     
