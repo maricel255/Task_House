@@ -222,48 +222,38 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 // Begin transaction
                 $conn->beginTransaction();
 
-                // First delete related records from profile_information
-                $sqlProfile = "DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID";
-                $stmtProfile = $conn->prepare($sqlProfile);
-                $stmtProfile->bindValue(':internID', $internID, PDO::PARAM_STR);
-                $stmtProfile->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-                $stmtProfile->execute();
-
-                // Then delete from time_logs
-                $sqlLogs = "DELETE FROM time_logs WHERE internID = :internID AND adminID = :adminID";
-                $stmtLogs = $conn->prepare($sqlLogs);
-                $stmtLogs->bindValue(':internID', $internID, PDO::PARAM_STR);
-                $stmtLogs->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-                $stmtLogs->execute();
-
-                // Finally delete from intacc
-                $sqlIntacc = "DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID";
-                $stmtIntacc = $conn->prepare($sqlIntacc);
-                $stmtIntacc->bindValue(':internID', $internID, PDO::PARAM_STR);
-                $stmtIntacc->bindValue(':adminID', $adminID, PDO::PARAM_STR);
-
-                if ($stmtIntacc->execute()) {
-                    $conn->commit();
-                    echo '<script>
-                        alert("Intern account deleted successfully!");
-                        document.location = "Admin_Admin_1.php";
-                    </script>';
-                    exit();
-                } else {
-                    $conn->rollBack();
-                    echo '<script>
-                        alert("Error: Could not delete intern account.");
-                        document.location = "Admin_Admin_1.php";
-                    </script>';
-                    exit();
+                // Delete from all related tables
+                $tables = ['profile_information', 'time_logs', 'intacc'];
+                
+                foreach ($tables as $table) {
+                    $sql = "DELETE FROM $table WHERE internID = :internID AND adminID = :adminID";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+                    $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR);
+                    $stmt->execute();
                 }
+
+                // Commit the transaction
+                $conn->commit();
+                
+                // Use a simple JavaScript redirect
+                ?>
+                <script>
+                    alert('Intern account deleted successfully!');
+                    window.location = 'Admin_Admin_1.php';
+                </script>
+                <?php
+                exit();
+                
             } catch (PDOException $e) {
+                // Rollback the transaction
                 $conn->rollBack();
-                error_log("Error deleting intern account: " . $e->getMessage());
-                echo '<script>
-                    alert("Error deleting account. Please try again later.");
-                    document.location = "Admin_Admin_1.php";
-                </script>';
+                ?>
+                <script>
+                    alert('Error deleting account. Please try again.');
+                    window.location = 'Admin_Admin_1.php';
+                </script>
+                <?php
                 exit();
             }
         }
@@ -1180,11 +1170,8 @@ echo '</table>';
                                                         <input type="hidden" name="internID" value="<?php echo htmlspecialchars($account['internID']); ?>" />
                                                         <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
                                                         <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                                        <button type="submit" name="action" value="delete" class="delete-btn-new"  style="margin-left: 2px;" onclick="if(confirm('Are you sure you want to delete this record?')) { 
-                                                                        window.location.href='Admin_Admin_1.php'; 
-                                                                        return true; 
-                                                                    } 
-                                                                    return false;">Delete</button>
+                                                        <button type="submit" name="action" value="delete" class="delete-btn-new" 
+                                                            onclick="return confirm('Are you sure you want to delete this intern account?')">Delete</button>
                                                     </form>
                                                 </td>
                                             </tr>
