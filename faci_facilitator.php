@@ -370,40 +370,27 @@ try {
 
 
 $query = "SELECT DISTINCT 
-    t.internID,
-    p.first_name,
-    i.profile_image,
-    t.login_time,
-    t.break_time,
-    t.back_to_work_time,
-    t.logout_time,
+    time_logs.internID,
+    profile_information.first_name,
+    intacc.profile_image,
+    time_logs.login_time,
+    time_logs.break_time,
+    time_logs.back_to_work_time,
+    time_logs.logout_time,
     CASE
-        WHEN t.logout_time IS NOT NULL AND DATE(t.logout_time) = CURDATE() THEN 'Logged Out'
-        WHEN t.break_time IS NOT NULL AND t.back_to_work_time IS NULL 
-            AND DATE(t.break_time) = CURDATE() THEN 'On Break'
-        WHEN (t.login_time IS NOT NULL AND DATE(t.login_time) = CURDATE())
-            OR (t.back_to_work_time IS NOT NULL AND DATE(t.back_to_work_time) = CURDATE()) 
-            AND (t.logout_time IS NULL OR DATE(t.logout_time) != CURDATE()) THEN 'Active Now'
-        ELSE 'Inactive'
+        WHEN time_logs.logout_time IS NOT NULL AND DATE(time_logs.logout_time) = CURDATE() THEN 'Logged Out'
+        WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL 
+            AND DATE(time_logs.break_time) = CURDATE() THEN 'On Break'
+        WHEN (time_logs.login_time IS NOT NULL AND DATE(time_logs.login_time) = CURDATE())
+            OR (time_logs.back_to_work_time IS NOT NULL AND DATE(time_logs.back_to_work_time) = CURDATE()) THEN 'Active Now'
+        ELSE NULL
     END AS status
-FROM time_logs t
-JOIN profile_information p ON t.internID = p.internID
-JOIN intacc i ON t.internID = i.internID
-WHERE t.faciID = :faciID
-    AND (
-        DATE(t.login_time) = CURDATE() 
-        OR DATE(t.break_time) = CURDATE()
-        OR DATE(t.back_to_work_time) = CURDATE()
-        OR DATE(t.logout_time) = CURDATE()
-    )
-ORDER BY 
-    CASE 
-        WHEN status = 'Active Now' THEN 1
-        WHEN status = 'On Break' THEN 2
-        WHEN status = 'Logged Out' THEN 3
-        ELSE 4
-    END,
-    t.login_time DESC";
+FROM time_logs
+JOIN profile_information ON time_logs.internID = profile_information.internID
+WHERE time_logs.faciID = :faciID
+    AND time_logs.status != 'Declined'
+    AND DATE(COALESCE(time_logs.logout_time, time_logs.break_time, time_logs.back_to_work_time, time_logs.login_time)) = CURDATE()
+ORDER BY time_logs.login_time DESC";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
