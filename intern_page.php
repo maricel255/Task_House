@@ -432,7 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
             course_year_sec, school, gender, age, current_address, provincial_address,
             tel_no, mobile_no, birth_place, birth_date, religion,
             email, civil_status, citizenship, hr_manager, faciID, 
-            facilitator_email, start_shift, end_shift, required_hours, date_start, date_end,
+           start_shift, end_shift, required_hours, date_start, date_end,
             company, company_address, father_name, father_occupation,
             mother_name, mother_occupation, blood_type, height,
             weight, health_problems, elementary_school, elementary_year_graduated,
@@ -446,7 +446,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-btn'])) {
             :courseYearSec, :school, :gender, :age, :currentAddress, :provincialAddress,
             :telNo, :mobileNo, :birthPlace, :birthDate, :religion,
             :email, :civilStatus, :citizenship, :hrManager, :faciID,
-            :facilitatorEmail, :startShift, :endShift, :reqHrs, :dateStart, :dateEnd,
+             :startShift, :endShift, :reqHrs, :dateStart, :dateEnd,
             :company, :companyAddress, :fatherName, :fatherOccupation,
             :motherName, :motherOccupation, :bloodType, :height,
             :weight, :healthProblems, :elementarySchool, :elementaryYearGraduated,
@@ -1153,11 +1153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     value="<?php echo htmlspecialchars($profileData['hr_manager'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
 
-                <label>Facilitator Email:</label>
-                <input type="email" name="facilitatorEmail" 
-                    placeholder="e.g., facilitator@example.com"
-                    value="<?php echo htmlspecialchars($profileData['facilitator_email'] ?? ''); ?>"
-                    <?php echo $profileData ? 'readonly' : ''; ?>>
+                
+                    
 
                 <label>Start Shift:</label>
                 <input type="time" name="startShift" 
