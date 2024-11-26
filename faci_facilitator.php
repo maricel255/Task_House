@@ -694,6 +694,341 @@ try {
                 <p><?php echo $approvedCount; ?> Approved</p>
             </div>
         </div>
+       
+
+$query = "SELECT time_logs.*, 
+profile_information.first_name,
+CASE
+    -- If logout_time is not NULL, show 'Logged Out'
+    WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
+    
+    -- If break_time is NOT NULL and back_to_work_time IS NULL, show 'On Break'
+    WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
+    
+    -- If login_time is NOT NULL, back_to_work_time IS NULL, and logout_time IS NULL, show 'Active Now'
+    WHEN time_logs.login_time IS NOT NULL 
+         AND time_logs.back_to_work_time IS NULL 
+         AND time_logs.logout_time IS NULL THEN 'Active Now'
+    
+    -- If back_to_work_time IS NOT NULL, show 'Active Now'
+    WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
+    
+    -- Default to 'Unknown' if no status is detected
+    ELSE 'Unknown'
+END AS status
+FROM time_logs
+JOIN profile_information ON time_logs.faciID = profile_information.faciID
+WHERE time_logs.faciID = :faciID
+  AND (
+      DATE(time_logs.login_time) = CURDATE() OR
+      DATE(time_logs.logout_time) = CURDATE() OR
+      DATE(time_logs.break_time) = CURDATE() OR
+      DATE(time_logs.back_to_work_time) = CURDATE()
+  )";
+
+// Prepare the query
+$stmt = $conn->prepare($query);
+
+// Bind the parameter
+$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
+
+try {
+    // Execute the query
+    $stmt->execute();
+    
+    // Fetch all the results
+    $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Check if there are results
+    if (!empty($interns)) {
+        // Process the results
+        foreach ($interns as $intern) {
+           
+        }
+    } else {
+       
+    }
+    
+} catch (PDOException $e) {
+    // Handle any error that occurs during query execution
+   // echo "<p>Error: " . $e->getMessage() . "</p>";
+}
+
+
+
+// Prepare and execute the query to get the count of active interns
+$stmt = $conn->prepare($query);
+$stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
+$stmt->execute();
+$interns = $stmt->fetchAll(PDO::FETCH_ASSOC);  // Fetch all interns' details
+$activeInternCount = count($interns);  // Get the count of active interns
+
+
+
+
+
+// search button in intern report nga content section
+// Initialize search variables with empty strings or values from POST request
+$searchInternID = isset($_POST['internID']) ? $_POST['internID'] : '';
+$searchStatus = isset($_POST['status']) ? $_POST['status'] : '';
+
+// Modify SQL query to filter based on search criteria
+$sql = "SELECT * FROM time_logs WHERE faciID = :faciID AND status IN ('approved', 'declined')";
+
+if (!empty($searchInternID)) {
+    $sql .= " AND internID LIKE :internID";
+}
+if (!empty($searchStatus)) {
+    $sql .= " AND status = :status";
+}
+
+try {
+    // Prepare and execute the query
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':faciID', $faciID, PDO::PARAM_INT);
+
+    if (!empty($searchInternID)) {
+        $searchInternID = "{$searchInternID}"; // Use wildcards for LIKE search
+        $stmt->bindParam(':internID', $searchInternID, PDO::PARAM_STR);
+    }
+
+    if (!empty($searchStatus)) {
+        $stmt->bindParam(':status', $searchStatus, PDO::PARAM_STR);
+    }
+
+    $stmt->execute();
+    $approvedLogs = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all rows as an associative array
+    $logsCount = count($approvedLogs);
+
+} catch (PDOException $e) {
+    // Handle error
+    $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+    $_SESSION['alertType'] = 'error';
+}
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hr/Managers</title>
+    <link rel="stylesheet" href="css/faci_styles.css">
+</head>
+<body>
+    <!-- Alert Message Box - This will be displayed after form submission -->
+    <?php
+  if (isset($_SESSION['alertMessage'])) {
+      $alertType = $_SESSION['alertType'];
+      echo "<div class='alert alert-$alertType'>" . $_SESSION['alertMessage'] . "</div>";
+      
+      // Clear the message after displaying it
+      unset($_SESSION['alertMessage']);
+      unset($_SESSION['alertType']);
+  }
+?>
+
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar hide-content">
+            <div class="user-info">
+            <img src="<?php 
+                    $sql = "SELECT faci_image FROM facacc WHERE faciID = :faciID";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':faciID', $_SESSION['Uname']);
+                    $stmt->execute();
+                    $faciImage = $stmt->fetchColumn();
+                    echo $faciImage ? 'uploaded_files/' . htmlspecialchars($faciImage) : 'image/USER_ICON.png';
+                ?>" alt="Toggle Sidebar" class="user-icon">
+                <div class="user-details">
+                    <p class="user-name">Uname: <?php echo $faciID; ?></p>
+                    <p class="role">Intern Facilitator</p>
+                </div>
+
+            </div>
+            <nav class="navigation">
+                <a href="#" class="home-link" onclick="showContent('dashboard')">
+                    <i class="fa fa-home"></i><span> Dashboard</span>
+                </a>
+                <a href="#" onclick="showContent('requests')">
+                    <i class="fa fa-cog"></i><span> Requests</span>
+                </a>
+                <a href="#" onclick="showContent('report')">
+                    <i class="fa fa-cog"></i><span> Intern Reports</span>
+                </a>
+                
+            </nav>
+        </div>
+        
+        <!-- Header -->
+        <div class="header" id="header">
+            
+        <button onclick="openCredentialsModal()" class="settings-btn">
+                    <img src="image/USER_ICON.png" alt="Settings" class="settings-icon">
+                </button>
+            <button class="logout-btn" onclick="logout()">
+                <img src="image/logout.png" alt="logout icon" class="logout-icon">
+                | LOG OUT
+            </button>
+        </div>
+    </div>
+<!-- Start Kyle -->
+    <div id="credentialsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeCredentialsModal()">&times;</span>
+        <h2>Update Password</h2>
+
+        <!-- Add image upload section -->
+        <div class="image-upload-container">
+        <img id="imagePreview" src="<?php 
+            $sql = "SELECT faci_image FROM facacc WHERE faciID = :faciID";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':faciID', $_SESSION['Uname']);
+            $stmt->execute();
+            $faciImage = $stmt->fetchColumn();
+            echo $faciImage ? 'uploaded_files/' . htmlspecialchars($faciImage) : 'image/USER_ICON.png';
+        ?>" alt="Profile Preview">
+        <form id="imageForm" method="POST" enctype="multipart/form-data">
+            <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
+            <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
+                Choose Image
+            </button>
+        </form>
+    </div>
+
+        <form id="credentialsForm" method="POST">
+            <div class="form-group">
+                <label>Facilitator Name:</label>
+                <input type="text" value="<?php echo htmlspecialchars($_SESSION['Uname']); ?>" readonly 
+                    style="background-color: #f5f5f5; border: 1px solid #ddd;">
+            </div>
+            <div class="form-group">
+                <label>Current Password:</label>
+                <input type="password" name="currentPassword" required>
+            </div>
+            <div class="form-group">
+                <label>New Password:</label>
+                <input type="password" name="newPassword" required>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password:</label>
+                <input type="password" name="confirmPassword" required>
+            </div>
+            <button type="submit" name="update_credentials">Update Password</button>
+        </form>
+    </div>
+</div>
+<!-- End Kyle-->
+
+    <!-- Main Content -->
+    <div class="content-section" id="dashboard">
+    <div class="main-content">
+    <div class="announcement-board">
+    <h2>ANNOUNCEMENT BOARD</h2>
+    <img src="image/announce.gif" alt="Announcement Image" class="anno-img">
+
+    <?php
+        // Fetch the adminID for the current faciID
+        $sql_admin = "SELECT adminID FROM facacc WHERE faciID = :faciID";
+        $stmt_admin = $conn->prepare($sql_admin);
+        $stmt_admin->bindValue(':faciID', $faciID, PDO::PARAM_STR);
+
+        if ($stmt_admin->execute()) {
+            $admin = $stmt_admin->fetch(PDO::FETCH_ASSOC);
+
+            if ($admin) {
+                $adminID = $admin['adminID'];
+
+                // Fetch announcements and corresponding faciID from the facacc table
+                $sql = "SELECT a.*, f.faciID
+                        FROM announcements a
+                        INNER JOIN facacc f ON a.adminID = f.adminID
+                        WHERE a.adminID = :adminID";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
+
+                if ($stmt->execute()) {
+                    $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Check if announcements exist
+                    if ($announcements) {
+                        // Slider structure
+                        echo '<div class="announcement-slider">';
+                        echo '<div class="slider-container">';
+
+                        // Loop through the announcements and display them
+                        foreach ($announcements as $index => $announcement) {
+                            $filePath = htmlspecialchars($announcement['imagePath']);
+                            $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                            $activeClass = ($index === 0) ? 'active' : ''; // First item will be active
+
+                            // Each announcement item
+                            echo '<div class="announcement-item ' . $activeClass . '">';
+                            echo '<h3>' . htmlspecialchars($announcement['title']) . '</h3>';
+                            echo '<p class="announcement-details">' . nl2br(htmlspecialchars($announcement['content'])) . '</p>';
+
+                            // Display image or PDF link based on file type
+                            echo '<div class="Announcement-Image">';
+                            if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
+                                echo '<img src="' . $filePath . '" alt="Announcement Image" class="ann_img" style="max-width: 100%; height: auto;">';
+                            } elseif (strtolower($fileExtension) === 'pdf') {
+                                $fileName = basename($filePath);
+                                $pdfPath = "/uploaded_files/" . rawurlencode($fileName);
+                                echo '<a href="' . $pdfPath . '" target="_blank" class="pdf-link">View PDF</a>';
+                            } else {
+                                echo '<p>Unsupported file type.</p>';
+                            }
+                            echo '</div>'; // Close .Announcement-Image
+                            echo '</div>'; // Close .announcement-item
+                        }
+
+                        echo '</div>'; // Close .slider-container
+
+                        // Navigation buttons
+                        echo '<button class="prev" onclick="moveSlide(-1)">&#10094;</button>';
+                        echo '<button class="next" onclick="moveSlide(1)">&#10095;</button>';
+                        echo '</div>'; // Close .announcement-slider
+                    } else {
+                        echo '<p>No announcements available.</p>';
+                    }
+                } else {
+                    echo '<p>Error fetching announcements.</p>';
+                }
+            } else {
+                echo '<p>Admin information not found for this facilitator.</p>';
+            }
+        } else {
+            echo '<p>Error fetching admin information.</p>';
+        }
+    ?>
+
+</div>
+
+    </div>
+    
+
+    
+    
+    
+        <div class="dash-content" >
+        <div class="dashboard">
+            <h2>Dashboard</h2>
+            <div class="card red">
+            <h3>ACTIVE INTERN'S</h3>
+            <p><?php echo $activeInternCount; ?> Active Intern's</p>
+        </div>
+        <div class="card orange">
+            <h3>APPROVAL REQUESTS</h3>
+            <p><?php echo $approvalCount; ?> Pending</p>
+        </div>
+            <div class="card green">
+                <h3>Requests</h3>
+                <p><?php echo $approvedCount; ?> Approved</p>
+            </div>
+        </div>
         <div class="intern-status-dashboard">
     <h2>Availability Status</h2>
     <?php
