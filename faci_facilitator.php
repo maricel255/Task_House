@@ -471,10 +471,6 @@ try {
     $_SESSION['alertType'] = 'error';
 }
 
-// Add this temporarily to see what your system thinks is "today"
-echo "System Date: " . date('Y-m-d H:i:s') . "<br>";
-echo "Current Timestamp: " . time() . "<br>";
-
 ?>
 
 
