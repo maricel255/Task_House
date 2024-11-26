@@ -829,7 +829,7 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<div id="message-container" class="message-container <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>" 
+<div id="messageBox" class="message-box <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>" 
      style="display: <?php echo isset($_SESSION['message']) ? 'block' : 'none'; ?>">
     <?php 
     if (isset($_SESSION['message'])) {
