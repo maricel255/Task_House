@@ -255,13 +255,14 @@ try {
             // Query with search
             $sql = "SELECT * FROM intacc WHERE adminID = :adminID AND internID LIKE :searchTerm";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-            $stmt->bindParam(':searchTerm', '%' . $searchInternID . '%', PDO::PARAM_STR);
+            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Changed from bindParam to bindValue
+            $searchTerm = '%' . $searchInternID . '%';
+            $stmt->bindValue(':searchTerm', $searchTerm, PDO::PARAM_STR); // Changed from bindParam to bindValue
         } else {
             // Query without search - show all records for current adminID
             $sql = "SELECT * FROM intacc WHERE adminID = :adminID";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Changed from bindParam to bindValue
         }
         
         $stmt->execute();
