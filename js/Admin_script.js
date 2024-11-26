@@ -163,84 +163,151 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 //MARICEL END
+// Start Kyle
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fetchDetails'])) {
+    $internID = $_POST['internID'];
 
-   // Start kyle
-  // Intern Details Functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Remove the duplicate container creation since it should already exist in HTML
-    
-    // Attach event listeners to all View Details buttons
-    document.querySelectorAll(".view-details-btn").forEach((button) => {
-        button.addEventListener("click", function() {
-            const internID = this.getAttribute("data-intern-id");
-            fetchInternDetails(internID);
-        });
-    });
-});
+    // Fetch all details for the selected Intern ID
+    $sql = "SELECT pi.*, ia.profile_image, 
+            CONCAT(pi.first_name, ' ', COALESCE(pi.middle_name, ''), ' ', pi.last_name) as full_name
+            FROM profile_information pi
+            LEFT JOIN intacc ia ON pi.internID = ia.internID
+            WHERE pi.internID = :internID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+    $stmt->execute();
 
-function fetchInternDetails(internID) {
-    const detailsDiv = document.getElementById("internDetails");
-    
-    // Show the details panel
-    detailsDiv.style.display = 'block';
-    
-    // Add loading indicator
-    detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
+    if ($stmt->rowCount() > 0) {
+        $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Return the HTML to be injected dynamically
+        echo '<button class="close-btn" onclick="closeDetails()">×</button>';
+        echo '<h2>Profile Information for ' . htmlspecialchars($internDetails['full_name']) . '</h2>';
+        
+        // Show profile image
+        if (!empty($internDetails['profile_image'])) {
+            echo '<div class="profile-image">';
+            echo '<img src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Image" width="160" height="150">';
+            echo '</div>';
+        } else {
+            echo '<div class="profile-image">';
+            echo '<img src="image/USER_ICON.png" alt="Default Image" width="150" height="150">';
+            echo '</div>';
+        }
 
-    // Fetch the details
-    fetch("Admin_Admin_1.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `fetchDetails=true&internID=${encodeURIComponent(internID)}`,
-    })
-    .then(response => response.text())
-    .then(data => {
-        detailsDiv.innerHTML = data;
-        detailsDiv.classList.add("show");
-    })
-    .catch(error => {
-        console.error("Error fetching details:", error);
-        detailsDiv.innerHTML = '<p class="error">Error loading details. Please try again.</p>';
-    });
+        // Group related information into sections
+        echo '<div class="details-sections">';
+        
+        // Personal Information Section
+        echo '<div class="detail-section">';
+        echo '<h3>Personal Information</h3>';
+        echo '<table class="details-table">';
+        $personalInfo = [
+            'Intern ID' => 'internID',
+            'First Name' => 'first_name',
+            'Middle Name' => 'middle_name',
+            'Last Name' => 'last_name',
+            'Course/Year/Section' => 'course_year_sec',
+            'Gender' => 'gender',
+            'Age' => 'age',
+            'Birth Date' => 'birth_date',
+            'Birth Place' => 'birth_place',
+            'Religion' => 'religion',
+            'Civil Status' => 'civil_status',
+            'Citizenship' => 'citizenship'
+        ];
+        foreach ($personalInfo as $label => $field) {
+            if (isset($internDetails[$field]) && !empty($internDetails[$field])) {
+                echo '<tr><th>' . $label . ':</th><td>' . htmlspecialchars($internDetails[$field]) . '</td></tr>';
+            }
+        }
+        echo '</table>';
+        echo '</div>';
+
+        // Contact Information Section
+        echo '<div class="detail-section">';
+        echo '<h3>Contact Information</h3>';
+        echo '<table class="details-table">';
+        $contactInfo = [
+            'Current Address' => 'current_address',
+            'Provincial Address' => 'provincial_address',
+            'Telephone No' => 'tel_no',
+            'Mobile No' => 'mobile_no',
+            'Email' => 'email'
+        ];
+        foreach ($contactInfo as $label => $field) {
+            if (isset($internDetails[$field]) && !empty($internDetails[$field])) {
+                echo '<tr><th>' . $label . ':</th><td>' . htmlspecialchars($internDetails[$field]) . '</td></tr>';
+            }
+        }
+        echo '</table>';
+        echo '</div>';
+
+        // Company Information Section
+        echo '<div class="detail-section">';
+        echo '<h3>Company Information</h3>';
+        echo '<table class="details-table">';
+        $companyInfo = [
+            'HR Manager' => 'hr_manager',
+            'Facilitator ID' => 'faciID',
+            'Company' => 'company',
+            'Company Address' => 'company_address'
+        ];
+        foreach ($companyInfo as $label => $field) {
+            if (isset($internDetails[$field]) && !empty($internDetails[$field])) {
+                echo '<tr><th>' . $label . ':</th><td>' . htmlspecialchars($internDetails[$field]) . '</td></tr>';
+            }
+        }
+        echo '</table>';
+        echo '</div>';
+
+        // Family Information Section
+        echo '<div class="detail-section">';
+        echo '<h3>Family Information</h3>';
+        echo '<table class="details-table">';
+        $familyInfo = [
+            'Father\'s Name' => 'father_name',
+            'Father\'s Occupation' => 'father_occupation',
+            'Mother\'s Name' => 'mother_name',
+            'Mother\'s Occupation' => 'mother_occupation'
+        ];
+        foreach ($familyInfo as $label => $field) {
+            if (isset($internDetails[$field]) && !empty($internDetails[$field])) {
+                echo '<tr><th>' . $label . ':</th><td>' . htmlspecialchars($internDetails[$field]) . '</td></tr>';
+            }
+        }
+        echo '</table>';
+        echo '</div>';
+
+        // Medical Information Section
+        echo '<div class="detail-section">';
+        echo '<h3>Medical Information</h3>';
+        echo '<table class="details-table">';
+        $medicalInfo = [
+            'Blood Type' => 'blood_type',
+            'Height' => 'height',
+            'Weight' => 'weight',
+            'Health Problems' => 'health_problems'
+        ];
+        foreach ($medicalInfo as $label => $field) {
+            if (isset($internDetails[$field]) && !empty($internDetails[$field])) {
+                echo '<tr><th>' . $label . ':</th><td>' . htmlspecialchars($internDetails[$field]) . '</td></tr>';
+            }
+        }
+        echo '</table>';
+        echo '</div>';
+
+        echo '</div>'; // Close details-sections div
+        
+        // Add the resize handle
+        echo '<div class="intern-details-resize-handle"></div>';
+        
+    } else {
+        echo '<p>No details found for the selected Intern ID.</p>';
+    }
+    exit; // Stop further processing since this is an AJAX response
 }
-
-// Function to close the details panel
-function closeDetails() {
-    const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.style.display = 'none';
-    detailsDiv.classList.remove("show");
-    detailsDiv.innerHTML = '';
-}
-
-// Resize functionality for the details panel
-document.addEventListener('DOMContentLoaded', function() {
-    const internDetails = document.querySelector('.intern-details');
-    const resizeHandle = document.querySelector('.intern-details-resize-handle');
-    let isResizing = false;
-
-    if (resizeHandle && internDetails) {
-        resizeHandle.addEventListener('mousedown', (e) => {
-            isResizing = true;
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', stopResizing);
-        });
-    }
-
-    function handleMouseMove(e) {
-        if (!isResizing) return;
-        const newWidth = window.innerWidth - e.clientX;
-        internDetails.style.width = `${newWidth}px`;
-    }
-
-    function stopResizing() {
-        isResizing = false;
-        document.removeEventListener('mousemove', handleMouseMove);
-    }
-});
-
-//end kyle
+// End Kyle
 
 // Add this to your existing js/Admin_script.js file or in a <script> tag at the bottom of the page
 function deleteIntern(internID) {
