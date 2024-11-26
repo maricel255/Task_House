@@ -240,6 +240,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['searchInternID'])) {
 }
 
 
+// Pagination settings
+$recordsPerPage = 10; // Number of records to display per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page number
+$offset = ($page - 1) * $recordsPerPage; // Offset for SQL query
+
+// Fetch total number of intern accounts for pagination
+try {
+    if (isset($adminID)) {
+        $sql = "SELECT COUNT(*) FROM intacc WHERE adminID = :adminID"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->execute();
+        $totalRecords = $stmt->fetchColumn(); // Total number of records
+        $totalPages = ceil($totalRecords / $recordsPerPage); // Total number of pages
+
+        // Fetch the current page records
+        $sql = "SELECT * FROM intacc WHERE adminID = :adminID LIMIT :limit OFFSET :offset"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT); // Set limit
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT); // Set offset
+        $stmt->execute();
+        $internAccounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $_SESSION['message'] = 'Admin ID is not set.';
+        $internAccounts = [];
+    }
+    } catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
+    $internAccounts = [];
+}
 
 
 // Handle adding intern account
@@ -247,6 +279,9 @@ if (isset($_POST['addIntern'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
     
+    // Get the adminID from the user data we fetched earlier
+    $adminID = $user['adminID']; // This comes from the earlier user query
+
     try {
         // Check if the internID already exists
         $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
@@ -258,7 +293,6 @@ if (isset($_POST['addIntern'])) {
 
         if ($count > 0) {
             $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
-            $_SESSION['message_type'] = 'error';
         } else {
             // Create the SQL query to insert into the intacc table
             $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
@@ -267,74 +301,17 @@ if (isset($_POST['addIntern'])) {
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':internID', $internID);
             $stmt->bindParam(':InternPass', $InternPass);
-            $stmt->bindParam(':adminID', $adminID);
+            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
                 $_SESSION['message'] = "Intern account added successfully!";
-                $_SESSION['message_type'] = 'success';
             } else {
                 $_SESSION['message'] = "Error: Could not add intern account.";
-                $_SESSION['message_type'] = 'error';
             }
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
-        $_SESSION['message_type'] = 'error';
     }
-
-    // Redirect back to the same page with a query parameter to show the modal
-    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
-    exit();
-}
-
-// Handle update/delete actions
-if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['action'])) {
-    $internID = trim($_POST['internID']);
-    $action = $_POST['action'];
-
-    try {
-        if ($action === 'update') {
-            $InternPass = trim($_POST['InternPass']);
-            if (empty($InternPass)) {
-                $_SESSION['message'] = "New password is required for update.";
-                $_SESSION['message_type'] = 'error';
-            } else {
-                $sql = "UPDATE intacc SET InternPass = :InternPass WHERE internID = :internID AND adminID = :adminID";
-                $stmt = $conn->prepare($sql);
-                $stmt->bindValue(':InternPass', $InternPass);
-                $stmt->bindValue(':internID', $internID);
-                $stmt->bindValue(':adminID', $adminID);
-
-                if ($stmt->execute()) {
-                    $_SESSION['message'] = "Password updated successfully!";
-                    $_SESSION['message_type'] = 'success';
-                } else {
-                    $_SESSION['message'] = "Error updating password.";
-                    $_SESSION['message_type'] = 'error';
-                }
-            }
-        } elseif ($action === 'delete') {
-            $sql = "DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':internID', $internID);
-            $stmt->bindValue(':adminID', $adminID);
-
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Account deleted successfully!";
-                $_SESSION['message_type'] = 'success';
-            } else {
-                $_SESSION['message'] = "Error deleting account.";
-                $_SESSION['message_type'] = 'error';
-            }
-        }
-    } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
-        $_SESSION['message_type'] = 'error';
-    }
-
-    // Redirect back to the same page
-    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
-    exit();
 }
 
 
@@ -1317,4 +1294,4 @@ echo '</table>';
  
 <script src="js/Admin_script.js"></script>
 </body>
-</html> 
+</html>
