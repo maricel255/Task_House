@@ -82,12 +82,6 @@ function handleInternAccountAdd($conn, $adminID) {
                 $stmt->bindParam(':adminID', $adminID);
                 
                 if ($stmt->execute()) {
-                    // Also create entry in profile_information table
-                    $profileStmt = $conn->prepare("INSERT INTO profile_information (internID, adminID) VALUES (:internID, :adminID)");
-                    $profileStmt->bindParam(':internID', $internID);
-                    $profileStmt->bindParam(':adminID', $adminID);
-                    $profileStmt->execute();
-                    
                     setMessage("Intern account created successfully.", "success");
                 } else {
                     setMessage("Error creating intern account.", "error");
