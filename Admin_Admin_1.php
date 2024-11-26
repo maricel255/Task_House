@@ -342,9 +342,9 @@ if (isset($_POST['addIntern'])) {
         
         // Prepare and execute the statement
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':internID', $internID);
-        $stmt->bindParam(':InternPass', $InternPass);
-        $stmt->bindParam(':adminID', $adminID);
+        $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+        $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
+        $stmt->bindValue(':adminID', $user['adminID'], PDO::PARAM_STR); // Using adminID from user data
 
         if ($stmt->execute()) {
             $_SESSION['message'] = "Intern account added successfully!";
@@ -355,7 +355,6 @@ if (isset($_POST['addIntern'])) {
         }
         
     } catch (PDOException $e) {
-        error_log("Error adding intern account: " . $e->getMessage());
         echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the intern account. Please try again.']);
     }
     exit();
