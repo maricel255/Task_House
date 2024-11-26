@@ -372,7 +372,6 @@ try {
 $query = "SELECT time_logs.*, 
 profile_information.first_name,
 CASE
-    WHEN time_logs.status = 'Declined' THEN 'Declined'
     WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
     WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
     WHEN time_logs.login_time IS NOT NULL 
@@ -384,14 +383,13 @@ END AS status
 FROM time_logs
 JOIN profile_information ON time_logs.faciID = profile_information.faciID
 WHERE time_logs.faciID = :faciID
-  AND time_logs.status != 'Declined'  
-  AND DATE(time_logs.login_time) = CURDATE()  -- Only show today's logs
+  AND time_logs.status != 'Declined'
   AND (
-      time_logs.logout_time IS NULL  -- Only show if not logged out
-      OR DATE(time_logs.logout_time) = CURDATE()
-  )
-ORDER BY time_logs.login_time DESC  -- Get the most recent log first
-LIMIT 1;  -- Only get the most recent status for each intern
+      DATE(time_logs.login_time) = CURDATE() OR
+      DATE(time_logs.logout_time) = CURDATE() OR
+      DATE(time_logs.break_time) = CURDATE() OR
+      DATE(time_logs.back_to_work_time) = CURDATE()
+  )";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -920,7 +918,7 @@ try {
                     </table>
                 </div>
             <?php else: ?>
-                <p>No approved logs fsdadsdfsound.</p>
+                <p>No approved logs Found.</p>
             <?php endif; ?>
         </div>
     </div>
