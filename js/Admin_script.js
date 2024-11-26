@@ -254,18 +254,24 @@ function closeDetails() {
 // Add this to your existing js/Admin_script.js file or in a <script> tag at the bottom of the page
 function deleteIntern(internID) {
     if (confirm('Are you sure you want to delete this intern account?')) {
-        // Send AJAX request
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'Admin_Admin_1.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                alert('Intern account deleted successfully!');
+        var formData = new FormData();
+        formData.append('internID', internID);
+        formData.append('action', 'delete');
+
+        fetch('Admin_Admin_1.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
                 window.location.reload();
             } else {
-                alert('Error deleting account. Please try again.');
+                alert('Error deleting account');
             }
-        };
-        xhr.send('internID=' + encodeURIComponent(internID) + '&action=delete');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting account');
+        });
     }
 }
