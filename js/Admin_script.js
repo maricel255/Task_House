@@ -1,3 +1,4 @@
+97% of storage used … If you run out, you can't create, edit, and upload files. Get 100 GB of storage for ₱89.00 ₱22.25/month for 2 months.
 console.log('Admin_script.js is connected successfully');
 
 // Function to show a specific content section
@@ -22,9 +23,11 @@ function showContent(section) {
 function openModal(modalId) {
     // Show the specified modal
     document.getElementById(modalId).style.display = 'block';
+    document.getElementById('facilitator-header').style.display = "none"; // Hide the header row
 
     // Show the overlay
     document.getElementById('overlay').style.display = 'block';
+   
 }
 
 // Function to close a modal
@@ -34,6 +37,14 @@ function closeModal(modalId) {
 
     // Hide the overlay
     document.getElementById('overlay').style.display = 'none';
+    document.getElementById('facilitator-header').style.display = ""; // Show the header row again
+}
+window.onclick = function(event) {
+    const modal = document.getElementById('FaccAccModal');
+    if (event.target === modal) {
+        modal.style.display = "none";
+        document.getElementById('facilitator-header').style.display = ""; // Show the header row again
+    }
 }
 
 // Close the modal when clicking outside of it
@@ -148,24 +159,9 @@ function validateForm() {
             printWindow.print();
         };
     }
-//MARICEL START
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.querySelector('.container'); // Select the parent container
-    if (container) {
-        const newElement = document.createElement('div');
-        newElement.id = 'internDetails'; // Set the ID
-        newElement.className = 'intern-details'; // Set the class
-        newElement.textContent = 'This is the intern-details content.'; // Example content
-        container.appendChild(newElement); // Append the new element to the container
-        console.log("Element #internDetails added to the DOM.");
-    } else {
-        console.error("Parent container not found.");
-    }
-});
-//MARICEL END
 
-   // Start kyle
-   document.addEventListener("DOMContentLoaded", function () {
+    // Start kyle
+document.addEventListener("DOMContentLoaded", function () {
     // Attach event listeners to all View Details buttons
     document.querySelectorAll(".view-details-btn").forEach((button) => {
         button.addEventListener("click", function () {
@@ -195,53 +191,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close button functionality
-    document.addEventListener("DOMContentLoaded", () => {
-        const closeButton = document.getElementById("closeButton");
-        if (closeButton) {
-            closeButton.addEventListener("click", function () {
-                const detailsDiv = document.getElementById("internDetails");
-                if (detailsDiv) {
-                    detailsDiv.classList.remove("show"); // Hide the details
-                    detailsDiv.innerHTML = ""; // Clear the content
-                } else {
-                    console.error("Element with ID 'internDetails' not found.");
-                }
-            });
-        } else {
-            console.error("Element with ID 'closeButton' not found.");
-        }
+    const closeButton = document.querySelector(".close-btn");
+    closeButton.addEventListener("click", function () {
+        const detailsDiv = document.getElementById("internDetails");
+        detailsDiv.classList.remove("show"); // Hide the details
+        detailsDiv.innerHTML = ""; // Clear the content
     });
-    
-
-    // Resize handle functionality
-    const internDetails = document.querySelector('.intern-details');
-    document.addEventListener('DOMContentLoaded', () => {
-        const resizeHandle = document.querySelector('.resizeHandle'); // Use class if applicable
-        
-        if (resizeHandle) {
-            resizeHandle.addEventListener('mousedown', (e) => {
-                isResizing = true;
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', () => {
-                    isResizing = false;
-                    document.removeEventListener('mousemove', handleMouseMove);
-                });
-            });
-        } else {
-            console.error("resizeHandle element not found.");
-        }
-    });
-        let isResizing = false;
-
-
-    function handleMouseMove(e) {
-        if (isResizing) {
-            const newWidth = e.clientX - internDetails.getBoundingClientRect().left;
-            internDetails.style.width = `${newWidth}px`;
-        }
-    }
 });
-
 
 // Function to close the details section
 function closeDetails() {
@@ -250,5 +206,3 @@ function closeDetails() {
     detailsDiv.innerHTML = ""; // Clear the content
 }
 //end kyle
-
-
