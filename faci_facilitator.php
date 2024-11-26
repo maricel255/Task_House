@@ -150,13 +150,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $internID = htmlspecialchars($_POST['internID']);
     $id = htmlspecialchars($_POST['id']);
     
-    // Query to fetch the current record
+    // Query to fetch the current record with proper DATETIME handling
     $query = "SELECT 
-        COALESCE(NULLIF(login_time, ''), 'N/A') as login_time,
-        COALESCE(NULLIF(break_time, ''), 'N/A') as break_time,
-        COALESCE(NULLIF(back_to_work_time, ''), 'N/A') as back_to_work_time,
-        COALESCE(NULLIF(task, ''), 'N/A') as task,
-        COALESCE(NULLIF(logout_time, ''), 'N/A') as logout_time 
+        CASE 
+            WHEN login_time = '' OR login_time IS NULL THEN NULL 
+            ELSE login_time 
+        END as login_time,
+        CASE 
+            WHEN break_time = '' OR break_time IS NULL THEN NULL 
+            ELSE break_time 
+        END as break_time,
+        CASE 
+            WHEN back_to_work_time = '' OR back_to_work_time IS NULL THEN NULL 
+            ELSE back_to_work_time 
+        END as back_to_work_time,
+        CASE 
+            WHEN task = '' OR task IS NULL THEN NULL 
+            ELSE task 
+        END as task,
+        CASE 
+            WHEN logout_time = '' OR logout_time IS NULL THEN NULL 
+            ELSE logout_time 
+        END as logout_time
         FROM time_logs 
         WHERE internID = :internID AND id = :id";
     
@@ -169,12 +184,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         $log = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Check if any of the necessary fields are 'N/A'
-        if ($log['login_time'] === 'N/A' || 
-            $log['break_time'] === 'N/A' || 
-            $log['back_to_work_time'] === 'N/A' || 
-            $log['task'] === 'N/A' || 
-            $log['logout_time'] === 'N/A') {
+        // Check if any of the necessary fields are NULL
+        if ($log['login_time'] === NULL || 
+            $log['break_time'] === NULL || 
+            $log['back_to_work_time'] === NULL || 
+            $log['task'] === NULL || 
+            $log['logout_time'] === NULL) {
             $_SESSION['alertMessage'] = "All time fields must be filled in before approving.";
             $_SESSION['alertType'] = 'error';
         } else {
@@ -202,6 +217,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } catch (PDOException $e) {
         $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
         $_SESSION['alertType'] = 'error';
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     }
 }
     
