@@ -368,10 +368,6 @@ try {
 
 // Assuming you have a valid queryfor availability statud
 
-// Add this debugging code before your table display
-echo "Debug Information:<br>";
-echo "Current Date: " . date('Y-m-d') . "<br>";
-echo "FaciID: " . $faciID . "<br>";
 
 $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work_time, t.logout_time,
     p.first_name, i.profile_image,
@@ -397,13 +393,13 @@ try {
     $stmt->execute();
     $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    echo "Query Results:<br>";
-    echo "Number of records found: " . count($interns) . "<br>";
+    //echo "Query Results:<br>";
+    //echo "Number of records found: " . count($interns) . "<br>";
     if (!empty($interns)) {
         foreach ($interns as $intern) {
-            echo "InternID: " . $intern['internID'] . "<br>";
-            echo "Login Time: " . $intern['login_time'] . "<br>";
-            echo "Status: " . $intern['status'] . "<br>";
+           // echo "InternID: " . $intern['internID'] . "<br>";
+           // echo "Login Time: " . $intern['login_time'] . "<br>";
+           // echo "Status: " . $intern['status'] . "<br>";
         }
     }
 } catch (PDOException $e) {
