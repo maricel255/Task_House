@@ -487,7 +487,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task_House-Hr/ Manager</title>
+    <title>Hr/Manager</title>
     <link rel="stylesheet" href="css/faci_styles.css">
 </head>
 <body>
@@ -918,9 +918,7 @@ try {
                                     <td class="status-<?php echo strtolower($log['status'] ?? 'n/a'); ?>">
                                         <?php echo htmlspecialchars($log['status'] ?? 'N/A'); ?>
                                     </td>
-                                    <td style="display: flex; justify-content: space-evenly; align-items: center;">
-                                       
-                                    </td>
+                                    
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
