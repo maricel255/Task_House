@@ -696,9 +696,7 @@ try {
         </div>
         <div class="intern-status-dashboard">
     <h2>Availability Status</h2>
-    <?php
-    $displayedInternIDs = []; // Track displayed internIDs
-    if (!empty($interns)): ?>
+    <?php if (!empty($interns)): ?>
         <table class="intern-status-table">
             <thead>
                 <tr>
@@ -709,36 +707,52 @@ try {
                 </tr>
             </thead>
             <tbody>
-                <?php
-                $hasActiveInterns = false; // Track if there are active interns
-                foreach ($interns as $intern):
-                    // Skip this intern if the internID has already been displayed
-                    if (in_array($intern['internID'], $displayedInternIDs)) {
-                        continue;
-                    }
-                    $displayedInternIDs[] = $intern['internID']; // Mark internID as displayed
-                    $hasActiveInterns = true; // Mark that at least one intern is active today
-                ?>
-                    <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
+                <?php foreach ($interns as $intern): ?>
+                    <tr class="<?php echo strtolower(str_replace(' ', '-', $intern['status'])); ?>">
                         <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                         <td><?php echo htmlspecialchars($intern['first_name'] ?? 'N/A'); ?></td>
-                        <td class="<?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
-                            <strong><?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?></strong>
+                        <td class="status-cell <?php echo strtolower($intern['status']); ?>">
+                            <?php 
+                                $statusClass = '';
+                                $status = $intern['status'];
+                                
+                                switch($status) {
+                                    case 'Active Now':
+                                        $statusClass = 'active-now';
+                                        break;
+                                    case 'On Break':
+                                        $statusClass = 'on-break';
+                                        break;
+                                    case 'Logged Out':
+                                        $statusClass = 'logged-out';
+                                        break;
+                                    case 'Declined':
+                                        $statusClass = 'declined';
+                                        break;
+                                    default:
+                                        $statusClass = 'unknown';
+                                }
+                            ?>
+                            <span class="status-indicator <?php echo $statusClass; ?>">
+                                <?php echo htmlspecialchars($status); ?>
+                            </span>
                         </td>
                         <td>
                             <?php if (!empty($intern['profile_image'])): ?>
-                                <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
+                                <img src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" 
+                                     alt="Profile Preview" 
+                                     class="profile-image">
                             <?php else: ?>
-                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
+                                <img src="image/USER_ICON.png" 
+                                     alt="Default Profile Preview" 
+                                     class="profile-image">
                             <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-    <?php endif; ?>
-
-    <?php if (empty($interns) || !$hasActiveInterns): ?>
+    <?php else: ?>
         <p>No interns found under your facilitation that are active today.</p>
     <?php endif; ?>
 </div>
