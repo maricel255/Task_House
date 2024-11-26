@@ -372,18 +372,26 @@ try {
 $query = "SELECT time_logs.*, 
 profile_information.first_name,
 CASE
+    -- If logout_time is not NULL, show 'Logged Out'
     WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
+    
+    -- If break_time is NOT NULL and back_to_work_time IS NULL, show 'On Break'
     WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
+    
+    -- If login_time is NOT NULL, back_to_work_time IS NULL, and logout_time IS NULL, show 'Active Now'
     WHEN time_logs.login_time IS NOT NULL 
          AND time_logs.back_to_work_time IS NULL 
          AND time_logs.logout_time IS NULL THEN 'Active Now'
+    
+    -- If back_to_work_time IS NOT NULL, show 'Active Now'
     WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
+    
+    -- Default to 'Unknown' if no status is detected
     ELSE 'Unknown'
 END AS status
 FROM time_logs
 JOIN profile_information ON time_logs.faciID = profile_information.faciID
 WHERE time_logs.faciID = :faciID
-  AND time_logs.status != 'Declined'
   AND (
       DATE(time_logs.login_time) = CURDATE() OR
       DATE(time_logs.logout_time) = CURDATE() OR
@@ -418,7 +426,6 @@ try {
     // Handle any error that occurs during query execution
    // echo "<p>Error: " . $e->getMessage() . "</p>";
 }
-
 
 
 // Prepare and execute the query to get the count of active interns
@@ -697,50 +704,47 @@ try {
         <div class="intern-status-dashboard">
     <h2>Availability Status</h2>
     <?php
-    $displayedInternIDs = []; // Track displayed internIDs
-    if (!empty($interns)): ?>
-        <table class="intern-status-table">
-            <thead>
-                <tr>
-                    <th>Intern ID</th>
-                    <th>Intern Name</th>
-                    <th>Status</th>
-                    <th>Profile Image</th>
-                </tr>
-            </thead>
-            <tbody>
+        $displayedInternIDs = []; 
+         if ($interns): ?>
+    <table class="intern-status-table">
+        <thead>
+            <tr>
+                <th>Intern ID</th>
+                <th>Intern Name</th>
+                <th>Status</th>
+                <th>Profile Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($interns as $intern): ?>
                 <?php
-                $hasActiveInterns = false; // Track if there are active interns
-                foreach ($interns as $intern):
-                    // Skip this intern if the internID has already been displayed
-                    if (in_array($intern['internID'], $displayedInternIDs)) {
-                        continue;
-                    }
-                    $displayedInternIDs[] = $intern['internID']; // Mark internID as displayed
-                    $hasActiveInterns = true; // Mark that at least one intern is active today
+                // Skip this intern if the internID has already been displayed
+                if (in_array($intern['internID'], $displayedInternIDs)) {
+                    continue;
+                }
+                // Mark the current internID as displayed
+                $displayedInternIDs[] = $intern['internID'];
                 ?>
-                    <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
-                        <td><?php echo htmlspecialchars($intern['internID']); ?></td>
-                        <td><?php echo htmlspecialchars($intern['first_name'] ?? 'N/A'); ?></td>
-                        <td class="<?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
-                            <strong><?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?></strong>
-                        </td>
-                        <td>
-                            <?php if (!empty($intern['profile_image'])): ?>
-                                <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
-                            <?php else: ?>
-                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
-
-    <?php if (empty($interns) || !$hasActiveInterns): ?>
-        <p>No interns found under your facilitation that are active today.</p>
-    <?php endif; ?>
+                <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
+                    <td><?php echo htmlspecialchars($intern['internID']); ?></td>
+                    <td><?php echo htmlspecialchars($intern['first_name']); ?></td>
+                    <td class="<?php echo strtolower($intern['status']); ?>">
+                        <strong> <?php echo htmlspecialchars($intern['status']); ?></strong>
+                    </td>
+                    <td>
+                        <?php if (!empty($intern['profile_image'])): ?>
+                            <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
+                        <?php else: ?>  
+                            <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <p>No interns found under your facilitation.</p>
+<?php endif; ?>
 </div>
 
 </div>
