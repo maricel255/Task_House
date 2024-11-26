@@ -388,7 +388,7 @@ LEFT JOIN intacc i ON t.internID = i.internID
 LEFT JOIN profile_information p ON t.internID = p.internID
 WHERE t.faciID = :faciID
     AND DATE(t.login_time) = CURRENT_DATE()
-    AND t.status = 'pending'
+    AND LOWER(t.status) = 'pending'
 ORDER BY t.login_time DESC";
 
 // Prepare the query
@@ -470,6 +470,8 @@ try {
     $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
     $_SESSION['alertType'] = 'error';
 }
+
+
 
 ?>
 
