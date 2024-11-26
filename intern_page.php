@@ -241,7 +241,7 @@ if (isset($_POST['login-btn'])) {
                 $alertMessage = "Error recording login time.";
             }
         } else {
-            $alertMessage = "You have already logged in today.";
+            $alertMessage = "You have already timed in today.";
         }
     }
 }
@@ -269,7 +269,7 @@ if (isset($_POST['login-btn'])) {
                 $alertMessage = "Error recording break time.";
             }
         } else {
-            $alertMessage = "Please log in before taking a break.";
+            $alertMessage = "Please time in before taking a break.";
         }
     }
 
