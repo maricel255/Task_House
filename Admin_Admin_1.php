@@ -333,11 +333,9 @@ if (isset($_POST['addIntern'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            // Use JavaScript to show alert and prevent white page
-            echo "<script>
-                alert('The Intern ID already exists. Please use a different ID.');
-                window.location.href = 'Admin_Admin_1.php';
-            </script>";
+            $_SESSION['message'] = "The Intern ID already exists. Please use a different ID.";
+            $_SESSION['message_type'] = 'warning';
+            header("Location: Admin_Admin_1.php");
             exit();
         } else {
             // Create the SQL query to insert into the intacc table
@@ -350,27 +348,22 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindParam(':adminID', $adminID);
 
             if ($stmt->execute()) {
-                // Use JavaScript to show success message and redirect
-                echo "<script>
-                    alert('Intern account added successfully!');
-                    window.location.href = 'Admin_Admin_1.php';
-                </script>";
-                exit();
+                $_SESSION['message'] = "Intern account added successfully!";
+                $_SESSION['message_type'] = 'success';
             } else {
-                echo "<script>
-                    alert('Error adding intern account.');
-                    window.location.href = 'Admin_Admin_1.php';
-                </script>";
-                exit();
+                $_SESSION['message'] = "Error adding intern account.";
+                $_SESSION['message_type'] = 'warning';
             }
+            
+            header("Location: Admin_Admin_1.php");
+            exit();
         }
     } catch (PDOException $e) {
         // Log the error and show a user-friendly message
         error_log("Error adding intern account: " . $e->getMessage());
-        echo "<script>
-            alert('An error occurred while adding the intern account. Please try again.');
-            window.location.href = 'Admin_Admin_1.php';
-        </script>";
+        $_SESSION['message'] = "An error occurred while adding the intern account. Please try again.";
+        $_SESSION['message_type'] = 'warning';
+        header("Location: Admin_Admin_1.php");
         exit();
     }
 }
