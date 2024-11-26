@@ -5,6 +5,12 @@ error_reporting(E_ALL);
 session_start(); // Start the session
 require('db_Taskhouse/Admin_connection.php');
 
+// Add this function
+function setMessage($message, $type = 'info') {
+    $_SESSION['message'] = $message;
+    $_SESSION['message_type'] = $type;
+}
+
 // Get adminID from the logged-in user's session
 $Uname = $_SESSION['Uname'] ?? null;
 if ($Uname) {
@@ -15,7 +21,7 @@ if ($Uname) {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $adminID = $result['adminID'] ?? null;
     } catch (PDOException $e) {
-        error_log("Error fetching adminID: " . $e->getMessage());
+        setMessage("Error fetching adminID: " . $e->getMessage(), "error");
     }
 }
 
