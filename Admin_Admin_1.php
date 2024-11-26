@@ -829,27 +829,14 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<?php if (isset($_SESSION['message'])): ?>
-    <div class="alert" role="alert" 
-         style="position: fixed; 
-                top: 70px; 
-                right: 30px; 
-                z-index: 1000; 
-                background-color: #f2b25c; 
-                color: white; 
-                padding: 15px; 
-                border-radius: 5px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);" 
-         id="alertBox">
-        <?php echo htmlspecialchars($_SESSION['message']); ?>
-    </div>
-    <script>
-        setTimeout(function() {
-            document.getElementById('alertBox').style.display = 'none';
-        }, 5000);
-    </script>
-    <?php unset($_SESSION['message']); ?>
-<?php endif; ?>
+<div id="message-container" class="message-container <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>" 
+     style="display: <?php echo isset($_SESSION['message']) ? 'block' : 'none'; ?>">
+    <?php 
+    if (isset($_SESSION['message'])) {
+        echo htmlspecialchars($_SESSION['message']);
+    }
+    ?>
+</div>
    
 
 
