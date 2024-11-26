@@ -875,68 +875,65 @@ try {
 </div>
 
 
-
 <div class="content-section" id="report">
     <div class="rep-content">
         <div class="wrapper">
-             <!-- Search Form -->
-             <form method="POST" action="" class="search-form">
-    <label for="internID">InternID:</label>
-    <input type="text" name="internID" id="internID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search by Intern ID">
+            <!-- Search Form -->
+            <form method="POST" action="" class="search-form">
+                <label for="internID">InternID:</label>
+                <input type="text" name="internID" id="internID" value="<?php echo htmlspecialchars($searchInternID ?? ''); ?>" placeholder="Search by Intern ID">
 
-    <label for="status">Status:</label>
-    <select name="status" id="status">
-        <option value="">Select Status</option>
-        <option value="approved" <?php echo ($searchStatus == 'approved' ? 'selected' : ''); ?>>Approved</option>
-        <option value="declined" <?php echo ($searchStatus == 'declined' ? 'selected' : ''); ?>>Declined</option>
-    </select>
-    <button type="submit">
-        <img src="./image/search.png" alt="Search" />
-    </button>
-</form>
+                <label for="status">Status:</label>
+                <select name="status" id="status">
+                    <option value="">Select Status</option>
+                    <option value="approved" <?php echo ($searchStatus == 'approved' ? 'selected' : ''); ?>>Approved</option>
+                    <option value="declined" <?php echo ($searchStatus == 'declined' ? 'selected' : ''); ?>>Declined</option>
+                </select>
+                <button type="submit">
+                    <img src="./image/search.png" alt="Search" />
+                </button>
+            </form>
 
-     
-        <h2 class="approved-logs-header">
-                Approved Logs
-            </h2>
-      
-        <?php if (count($approvedLogs) > 0): ?>
-            <div class="approved-logs-table-wrapper">
-    <table class="approved-logs-table">
-        <thead>
-            <tr>
-                <th>Intern ID</th>
-                <th>Task</th>
-                <th>Login Time</th>
-                <th>Logout Time</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($approvedLogs as $log): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($log['internID']); ?></td>
-                    <td><?php echo htmlspecialchars($log['task']); ?></td>
-                    <td><?php echo htmlspecialchars($log['login_time']); ?></td>
-                    <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
-                    <td class="status-<?php echo strtolower($log['status']); ?>">
-                        <?php echo htmlspecialchars($log['status']); ?>
-                    </td>
-                    <td style="display: flex; justify-content: space-evenly; align-items: center;">
-                        <!-- Delete Button -->
-                        <form method="POST" action=" " style="margin: 0;">
-                            <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>">
-                            <input type="hidden" name="id" value="<?php echo $log['id']; ?>">
-                            <button type="submit" class="action-button delete" name="deleteBtn" onclick="return confirm('Are you sure you want to delete this log?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+            <h2 class="approved-logs-header">Approved Logs</h2>
 
+            <?php if (!empty($approvedLogs) && count($approvedLogs) > 0): ?>
+                <div class="approved-logs-table-wrapper">
+                    <table class="approved-logs-table">
+                        <thead>
+                            <tr>
+                                <th>Intern ID</th>
+                                <th>Task</th>
+                                <th>Login Time</th>
+                                <th>Logout Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($approvedLogs as $log): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($log['internID'] ?? 'N/A'); ?></td>
+                                    <td><?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?></td>
+                                    <td><?php echo htmlspecialchars($log['login_time'] ?? 'N/A'); ?></td>
+                                    <td><?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?></td>
+                                    <td class="status-<?php echo strtolower($log['status'] ?? 'n/a'); ?>">
+                                        <?php echo htmlspecialchars($log['status'] ?? 'N/A'); ?>
+                                    </td>
+                                    <td style="display: flex; justify-content: space-evenly; align-items: center;">
+                                        <!-- Delete Button -->
+                                        <form method="POST" action="" style="margin: 0;">
+                                            <input type="hidden" name="internID" value="<?php echo htmlspecialchars($log['internID'] ?? ''); ?>">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($log['id'] ?? ''); ?>">
+                                            <button type="submit" class="action-button delete" name="deleteBtn" onclick="return confirm('Are you sure you want to delete this log?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <p>No approved logs found.</p>
             <?php endif; ?>
         </div>
     </div>
