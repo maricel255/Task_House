@@ -295,6 +295,8 @@ if (isset($_POST['addIntern'])) {
         if ($count > 0) {
             $_SESSION['message'] = "The Intern ID '$internID' already exists. Please use a different ID.";
             $_SESSION['message_type'] = 'warning';
+            header("Location: Admin_Admin_1.php");
+            exit();
         } else {
             // Create the SQL query to insert into the intacc table
             $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
@@ -308,19 +310,20 @@ if (isset($_POST['addIntern'])) {
             if ($stmt->execute()) {
                 $_SESSION['message'] = "Intern account added successfully!";
                 $_SESSION['message_type'] = 'success';
-                echo "<script>
-                    alert('Intern account added successfully!');
-                    window.location.href = 'Admin_Admin_1.php';
-                </script>";
+                header("Location: Admin_Admin_1.php");
                 exit();
             } else {
                 $_SESSION['message'] = "Error adding intern account.";
                 $_SESSION['message_type'] = 'warning';
+                header("Location: Admin_Admin_1.php");
+                exit();
             }
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
         $_SESSION['message_type'] = 'warning';
+        header("Location: Admin_Admin_1.php");
+        exit();
     }
 }
 
