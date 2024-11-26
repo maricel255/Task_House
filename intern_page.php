@@ -862,8 +862,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 <div class="tasks">
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                     
-                    <button type="submit" name="login-btn" class="login-btn">Log in</button>
-                    <button type="button" name="logut-butn" class="" onclick="document.getElementById('taskModal').style.display='block'">Log out</button>
+                    <button type="submit" name="login-btn" class="login-btn">Time in</button>
+                    <button type="button" name="logut-butn" class="" onclick="document.getElementById('taskModal').style.display='block'">Time out</button>
                     </form>
                       
                  </div>  
