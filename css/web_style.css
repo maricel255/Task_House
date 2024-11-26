@@ -316,10 +316,11 @@ body {
     font-size: 1.2rem;
   }
 }
-
 @media (max-width: 480px) {
   #main-section {
     padding: 20px 10px;
+    width: 480px; /* Set the width of the main section */
+    margin: 0 auto; /* Center the section horizontally */
   }
 
   #main-section .container-fluid {
@@ -358,6 +359,7 @@ body {
     margin-top: 0.5rem;
   }
 }
+
 
 /* Optional: Add smooth transitions */
 .main-text, .capstone-title {
