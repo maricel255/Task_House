@@ -1304,6 +1304,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     placeholder="e.g., 2013"
                     value="<?php echo htmlspecialchars($profileData['college_year_graduated'] ?? ''); ?>"
                     <?php echo $profileData ? 'readonly' : ''; ?>>
+
+                    <label>Honors/Awards Received:</label>
+                <input type="text" name="collegeHonors" 
+                    placeholder="e.g., Valedictorian"
+                    value="<?php echo htmlspecialchars($profileData['college_honors'] ?? ''); ?>"
+                    <?php echo $profileData ? 'readonly' : ''; ?>>
             </div>
         </div>
     </div>
