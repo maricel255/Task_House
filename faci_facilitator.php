@@ -146,12 +146,19 @@ $approvalCount = count($logs);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    
     if (isset($_POST['approveBtn'])) {
-    // Sanitize input to avoid malicious data
+    // Sanitize input
     $internID = htmlspecialchars($_POST['internID']);
-    $id = htmlspecialchars($_POST['id']); // Get the unique log ID
+    $id = htmlspecialchars($_POST['id']);
     
-    // Query to fetch the current record for the specified intern and log ID
-    $query = "SELECT login_time, break_time, back_to_work_time, task, logout_time FROM time_logs WHERE internID = :internID AND id = :id";
+    // Query to fetch the current record
+    $query = "SELECT 
+        COALESCE(NULLIF(login_time, ''), 'N/A') as login_time,
+        COALESCE(NULLIF(break_time, ''), 'N/A') as break_time,
+        COALESCE(NULLIF(back_to_work_time, ''), 'N/A') as back_to_work_time,
+        COALESCE(NULLIF(task, ''), 'N/A') as task,
+        COALESCE(NULLIF(logout_time, ''), 'N/A') as logout_time 
+        FROM time_logs 
+        WHERE internID = :internID AND id = :id";
     
     try {
         // Fetch the record to check if any field is empty
@@ -160,40 +167,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
-        // Fetch the data for the specific log entry
         $log = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Check if any of the necessary fields are empty
-        if (empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time'])) {
-            // Set error message in the session
-            $_SESSION['alertMessage'] = "All time fields (Login Time, Break Time, Back to Work Time, Task, Logout Time) must be filled in before approving.";
-            $_SESSION['alertType'] = 'error'; // Set alert type as error
+        // Check if any of the necessary fields are 'N/A'
+        if ($log['login_time'] === 'N/A' || 
+            $log['break_time'] === 'N/A' || 
+            $log['back_to_work_time'] === 'N/A' || 
+            $log['task'] === 'N/A' || 
+            $log['logout_time'] === 'N/A') {
+            $_SESSION['alertMessage'] = "All time fields must be filled in before approving.";
+            $_SESSION['alertType'] = 'error';
         } else {
-            // Define your update query to set the status to 'approved' only for the specific row (log_id)
+            // Update status to approved
             $sql = "UPDATE time_logs 
                     SET status = 'Approved' 
                     WHERE internID = :internID 
                     AND id = :id 
-                    AND status = 'pending'"; // Ensure that only 'pending' logs are updated for the correct row
+                    AND status = 'pending'";
             
-            // Prepare and execute the query using PDO
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT); // Bind the log_id parameter
-            $stmt->execute();
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             
-            // Set success message in the session
-            $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
-            $_SESSION['alertType'] = 'success';  // Set type as 'success'
+            if ($stmt->execute()) {
+                $_SESSION['alertMessage'] = "Status updated to 'approved' for Intern ID: $internID";
+                $_SESSION['alertType'] = 'success';
+            } else {
+                throw new Exception('Database update failed');
+            }
         }
         
-        // Redirect to avoid re-submitting the form on page refresh (Post-Redirect-Get)
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } catch (PDOException $e) {
-        // Set error message in the session if an exception occurs
         $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
-        $_SESSION['alertType'] = 'error';  // Set type as 'error'
+        $_SESSION['alertType'] = 'error';
     }
 }
     
