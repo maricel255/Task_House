@@ -250,3 +250,15 @@ function closeDetails() {
     detailsDiv.innerHTML = ""; // Clear the content
 }
 //end kyle
+
+// Add this to your existing js/Admin_script.js file or in a <script> tag at the bottom of the page
+function deleteIntern(form) {
+    if (confirm('Are you sure you want to delete this record?')) {
+        form.submit();
+        setTimeout(function() {
+            window.location.href = 'Admin_Admin_1.php';
+        }, 100);
+        return true;
+    }
+    return false;
+}

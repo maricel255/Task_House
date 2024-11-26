@@ -244,8 +244,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 if ($stmtIntacc->execute()) {
                     $conn->commit();
-                    $_SESSION['message'] = 'Intern account and related data deleted successfully!';
-                    $_SESSION['message_type'] = 'success';
                     echo "<script>
                         alert('Intern account deleted successfully!');
                         window.location.href = 'Admin_Admin_1.php';
@@ -253,8 +251,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     exit();
                 } else {
                     $conn->rollBack();
-                    $_SESSION['message'] = 'Error: Could not delete intern account.';
-                    $_SESSION['message_type'] = 'warning';
                     echo "<script>
                         alert('Error: Could not delete intern account.');
                         window.location.href = 'Admin_Admin_1.php';
@@ -264,8 +260,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             } catch (PDOException $e) {
                 $conn->rollBack();
                 error_log("Error deleting intern account: " . $e->getMessage());
-                $_SESSION['message'] = 'Error deleting account. Please try again later.';
-                $_SESSION['message_type'] = 'warning';
                 echo "<script>
                     alert('Error deleting account. Please try again later.');
                     window.location.href = 'Admin_Admin_1.php';
@@ -1186,7 +1180,11 @@ echo '</table>';
                                                     <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
                                                     <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
                                                     <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="if(confirm('Are you sure you want to delete this record?')) { 
+                                                        window.location.href='Admin_Admin_1.php'; 
+                                                        return true; 
+                                                    } 
+                                                    return false;">Delete</button>
                                                     </form>
 
                                                 </td>
@@ -1280,7 +1278,11 @@ echo '</table>';
                                                                     <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
                                                                     <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
                                                                     <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
-                                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="if(confirm('Are you sure you want to delete this record?')) { 
+                                                                        window.location.href='Admin_Admin_1.php'; 
+                                                                        return true; 
+                                                                    } 
+                                                                    return false;">Delete</button>
                                                                 </form>
                                                         
                                                             </td>
