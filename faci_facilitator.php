@@ -372,7 +372,7 @@ try {
 $query = "SELECT DISTINCT 
     time_logs.internID,
     profile_information.first_name,
-    profile_information.profile_image,
+    intacc.profile_image,
     time_logs.login_time,
     time_logs.break_time,
     time_logs.back_to_work_time,
