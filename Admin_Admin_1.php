@@ -319,10 +319,10 @@ try {
 
 
 // Handle adding intern account
-if (isset($_POST['addIntern'])) {
+if (isset($_POST['submitIntern'])) {
     $internID = trim($_POST['internID']);
     $InternPass = trim($_POST['InternPass']);
-    
+
     try {
         // Check if the internID already exists
         $checkSql = "SELECT COUNT(*) FROM intacc WHERE internID = :internID";
@@ -333,33 +333,33 @@ if (isset($_POST['addIntern'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            echo json_encode(['status' => 'error', 'message' => 'The Intern ID already exists. Please use a different ID.']);
-            exit();
-        }
-
-        // Create the SQL query to insert into the intacc table
-        $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
-        
-        // Prepare and execute the statement
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-        $stmt->bindValue(':InternPass', $InternPass, PDO::PARAM_STR);
-        $stmt->bindValue(':adminID', $_SESSION['adminID'], PDO::PARAM_STR);
-
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Intern account added successfully!";
-            $_SESSION['message_type'] = 'success';
-            echo json_encode(['status' => 'success']);
+            $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+            $_SESSION['message_type'] = 'warning';
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error adding intern account.']);
-        }
-        
-    } catch (PDOException $e) {
-        echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the intern account. Please try again.']);
-    }
-    exit();
-}
+            // Create the SQL query to insert into the intacc table
+            $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
+            
+            // Prepare and execute the statement
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':internID', $internID);
+            $stmt->bindParam(':InternPass', $InternPass);
+            $stmt->bindParam(':adminID', $adminID);
 
+            if ($stmt->execute()) {
+                $_SESSION['message'] = "Intern account added successfully!";
+                $_SESSION['message_type'] = 'success';
+                header("Location: Admin_Admin_1.php");
+                exit();
+            } else {
+                $_SESSION['message'] = "Error: Could not add intern account.";
+                $_SESSION['message_type'] = 'warning';
+            }
+        }
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
+        $_SESSION['message_type'] = 'warning';
+    }
+}
 
 
 
@@ -1076,25 +1076,7 @@ echo '</table>';
                                 <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
                                 <!-- Intern Modal -->
-                                <div id="InternAccModal" class="modal">
-                                    <div class="modal-content">
-                                        <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
-
-                                        <h2>Add Intern Account</h2>
-<form id="addInterAccForm" method="POST" onsubmit="return submitInternForm(event)">
-    <div class="form-group">
-        <label for="internID">Intern ID:</label>
-        <input type="text" id="internID" name="internID" required>
-    </div>
-    <div class="form-group">
-        <label for="InternPass">Password:</label>
-        <input type="password" id="InternPass" name="InternPass" required>
-    </div>
-    <button type="submit" name="addIntern" class="btn btn-primary">Submits</button>
-    </form>
-                                        
-                                    </div>
-                                </div>
+                                <div id="InternAccModal" class="modal"> <div class="modal-content"> <span class="close" onclick="closeModal('InternAccModal')">&times;</span> <h2>Add Intern Account</h2> <form id="addInterAccForm" method="POST" action=""> <div class="form-group"> <label for="internID">Intern ID:</label> <input type="text" id="internID" name="internID" required> </div> <div class="form-group"> <label for="InternPass">Password:</label> <input type="password" id="InternPass" name="InternPass" required> </div> <button type="submit" class="btn btn-primary" name="submitIntern">Submit</button> </form> </div></div>
 
                                 <!-- Display Existing Intern Accounts Outside the Modal -->
                                 <h2>Existing Intern Accounts</h2>
