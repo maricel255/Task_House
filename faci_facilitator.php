@@ -369,27 +369,35 @@ try {
 // Assuming you have a valid queryfor availability statud
 
 
-$query = "SELECT time_logs.*, 
-profile_information.first_name,
-CASE
-    WHEN time_logs.logout_time IS NOT NULL THEN 'Logged Out'
-    WHEN time_logs.break_time IS NOT NULL AND time_logs.back_to_work_time IS NULL THEN 'On Break'
-    WHEN time_logs.login_time IS NOT NULL 
-         AND time_logs.back_to_work_time IS NULL 
-         AND time_logs.logout_time IS NULL THEN 'Active Now'
-    WHEN time_logs.back_to_work_time IS NOT NULL THEN 'Active Now'
-    ELSE 'Unknown'
-END AS status
-FROM time_logs
-JOIN profile_information ON time_logs.faciID = profile_information.faciID
-WHERE time_logs.faciID = :faciID
-  AND time_logs.status != 'Declined'
-  AND (
-      DATE(time_logs.login_time) = CURDATE() OR
-      DATE(time_logs.logout_time) = CURDATE() OR
-      DATE(time_logs.break_time) = CURDATE() OR
-      DATE(time_logs.back_to_work_time) = CURDATE()
-  )";
+$query = "SELECT 
+    t.internID,
+    t.login_time,
+    t.break_time,
+    t.back_to_work_time,
+    t.logout_time,
+    p.first_name,
+    p.profile_image,
+    CASE
+        WHEN t.logout_time IS NOT NULL AND DATE(t.logout_time) = CURDATE() THEN 'Logged Out'
+        WHEN t.break_time IS NOT NULL AND t.back_to_work_time IS NULL 
+            AND DATE(t.break_time) = CURDATE() THEN 'On Break'
+        WHEN (t.login_time IS NOT NULL AND DATE(t.login_time) = CURDATE()) 
+            OR (t.back_to_work_time IS NOT NULL AND DATE(t.back_to_work_time) = CURDATE()) THEN 'Active Now'
+        ELSE NULL
+    END AS status
+FROM time_logs t
+JOIN profile_information p ON t.internID = p.internID
+WHERE t.faciID = :faciID
+    AND DATE(t.login_time) = CURDATE()
+    AND t.status != 'Declined'
+GROUP BY t.internID
+ORDER BY 
+    CASE 
+        WHEN status = 'Active Now' THEN 1
+        WHEN status = 'On Break' THEN 2
+        WHEN status = 'Logged Out' THEN 3
+        ELSE 4
+    END";
 
 // Prepare the query
 $stmt = $conn->prepare($query);
@@ -695,51 +703,64 @@ try {
             </div>
         </div>
         <div class="intern-status-dashboard">
-    <h2>Availability Status</h2>
-    <?php
-    $displayedInternIDs = []; // Track displayed internIDs
-    if (!empty($interns)): ?>
+    <h2>Today's Availability Status</h2>
+    <?php if (!empty($interns)): ?>
+        <div class="status-summary">
+            <div class="status-count active">
+                Active Now: <?php echo count(array_filter($interns, function($intern) { return $intern['status'] === 'Active Now'; })); ?>
+            </div>
+            <div class="status-count break">
+                On Break: <?php echo count(array_filter($interns, function($intern) { return $intern['status'] === 'On Break'; })); ?>
+            </div>
+            <div class="status-count logged-out">
+                Logged Out: <?php echo count(array_filter($interns, function($intern) { return $intern['status'] === 'Logged Out'; })); ?>
+            </div>
+        </div>
+        
         <table class="intern-status-table">
             <thead>
                 <tr>
                     <th>Intern ID</th>
                     <th>Intern Name</th>
                     <th>Status</th>
+                    <th>Last Activity</th>
                     <th>Profile Image</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                $hasActiveInterns = false; // Track if there are active interns
-                foreach ($interns as $intern):
-                    // Skip this intern if the internID has already been displayed
-                    if (in_array($intern['internID'], $displayedInternIDs)) {
-                        continue;
-                    }
-                    $displayedInternIDs[] = $intern['internID']; // Mark internID as displayed
-                    $hasActiveInterns = true; // Mark that at least one intern is active today
-                ?>
-                    <tr class="<?php echo strtolower(str_replace(" ", "-", $intern['status'])); ?>">
+                <?php foreach ($interns as $intern): ?>
+                    <tr class="status-row <?php echo strtolower(str_replace(' ', '-', $intern['status'])); ?>">
                         <td><?php echo htmlspecialchars($intern['internID']); ?></td>
                         <td><?php echo htmlspecialchars($intern['first_name'] ?? 'N/A'); ?></td>
-                        <td class="<?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
-                            <strong><?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?></strong>
+                        <td class="status-cell <?php echo strtolower($intern['status'] ?? 'unknown'); ?>">
+                            <?php echo htmlspecialchars($intern['status'] ?? 'Unknown'); ?>
                         </td>
                         <td>
-                            <?php if (!empty($intern['profile_image'])): ?>
-                                <img id="imagePreview" src="uploaded_files/<?php echo htmlspecialchars($intern['profile_image']); ?>" alt="Profile Preview" style="width: 160px; height: 160px; border-radius: 50%;">
-                            <?php else: ?>
-                                <img id="imagePreview" src="image/USER_ICON.png" alt="Default Profile Preview">
-                            <?php endif; ?>
+                            <?php
+                            $lastActivity = 'N/A';
+                            if (!empty($intern['logout_time']) && date('Y-m-d', strtotime($intern['logout_time'])) === date('Y-m-d')) {
+                                $lastActivity = 'Logged out at ' . date('h:i A', strtotime($intern['logout_time']));
+                            } elseif (!empty($intern['break_time']) && empty($intern['back_to_work_time'])) {
+                                $lastActivity = 'Started break at ' . date('h:i A', strtotime($intern['break_time']));
+                            } elseif (!empty($intern['back_to_work_time'])) {
+                                $lastActivity = 'Returned at ' . date('h:i A', strtotime($intern['back_to_work_time']));
+                            } elseif (!empty($intern['login_time'])) {
+                                $lastActivity = 'Logged in at ' . date('h:i A', strtotime($intern['login_time']));
+                            }
+                            echo htmlspecialchars($lastActivity);
+                            ?>
+                        </td>
+                        <td>
+                            <img src="<?php echo !empty($intern['profile_image']) ? 'uploaded_files/' . htmlspecialchars($intern['profile_image']) : 'image/USER_ICON.png'; ?>" 
+                                 alt="Profile" 
+                                 class="profile-image">
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
-    <?php endif; ?>
-
-    <?php if (empty($interns) || !$hasActiveInterns): ?>
-        <p>No interns found under your facilitation that are active today.</p>
+    <?php else: ?>
+        <p>No interns are logged in today.</p>
     <?php endif; ?>
 </div>
 
@@ -927,4 +948,4 @@ try {
 
     <script src="js/faci_script.js"></script>
 </body>
-</html>
+            </html>
