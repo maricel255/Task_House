@@ -295,8 +295,6 @@ if (isset($_POST['addIntern'])) {
         if ($count > 0) {
             $_SESSION['message'] = "The Intern ID '$internID' already exists. Please use a different ID.";
             $_SESSION['message_type'] = 'warning';
-            header("Location: Admin_Admin_1.php");
-            exit();
         } else {
             // Create the SQL query to insert into the intacc table
             $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
@@ -308,39 +306,23 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindParam(':adminID', $user['adminID']);
 
             if ($stmt->execute()) {
-                // Make sure session is started
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                
-                // Set the success message
                 $_SESSION['message'] = "Intern account added successfully!";
                 $_SESSION['message_type'] = 'success';
-                
-                // Debug line - remove in production
-                error_log("Session message set: " . $_SESSION['message']);
-                
-                // Ensure output buffering is clean before redirect
-                ob_clean();
-                
-                // Redirect with the session message
-                header("Location: Admin_Admin_1.php");
+                echo "<script>
+                    alert('Intern account added successfully!');
+                    window.location.href = 'Admin_Admin_1.php';
+                </script>";
                 exit();
             } else {
                 $_SESSION['message'] = "Error adding intern account.";
                 $_SESSION['message_type'] = 'warning';
-                header("Location: Admin_Admin_1.php");
-                exit();
             }
         }
     } catch (PDOException $e) {
         $_SESSION['message'] = "Error: " . $e->getMessage();
         $_SESSION['message_type'] = 'warning';
-        header("Location: Admin_Admin_1.php");
-        exit();
     }
 }
-
 
 
 
