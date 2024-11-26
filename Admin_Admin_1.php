@@ -1090,8 +1090,8 @@ echo '</table>';
         <label for="InternPass">Password:</label>
         <input type="password" id="InternPass" name="InternPass" required>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+    <button type="submit" name="addIntern" class="btn btn-primary">Submits</button>
+    </form>
                                         
                                     </div>
                                 </div>
