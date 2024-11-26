@@ -295,7 +295,7 @@ if (isset($_POST['addIntern'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+            $errorMessages[] = "The Intern ID '$internID' already exists. Please use a different ID.";
         } else {
             // Create the SQL query to insert into the intacc table
             $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
@@ -307,9 +307,12 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                $_SESSION['message'] = "Intern account added successfully!";
+                $_SESSION['success_message'] = "Intern account added successfully!";
+                // Redirect to prevent form resubmission
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
             } else {
-                $_SESSION['message'] = "Error: Could not add intern account.";
+                $errorMessages[] = "Could not add intern account.";
             }
         }
     } catch (PDOException $e) {
@@ -658,25 +661,34 @@ $timeLogsCount = $stmt->fetchColumn();
 </head>
 <body>
 <?php if (isset($_SESSION['message'])): ?>
-    <div class="alert" role="alert" 
+    <div class="alert <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'warning'; ?>" 
+         role="alert" 
          style="position: fixed; 
                 top: 70px; 
                 right: 30px; 
                 z-index: 1000; 
-                background-color: #f2b25c; 
+                background-color: <?php echo isset($_SESSION['message_type']) && $_SESSION['message_type'] === 'success' ? '#4CAF50' : '#f2b25c'; ?>; 
                 color: white; 
                 padding: 15px; 
                 border-radius: 5px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);" 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                transition: opacity 0.5s ease-in-out;" 
          id="alertBox">
         <?php echo htmlspecialchars($_SESSION['message']); ?>
     </div>
     <script>
         setTimeout(function() {
-            document.getElementById('alertBox').style.display = 'none';
+            var alertBox = document.getElementById('alertBox');
+            alertBox.style.opacity = '0';
+            setTimeout(function() {
+                alertBox.style.display = 'none';
+            }, 500);
         }, 5000);
     </script>
-    <?php unset($_SESSION['message']); ?>
+    <?php 
+    unset($_SESSION['message']);
+    unset($_SESSION['message_type']); 
+    ?>
 <?php endif; ?>
    
 
