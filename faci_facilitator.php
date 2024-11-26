@@ -906,7 +906,6 @@ try {
                                 <th>Login Time</th>
                                 <th>Logout Time</th>
                                 <th>Status</th>
-                                <th>Actionert</th>
                             </tr>
                         </thead>
                         <tbody>
