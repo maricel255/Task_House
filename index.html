@@ -17,36 +17,40 @@
 
   <body>
     <!-- Header (Green Bar) -->
-    <div class="header-container d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center">
-        <img src="image/th_logo.png" alt="logo" style="width: 50px; height: 50px;" />
-        <div class="logotext ms-2" style="font-size: 20px;">INTERN'S TASK HOUSE</div>
+    <div class="header-container">
+      <div class="d-flex align-items-center justify-content-between w-100">
+        <!-- Logo and Brand -->
+        <div class="d-flex align-items-center">
+          <img src="image/th_logo.png" alt="logo" class="header-logo" />
+          <div class="logotext ms-2">INTERN'S TASK HOUSE</div>
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon">☰</span>
+        </button>
       </div>
 
-      <!-- Navigation with buttons aligned in one row -->
-      <nav class="nav-buttons">
-        <a href="#main-section" class="btn btn-primary">Home</a>
-        <a href="#documents-section" class="btn btn-primary">Documents</a>
-        <a href="#about-us-section" class="btn btn-primary">About Us</a>
+      <!-- Collapsible Navigation -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <nav class="nav-buttons">
+          <a href="#main-section" class="btn btn-primary">Home</a>
+          <a href="#documents-section" class="btn btn-primary">Documents</a>
+          <a href="#about-us-section" class="btn btn-primary">About Us</a>
 
-        <!-- Dropdown for Login -->
-        <div class="dropdown">
-          <button
-            class="btn btn-secondary dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Login
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="Admin_registration.php">Admin</a></li>
-            <li><a class="dropdown-item" href="faci_log_in.php">Facilitator</a></li>
-            <li><a class="dropdown-item" href="intern_log.php">Interns</a></li>
-          </ul>
-        </div>
-      </nav>
+          <!-- Dropdown for Login -->
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+              Login
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item" href="Admin_registration.php">Admin</a></li>
+              <li><a class="dropdown-item" href="faci_log_in.php">Facilitator</a></li>
+              <li><a class="dropdown-item" href="intern_log.php">Interns</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
     </div>
 
     <!-- Main Section -->

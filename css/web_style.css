@@ -14,27 +14,30 @@ body {
   font-family: 'Arial', sans-serif;
 }
 
-/* Header Styling */
+/* Header and Navigation Styles */
 .header-container {
   background-color: green;
   color: white;
   padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   position: fixed;
   width: 100%;
   top: 0;
   left: 0;
   z-index: 1000;
-  height: auto;
-  min-height: 70px;
-  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-logo {
+  width: 50px;
+  height: 50px;
+  transition: all 0.3s ease;
 }
 
 .logotext {
   font-size: 1.25rem;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 /* Navigation Buttons */
@@ -42,28 +45,26 @@ body {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  flex-wrap: wrap;
 }
 
-.nav-buttons a,
-.nav-buttons button,
-.nav-buttons .dropdown-toggle {
-  background-color: green;
+.navbar-toggler {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   color: white;
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  display: none;
   border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
 }
 
-.nav-buttons a:hover,
-.nav-buttons button:hover,
-.nav-buttons .dropdown-toggle:hover {
-  background-color: darkgreen;
-  transform: translateY(-2px);
+.navbar-toggler-icon {
+  font-size: 1.5rem;
+}
+
+/* Main Section Logo */
+#main-section .img-fluid {
+  width: 300%;
+  height: auto;
+  max-width: none;
 }
 
 /* Main Section */
@@ -203,76 +204,95 @@ body {
     margin: 0;
     width: 100%;
   }
+
+  .navbar-collapse {
+    width: 100%;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem 0;
+  }
+
+  .nav-buttons a,
+  .nav-buttons .dropdown {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
   .header-container {
-    padding: 0.5rem;
-    justify-content: center;
-    text-align: center;
+    padding: 0.5rem 1rem;
   }
 
-  .nav-buttons {
-    margin-top: 0.5rem;
-    justify-content: center;
-    width: 100%;
+  .navbar-toggler {
+    display: block;
   }
 
-  #main-section {
-    flex-direction: column;
-    padding: 1rem;
-    text-align: center;
-  }
-
-  .main-text {
-    font-size: 2rem;
-  }
-
-  .separator {
-    display: none;
-  }
-
-  .lorem-container {
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-
-  .about-us-section .col-md-3 {
-    min-width: 200px;
-  }
-}
-
-@media (max-width: 480px) {
-  .header-container {
-    height: auto;
+  .header-logo {
+    width: 60px;
+    height: 60px;
   }
 
   .logotext {
     font-size: 1rem;
   }
 
-  .nav-buttons a,
-  .nav-buttons button,
-  .nav-buttons .dropdown-toggle {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+  #main-section .img-fluid {
+    width: 400%; /* Bigger logo for phones */
+    max-width: none;
+    margin: 2rem auto;
   }
 
-  .main-text {
-    font-size: 1.5rem;
+  .navbar-collapse {
+    display: none;
   }
 
-  .documents-section {
-    padding: 1rem;
+  .navbar-collapse.show {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-logo {
+    width: 70px; /* Even bigger logo for smaller phones */
+    height: 70px;
   }
 
-  .about-us-section {
-    padding: 1rem;
+  #main-section .img-fluid {
+    width: 500%; /* Even bigger logo for main section on phones */
   }
 
-  .about-us-section img {
-    height: 200px;
+  .logotext {
+    font-size: 0.9rem;
   }
+}
+
+/* Add this to ensure dropdown works properly on mobile */
+.dropdown-menu {
+  position: static !important;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.dropdown {
+  width: 100%;
+}
+
+/* Animation for navbar collapse */
+.navbar-collapse {
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-collapse.collapsing {
+  height: 0;
+  overflow: hidden;
+}
+
+.navbar-collapse.show {
+  height: auto;
 }
 
 /* Modal Styles */
