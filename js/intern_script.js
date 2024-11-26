@@ -307,3 +307,38 @@ function printTable() {
     // Restore original content
     document.body.innerHTML = originalContents;
 }
+
+// Add the closeTaskModal function and related modal functionality
+function closeTaskModal() {
+    var taskModal = document.getElementById('taskModal');
+    if (taskModal) {
+        taskModal.style.display = "none";
+    }
+}
+
+// Get the task modal
+var taskModal = document.getElementById('taskModal');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == taskModal) {
+        closeTaskModal();
+    }
+    // Keep existing modal close functionality
+    const credentialsModal = document.getElementById('credentialsModal');
+    if (event.target === credentialsModal) {
+        closeCredentialsModal();
+    }
+    var profileModal = document.getElementById("profileModal");
+    if (event.target == profileModal) {
+        closeModal();
+    }
+}
+
+// Add event listener for the close button
+document.addEventListener('DOMContentLoaded', function() {
+    var closeButton = taskModal.querySelector('.close');
+    if (closeButton) {
+        closeButton.onclick = closeTaskModal;
+    }
+});
