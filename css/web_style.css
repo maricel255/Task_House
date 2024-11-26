@@ -15,12 +15,13 @@ body {
 }
 
 :root {
-  --primary-green: #2E7D32;
-  --secondary-green: #4CAF50;
-  --light-green: #81C784;
-  --hover-green: #A5D6A7;
-  --dark-green: #1B5E20;
-  --white: #ffffff;
+  --primary: #CFFFE5;
+  --secondary: #FADADD;
+  --accent: #FF6F61;
+  --gold: #FFD700;
+  --white: #FFFFFF;
+  --light-gray: #F5F5F5;
+  --shadow: rgba(0, 0, 0, 0.1);
 }
 
 /* Header Styles */
@@ -288,39 +289,164 @@ body {
 
 /* About Us Section */
 .about-us-section {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  background-color: var(--primary);
+  padding: 4rem 2rem;
 }
 
-.about-us-section .row {
+.about-us-section h4 {
+  color: var(--accent);
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: bold;
+}
+
+/* Photocard Styles */
+.photocard {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: center;
+  flex-direction: column;
 }
 
-.about-us-section .col-md-3 {
-  flex: 1;
-  min-width: 250px;
-  max-width: 300px;
-  margin-bottom: 1.5rem;
+.photocard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px var(--shadow);
 }
 
-.about-us-section img {
+.photocard-image {
+  position: relative;
+  padding-top: 130%; /* Portrait aspect ratio */
+  overflow: hidden;
+  background: var(--secondary);
+}
+
+.photocard-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 250px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  filter: grayscale(100%);
+  transition: transform 0.3s ease;
 }
 
-.about-us-section .col-md-3:hover img {
-  filter: grayscale(0%);
+.photocard:hover .photocard-image img {
   transform: scale(1.05);
-  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.3);
 }
+
+.photocard-content {
+  padding: 1.5rem;
+  background: var(--white);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.photocard-content h5 {
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.photocard-content p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.photocard-social {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light-gray);
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: var(--accent);
+  color: var(--white);
+  transform: translateY(-3px);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .about-us-section {
+    padding: 3rem 1rem;
+  }
+
+  .photocard {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .photocard-content {
+    padding: 1.2rem;
+  }
+
+  .photocard-content h5 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .about-us-section h4 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .photocard-image {
+    padding-top: 140%; /* Slightly taller on mobile */
+  }
+
+  .social-link {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* Optional: Add some animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.photocard {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Stagger the animation for each card */
+.col-lg-3:nth-child(1) .photocard { animation-delay: 0.1s; }
+.col-lg-3:nth-child(2) .photocard { animation-delay: 0.2s; }
+.col-lg-3:nth-child(3) .photocard { animation-delay: 0.3s; }
+.col-lg-3:nth-child(4) .photocard { animation-delay: 0.4s; }
 
 /* Footer */
 .footer {
