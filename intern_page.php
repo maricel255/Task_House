@@ -1534,11 +1534,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
     <h1>My Daily Time Record</h1> <!-- Corrected the closing tag -->
     <!-- Print Button -->
-          <button onclick="printTable()" class="print-btn">Print Table</button>
+    <button onclick="printTable()" class="print-btn">Print Table</button>
 
         <div class="wrapper">
-          
-            
             <!-- Display the time logs in a table -->
             <table id="timeLogsTable">
                 <thead>
@@ -1564,15 +1562,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         foreach ($timeLogs as $log): ?>
                             <tr>
                                 <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
-                                <td><?php echo htmlspecialchars($log['login_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['logout_time']); ?></td>
-                                <td><?php echo htmlspecialchars($log['task']); ?></td>
-                                <td><?php echo htmlspecialchars($log['status']); ?></td>
+                                <td><?php echo htmlspecialchars($log['login_time'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($log['status'] ?? 'N/A'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6">No time logs found for this intern.</td> <!-- Adjust colspan to 6 -->
+                            <td colspan="5">No time logs found for this intern.</td> <!-- Adjust colspan to 5 -->
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -1580,6 +1578,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         </div>
     </div>
 </div>
+
 
 
     
