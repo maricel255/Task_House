@@ -325,11 +325,7 @@ body {
   }
 }
 @media (max-width: 480px) {
-  body {
-    width: 480px !important;
-    margin: 0 auto;
-    overflow-x: hidden;
-}
+ 
 
   /* Main Section - Keep Desktop-like */
   #main-section {
