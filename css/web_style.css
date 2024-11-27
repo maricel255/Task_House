@@ -327,7 +327,7 @@ body {
 @media (max-width: 480px) {
   #main-section {
     padding: 20px 10px;
-    width: 480px; /* Set the width of the main section */
+    width: 550px; /* Set the width of the main section */
     margin: 0 auto; /* Center the section horizontally */
   }
 
