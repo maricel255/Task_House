@@ -343,6 +343,8 @@ body {
   #main-section .col-md-3 {
     width: 30%;
     margin: 0;
+    margin-top: 3rem; /* Lower the separator on small screens */
+
   }
 
   #main-section .col-md-6 {
