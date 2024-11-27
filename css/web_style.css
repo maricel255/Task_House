@@ -335,7 +335,7 @@ body {
   border-radius: var(--border-radius-lg); 
   overflow: hidden;
   position: absolute;
-  top: -250px;
+  top: -170px;
   z-index: 1; /* Ensures it stays above other content but below the header */
 }
   /* Main Section - Keep Desktop-like */
