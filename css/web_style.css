@@ -334,7 +334,7 @@ body {
   max-width: none;
   border-radius: var(--border-radius-lg); 
   overflow: hidden;
-  margin-top: -170px; /* Increased the negative margin to move it higher */
+  margin-top: -200px; /* Increased the negative margin to move it higher */
 }
   /* Main Section - Keep Desktop-like */
   #main-section {
