@@ -337,7 +337,7 @@ body {
   /* Main Section - Keep Desktop-like */
   #main-section {
     padding: 80px 20px 20px;
-    width: 100%;
+    width: 480px;
     min-height: 100vh;
     display: flex;
     align-items: center;
