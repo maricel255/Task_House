@@ -358,10 +358,11 @@ body {
 
   #main-section .col-md-6 {
     width: 40%;
-    padding: 0 1rem;
+    padding: 0;
     margin: 0 !important;
     text-align: left;
     margin-top: -15rem !important;
+    margin-left: -3rem !important;
   }
 
   .main-text {
@@ -369,6 +370,7 @@ body {
     text-align: left;
     position: relative;
     top: -8rem;
+    left: -2rem;
   }
 
   .task-house {
@@ -381,6 +383,7 @@ body {
     margin-top: -1rem;
     position: relative;
     top: -8rem;
+    left: -2rem;
   }
 
   /* About Us Section - Vertical Layout */
