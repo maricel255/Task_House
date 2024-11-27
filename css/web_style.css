@@ -325,6 +325,15 @@ body {
   }
 }
 @media (max-width: 480px) {
+  
+/* Main Section Logo */
+#main-section .img-fluid {
+  width: 20%;
+  height: auto;
+  max-width: none;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
   /* Main Section - Keep Desktop-like */
   #main-section {
     padding: 80px 20px 20px;
