@@ -60,8 +60,8 @@ function handleInternAccountAdd($conn, $adminID) {
     try {
         if (!$adminID) {
             setMessage("Error: Admin session not found.", "error");
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
+            header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
+            return;
         }
 
         $internID = trim($_POST['internID']);
@@ -79,14 +79,14 @@ function handleInternAccountAdd($conn, $adminID) {
             if ($stmt->fetchColumn() > 0) {
                 setMessage("Intern ID already exists.", "error");
             } else {
-                // Insert new intern account with the current adminID
+                // Insert new intern account
                 $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
                 $stmt->bindParam(':internID', $internID);
                 $stmt->bindParam(':InternPass', $InternPass);
                 $stmt->bindParam(':adminID', $adminID);
                 
                 if ($stmt->execute()) {
-                    setMessage("Intern account created successfully.", "success");
+                    setMessage("Intern account created successfully!", "success");
                 } else {
                     setMessage("Error creating intern account.", "error");
                 }

@@ -208,13 +208,14 @@ function closeDetails() {
 
 // Add this to your existing JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // Show message if it exists
-    const messageContainer = document.querySelector('.alert');
-    if (messageContainer) {
-        messageContainer.style.display = 'block';
-        // Hide message after 3 seconds
+    // Show message box if it exists
+    const messageBox = document.getElementById('messageBox');
+    if (messageBox && messageBox.textContent.trim() !== '') {
+        messageBox.style.display = 'block';
+        
+        // Hide message after 5 seconds
         setTimeout(function() {
-            messageContainer.style.display = 'none';
-        }, 3000);
+            messageBox.style.display = 'none';
+        }, 5000);
     }
 });

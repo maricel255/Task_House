@@ -1523,37 +1523,39 @@ input[type="submit"]:hover {
 .print-btn:hover {
   background-color: #45a049;
 }
-.alert {
-  padding: 15px;
-  margin: 10px 0;
-  border: 1px solid transparent;
-  border-radius: 4px;
+.message-box {
   position: fixed;
   top: 20px;
   right: 20px;
+  padding: 15px 25px;
+  border-radius: 5px;
   z-index: 1000;
-  min-width: 200px;
+  display: none;
+  animation: slideIn 0.5s ease-out;
 }
 
-.alert-success {
-  color: #155724;
-  background-color: #d4edda;
-  border-color: #c3e6cb;
+.success {
+  background-color: #4CAF50;
+  color: white;
 }
 
-.alert-error {
-  color: #721c24;
-  background-color: #f8d7da;
-  border-color: #f5c6cb;
+.error {
+  background-color: #f44336;
+  color: white;
 }
 
-.alert-info {
-  color: #0c5460;
-  background-color: #d1ecf1;
-  border-color: #bee5eb;
+.info {
+  background-color: #2196F3;
+  color: white;
 }
 
-#message-container {
-  position: relative;
-  z-index: 1000;
+@keyframes slideIn {
+  from {
+      transform: translateX(100%);
+      opacity: 0;
+  }
+  to {
+      transform: translateX(0);
+      opacity: 1;
+  }
 }
