@@ -341,7 +341,7 @@ body {
   overflow: hidden;
   position: relative;
   z-index: 2; /* Increased z-index to ensure it's in front */
-  margin-top: -280px;
+  margin-top: -290px;
 }
 
   /* Main Section - Keep Desktop-like */
