@@ -700,6 +700,7 @@ body {
 .about-us-section {
   padding: 4rem 2rem;
   background-color: var(--primary);
+  margin-top: -100px;
 }
 
 .about-us-section h4 {
@@ -829,9 +830,9 @@ body {
   object-fit: cover;
   border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
   transition: all 0.3s ease;
-  /* Add grayscale filter */
   filter: grayscale(100%);
   -webkit-filter: grayscale(100%);
+  margin-top: -50px;
 }
 
 /* Hover effect to show original colors */
