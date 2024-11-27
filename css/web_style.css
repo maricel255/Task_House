@@ -325,63 +325,78 @@ body {
   }
 }
 @media (max-width: 480px) {
+  /* Main Section - Keep Desktop-like */
   #main-section {
-    padding: 20px 10px;
-    width: 550px; /* Set the width of the main section */
-    margin: 0 auto; /* Center the section horizontally */
-  }
-
-  #main-section .container-fluid {
-    flex-direction: column;
+    padding: 80px 20px 20px;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
     align-items: center;
   }
 
-  #main-section .col-md-3 {
-    width: 200px;
-    margin: 1rem auto;
+  #main-section .container-fluid {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  #main-section img.img-fluid.logo {
-    width: 200px; /* Adjust the width to make it larger */
-    height: auto; /* Maintain aspect ratio */
-    margin-bottom: 1rem; /* Add spacing below the logo */
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  #main-section .col-md-3 {
+    width: 30%;
+    margin: 0;
   }
 
   #main-section .col-md-6 {
-    width: 100%;
-    padding: 1rem;
+    width: 40%;
+    padding: 0 1rem;
     margin: 0 !important;
+    text-align: left;
   }
 
   .main-text {
-    font-size: 2rem;
-    text-align: center;
+    font-size: 4rem;
+    text-align: left;
   }
 
   .task-house {
-    font-size: 2rem;
+    font-size: 4rem;
   }
 
   .capstone-title {
-    font-size: 1.1rem;
-    text-align: center;
-    margin-top: 0.5rem;
+    font-size: 1.8rem;
+    text-align: left;
   }
 
-  .col-md-3.text-center,
-  .col-md-3.text-center img.img-fluid,
-  .lorem-container,
-  .documents-section {
-    border-radius: var(--border-radius-md);
+  /* About Us Section - Vertical Layout */
+  .about-us-section .row {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    overflow-x: hidden;
   }
-  
-  .nav-buttons a,
-  .nav-buttons .btn,
-  .dropdown-toggle {
-    border-radius: var(--border-radius-sm);
+
+  .col-md-3.text-center {
+    flex: 0 0 300px;
+    width: 300px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .col-md-3.text-center img.img-fluid {
+    height: 400px;
+  }
+
+  /* Keep Lorem Container Like Desktop */
+  .lorem-container {
+    width: 100%;
+    max-width: 350px;
+    margin-top: 4.5rem;
+  }
+
+  /* Keep Separator Like Desktop */
+  .separator {
+    width: 4px;
+    min-height: 200px;
+    display: block;
   }
 }
 
