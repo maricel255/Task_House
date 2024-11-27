@@ -326,7 +326,7 @@ body {
 }
 @media (max-width: 480px) {
   
-/* Main Section Logo */
+
 /* Main Section Logo */
 #main-section .img-fluid {
   width: 90%;
@@ -334,7 +334,7 @@ body {
   max-width: none;
   border-radius: var(--border-radius-lg); 
   overflow: hidden;
-  margin-top: -50px; /* Added this line to move the image up */
+  margin-top: -150px; /* Increased the negative margin to move it higher */
 }
   /* Main Section - Keep Desktop-like */
   #main-section {
