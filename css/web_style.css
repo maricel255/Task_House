@@ -331,29 +331,9 @@ body {
   width: 90%;
   height: auto;
   max-width: none;
-  border-radius: var(--border-radius-lg); 
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
-}
-  /* Main Section - Keep Desktop-like */
-  #main-section {
-    padding: 80px 20px 20px;
-    width: 480px;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-
-  #main-section .container-fluid {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-  #main-section .col-md-3 {
-    width: 700%;
-    margin: 0;
-    margin-top: 10rem;
-    margin-left: -42rem;
-    height: 5%;
+  margin-top: -10rem;
 }
 
   #main-section .col-md-6 {
@@ -361,7 +341,7 @@ body {
     padding: 0;
     margin: 0 !important;
     text-align: left;
-    margin-top: -15rem !important;
+    margin-top: -25rem !important;
     margin-left: -3rem !important;
   }
 
