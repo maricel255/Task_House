@@ -73,7 +73,7 @@ function handleInternAccountAdd($conn, $adminID) {
             $stmt->execute();
             
             if ($stmt->fetchColumn() > 0) {
-                setMessage("Intern ID already exists.", "error");
+                setMessage("Error: The Intern ID '$internID' already exists. Please use a different ID.", "error");
             } else {
                 // Insert new intern account with the current adminID
                 $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
@@ -82,7 +82,7 @@ function handleInternAccountAdd($conn, $adminID) {
                 $stmt->bindParam(':adminID', $adminID);
                 
                 if ($stmt->execute()) {
-                    setMessage("Intern account created successfully.", "success");
+                    setMessage("Intern account added successfully!", "success");
                 } else {
                     setMessage("Error creating intern account.", "error");
                 }
