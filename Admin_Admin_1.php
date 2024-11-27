@@ -9,7 +9,6 @@ require('db_Taskhouse/Admin_connection.php');
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
-    debug_to_console("Message set: " . $message . " (Type: " . $type . ")");
 }
 
 // Get adminID from the logged-in user's session
