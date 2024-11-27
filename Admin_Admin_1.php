@@ -29,10 +29,45 @@ if ($Uname) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // For Intern Account Management
     if (isset($_POST['addIntern'])) {
-        handleInternAccountAdd($conn, $adminID);
-    }
-    else if (isset($_POST['action'])) {
-        handleInternAccountAction($conn, $adminID);
+        try {
+            $internID = trim($_POST['internID']);
+            $InternPass = trim($_POST['InternPass']);
+
+            if (empty($internID) || empty($InternPass)) {
+                $_SESSION['message'] = "All fields are required.";
+                $_SESSION['message_type'] = "error";
+            } else {
+                // Check if intern ID already exists
+                $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = :internID");
+                $stmt->bindParam(':internID', $internID);
+                $stmt->execute();
+                
+                if ($stmt->fetchColumn() > 0) {
+                    $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+                    $_SESSION['message_type'] = "error";
+                } else {
+                    // Insert new intern account
+                    $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
+                    $stmt->bindParam(':internID', $internID);
+                    $stmt->bindParam(':InternPass', $InternPass);
+                    $stmt->bindParam(':adminID', $adminID);
+                    
+                    if ($stmt->execute()) {
+                        $_SESSION['message'] = "Intern account added successfully!";
+                        $_SESSION['message_type'] = "success";
+                    } else {
+                        $_SESSION['message'] = "Error creating intern account.";
+                        $_SESSION['message_type'] = "error";
+                    }
+                }
+            }
+        } catch (PDOException $e) {
+            $_SESSION['message'] = "Database error: " . $e->getMessage();
+            $_SESSION['message_type'] = "error";
+        }
+        
+        header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
+        exit();
     }
     // For Facilitator Account Management
     else if (isset($_POST['submitFacilitator'])) {
@@ -447,7 +482,10 @@ try {
     $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
     $internAccounts = [];
 }
+// Initialize an empty array to hold error messages
 
+$errorMessages = [];
+unset($_SESSION['message']); // Clear the message after displaying
 
 // Handle adding intern account
 if (isset($_POST['addIntern'])) {
@@ -829,14 +867,30 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<div id="messageBox" class="message-box <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>" 
-     style="display: <?php echo isset($_SESSION['message']) ? 'block' : 'none'; ?>">
+<div id="messageBox" class="message-box <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>">
     <?php 
     if (isset($_SESSION['message'])) {
         echo htmlspecialchars($_SESSION['message']);
     }
     ?>
 </div>
+<script>
+// Add this immediately after the message box
+document.addEventListener('DOMContentLoaded', function() {
+    var messageBox = document.getElementById('messageBox');
+    if (messageBox && messageBox.innerHTML.trim() !== '') {
+        messageBox.style.display = 'block';
+        setTimeout(function() {
+            messageBox.style.display = 'none';
+            <?php 
+            // Clear the message after it's displayed
+            unset($_SESSION['message']);
+            unset($_SESSION['message_type']);
+            ?>
+        }, 3000);
+    }
+});
+</script>
    
 
 
@@ -1188,8 +1242,7 @@ echo '</table>';
                                         <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
                                         <h2>Add Intern Account</h2>
-                                        <form id="addInterAccForm" method="POST" action="">
-                                            <input type="hidden" name="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
+                                        <form method="POST" action="">
                                             <div class="form-group">
                                                 <label for="internID">Intern ID:</label>
                                                 <input type="text" id="internID" name="internID" required>

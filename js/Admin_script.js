@@ -207,15 +207,3 @@ function closeDetails() {
 //end kyle
 
 // Add this to your existing JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Show message box if it exists
-    var messageBox = document.getElementById('messageBox');
-    if (messageBox && messageBox.innerHTML.trim() !== '') {
-        messageBox.style.display = 'block';
-        
-        // Hide message after 3 seconds
-        setTimeout(function() {
-            messageBox.style.display = 'none';
-        }, 3000);
-    }
-});

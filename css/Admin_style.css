@@ -1527,10 +1527,11 @@ input[type="submit"]:hover {
   position: fixed;
   top: 20px;
   right: 20px;
-  padding: 15px;
+  padding: 15px 25px;
   border-radius: 5px;
-  z-index: 1000;
+  z-index: 9999;
   display: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .message-box.success {
