@@ -1523,23 +1523,27 @@ input[type="submit"]:hover {
 .print-btn:hover {
   background-color: #45a049;
 }
-.message-box {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  border-radius: 5px;
-  z-index: 9999;
-  display: none;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 
-.message-box.success {
-  background-color: #4CAF50;
-  color: white;
+.alert-success {
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
 }
 
-.message-box.error {
-  background-color: #f44336;
-  color: white;
+.alert-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
 }

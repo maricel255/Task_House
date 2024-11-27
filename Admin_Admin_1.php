@@ -130,18 +130,55 @@ function handleFacilitatorAdd($conn, $adminID) {
         $faciPass = trim($_POST['faciPass']);
 
         if (empty($faciID) || empty($faciPass)) {
-            $_SESSION['message'] = "All fields are required.";
-            $_SESSION['message_type'] = 'error';
+            setMessage("All fields are required.", "error");
         } else {
-            $stmt = $conn->prepare("INSERT INTO facacc (faciID, faciPass, adminID) VALUES (?, ?, ?)");
-            if ($stmt->execute([$faciID, $faciPass, $adminID])) {
-                $_SESSION['message'] = "Facilitator account created successfully.";
-                $_SESSION['message_type'] = 'success';
+            // Check if facilitator ID already exists
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM facacc WHERE faciID = :faciID");
+            $stmt->bindParam(':faciID', $faciID);
+            $stmt->execute();
+            
+            if ($stmt->fetchColumn() > 0) {
+                setMessage("Facilitator ID already exists.", "error");
+            } else {
+                $stmt = $conn->prepare("INSERT INTO facacc (faciID, faciPass, adminID) VALUES (?, ?, ?)");
+                if ($stmt->execute([$faciID, $faciPass, $adminID])) {
+                    setMessage("Facilitator account created successfully.", "success");
+                } else {
+                    setMessage("Error creating facilitator account.", "error");
+                }
             }
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
-        $_SESSION['message_type'] = 'error';
+        setMessage("Error: " . $e->getMessage(), "error");
+    }
+    
+    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Facilitator_Account");
+    exit();
+}
+
+function handleFacilitatorAction($conn, $adminID) {
+    try {
+        $action = $_POST['action'];
+        $faciID = $_POST['faciID'];
+
+        if ($action === 'update' && isset($_POST['faciPass'])) {
+            $stmt = $conn->prepare("UPDATE facacc SET faciPass = ? WHERE faciID = ? AND adminID = ?");
+            if ($stmt->execute([$_POST['faciPass'], $faciID, $adminID])) {
+                setMessage("Password updated successfully.", "success");
+            } else {
+                setMessage("Failed to update password.", "error");
+            }
+        } 
+        else if ($action === 'delete') {
+            $stmt = $conn->prepare("DELETE FROM facacc WHERE faciID = ? AND adminID = ?");
+            if ($stmt->execute([$faciID, $adminID])) {
+                setMessage("Account deleted successfully.", "success");
+            } else {
+                setMessage("Failed to delete account.", "error");
+            }
+        }
+    } catch (PDOException $e) {
+        setMessage("Error: " . $e->getMessage(), "error");
     }
     
     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Facilitator_Account");
@@ -1170,193 +1207,206 @@ echo '</table>';
 
 
         <div class="content-section" id="Intern_Account">
-      
-                        
-                       
-                                <h1>Intern Logins</h1>
-                                <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
+            <?php if (isset($_SESSION['message'])): ?>
+                <div class="alert alert-<?php echo $_SESSION['message_type']; ?>">
+                    <?php 
+                    echo $_SESSION['message']; 
+                    unset($_SESSION['message']);
+                    unset($_SESSION['message_type']);
+                    ?>
+                </div>
+            <?php endif; ?>
+            <h1>Intern Logins</h1>
+            <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
-                                <!-- Intern Modal -->
-                                <div id="InternAccModal" class="modal">
-                                    <div class="modal-content">
-                                        <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
+            <!-- Intern Modal -->
+            <div id="InternAccModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
-                                        <h2>Add Intern Account</h2>
-                                        <form id="addInterAccForm" method="POST" action="">
-                                            <input type="hidden" name="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
-                                            <div class="form-group">
-                                                <label for="internID">Intern ID:</label>
-                                                <input type="text" id="internID" name="internID" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="InternPass">Password:</label>
-                                                <input type="password" id="InternPass" name="InternPass" required>
-                                            </div>
-                                            <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
-                                        </form>
-                                        
-                                    </div>
-                                </div>
+                    <h2>Add Intern Account</h2>
+                    <form id="addInterAccForm" method="POST" action="">
+                        <input type="hidden" name="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
+                        <div class="form-group">
+                            <label for="internID">Intern ID:</label>
+                            <input type="text" id="internID" name="internID" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="InternPass">Password:</label>
+                            <input type="password" id="InternPass" name="InternPass" required>
+                        </div>
+                        <button type="submit" name="addIntern" class="btn btn-primary">Submit</button>
+                    </form>
+                    
+                </div>
+            </div>
 
-                                <!-- Display Existing Intern Accounts Outside the Modal -->
-                                <h2>Existing Intern Accounts</h2>
+            <!-- Display Existing Intern Accounts Outside the Modal -->
+            <h2>Existing Intern Accounts</h2>
 
-                                <!-- Search Form Positioned in Upper Right of the Table -->
-                                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                                    <form method="GET" action="">
-                                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
-                                        <button type="submit" class="search-button">Search</button>
-                                    </form>
-                                </div>
+            <!-- Search Form Positioned in Upper Right of the Table -->
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                <form method="GET" action="">
+                    <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
 
-                                <!-- Message Display for Search Results -->
-                                <?php if ($searchInternID): ?>
-                                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-                                <?php endif; ?>
+            <!-- Message Display for Search Results -->
+            <?php if ($searchInternID): ?>
+                <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+            <?php endif; ?>
 
-                                <!-- Intern Accounts Table -->
-                                <?php if (!empty($internAccounts)): ?>
-                                    <div class="table-container"> <!-- Added container for scrolling -->
+            <!-- Intern Accounts Table -->
+            <?php if (!empty($internAccounts)): ?>
+                <div class="table-container"> <!-- Added container for scrolling -->
 
-                                    <table class="intern-accounts-table">
-                                        <tr>
-                                            <th class="table-header">Intern ID</th>
-                                            <th class="table-header">Current Password</th>
-                                            <th class="table-header" style="padding-left: 40%;">Actions</th>
-                                        </tr>
+                <table class="intern-accounts-table">
+                    <tr>
+                        <th class="table-header">Intern ID</th>
+                        <th class="table-header">Current Password</th>
+                        <th class="table-header" style="padding-left: 40%;">Actions</th>
+                    </tr>
 
-                                        <?php 
-                                        // To store the filtered and non-filtered accounts
-                                        $highlightedRow = [];
-                                        $otherRows = [];
+                    <?php 
+                    // To store the filtered and non-filtered accounts
+                    $highlightedRow = [];
+                    $otherRows = [];
 
-                                        foreach ($internAccounts as $account): 
-                                            if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
-                                                $highlightedRow[] = $account; 
-                                            } else {
-                                                $otherRows[] = $account; 
-                                            }
-                                        endforeach; 
+                    foreach ($internAccounts as $account): 
+                        if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
+                            $highlightedRow[] = $account; 
+                        } else {
+                            $otherRows[] = $account; 
+                        }
+                    endforeach; 
 
-                                        // Merge highlighted row(s) with other rows
-                                        $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                        foreach ($sortedAccounts as $account): ?>
-                                            <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
-                                                <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
-                                                <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
-                                                <td class="table-actions">
-                                                <form method="POST" action="" style="display: flex; align-items: center;">
-                                                    <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
-                                                    <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
-                                                    <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
-                                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                                    </form>
+                    // Merge highlighted row(s) with other rows
+                    $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                    foreach ($sortedAccounts as $account): ?>
+                        <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
+                            <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
+                            <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
+                            <td class="table-actions">
+                            <form method="POST" action="" style="display: flex; align-items: center;">
+                                <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                                <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
+                                <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
+                                <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                </form>
 
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </table>
-                                    </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+                </div>
 
-                                <?php else: ?>
-                                    <p>No intern accounts found.</p>
-                                <?php endif; ?>
+            <?php else: ?>
+                <p>No intern accounts found.</p>
+            <?php endif; ?>
 
         </div>
                 
                 
         
         <div class="content-section" id="Facilitator_Account">
-                          
-                            
-                                <h1>Facilitator Logins</h1>
-                                <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
+            <?php if (isset($_SESSION['message'])): ?>
+                <div class="alert alert-<?php echo $_SESSION['message_type']; ?>">
+                    <?php 
+                    echo $_SESSION['message']; 
+                    unset($_SESSION['message']);
+                    unset($_SESSION['message_type']);
+                    ?>
+                </div>
+            <?php endif; ?>
+            <h1>Facilitator Logins</h1>
+            <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
 
-                            <!-- Facilitator Modal -->
-                            <div id="FaccAccModal" class="modal">
-                                    <div class="modal-content">
-                                        <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
-                                        <h2>Add Facilitator Account</h2>
-                                        <form id="addFaccAccForm" method="POST" action="">
-                                            <div class="form-group">
-                                                <label for="faciID">Facilitator ID:</label>
-                                                <input type="text" id="faciID" name="faciID" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="faciPass">Password:</label>
-                                                <input type="password" id="faciPass" name="faciPass" required>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary" name="submitFacilitator">Submit</button>
-                                        </form>
-                                        
-                                    </div>
-                                </div>
+            <!-- Facilitator Modal -->
+            <div id="FaccAccModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
+                        <h2>Add Facilitator Account</h2>
+                        <form id="addFaccAccForm" method="POST" action="">
+                            <div class="form-group">
+                                <label for="faciID">Facilitator ID:</label>
+                                <input type="text" id="faciID" name="faciID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="faciPass">Password:</label>
+                                <input type="password" id="faciPass" name="faciPass" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" name="submitFacilitator">Submit</button>
+                        </form>
+                        
+                    </div>
+                </div>
 
                                                                                     <!-- Display Existing Facilitator Accounts Outside the Modal -->
-                                <h2>Existing Facilitator Accounts</h2>
+                <h2>Existing Facilitator Accounts</h2>
 
-                                <!-- Search Form Positioned in Upper Right of the Table -->
-                                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                                    <form method="GET" action="">
-                                    <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
-                                    <button type="submit" class="search-button">Search</button>
-                                    </form>
-                                </div>
+                <!-- Search Form Positioned in Upper Right of the Table -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                    <form method="GET" action="">
+                    <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
+                    <button type="submit" class="search-button">Search</button>
+                    </form>
+                </div>
 
-                                <!-- Message Display for Search Results -->
-                                <?php if ($searchFaciID): ?>
-                                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchFaciID); ?></strong></p>
-                                <?php endif; ?>
+                <!-- Message Display for Search Results -->
+                <?php if ($searchFaciID): ?>
+                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchFaciID); ?></strong></p>
+                <?php endif; ?>
 
-                                <!-- Facilitator Accounts Table -->
-                                <?php if (!empty($faccAccounts)): ?>
-                                    <div class="table-container"> <!-- Added container for scrolling -->
+                <!-- Facilitator Accounts Table -->
+                <?php if (!empty($faccAccounts)): ?>
+                    <div class="table-container"> <!-- Added container for scrolling -->
 
-                                                <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
-                                                    <tr>
-                                                        <th class="table-header">Facilitator ID</th>
-                                                        <th class="table-header">Current Password</th>
-                                                        <th class="table-header" style="padding-left: 30%;">Actions</th>
-                                                    </tr>
+                            <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
+                                <tr>
+                                    <th class="table-header">Facilitator ID</th>
+                                    <th class="table-header">Current Password</th>
+                                    <th class="table-header" style="padding-left: 30%;">Actions</th>
+                                </tr>
 
-                                                    <?php 
-                                                    // To store the filtered and non-filtered accounts
-                                                    $highlightedRow = [];
-                                                    $otherRows = [];
+                                <?php 
+                                // To store the filtered and non-filtered accounts
+                                $highlightedRow = [];
+                                $otherRows = [];
 
-                                                    foreach ($faccAccounts as $account): 
-                                                        if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
-                                                            $highlightedRow[] = $account; 
-                                                        } else {
-                                                            $otherRows[] = $account; 
-                                                        }
-                                                    endforeach; 
+                                foreach ($faccAccounts as $account): 
+                                    if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
+                                        $highlightedRow[] = $account; 
+                                    } else {
+                                        $otherRows[] = $account; 
+                                    }
+                                endforeach; 
 
-                                                    // Merge highlighted row(s) with other rows
-                                                    $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                                    foreach ($sortedAccounts as $account): ?>
-                                                        <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
-                                                            <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
-                                                            <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
-                                                            <td class="table-actions">
-                                                                <form method="POST" action="" style="display:inline;">
-                                                                    <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
-                                                                    <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
-                                                                    <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
-                                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                                                </form>
-                                                        
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </table>
-                                                </div>
-
-                                <?php else: ?>
-                                    <p>No facilitator accounts found.</p>
-                                <?php endif; ?>
-
+                                // Merge highlighted row(s) with other rows
+                                $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                                foreach ($sortedAccounts as $account): ?>
+                                    <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
+                                        <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
+                                        <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
+                                        <td class="table-actions">
+                                            <form method="POST" action="" style="display:inline;">
+                                                <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
+                                                <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
+                                                <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
+                                                <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                            </form>
+                                        
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </table>
                             </div>
+
+                <?php else: ?>
+                    <p>No facilitator accounts found.</p>
+                <?php endif; ?>
+
+            </div>
 
         </div>
             
