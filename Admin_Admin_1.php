@@ -1441,7 +1441,7 @@ echo '</table>';
         </table>
 
     <?php else: ?>
-        <p>No records founded.</p>
+        <p>No records found.</p>
     <?php endif; ?>
 </div>
     
