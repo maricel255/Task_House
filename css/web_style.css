@@ -334,8 +334,11 @@ body {
   max-width: none;
   border-radius: var(--border-radius-lg); 
   overflow: hidden;
-  margin-top: -200px; /* Increased the negative margin to move it higher */
+  position: relative;
+  z-index: 2; /* Increased z-index to ensure it's in front */
+  margin-top: -250px;
 }
+
   /* Main Section - Keep Desktop-like */
   #main-section {
     padding: 80px 20px 20px;
