@@ -208,14 +208,16 @@ function closeDetails() {
 
 // Add this to your existing JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    // Show message box if it exists
     const messageBox = document.getElementById('messageBox');
     if (messageBox && messageBox.textContent.trim() !== '') {
         messageBox.style.display = 'block';
         
         // Hide message after 5 seconds
         setTimeout(function() {
-            messageBox.style.display = 'none';
+            messageBox.style.opacity = '0';
+            setTimeout(function() {
+                messageBox.style.display = 'none';
+            }, 500);
         }, 5000);
     }
 });

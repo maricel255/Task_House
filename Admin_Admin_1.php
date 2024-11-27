@@ -32,17 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         handleInternAccountAdd($conn, $adminID);
         exit(); // Make sure to exit after redirect
     }
-    else if (isset($_POST['action'])) {
-        handleInternAccountAction($conn, $adminID);
+    else if (isset($_POST['action']) && (isset($_POST['internID']) || isset($_POST['faciID']))) {
+        if (isset($_POST['internID'])) {
+            handleInternAccountAction($conn, $adminID);
+        } else {
+            handleFacilitatorAction($conn, $adminID);
+        }
         exit(); // Make sure to exit after redirect
     }
     // For Facilitator Account Management
     else if (isset($_POST['submitFacilitator'])) {
         handleFacilitatorAdd($conn, $adminID);
-        exit(); // Make sure to exit after redirect
-    }
-    else if (isset($_POST['faciAction'])) {
-        handleFacilitatorAction($conn, $adminID);
         exit(); // Make sure to exit after redirect
     }
     // For Announcements
@@ -59,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function handleInternAccountAdd($conn, $adminID) {
     try {
         if (!$adminID) {
-            setMessage("Error: Admin session not found.", "error");
+            $_SESSION['message'] = "Error: Admin session not found.";
+            $_SESSION['message_type'] = "error";
             header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
             return;
         }
@@ -69,7 +70,8 @@ function handleInternAccountAdd($conn, $adminID) {
 
         // Validate inputs
         if (empty($internID) || empty($InternPass)) {
-            setMessage("All fields are required.", "error");
+            $_SESSION['message'] = "All fields are required.";
+            $_SESSION['message_type'] = "error";
         } else {
             // Check if intern ID already exists
             $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = :internID");
@@ -77,7 +79,8 @@ function handleInternAccountAdd($conn, $adminID) {
             $stmt->execute();
             
             if ($stmt->fetchColumn() > 0) {
-                setMessage("Intern ID already exists.", "error");
+                $_SESSION['message'] = "Intern ID already exists.";
+                $_SESSION['message_type'] = "error";
             } else {
                 // Insert new intern account
                 $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
@@ -86,14 +89,17 @@ function handleInternAccountAdd($conn, $adminID) {
                 $stmt->bindParam(':adminID', $adminID);
                 
                 if ($stmt->execute()) {
-                    setMessage("Intern account created successfully!", "success");
+                    $_SESSION['message'] = "Intern account created successfully!";
+                    $_SESSION['message_type'] = "success";
                 } else {
-                    setMessage("Error creating intern account.", "error");
+                    $_SESSION['message'] = "Error creating intern account.";
+                    $_SESSION['message_type'] = "error";
                 }
             }
         }
     } catch (PDOException $e) {
-        setMessage("Database error: " . $e->getMessage(), "error");
+        $_SESSION['message'] = "Database error: " . $e->getMessage();
+        $_SESSION['message_type'] = "error";
     }
     
     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
@@ -864,14 +870,18 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<div id="messageBox" class="message-box <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>" 
-     style="display: <?php echo isset($_SESSION['message']) ? 'block' : 'none'; ?>">
-    <?php 
-    if (isset($_SESSION['message'])) {
-        echo htmlspecialchars($_SESSION['message']);
-    }
-    ?>
-</div>
+<?php
+    // Place this at the very top of your body tag
+    if (isset($_SESSION['message'])): ?>
+        <div id="messageBox" class="message-box <?php echo $_SESSION['message_type']; ?>">
+            <?php 
+            echo $_SESSION['message'];
+            // Clear the message after displaying
+            unset($_SESSION['message']);
+            unset($_SESSION['message_type']);
+            ?>
+        </div>
+    <?php endif; ?>
    
 
 

@@ -1529,33 +1529,22 @@ input[type="submit"]:hover {
   right: 20px;
   padding: 15px 25px;
   border-radius: 5px;
-  z-index: 1000;
+  z-index: 9999;
   display: none;
-  animation: slideIn 0.5s ease-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.success {
+.message-box.success {
   background-color: #4CAF50;
   color: white;
 }
 
-.error {
+.message-box.error {
   background-color: #f44336;
   color: white;
 }
 
-.info {
+.message-box.info {
   background-color: #2196F3;
   color: white;
-}
-
-@keyframes slideIn {
-  from {
-      transform: translateX(100%);
-      opacity: 0;
-  }
-  to {
-      transform: translateX(0);
-      opacity: 1;
-  }
 }
