@@ -29,45 +29,10 @@ if ($Uname) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // For Intern Account Management
     if (isset($_POST['addIntern'])) {
-        try {
-            $internID = trim($_POST['internID']);
-            $InternPass = trim($_POST['InternPass']);
-
-            if (empty($internID) || empty($InternPass)) {
-                $_SESSION['message'] = "All fields are required.";
-                $_SESSION['message_type'] = "error";
-            } else {
-                // Check if intern ID already exists
-                $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = :internID");
-                $stmt->bindParam(':internID', $internID);
-                $stmt->execute();
-                
-                if ($stmt->fetchColumn() > 0) {
-                    $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
-                    $_SESSION['message_type'] = "error";
-                } else {
-                    // Insert new intern account
-                    $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
-                    $stmt->bindParam(':internID', $internID);
-                    $stmt->bindParam(':InternPass', $InternPass);
-                    $stmt->bindParam(':adminID', $adminID);
-                    
-                    if ($stmt->execute()) {
-                        $_SESSION['message'] = "Intern account added successfully!";
-                        $_SESSION['message_type'] = "success";
-                    } else {
-                        $_SESSION['message'] = "Error creating intern account.";
-                        $_SESSION['message_type'] = "error";
-                    }
-                }
-            }
-        } catch (PDOException $e) {
-            $_SESSION['message'] = "Database error: " . $e->getMessage();
-            $_SESSION['message_type'] = "error";
-        }
-        
-        header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
-        exit();
+        handleInternAccountAdd($conn, $adminID);
+    }
+    else if (isset($_POST['action'])) {
+        handleInternAccountAction($conn, $adminID);
     }
     // For Facilitator Account Management
     else if (isset($_POST['submitFacilitator'])) {
@@ -90,8 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function handleInternAccountAdd($conn, $adminID) {
     try {
         if (!$adminID) {
-            $_SESSION['message'] = "Error: Admin session not found.";
-            $_SESSION['message_type'] = "error";
+            setMessage("Error: Admin session not found.", "error");
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
@@ -101,8 +65,7 @@ function handleInternAccountAdd($conn, $adminID) {
 
         // Validate inputs
         if (empty($internID) || empty($InternPass)) {
-            $_SESSION['message'] = "All fields are required.";
-            $_SESSION['message_type'] = "error";
+            setMessage("All fields are required.", "error");
         } else {
             // Check if intern ID already exists
             $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = :internID");
@@ -110,8 +73,7 @@ function handleInternAccountAdd($conn, $adminID) {
             $stmt->execute();
             
             if ($stmt->fetchColumn() > 0) {
-                $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
-                $_SESSION['message_type'] = "error";
+                setMessage("Intern ID already exists.", "error");
             } else {
                 // Insert new intern account with the current adminID
                 $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
@@ -120,17 +82,14 @@ function handleInternAccountAdd($conn, $adminID) {
                 $stmt->bindParam(':adminID', $adminID);
                 
                 if ($stmt->execute()) {
-                    $_SESSION['message'] = "Intern account added successfully!";
-                    $_SESSION['message_type'] = "success";
+                    setMessage("Intern account created successfully.", "success");
                 } else {
-                    $_SESSION['message'] = "Error creating intern account.";
-                    $_SESSION['message_type'] = "error";
+                    setMessage("Error creating intern account.", "error");
                 }
             }
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Database error: " . $e->getMessage();
-        $_SESSION['message_type'] = "error";
+        setMessage("Database error: " . $e->getMessage(), "error");
     }
     
     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
@@ -482,10 +441,7 @@ try {
     $_SESSION['message'] = 'Error fetching intern accounts. Please try again later.';
     $internAccounts = [];
 }
-// Initialize an empty array to hold error messages
 
-$errorMessages = [];
-unset($_SESSION['message']); // Clear the message after displaying
 
 // Handle adding intern account
 if (isset($_POST['addIntern'])) {
@@ -505,10 +461,7 @@ if (isset($_POST['addIntern'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            echo "<script>
-                alert('Error: The Intern ID already exists. Please use a different ID.');
-                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_Account';
-            </script>";
+            $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
         } else {
             // Create the SQL query to insert into the intacc table
             $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
@@ -520,25 +473,14 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                echo "<script>
-                    alert('Intern account added successfully!');
-                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_Account';
-                </script>";
-                exit();
+                $_SESSION['message'] = "Intern account added successfully!";
             } else {
-                echo "<script>
-                    alert('Error: Could not add intern account.');
-                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_Account';
-                </script>";
+                $_SESSION['message'] = "Error: Could not add intern account.";
             }
         }
     } catch (PDOException $e) {
-        echo "<script>
-            alert('Error: " . addslashes($e->getMessage()) . "');
-            window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_Account';
-        </script>";
+        $_SESSION['message'] = "Error: " . $e->getMessage();
     }
-    exit();
 }
 
 
@@ -881,30 +823,14 @@ $timeLogsCount = $stmt->fetchColumn();
 
 </head>
 <body>
-<div id="messageBox" class="message-box <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>">
+<div id="messageBox" class="message-box <?php echo isset($_SESSION['message_type']) ? $_SESSION['message_type'] : ''; ?>" 
+     style="display: <?php echo isset($_SESSION['message']) ? 'block' : 'none'; ?>">
     <?php 
     if (isset($_SESSION['message'])) {
         echo htmlspecialchars($_SESSION['message']);
     }
     ?>
 </div>
-<script>
-// Add this immediately after the message box
-document.addEventListener('DOMContentLoaded', function() {
-    var messageBox = document.getElementById('messageBox');
-    if (messageBox && messageBox.innerHTML.trim() !== '') {
-        messageBox.style.display = 'block';
-        setTimeout(function() {
-            messageBox.style.display = 'none';
-            <?php 
-            // Clear the message after it's displayed
-            unset($_SESSION['message']);
-            unset($_SESSION['message_type']);
-            ?>
-        }, 3000);
-    }
-});
-</script>
    
 
 
@@ -1256,7 +1182,8 @@ echo '</table>';
                                         <span class="close" onclick="closeModal('InternAccModal')">&times;</span>
 
                                         <h2>Add Intern Account</h2>
-                                        <form method="POST" action="">
+                                        <form id="addInterAccForm" method="POST" action="">
+                                            <input type="hidden" name="adminID" value="<?php echo htmlspecialchars($adminID); ?>">
                                             <div class="form-group">
                                                 <label for="internID">Intern ID:</label>
                                                 <input type="text" id="internID" name="internID" required>
