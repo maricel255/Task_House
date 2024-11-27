@@ -844,30 +844,49 @@ body {
 @media (max-width: 480px) {
   /* About Us Section - Portrait Cards */
   .col-md-3.text-center {
-    flex: 0 0 300px;
-    width: 100%;  /* Match container width */
-    max-width: 350px;  /* Match lorem container max-width */
-    margin: 1rem auto;
+    flex: 0 0 480px; /* Match full width of container */
+    width: 480px;
+    max-width: 480px;
+    margin: 0; /* Remove margins */
+    padding: 0; /* Remove padding */
+  }
+
+  .portrait-card {
+    width: 100%;
+    margin: 0;
+    border-radius: 0; /* Remove border radius */
   }
 
   .portrait-card img.img-fluid {
-    width: 100%;
-    height: 200px;  /* Reduced height to match proportions */
+    width: 480px;
+    height: 400px; /* Increased height for portrait view */
     object-fit: cover;
+    border-radius: 0; /* Remove border radius */
+    margin: 0;
   }
 
   /* Adjust container spacing */
   .about-us-section {
-    padding: 2rem 1rem;
-    margin-top: -50px;
+    padding: 0; /* Remove padding */
+    margin: 0;
     width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+    background-color: transparent;
   }
 
   .about-us-section .row {
-    width: 100%;
-    padding: 0 1rem;
+    width: 480px;
+    padding: 0;
+    margin: 0;
+    gap: 0; /* Remove gap between images */
+  }
+
+  /* Remove card content background */
+  .card-content {
+    background: transparent;
+    position: absolute;
+    bottom: 0;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
   }
 }
   
