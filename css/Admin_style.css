@@ -1523,3 +1523,22 @@ input[type="submit"]:hover {
 .print-btn:hover {
   background-color: #45a049;
 }
+.message-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  z-index: 1000;
+  display: none;
+}
+
+.message-box.success {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.message-box.error {
+  background-color: #f44336;
+  color: white;
+}

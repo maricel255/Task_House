@@ -55,7 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function handleInternAccountAdd($conn, $adminID) {
     try {
         if (!$adminID) {
-            setMessage("Error: Admin session not found.", "error");
+            $_SESSION['message'] = "Error: Admin session not found.";
+            $_SESSION['message_type'] = "error";
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
@@ -65,7 +66,8 @@ function handleInternAccountAdd($conn, $adminID) {
 
         // Validate inputs
         if (empty($internID) || empty($InternPass)) {
-            setMessage("All fields are required.", "error");
+            $_SESSION['message'] = "All fields are required.";
+            $_SESSION['message_type'] = "error";
         } else {
             // Check if intern ID already exists
             $stmt = $conn->prepare("SELECT COUNT(*) FROM intacc WHERE internID = :internID");
@@ -73,7 +75,8 @@ function handleInternAccountAdd($conn, $adminID) {
             $stmt->execute();
             
             if ($stmt->fetchColumn() > 0) {
-                setMessage("Error: The Intern ID '$internID' already exists. Please use a different ID.", "error");
+                $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+                $_SESSION['message_type'] = "error";
             } else {
                 // Insert new intern account with the current adminID
                 $stmt = $conn->prepare("INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)");
@@ -82,14 +85,17 @@ function handleInternAccountAdd($conn, $adminID) {
                 $stmt->bindParam(':adminID', $adminID);
                 
                 if ($stmt->execute()) {
-                    setMessage("Intern account added successfully!", "success");
+                    $_SESSION['message'] = "Intern account added successfully!";
+                    $_SESSION['message_type'] = "success";
                 } else {
-                    setMessage("Error creating intern account.", "error");
+                    $_SESSION['message'] = "Error creating intern account.";
+                    $_SESSION['message_type'] = "error";
                 }
             }
         }
     } catch (PDOException $e) {
-        setMessage("Database error: " . $e->getMessage(), "error");
+        $_SESSION['message'] = "Database error: " . $e->getMessage();
+        $_SESSION['message_type'] = "error";
     }
     
     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account");
