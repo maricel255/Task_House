@@ -325,8 +325,6 @@ body {
   }
 }
 @media (max-width: 480px) {
- 
-
   /* Main Section - Keep Desktop-like */
   #main-section {
     padding: 80px 20px 20px;
@@ -404,6 +402,49 @@ body {
   }
   .col-md-1 {
     margin-top: 3rem; /* Lower the separator on small screens */
+  }
+
+  /* Documents Section Mobile Styling */
+  .documents-section {
+    padding: 1.5rem;
+    width: 480px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: var(--border-radius-lg);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .documents-section h4 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: orange;
+  }
+
+  .documents-section ul {
+    list-style: none;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .documents-section ul li {
+    margin: 1rem 0;
+  }
+
+  .documents-section ul li a {
+    display: block;
+    padding: 1rem;
+    margin: 0.5rem auto;
+    width: 90%;
+    background-color: white;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #007bff;
   }
 }
 
