@@ -331,7 +331,7 @@ body {
   width: 90%;
   height: auto;
   max-width: none;
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-lg); 
   overflow: hidden;
 }
   /* Main Section - Keep Desktop-like */
@@ -348,11 +348,10 @@ body {
     align-items: center;
     justify-content: space-between;
   }
-
   #main-section .col-md-3 {
-    width: 10%;
+    width: 700%;
     margin: 0;
-    margin-top: 3rem;
+    margin-top: 10rem;
     margin-left: -42rem;
     height: 5%;
 }
