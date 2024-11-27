@@ -505,7 +505,7 @@ if (isset($_POST['addIntern'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            $_SESSION['message'] = "Error: The Intern ID '$internID' already exists. Please use a different ID.";
+            echo "<script>alert('Error: The Intern ID already exists. Please use a different ID.');</script>";
         } else {
             // Create the SQL query to insert into the intacc table
             $sql = "INSERT INTO intacc (internID, InternPass, adminID) VALUES (:internID, :InternPass, :adminID)";
@@ -517,13 +517,13 @@ if (isset($_POST['addIntern'])) {
             $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                $_SESSION['message'] = "Intern account added successfully!";
+                echo "<script>alert('Intern account added successfully!');</script>";
             } else {
-                $_SESSION['message'] = "Error: Could not add intern account.";
+                echo "<script>alert('Error: Could not add intern account.');</script>";
             }
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
+        echo "<script>alert('Error: " . addslashes($e->getMessage()) . "');</script>";
     }
 }
 
