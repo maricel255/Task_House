@@ -746,7 +746,7 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-// Handle the deletion for annoucement 
+// Handle the deletion for announcement 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
     $announcementID = $_POST['announcementID'];
 
@@ -756,16 +756,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcementID'])) {
 
     try {
         if ($stmt->execute()) {
-            // Set a success message if the deletion was successful
-            $_SESSION['message'] = "Announcement deleted successfully.";
-            
+            echo "<script>
+                alert('Announcement deleted successfully!');
+                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+            </script>";
+            exit();
         } else {
-            $_SESSION['message'] = "Failed to delete the announcement.";
+            echo "<script>
+                alert('Failed to delete the announcement.');
+                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+            </script>";
+            exit();
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
+        echo "<script>
+            alert('Error: " . addslashes($e->getMessage()) . "');
+            window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+        </script>";
+        exit();
     }
-
 }
 
           
@@ -1059,8 +1068,8 @@ $timeLogsCount = $stmt->fetchColumn();
                                     <?php endif; ?>
                                         <!-- Delete Button Form -->
                                         <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
-                                                <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
-                                                <button type="submit" class="deleter-button">Delete</button>
+                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                        <button type="submit" class="deleter-button">Delete</button>
                                         </form>
                                 </div>
                             
