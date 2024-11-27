@@ -150,7 +150,11 @@ function handleFacilitatorAdd($conn, $adminID) {
             } else {
                 $stmt = $conn->prepare("INSERT INTO facacc (faciID, faciPass, adminID) VALUES (?, ?, ?)");
                 if ($stmt->execute([$faciID, $faciPass, $adminID])) {
-                    setMessage("Facilitator account created successfully.", "success");
+                    echo "<script>
+                        alert('Facilitator account added successfully!');
+                        window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Facilitator_Account';
+                    </script>";
+                    exit();
                 } else {
                     setMessage("Error creating facilitator account.", "error");
                 }
