@@ -1307,7 +1307,7 @@ echo '</table>';
                             <form method="POST" action="" style="display: flex; align-items: center;">
                                 <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
                                 <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
-                                <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;">Update</button>
+                                <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;" onclick="return confirm('Are you sure you want to update this record?');">Update</button>
                                 <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
                                 </form>
 
