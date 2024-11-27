@@ -361,11 +361,14 @@ body {
     padding: 0 1rem;
     margin: 0 !important;
     text-align: left;
+    margin-top: -8rem !important;
   }
 
   .main-text {
     font-size: 4rem;
     text-align: left;
+    position: relative;
+    top: -4rem;
   }
 
   .task-house {
@@ -375,6 +378,7 @@ body {
   .capstone-title {
     font-size: 1.8rem;
     text-align: left;
+    margin-top: -1rem;
   }
 
   /* About Us Section - Vertical Layout */
