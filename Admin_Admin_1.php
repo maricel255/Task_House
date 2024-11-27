@@ -1436,7 +1436,7 @@ echo '</table>';
                                             <form method="POST" action="" style="display:inline;">
                                                 <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
                                                 <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
-                                                <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;">Update</button>
+                                                <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Update</button>
                                                 <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
                                             </form>
                                         
