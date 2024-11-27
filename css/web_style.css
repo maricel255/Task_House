@@ -398,6 +398,9 @@ body {
     min-height: 200px;
     display: block;
   }
+  .col-md-1 {
+    margin-top: 3rem; /* Lower the separator on small screens */
+  }
 }
 
 
