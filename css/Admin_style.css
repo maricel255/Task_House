@@ -1525,9 +1525,14 @@ input[type="submit"]:hover {
 }
 .alert {
   padding: 15px;
-  margin-bottom: 20px;
+  margin: 10px 0;
   border: 1px solid transparent;
   border-radius: 4px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  min-width: 200px;
 }
 
 .alert-success {
@@ -1546,4 +1551,9 @@ input[type="submit"]:hover {
   color: #0c5460;
   background-color: #d1ecf1;
   border-color: #bee5eb;
+}
+
+#message-container {
+  position: relative;
+  z-index: 1000;
 }

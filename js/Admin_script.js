@@ -207,3 +207,14 @@ function closeDetails() {
 //end kyle
 
 // Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Show message if it exists
+    const messageContainer = document.querySelector('.alert');
+    if (messageContainer) {
+        messageContainer.style.display = 'block';
+        // Hide message after 3 seconds
+        setTimeout(function() {
+            messageContainer.style.display = 'none';
+        }, 3000);
+    }
+});

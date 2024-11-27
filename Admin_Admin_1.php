@@ -1,14 +1,15 @@
 <?php
+session_start(); // This must be the very first line before any output
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-session_start(); // Start the session
 require('db_Taskhouse/Admin_connection.php');
 
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
+    debug_to_console("Message set: " . $message . " (Type: " . $type . ")");
 }
 
 // Get adminID from the logged-in user's session
@@ -30,16 +31,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // For Intern Account Management
     if (isset($_POST['addIntern'])) {
         handleInternAccountAdd($conn, $adminID);
+        exit(); // Make sure to exit after redirect
     }
     else if (isset($_POST['action'])) {
         handleInternAccountAction($conn, $adminID);
+        exit(); // Make sure to exit after redirect
     }
     // For Facilitator Account Management
     else if (isset($_POST['submitFacilitator'])) {
         handleFacilitatorAdd($conn, $adminID);
+        exit(); // Make sure to exit after redirect
     }
     else if (isset($_POST['faciAction'])) {
         handleFacilitatorAction($conn, $adminID);
+        exit(); // Make sure to exit after redirect
     }
     // For Announcements
     else if (isset($_FILES['fileUpload'])) {
@@ -1207,15 +1212,17 @@ echo '</table>';
 
 
         <div class="content-section" id="Intern_Account">
-            <?php if (isset($_SESSION['message'])): ?>
-                <div class="alert alert-<?php echo $_SESSION['message_type']; ?>">
-                    <?php 
-                    echo $_SESSION['message']; 
+            <div id="message-container">
+                <?php
+                if (isset($_SESSION['message'])) {
+                    $messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';
+                    echo '<div class="alert alert-' . $messageType . '">' . $_SESSION['message'] . '</div>';
+                    // Clear the message after displaying
                     unset($_SESSION['message']);
                     unset($_SESSION['message_type']);
-                    ?>
-                </div>
-            <?php endif; ?>
+                }
+                ?>
+            </div>
             <h1>Intern Logins</h1>
             <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
 
@@ -1310,15 +1317,17 @@ echo '</table>';
                 
         
         <div class="content-section" id="Facilitator_Account">
-            <?php if (isset($_SESSION['message'])): ?>
-                <div class="alert alert-<?php echo $_SESSION['message_type']; ?>">
-                    <?php 
-                    echo $_SESSION['message']; 
+            <div id="message-container">
+                <?php
+                if (isset($_SESSION['message'])) {
+                    $messageType = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';
+                    echo '<div class="alert alert-' . $messageType . '">' . $_SESSION['message'] . '</div>';
+                    // Clear the message after displaying
                     unset($_SESSION['message']);
                     unset($_SESSION['message_type']);
-                    ?>
-                </div>
-            <?php endif; ?>
+                }
+                ?>
+            </div>
             <h1>Facilitator Logins</h1>
             <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
 
