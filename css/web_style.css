@@ -17,8 +17,8 @@ body {
 :root {
   --primary: #CFFFE5;
   --secondary: #FADADD;
-  --accent: #FF6F61;
-  --gold: #FFD700;
+  --accent: forestgreen;
+  --gold: forestgreen;
   --white: #FFFFFF;
   --light-gray: #F5F5F5;
   --border-radius-lg: 15px;
