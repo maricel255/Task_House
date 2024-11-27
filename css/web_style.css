@@ -206,7 +206,7 @@ body {
 
 /* Main Section Logo */
 #main-section .img-fluid {
-  width: 300%;
+  width: 100%;
   height: auto;
   max-width: none;
   border-radius: var(--border-radius-lg);
