@@ -210,16 +210,31 @@ function handleAnnouncementSubmission($conn, $adminID) {
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
             $stmt = $conn->prepare("INSERT INTO announcements (title, imagePath, content, adminID) VALUES (?, ?, ?, ?)");
             if ($stmt->execute([$title, $dest_path, $announcement, $adminID])) {
-                $_SESSION['message'] = "Announcement posted successfully.";
-                $_SESSION['message_type'] = 'success';
+                echo "<script>
+                    alert('Announcement posted successfully!');
+                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+                </script>";
+                exit();
+            } else {
+                echo "<script>
+                    alert('Error: Failed to post announcement.');
+                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+                </script>";
+                exit();
             }
         } else {
-            $_SESSION['message'] = "Error uploading file.";
-            $_SESSION['message_type'] = 'error';
+            echo "<script>
+                alert('Error: Failed to upload file.');
+                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+            </script>";
+            exit();
         }
     } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
-        $_SESSION['message_type'] = 'error';
+        echo "<script>
+            alert('Error: " . addslashes($e->getMessage()) . "');
+            window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+        </script>";
+        exit();
     }
 }
 
