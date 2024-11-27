@@ -325,7 +325,11 @@ body {
   }
 }
 @media (max-width: 480px) {
-  
+  .img-fluid {
+    margin-left: -20px; /* Adjust this value as needed to move closer to the left */
+
+  }
+
 
 /* Main Section Logo */
 /* Main Section Logo */
