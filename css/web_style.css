@@ -43,6 +43,24 @@ body {
   align-items: center;
   gap: 1rem;
 }
+/* Document Logo Styling */
+.logo-container {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.document-logo {
+  max-width: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Optional hover effect */
+.document-logo:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
 
 .header-logo {
   width: 45px;
