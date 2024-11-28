@@ -173,9 +173,9 @@ body {
   padding-right: 20px;
   position: fixed;
   top: 0;
-  left: 60px; /* Offset by the sidebar */
-  transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-  z-index: 1; /* To be above sidebar */
+  left: 0;
+  transition: 0;
+  z-index: 1;
 }
 
 .header.shifted {
