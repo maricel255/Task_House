@@ -146,17 +146,17 @@ function handleFacilitatorAdd($conn, $adminID) {
             $stmt->execute();
             
             if ($stmt->fetchColumn() > 0) {
-                setMessage("Facilitator ID already exists.", "error");
+                setMessage("Company ID already exists.", "error");
             } else {
                 $stmt = $conn->prepare("INSERT INTO facacc (faciID, faciPass, adminID) VALUES (?, ?, ?)");
                 if ($stmt->execute([$faciID, $faciPass, $adminID])) {
                     echo "<script>
-                        alert('Facilitator account added successfully!');
+                        alert('Company ID account added successfully!');
                         window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Facilitator_Account';
                     </script>";
                     exit();
                 } else {
-                    setMessage("Error creating facilitator account.", "error");
+                    setMessage("Error creating Company ID account.", "error");
                 }
             }
         }
@@ -570,7 +570,7 @@ if (isset($_POST['submitFacilitator'])) {
         $count = $checkStmt->fetchColumn();
 
         if ($count > 0) {
-            $_SESSION['message'] = "Error: The Facilitator ID '$faciID' already exists. Please use a different ID.";
+            $_SESSION['message'] = "Error: Company ID '$faciID' already exists. Please use a different ID.";
         } else {
             // Create the SQL query to insert into the facacc table
             $sql = "INSERT INTO facacc (faciID, faciPass, adminID) VALUES (:faciID, :faciPass, :adminID)";
@@ -582,9 +582,9 @@ if (isset($_POST['submitFacilitator'])) {
             $stmt->bindParam(':adminID', $adminID, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
-                $_SESSION['message'] = "Facilitator account added successfully!";
+                $_SESSION['message'] = "Company ID account added successfully!";
             } else {
-                $_SESSION['message'] = "Error: Could not add facilitator account.";
+                $_SESSION['message'] = "Error: Could not add Company ID account.";
             }
         }
     } catch (PDOException $e) {
@@ -608,7 +608,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         if ($action === 'update') {
             // Validate faciID and new password if provided
             if (empty($faciID) || empty($faciPass)) {
-                $_SESSION['message'] = 'Facilitator ID and new password are required for update.';
+                $_SESSION['message'] = 'Company ID and new password are required for update.';
             } else {
                 // Optional: Check password length
                 if (strlen($faciPass) < 6) {
@@ -624,9 +624,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                         $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
 
                         if ($stmt->execute()) {
-                            $_SESSION['message'] = 'Facilitator account updated successfully!';
+                            $_SESSION['message'] = 'Company ID account updated successfully!';
                         } else {
-                            $_SESSION['message'] = 'Error: Could not update facilitator account.';
+                            $_SESSION['message'] = 'Error: Could not update Company ID account.';
                         }
                     } catch (PDOException $e) {
                         $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
@@ -643,9 +643,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_STR); // Bind adminID
 
                 if ($stmt->execute()) {
-                    $_SESSION['message'] = 'Facilitator account deleted successfully!';
+                    $_SESSION['message'] = 'Company ID account deleted successfully!';
                 } else {
-                    $_SESSION['$errorMessages'] = 'Error: Could not delete facilitator account.';
+                    $_SESSION['$errorMessages'] = 'Error: Could not delete Company ID account.';
                 }
             } catch (PDOException $e) {
                 $_SESSION['message'] = 'Error preparing statement: ' . $e->getMessage();
@@ -1116,7 +1116,7 @@ $timeLogsCount = $stmt->fetchColumn();
                     <option value="civil_status">Civil Status</option>
                     <option value="citizenship">Citizenship</option>
                     <option value="hr_manager">HR Manager</option>
-                    <option value="faciID">Facilitator ID</option>
+                    <option value="faciID">Company ID</option>
                     <option value="company">Company</option>
                     <option value="company_address">Company Address</option>
                     <option value="father_name">Father Name</option>
@@ -1363,17 +1363,17 @@ echo '</table>';
                 }
                 ?>
             </div>
-            <h1>Facilitator Logins</h1>
-            <button class="faci_acc" onclick="openModal('FaccAccModal')">Facilitator Accounts</button>
+            <h1>Company Logins</h1>
+            <button class="faci_acc" onclick="openModal('FaccAccModal')">Company Accounts</button>
 
             <!-- Facilitator Modal -->
             <div id="FaccAccModal" class="modal">
                     <div class="modal-content">
                         <span class="close" onclick="closeModal('FaccAccModal')">&times;</span>
-                        <h2>Add Facilitator Account</h2>
+                        <h2>Add Company Account</h2>
                         <form id="addFaccAccForm" method="POST" action="">
                             <div class="form-group">
-                                <label for="faciID">Facilitator ID:</label>
+                                <label for="faciID">Company ID:</label>
                                 <input type="text" id="faciID" name="faciID" required>
                             </div>
                             <div class="form-group">
@@ -1447,7 +1447,7 @@ echo '</table>';
                             </div>
 
                 <?php else: ?>
-                    <p>No facilitator accounts found.</p>
+                    <p>No Company ID account found.</p>
                 <?php endif; ?>
 
             </div>
