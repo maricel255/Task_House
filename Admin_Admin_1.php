@@ -1009,7 +1009,7 @@ $timeLogsCount = $stmt->fetchColumn();
                     <div class="card intern"><h2>Intern Account</h2>
                         <strong><?php echo count($internAccounts); ?></strong>
                     </div>
-                    <div class="card company"><h2>Facilitator Account</h2>
+                    <div class="card company"><h2>Company Account</h2>
                         <strong> <?php echo $totalAccounts; ?></strong>
                     </div>
                 </div>
@@ -1387,12 +1387,12 @@ echo '</table>';
                 </div>
 
                                                                                     <!-- Display Existing Facilitator Accounts Outside the Modal -->
-                <h2>Existing Facilitator Accounts</h2>
+                <h2>Existing Company Accounts</h2>
 
                 <!-- Search Form Positioned in Upper Right of the Table -->
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                     <form method="GET" action="">
-                    <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Facilitator ID" class="search-input" />
+                    <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Company ID" class="search-input" />
                     <button type="submit" class="search-button">Search</button>
                     </form>
                 </div>
@@ -1408,7 +1408,7 @@ echo '</table>';
 
                             <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
                                 <tr>
-                                    <th class="table-header">Facilitator ID</th>
+                                    <th class="table-header">Company ID</th>
                                     <th class="table-header">Current Password</th>
                                     <th class="table-header" style="padding-left: 30%;">Actions</th>
                                 </tr>
@@ -1504,7 +1504,7 @@ echo '</table>';
                 <tr>
                     <th>Count</th> <!-- New Count Column -->
                     <th>Intern ID</th>
-                    <th>Facilitator ID</th>
+                    <th>Company ID</th>
                     <th>Start Shift</th>
                     <th>End Shift</th>
                     <th>Login Time</th>
