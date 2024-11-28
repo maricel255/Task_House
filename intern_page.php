@@ -1463,10 +1463,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         <!-- Profile form buttons -->
         <div class="form-buttons">
             <?php if (!$profileData): ?>
-                <button type="submit" name="insert-btn" class="insert-btn" style="cursor: pointer;">Add Information</button>
+                <button type="submit" name="insert-btn" class="insert-btn style="cursor: pointer;">
+                    Add Information
+                </button>
             <?php else: ?>
-                <!-- Profile already exists -->
-                <p>Profile information already submitted</p>
+                <p class="profile-status">Profile information already submitted</p>
             <?php endif; ?>
         </div>
 

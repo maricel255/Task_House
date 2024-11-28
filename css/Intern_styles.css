@@ -1663,3 +1663,51 @@ td[colspan="10"] {
 .form-column {
     flex: 1; /* Each column takes up equal space */
 }
+
+/* Add these media queries for mobile responsiveness */
+@media screen and (max-width: 768px) {
+    /* Make the form container full width on mobile */
+    .profile-form-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    /* Stack form elements vertically on mobile */
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    /* Ensure the button is visible and clickable */
+    .form-buttons {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .insert-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    /* Adjust sidebar for mobile */
+    .profile-sidebar {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        margin-bottom: 15px;
+    }
+
+    .profile-sidebar button {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}

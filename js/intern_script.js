@@ -342,3 +342,15 @@ document.addEventListener('DOMContentLoaded', function() {
         closeButton.onclick = closeTaskModal;
     }
 });
+
+// Add touch event handling
+document.addEventListener('DOMContentLoaded', function() {
+    const insertBtn = document.querySelector('.insert-btn');
+    if (insertBtn) {
+        // Add touch events
+        insertBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.click();
+        });
+    }
+});
