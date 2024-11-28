@@ -553,7 +553,7 @@ try {
 
         <form id="credentialsForm" method="POST">
             <div class="form-group">
-                <label>Facilitator Name:</label>
+                <label>Company ID:</label>
                 <input type="text" value="<?php echo htmlspecialchars($_SESSION['Uname']); ?>" readonly 
                     style="background-color: #f5f5f5; border: 1px solid #ddd;">
             </div>
@@ -650,7 +650,7 @@ try {
                     echo '<p>Error fetching announcements.</p>';
                 }
             } else {
-                echo '<p>Admin information not found for this facilitator.</p>';
+                echo '<p>Admin information not found for this HR/Manager.</p>';
             }
         } else {
             echo '<p>Error fetching admin information.</p>';
