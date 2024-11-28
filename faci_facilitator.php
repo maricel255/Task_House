@@ -24,16 +24,9 @@ if (isset($_SESSION['Uname'])) {
 
 // Start Kyle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
-    $uploadDir = 'uploaded_files/';
-    
-    // Create directory if it doesn't exist
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
+    $uploadDir = './uploaded_files/';
     $file = $_FILES['faci_image'];
     
-    // Check if file was actually uploaded
     if ($file['error'] === UPLOAD_ERR_OK) {
         $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
@@ -53,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
         }
     }
     
-    header("Location: faci_facilitator.php");
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
@@ -546,11 +539,11 @@ try {
             }
         ?>" alt="Profile Preview">
         <form id="imageForm" method="POST" enctype="multipart/form-data">
-            <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
-            <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
-                Choose Image
-            </button>
-        </form>
+    <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
+    <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
+        Choose Image
+    </button>
+</form>
     </div>
 
         <form id="credentialsForm" method="POST">
