@@ -24,11 +24,6 @@ if (isset($_SESSION['Uname'])) {
 
 // Start Kyle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
-    // Print any upload errors for debugging
-    echo '<pre>';
-    print_r($_FILES['faci_image']);
-    echo '</pre>';
-
     $uploadDir = 'uploaded_files/';
     $file = $_FILES['faci_image'];
     
@@ -46,21 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
                 $stmt = $conn->prepare($sql);
                 $stmt->bindParam(':image', $fileName);
                 $stmt->bindParam(':faciID', $_SESSION['Uname']);
-                
-                if ($stmt->execute()) {
-                    echo "Image uploaded successfully!";
-                } else {
-                    echo "Database update failed!";
-                }
-            } else {
-                echo "Failed to move uploaded file!";
+                $stmt->execute();
             }
-        } else {
-            echo "Invalid file type!";
         }
-    } else {
-        echo "File upload error: " . $file['error'];
     }
+    
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
 
 
