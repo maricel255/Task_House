@@ -396,9 +396,9 @@ try {
     
     if (!empty($interns)) {
         foreach ($interns as $intern) {
-            echo "InternID: " . $intern['internID'] . "<br>";
-            echo "Login Time: " . $intern['login_time'] . "<br>";
-            echo "Status: " . $intern['status'] . "<br>";
+            //echo "InternID: " . $intern['internID'] . "<br>";
+           // echo "Login Time: " . $intern['login_time'] . "<br>";
+           // echo "Status: " . $intern['status'] . "<br>";
         }
     }
 } catch (PDOException $e) {
