@@ -525,26 +525,26 @@ try {
 
         <!-- Add image upload section -->
         <div class="image-upload-container">
-        <img id="imagePreview" src="<?php 
-            $sql = "SELECT faci_image FROM facacc WHERE faciID = :faciID";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':faciID', $_SESSION['Uname']);
-            $stmt->execute();
-            $faciImage = $stmt->fetchColumn();
-            
-            if ($faciImage && file_exists('uploaded_files/' . $faciImage)) {
-                echo 'uploaded_files/' . htmlspecialchars($faciImage);
-            } else {
-                echo 'image/USER_ICON.png';
-            }
-        ?>" alt="Profile Preview">
-        <form id="imageForm" method="POST" enctype="multipart/form-data">
-    <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
-    <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
-        Choose Image
-    </button>
-</form>
-    </div>
+    <img id="imagePreview" src="<?php 
+        $sql = "SELECT faci_image FROM facacc WHERE faciID = :faciID";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':faciID', $_SESSION['Uname']);
+        $stmt->execute();
+        $faciImage = $stmt->fetchColumn();
+        
+        if ($faciImage && file_exists('uploaded_files/' . $faciImage)) {
+            echo 'uploaded_files/' . htmlspecialchars($faciImage);
+        } else {
+            echo 'image/USER_ICON.png';
+        }
+    ?>" alt="Profile Preview">
+    <form id="imageForm" method="POST" enctype="multipart/form-data">
+        <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
+        <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
+            Choose Image
+        </button>
+    </form>
+</div>
 
         <form id="credentialsForm" method="POST">
             <div class="form-group">
