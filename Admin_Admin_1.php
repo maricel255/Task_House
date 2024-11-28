@@ -982,7 +982,7 @@ $timeLogsCount = $stmt->fetchColumn();
         <a href="#" class="home-link" onclick="showContent('Dashboard')"><i class="fa fa-home"></i><span> Dashboard</span></a>
         <a href="#" onclick="showContent('Intern_profile')"><i class="fa fa-cog"></i><span> Intern Profiles</span></a>
         <a href="#" onclick="showContent('Intern_Account')"><i class="fa fa-info-circle"></i><span> Intern Logins</span></a>
-        <a href="#" onclick="showContent('Facilitator_Account')"><i class="fa fa-phone"></i><span> Facilitator Logins</span></a>
+        <a href="#" onclick="showContent('Facilitator_Account')"><i class="fa fa-phone"></i><span> Company Logins</span></a>
         <a href="#" onclick="showContent('report')"><i class="fa fa-phone"></i><span> Report</span></a>
     </div>
 
