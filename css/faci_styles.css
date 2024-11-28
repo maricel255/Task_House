@@ -163,7 +163,7 @@ body {
 
 /* Header Styling */
 .header {
-  width: 100%;
+  width: calc(100% - 60px); /* Full width minus initial sidebar */
   height: 60px;
   background-color: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -173,12 +173,12 @@ body {
   padding-right: 20px;
   position: fixed;
   top: 0;
-  left: 0;
-  transition: 0;
-  z-index: 1;
+  left: 60px; /* Offset by the sidebar */
+  transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+  z-index: 1; /* To be above sidebar */
 }
 
-.shifted {
+.header.shifted {
   left: 250px; /* Aligned with expanded sidebar */
   width: calc(100% - 250px);
 }
