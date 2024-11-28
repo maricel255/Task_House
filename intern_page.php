@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_POST['login-btn'])) {
     // Check if faciID is provided
     if (empty($faciID)) {
-        $alertMessage = "Please select a faciID.";
+        $alertMessage = "Please select a Company ID from your profile information.";
     } else {
         // Check if there's an existing login record for today
         $sqlCheckLogin = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(login_time) = :currentDate";
