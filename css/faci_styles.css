@@ -1705,8 +1705,8 @@ button[type="submit"]:hover {
 /* Mobile devices */
 @media (max-width: 768px) {
   .sidebar {
-    width: 0;
-    transform: translateX(-100%);
+    width: 60px; /* Keep minimum width instead of 0 */
+    transform: translateX(0); /* Remove the transform that hides it */
   }
 
   .sidebar.active {
@@ -1714,10 +1714,10 @@ button[type="submit"]:hover {
     transform: translateX(0);
   }
 
-  /* Adjust main content when sidebar is hidden */
+  /* Adjust main content */
   .main-content {
-    margin-left: 0;
-    width: 100%;
+    margin-left: 60px; /* Match sidebar width */
+    width: calc(100% - 60px);
   }
 
   .main-content.shift {
@@ -1725,10 +1725,10 @@ button[type="submit"]:hover {
     width: calc(100% - 200px);
   }
 
-  /* Adjust header when sidebar is hidden */
+  /* Adjust header */
   .header {
-    left: 0;
-    width: 100%;
+    left: 60px; /* Match sidebar width */
+    width: calc(100% - 60px);
   }
 
   .header.shifted {
@@ -1739,8 +1739,12 @@ button[type="submit"]:hover {
 
 /* Small mobile devices */
 @media (max-width: 480px) {
+  .sidebar {
+    width: 60px; /* Keep minimum width */
+  }
+
   .sidebar.active {
-    width: 100%;
+    width: 200px; /* Changed from 100% to maintain consistency */
   }
 
   .user-icon {
@@ -1753,16 +1757,26 @@ button[type="submit"]:hover {
     font-size: 13px;
   }
 
-  /* Adjust main content for full-width sidebar */
-  .main-content.shift {
-    margin-left: 0;
-    width: 100%;
+  /* Adjust main content */
+  .main-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
   }
 
-  /* Adjust header for full-width sidebar */
+  .main-content.shift {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+
+  /* Adjust header */
+  .header {
+    left: 60px;
+    width: calc(100% - 60px);
+  }
+
   .header.shifted {
-    left: 0;
-    width: 100%;
+    left: 200px;
+    width: calc(100% - 200px);
   }
 }
 
