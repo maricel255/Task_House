@@ -48,7 +48,7 @@ body {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .document-logo {
@@ -920,18 +920,6 @@ body {
   .portrait-card *,
   .card-content * {
     background: transparent;
-  }
-}
-  
-/* Mobile styles */
-@media (max-width: 480px) {
-  .logo-container {
-    bottom: 20px;    /* Adjusted for mobile */
-    right: 20px;     /* Adjusted for mobile */
-  }
-
-  .document-logo {
-    max-width: 200px;  /* Smaller size for mobile */
   }
 }
   
