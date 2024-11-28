@@ -25,20 +25,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
     }
 
     $file = $_FILES['faci_image'];
-    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+    
+    // Check if file was actually uploaded
+    if ($file['error'] === UPLOAD_ERR_OK) {
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
-    if (in_array($fileExtension, $allowedTypes)) {
-        $fileName = 'faci_' . $_SESSION['Uname'] . '_' . time() . '.' . $fileExtension;
-        $targetPath = $uploadDir . $fileName;
+        if (in_array($fileExtension, $allowedTypes)) {
+            $fileName = 'faci_' . $_SESSION['Uname'] . '_' . time() . '.' . $fileExtension;
+            $targetPath = $uploadDir . $fileName;
 
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Update database
-            $sql = "UPDATE facacc SET faci_image = ? WHERE faciID = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$fileName, $_SESSION['Uname']]);
-            
-            $_SESSION['success_message'] = 'Profile image updated successfully!';
+            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                // Update database
+                $sql = "UPDATE facacc SET faci_image = :image WHERE faciID = :faciID";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':image', $fileName);
+                $stmt->bindParam(':faciID', $_SESSION['Uname']);
+                $stmt->execute();
+            }
         }
     }
     
@@ -474,7 +478,12 @@ try {
                     $stmt->bindParam(':faciID', $_SESSION['Uname']);
                     $stmt->execute();
                     $faciImage = $stmt->fetchColumn();
-                    echo $faciImage ? 'uploaded_files/' . htmlspecialchars($faciImage) : 'image/USER_ICON.png';
+                    
+                    if ($faciImage && file_exists('uploaded_files/' . $faciImage)) {
+                        echo 'uploaded_files/' . htmlspecialchars($faciImage);
+                    } else {
+                        echo 'image/USER_ICON.png';
+                    }
                 ?>" alt="Toggle Sidebar" class="user-icon">
                 <div class="user-details">
                     <p class="user-name">Uname: <?php echo $faciID; ?></p>
@@ -522,7 +531,12 @@ try {
             $stmt->bindParam(':faciID', $_SESSION['Uname']);
             $stmt->execute();
             $faciImage = $stmt->fetchColumn();
-            echo $faciImage ? 'uploaded_files/' . htmlspecialchars($faciImage) : 'image/USER_ICON.png';
+            
+            if ($faciImage && file_exists('uploaded_files/' . $faciImage)) {
+                echo 'uploaded_files/' . htmlspecialchars($faciImage);
+            } else {
+                echo 'image/USER_ICON.png';
+            }
         ?>" alt="Profile Preview">
         <form id="imageForm" method="POST" enctype="multipart/form-data">
             <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
