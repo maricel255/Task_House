@@ -1176,7 +1176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
             </div>
 
             <div class="form-column">
-                <label for="faciID">Facilitator ID:</label>
+                <label for="faciID">Company ID:</label>
                 <select name="faciID" id="faciID" <?php echo $profileData ? 'disabled' : ''; ?>>
                     <option value="">Select Facilitator ID</option>
                     <?php foreach ($faciIDs as $faci): ?>
