@@ -368,10 +368,6 @@ try {
 
 // Assuming you have a valid queryfor availability statud
 
-// Add this debugging code before your table display
-echo "Debug Information:<br>";
-echo "Current Date: " . date('Y-m-d') . "<br>";
-echo "FaciID: " . $faciID . "<br>";
 
 $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work_time, t.logout_time,
     p.first_name, i.profile_image,

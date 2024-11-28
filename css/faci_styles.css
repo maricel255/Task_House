@@ -1671,6 +1671,93 @@ button[type="submit"]:hover {
   background-color: #004d00; /* Darker green on hover */
 }
 
+/* Add these media queries to your existing sidebar code */
+
+/* Tablet and smaller desktop screens */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 50px;
+  }
+
+  .sidebar.active {
+    width: 200px;
+  }
+
+  .user-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .navigation a {
+    padding: 15px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    width: 200px;
+    transform: translateX(0);
+  }
+
+  /* Adjust main content when sidebar is hidden */
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .main-content.shift {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+
+  /* Adjust header when sidebar is hidden */
+  .header {
+    left: 0;
+    width: 100%;
+  }
+
+  .header.shifted {
+    left: 200px;
+    width: calc(100% - 200px);
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .sidebar.active {
+    width: 100%;
+  }
+
+  .user-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .navigation a {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  /* Adjust main content for full-width sidebar */
+  .main-content.shift {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Adjust header for full-width sidebar */
+  .header.shifted {
+    left: 0;
+    width: 100%;
+  }
+}
+
 
 
 
