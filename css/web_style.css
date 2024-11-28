@@ -61,6 +61,7 @@ body {
 /* Optional hover effect */
 .document-logo:hover {
   transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
 
 .header-logo {
@@ -919,6 +920,18 @@ body {
   .portrait-card *,
   .card-content * {
     background: transparent;
+  }
+}
+  
+/* Mobile styles */
+@media (max-width: 480px) {
+  .logo-container {
+    bottom: 20px;    /* Adjusted for mobile */
+    right: 20px;     /* Adjusted for mobile */
+  }
+
+  .document-logo {
+    max-width: 200px;  /* Smaller size for mobile */
   }
 }
   
