@@ -6,12 +6,12 @@ error_reporting(E_ALL);
 session_start(); // Start the session
 require('db_Taskhouse/Admin_connection.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
-    var_dump($_FILES['faci_image']); // Check if file is being uploaded
-    var_dump($_SESSION['Uname']); // Check if session exists
-    var_dump(is_writable('uploaded_files/')); // Check directory permissions
-    die(); // Stop execution to see the output
-}
+//if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
+    //var_dump($_FILES['faci_image']); // Check if file is being uploaded
+    //var_dump($_SESSION['Uname']); // Check if session exists
+    //var_dump(is_writable('uploaded_files/')); // Check directory permissions
+    //die(); // Stop execution to see the output
+//}
 
 // Check if 'Uname' (faciID) is set in the session
 if (isset($_SESSION['Uname'])) {
