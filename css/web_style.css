@@ -921,3 +921,29 @@ body {
   }
 }
   
+/* Document Logo Styles */
+.documents-section {
+  padding: 2rem;
+  background-color: #fff;
+}
+
+.logo-container {
+  text-align: center;
+  padding: 20px 0;
+  display: block;
+}
+
+.document-logo {
+  display: block;
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.documents-title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+  
