@@ -393,8 +393,7 @@ try {
     $stmt->execute();
     $interns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    echo "Query Results:<br>";
-    echo "Number of records found: " . count($interns) . "<br>";
+    
     if (!empty($interns)) {
         foreach ($interns as $intern) {
             echo "InternID: " . $intern['internID'] . "<br>";
