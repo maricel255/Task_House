@@ -18,36 +18,44 @@ body {
 .sidebar {
   background-color: green;
   color: white;
-  width: 60px; /* Partially visible when closed */
+  width: 60px;
   height: 100%;
-  position: fixed; /* Fix the sidebar in place */
-  left: 0; /* Sidebar is visible initially */
-  transition: width 0.3s ease-in-out; /* Smooth width transition */
-  z-index: 1000; /* Make sure sidebar is on top */
-  overflow: hidden; /* Hide the overflowing content */
+  position: fixed;
+  left: 0;
+  transition: width 0.3s ease-in-out;
+  z-index: 1000;
+  overflow: hidden;
   border-radius: 15px;
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
 }
 
+/* Hide text by default */
+.sidebar .user-details,
+.sidebar .navigation span {
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+/* Show text when sidebar is active */
 .sidebar.active {
-  width: 250px; /* Expanded width */
+  width: 250px;
 }
 
-/* Hide content styling */
-.sidebar.hide-content .user-details,
-.sidebar.hide-content .navigation a {
-  opacity: 0; /* Make content invisible */
-  visibility: hidden; /* Hide the content */
-  transition: opacity 0.3s ease-in-out, visibility 0s 0.3s; /* Smooth fade out */
+.sidebar.active .user-details,
+.sidebar.active .navigation span {
+  opacity: 1;
+  visibility: visible;
 }
 
-.sidebar.show-content .user-details,
-.sidebar.show-content .navigation a {
-  opacity: 1; /* Make content visible */
-  visibility: visible; /* Show the content */
-  transition: opacity 0.3s ease-in-out; /* Smooth fade in */
+/* Keep icons visible always */
+.user-icon,
+.navigation i {
+  opacity: 1;
+  visibility: visible;
 }
 
 .user-name{
