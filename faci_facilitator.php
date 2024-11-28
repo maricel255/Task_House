@@ -17,52 +17,33 @@ if (isset($_SESSION['Uname'])) {
 
 // Start Kyle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
-    try {
-        $uploadDir = 'uploaded_files/';
-        
-        // Check if the upload directory exists, if not, create it
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
+    $uploadDir = 'uploaded_files/';
+    
+    // Create directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
-        $file = $_FILES['faci_image'];
-        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+    $file = $_FILES['faci_image'];
+    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
-        // Validate the file type
-        if (!in_array($fileExtension, $allowedTypes)) {
-            throw new Exception('Invalid file type');
-        }
-
-        // Create a unique file name
+    if (in_array($fileExtension, $allowedTypes)) {
         $fileName = 'faci_' . $_SESSION['Uname'] . '_' . time() . '.' . $fileExtension;
         $targetPath = $uploadDir . $fileName;
 
-        // Move the uploaded file to the target directory
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Update the database with the new image path
-            $sql = "UPDATE facacc SET faci_image = :faci_image WHERE faciID = :faciID";
+            // Update database
+            $sql = "UPDATE facacc SET faci_image = ? WHERE faciID = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':faci_image', $fileName);
-            $stmt->bindParam(':faciID', $_SESSION['Uname']);
+            $stmt->execute([$fileName, $_SESSION['Uname']]);
             
-            // Execute the statement and check for success
-            if ($stmt->execute()) {
-                $_SESSION['upload_status'] = 'success'; // Set session variable for success
-            } else {
-                throw new Exception('Database update failed');
-            }
-        } else {
-            throw new Exception('Failed to move uploaded file');
+            $_SESSION['success_message'] = 'Profile image updated successfully!';
         }
-    } catch (Exception $e) {
-        $_SESSION['upload_status'] = 'error'; // Set session variable for error
-        $_SESSION['upload_message'] = $e->getMessage(); // Store error message
     }
     
-    // Redirect back to the original page
     header("Location: faci_facilitator.php");
-    exit; // Ensure no further output is sent
+    exit();
 }
 
 
