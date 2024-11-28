@@ -283,17 +283,13 @@ button.prev:hover, button.next:hover {
 }
 /* General dashboard styling */
 .dashboard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   text-align: left;
-  width: 100%;
-  max-width: 1200%;
+  width: 70%;
+  max-width: 100%;
   max-height: 360px;
   overflow: hidden;
-  margin: 0 auto;
 }
 
 /* Heading styling */
