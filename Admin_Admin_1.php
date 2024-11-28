@@ -863,9 +863,10 @@ $timeLogsCount = $stmt->fetchColumn();
             echo '<table>';
             foreach ($internDetails as $key => $value) {
                 if ($key !== 'profile_image') {
+                    $displayKey = ($key === 'faciID') ? 'Company ID' : ucfirst(str_replace('_', ' ', $key));
                     echo '<tr>';
-                    echo '<th>' . ucfirst(str_replace('_', ' ', $key)) . '</th>';
-                    echo '<td>' . htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8') . '</td>'; // Ensure value is not null
+                    echo '<th>' . $displayKey . '</th>';
+                    echo '<td>' . htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
                     echo '</tr>';
                 }
             }
