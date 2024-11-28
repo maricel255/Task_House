@@ -542,11 +542,10 @@ try {
     <div class="buttons-container">
         <form class="image-upload-form" action="" method="POST" enctype="multipart/form-data">
             <div class="file-upload-container">
-                <input type="file" name="faci_image" accept="image/*" class="file-upload-input" onchange="this.form.submit()">
-                <button type="button" class="file-upload-button">
-                    <i class="fas fa-camera"></i>
-                    Change Photo
+                <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
+                    Choose Image
                 </button>
+                <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
             </div>
         </form>
     </div>
