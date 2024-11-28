@@ -357,9 +357,9 @@ button.prev:hover, button.next:hover {
 /* Dash content styling */
 .dash-content {
   margin-left: 60px;
-  padding: 0 520px 0 20px;
+  padding: 20px;
   width: calc(100% - 60px);
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+  transition: margin-left 0.3s ease-in-out
 }
 
 /* Prevent scrolling on zoom and adjust width */
