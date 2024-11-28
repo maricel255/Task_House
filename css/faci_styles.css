@@ -178,7 +178,7 @@ body {
   z-index: 1;
 }
 
-.header.shifted {
+.shifted {
   left: 250px; /* Aligned with expanded sidebar */
   width: calc(100% - 250px);
 }
