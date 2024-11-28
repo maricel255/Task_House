@@ -539,10 +539,18 @@ try {
         }
     ?>" alt="Profile Preview">
     
-    <form action="" method="POST" enctype="multipart/form-data">
-        <input type="file" name="faci_image" accept="image/*">
-        <input type="submit" value="Upload Image">
-    </form>
+    <form class="image-upload-form" action="" method="POST" enctype="multipart/form-data">
+    <div class="file-upload-container">
+        <input type="file" name="faci_image" accept="image/*" class="file-upload-input" 
+               onchange="updateFileName(this)">
+        <button type="button" class="file-upload-button">
+            <i class="fas fa-cloud-upload-alt"></i>
+            Choose Image
+        </button>
+        <div class="selected-file-name"></div>
+    </div>
+    <button type="submit" class="upload-submit-btn">Upload Image</button>
+</form>
 </div>
 
         <form id="credentialsForm" method="POST">

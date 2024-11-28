@@ -231,3 +231,13 @@ window.onclick = function(event) {
 
 //search for intern reports
 
+function updateFileName(input) {
+    const fileName = input.files[0]?.name;
+    const fileNameDisplay = input.parentElement.querySelector('.selected-file-name');
+    if (fileName) {
+        fileNameDisplay.textContent = fileName;
+    } else {
+        fileNameDisplay.textContent = '';
+    }
+}
+
