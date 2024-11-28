@@ -24,7 +24,12 @@ if (isset($_SESSION['Uname'])) {
 
 // Start Kyle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
-    $uploadDir = './uploaded_files/';
+    // Print any upload errors for debugging
+    echo '<pre>';
+    print_r($_FILES['faci_image']);
+    echo '</pre>';
+
+    $uploadDir = 'uploaded_files/';
     $file = $_FILES['faci_image'];
     
     if ($file['error'] === UPLOAD_ERR_OK) {
@@ -41,13 +46,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
                 $stmt = $conn->prepare($sql);
                 $stmt->bindParam(':image', $fileName);
                 $stmt->bindParam(':faciID', $_SESSION['Uname']);
-                $stmt->execute();
+                
+                if ($stmt->execute()) {
+                    echo "Image uploaded successfully!";
+                } else {
+                    echo "Database update failed!";
+                }
+            } else {
+                echo "Failed to move uploaded file!";
             }
+        } else {
+            echo "Invalid file type!";
         }
+    } else {
+        echo "File upload error: " . $file['error'];
     }
-    
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
 }
 
 
@@ -538,11 +551,10 @@ try {
             echo 'image/USER_ICON.png';
         }
     ?>" alt="Profile Preview">
-    <form id="imageForm" method="POST" enctype="multipart/form-data">
-        <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
-        <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
-            Choose Image
-        </button>
+    
+    <form action="" method="POST" enctype="multipart/form-data">
+        <input type="file" name="faci_image" accept="image/*">
+        <input type="submit" value="Upload Image">
     </form>
 </div>
 
