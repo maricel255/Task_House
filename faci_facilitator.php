@@ -541,12 +541,12 @@ try {
     
     <div class="buttons-container">
         <form class="image-upload-form" action="" method="POST" enctype="multipart/form-data">
-            <div class="file-upload-container">
+            
                 <button type="button" class="choose-image-btn" onclick="document.getElementById('profileImageInput').click()">
                     Choose Image
                 </button>
                 <input type="file" id="profileImageInput" name="faci_image" accept="image/*" style="display: none;" onchange="this.form.submit()">
-            </div>
+            
         </form>
     </div>
 </div>
