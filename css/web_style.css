@@ -45,15 +45,16 @@ body {
 }
 /* Document Logo Styling */
 .logo-container {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
 }
 
 .document-logo {
-  max-width: 200px;
-  height: auto;
   display: block;
-  margin: 0 auto;
+  max-width: 150px;
+  height: auto;
 }
 
 /* Optional hover effect */
@@ -919,31 +920,5 @@ body {
   .card-content * {
     background: transparent;
   }
-}
-  
-/* Document Logo Styles */
-.documents-section {
-  padding: 2rem;
-  background-color: #fff;
-}
-
-.logo-container {
-  text-align: center;
-  padding: 20px 0;
-  display: block;
-}
-
-.document-logo {
-  display: block;
-  max-width: 200px;
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
-  object-fit: contain;
-}
-
-.documents-title {
-  text-align: center;
-  margin-bottom: 1rem;
 }
   
