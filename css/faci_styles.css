@@ -175,7 +175,7 @@ body {
   top: 0;
   left: 60px; /* Offset by the sidebar */
   transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
-  z-index: 1001; /* To be above sidebar */
+  z-index: 1000; /* To be above sidebar */
 }
 
 .header.shifted {
