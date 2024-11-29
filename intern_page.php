@@ -248,7 +248,7 @@ if (isset($_POST['login-btn'])) {
 
 
 if (isset($_POST['break-btn'])) {
-    // Check if there's a login record for today and status is not declined
+    // Check if there's a login record for today
     $sqlCheckBreak = "SELECT * FROM time_logs WHERE internID = :internID AND DATE(login_time) = :currentDate AND break_time IS NULL";
     $stmtCheckBreak = $conn->prepare($sqlCheckBreak);
     $stmtCheckBreak->bindParam(':internID', $internID, PDO::PARAM_INT);
@@ -263,11 +263,11 @@ if (isset($_POST['break-btn'])) {
     $stmtCheckStatus->execute();
     $status = $stmtCheckStatus->fetchColumn();
 
-    if ($status == 'Declined') {
+    if ($status === 'Declined') {
         $alertMessage = "Your request has been declined, you can't click this button.";
     } else {
         if ($stmtCheckBreak->rowCount() == 0) {
-            $alertMessage = "Your request is declined. You can't continue to add to your time logs.";
+            $alertMessage = "Please log in first before taking a break.";
         } else {
             // Proceed with recording the break time
             $sqlUpdateBreak = "UPDATE time_logs SET break_time = :breakTime WHERE internID = :internID AND DATE(login_time) = :currentDate AND break_time IS NULL";
