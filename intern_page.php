@@ -263,24 +263,23 @@ if (isset($_POST['break-btn'])) {
     $stmtCheckStatus->execute();
     $status = $stmtCheckStatus->fetchColumn();
 
+    // Only block if status is explicitly "Declined"
     if ($status === 'Declined') {
         $alertMessage = "Your request has been declined, you can't click this button.";
+    } else if ($stmtCheckBreak->rowCount() == 0) {
+        $alertMessage = "Please log in first before taking a break.";
     } else {
-        if ($stmtCheckBreak->rowCount() == 0) {
-            $alertMessage = "Please log in first before taking a break.";
-        } else {
-            // Proceed with recording the break time
-            $sqlUpdateBreak = "UPDATE time_logs SET break_time = :breakTime WHERE internID = :internID AND DATE(login_time) = :currentDate AND break_time IS NULL";
-            $stmtUpdateBreak = $conn->prepare($sqlUpdateBreak);
-            $stmtUpdateBreak->bindParam(':breakTime', $currentTime, PDO::PARAM_STR);
-            $stmtUpdateBreak->bindParam(':internID', $internID, PDO::PARAM_INT);
-            $stmtUpdateBreak->bindParam(':currentDate', $currentDate, PDO::PARAM_STR);
+        // Proceed with recording the break time
+        $sqlUpdateBreak = "UPDATE time_logs SET break_time = :breakTime WHERE internID = :internID AND DATE(login_time) = :currentDate AND break_time IS NULL";
+        $stmtUpdateBreak = $conn->prepare($sqlUpdateBreak);
+        $stmtUpdateBreak->bindParam(':breakTime', $currentTime, PDO::PARAM_STR);
+        $stmtUpdateBreak->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmtUpdateBreak->bindParam(':currentDate', $currentDate, PDO::PARAM_STR);
 
-            if ($stmtUpdateBreak->execute()) {
-                $alertMessage = "Break time recorded successfully.";
-            } else {
-                $alertMessage = "Error recording break time.";
-            }
+        if ($stmtUpdateBreak->execute()) {
+            $alertMessage = "Break time recorded successfully.";
+        } else {
+            $alertMessage = "Error recording break time.";
         }
     }
 }
@@ -294,7 +293,8 @@ if (isset($_POST['back-to-work-btn'])) {
     $stmtCheckStatus->execute();
     $status = $stmtCheckStatus->fetchColumn();
 
-    if ($status == 'Declined') {
+    // Only block if status is explicitly "Declined"
+    if ($status === 'Declined') {
         $alertMessage = "Your request has been declined, you can't click this button.";
     } else {
         // Proceed with back to work functionality
