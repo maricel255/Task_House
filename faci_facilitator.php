@@ -363,13 +363,15 @@ $query = "SELECT DISTINCT t.internID, t.login_time, t.break_time, t.back_to_work
         WHEN t.logout_time IS NOT NULL THEN 'Logged Out'
         WHEN t.break_time IS NOT NULL 
              AND t.back_to_work_time IS NULL THEN 'On Break'
+        WHEN t.back_to_work_time IS NOT NULL 
+             AND t.logout_time IS NULL THEN 'Active Now'
         ELSE 'Unknown'
     END AS status
 FROM time_logs t
 LEFT JOIN intacc i ON t.internID = i.internID
 LEFT JOIN profile_information p ON t.internID = p.internID
 WHERE t.faciID = :faciID
-    AND t.status LIKE 'Pe%'  /* Changed to match 'Pending' */
+    AND t.status LIKE 'Pe%'
 ORDER BY t.login_time DESC";
 
 try {
