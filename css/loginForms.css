@@ -38,6 +38,15 @@ h1 {
   z-index: 1;
   pointer-events: none; /* Prevent interaction with the image */
 }
+.alert-container {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+}
 /* Custom Alert Styling */
 .custom-alert {
   position: fixed !important;

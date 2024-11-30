@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo '<div class="alert-container"><div class="custom-alert alert-error">Password does not match.</div></div>';
       }
   } else {
-     echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
+    echo '<div class="alert-container"><div class="custom-alert alert-error">No user found with the provided InternID.</div></div>';
   }
 }
 
