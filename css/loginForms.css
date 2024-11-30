@@ -71,8 +71,8 @@ h1 {
 /* Update this logo container styling */
 .logo-container {
   position: fixed !important;
-  top: 20px !important;
-  left: 20px !important;     /* Changed from right to left */
+  bottom: 30px !important;
+  right: 30px !important;
   z-index: 9999 !important;
   pointer-events: none !important;
   width: auto !important;
@@ -195,6 +195,14 @@ body {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
   }
+
+  .document-logo {
+    width: 150px !important;
+  }
+  .logo-container {
+    bottom: 20px !important;
+    right: 20px !important;
+  }
 }
 
 @media (max-width: 576px) {
@@ -231,6 +239,14 @@ body {
     to {
       transform: translateX(-50%) translateY(0);
     }
+  }
+
+  .document-logo {
+    width: 100px !important;
+  }
+  .logo-container {
+    bottom: 15px !important;
+    right: 15px !important;
   }
 }
 
