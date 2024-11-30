@@ -28,6 +28,20 @@ h1 {
   text-align: center;
   z-index: 1000;
 }
+/* Logo positioning at bottom right */
+.logo-container {
+  position: fixed;
+  bottom: 30px;  /* Adjusted for larger logo */
+  right: 30px;   /* Adjusted for larger logo */
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.document-logo {
+  width: 300px;  /* Doubled the size */
+  height: auto;
+  transition: all 0.3s ease; /* Smooth transition if size changes */
+}
 
 .message-box button {
   background-color: #333;
@@ -37,11 +51,9 @@ h1 {
   cursor: pointer;
 }
 body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #B6F492, #338B93);
-  overflow: hidden; /* Prevent scrolling */
+  background: linear-gradient(135deg, #B6F492, #338B93); /* Slanted gradient background */
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margins */
 }
 .btn-orange {
   background-color: orange;
@@ -227,8 +239,8 @@ body {
 /* Logo positioning at bottom right */
 .logo-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 25px;
+  right: 25px;
   z-index: 9999;
   pointer-events: none;
 }
