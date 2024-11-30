@@ -779,6 +779,24 @@ body::before {
   .intern_acc:hover {
     background-color:  #000543;
 }
+@media screen and (max-width: 480px) {
+  .intern_acc {
+      width: 80%; /* Takes up 80% of screen width */
+      padding: 30px 20px; /* Reduced padding */
+      margin-left: 65px; /* Adjusted left margin */
+      font-size: 14px; /* Slightly smaller font */
+      display: block; /* Stack vertically */
+      text-align: center; /* Keep text centered */
+  }
+  .faci_acc {
+    width: 80%; /* Takes up 80% of screen width */
+    padding: 30px 20px; /* Reduced padding */
+    margin-left: 65px; /* Adjusted left margin */
+    font-size: 14px; /* Slightly smaller font */
+    display: block; /* Stack vertically */
+    text-align: center; /* Keep text centered */
+}
+}
 .faci_acc{
   background-color:  #000543; /* Green background */
   color: white; /* Text color */
