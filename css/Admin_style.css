@@ -963,7 +963,7 @@ body::before {
   font-size: 14px;       /* Same font size */
 }
 .table-container {
-  max-height: 300px; /* Adjust the height as needed */
+  max-height: 400px; /* Adjust the height as needed */
   overflow-y: auto;  /* Enable vertical scrolling */
   border: 1px solid #ccc; /* Optional: Add a border for better visibility */
   margin-top: 10px; /* Space above the table */
