@@ -1565,7 +1565,7 @@ input[type="submit"]:hover {
 
 /* Add this new class */
 .accounts-section {
-  margin-left: 50px;  /* Adds space from the left */
+  margin-left: 70px;  /* Adds space from the left */
   margin-right: 50px; /* Optional: for balance */
   margin-top: 20px;   /* Adds some space from the top */
 }
