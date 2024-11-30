@@ -798,8 +798,8 @@ body::before {
 }
 .table-container {
   max-height: 300px; /* Reduced height for mobile */
-  width: 80%; /* Takes up 80% of screen width */
-  margin-left: 65px; /* Match the margin of other elements */
+  width: 90%; /* Takes up 80% of screen width */
+  margin-left: 45px; /* Match the margin of other elements */
   overflow-x: auto; /* Enable horizontal scrolling if needed */
   font-size: 14px; /* Slightly smaller font */
   border-radius: 5px; /* Optional: rounded corners */
