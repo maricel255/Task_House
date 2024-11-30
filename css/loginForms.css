@@ -38,21 +38,49 @@ h1 {
   z-index: 1;
   pointer-events: none; /* Prevent interaction with the image */
 }
+/* Custom Alert Styling */
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  transform: translateX(150%);
+  animation: slideIn 0.5s forwards;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
+.alert-error {
+  background-color: #ff4444;
+  border-left: 5px solid #cc0000;
+}
+
+.alert-success {
+  background-color: #00C851;
+  border-left: 5px solid #007E33;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+/* Document Logo Styling */
 .logo-container {
-  position: fixed !important;
-  top: 30px !important;     /* Keep at top */
-  right: 30px !important;   /* Changed to right */
-  z-index: 9999 !important;
-  pointer-events: none !important;
-  width: auto !important;
-  display: block !important;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
 }
 
 .document-logo {
-  width: 300px !important;
-  height: auto !important;
-  display: block !important;
+  display: block;
+  max-width: 300px;
+  height: auto;
+  transition: transform 0.3s ease;
 }
 .message-box button {
   background-color: #333;
