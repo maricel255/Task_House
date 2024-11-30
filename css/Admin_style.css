@@ -146,9 +146,7 @@ body::before {
 .sidebar:hover ~ .header {
   margin-left: 250px; /* Adjust margin for expanded sidebar */
 }
-.h2{
-  left:15px;
-}
+
 .modal-btn {
   cursor: pointer;
   border-radius: 50%; /* Makes the button circular */
@@ -1563,4 +1561,11 @@ input[type="submit"]:hover {
 .message-box.info {
   background-color: #2196F3;
   color: white;
+}
+
+/* Add this new class */
+.accounts-section {
+  margin-left: 50px;  /* Adds space from the left */
+  margin-right: 50px; /* Optional: for balance */
+  margin-top: 20px;   /* Adds some space from the top */
 }
