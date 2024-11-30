@@ -37,9 +37,11 @@ h1 {
   cursor: pointer;
 }
 body {
-  background: linear-gradient(135deg, #B6F492, #338B93); /* Slanted gradient background */
-  height: 100vh; /* Full viewport height */
-  margin: 0; /* Remove default margins */
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #B6F492, #338B93);
+  overflow: hidden; /* Prevent scrolling */
 }
 .btn-orange {
   background-color: orange;
@@ -224,34 +226,81 @@ body {
 
 /* Logo positioning at bottom right */
 .logo-container {
-  position: fixed !important;
-  bottom: 20px !important;
-  right: 20px !important;
-  z-index: 9999 !important;
-  pointer-events: none !important;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  pointer-events: none;
 }
 
 .document-logo {
-  width: 150px !important; /* Adjust size as needed */
-  height: auto !important;
-  display: block !important;
+  width: 150px;
+  height: auto;
 }
 
-/* Responsive adjustments for the logo */
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .login-container {
+    padding: 1rem;
+  }
+
+  .login-content {
+    margin-right: 0;
+  }
+
+  .character-image {
+    width: 60%;
+    opacity: 0.3; /* Make character more transparent on mobile */
+  }
+
   .document-logo {
-    width: 120px !important;
+    width: 120px;
   }
 }
 
 @media (max-width: 576px) {
+  .character-image {
+    width: 80%;
+  }
+
   .document-logo {
-    width: 100px !important;
+    width: 100px;
   }
-  
-  .logo-container {
-    bottom: 15px !important;
-    right: 15px !important;
-  }
+}
+
+.login-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content {
+  width: 100%;
+  max-width: 500px;
+  margin-right: 2rem;
+  z-index: 2;
+}
+
+.character-image {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  max-width: 500px;
+  z-index: 1;
+}
+
+.character-image img {
+  width: 100%;
+  height: auto;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
