@@ -102,8 +102,8 @@ h1 {
 /* Document Logo Styling */
 .logo-container {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 50px;
+  right: 50px;
   z-index: 9999;
 }
 
