@@ -1266,7 +1266,7 @@ echo '</table>';
                 ?>
             </div>
             <h1>Intern Logins</h1>
-            <button class="intern_acc ms-5" onclick="openModal('InternAccModal')">Intern Accounts</button>
+            <button class="intern_acc ms-7" onclick="openModal('InternAccModal')">Intern Accounts</button>
             <!-- Intern Modal -->
             <div id="InternAccModal" class="modal">
                 <div class="modal-content">
@@ -1372,7 +1372,7 @@ echo '</table>';
                 ?>
             </div>
             <h1>Company Logins</h1>
-            <button class="faci_acc" onclick="openModal('FaccAccModal')">Company Accounts</button>
+            <button class="faci_acc ms-7" onclick="openModal('FaccAccModal')">Company Accounts</button>
 
             <!-- Facilitator Modal -->
             <div id="FaccAccModal" class="modal">
