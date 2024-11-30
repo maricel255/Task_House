@@ -71,8 +71,8 @@ h1 {
 /* Keep and update this logo container styling */
 .logo-container {
   position: fixed !important;
-  bottom: 30px !important;
-  right: 30px !important;
+  bottom: 40px !important;
+  right: 40px !important;
   z-index: 9999 !important;
   pointer-events: none !important;
   width: auto !important;
@@ -82,11 +82,12 @@ h1 {
 }
 
 .document-logo {
-  width: 200px !important;
+  width: 300px !important;
   height: auto !important;
   display: block !important;
   margin: 0 !important;
   padding: 0 !important;
+  opacity: 1 !important;
 }
 .message-box button {
   background-color: #333;
@@ -197,11 +198,11 @@ body {
   }
 
   .document-logo {
-    width: 150px !important;
+    width: 200px !important;
   }
   .logo-container {
-    bottom: 20px !important;
-    right: 20px !important;
+    bottom: 30px !important;
+    right: 30px !important;
   }
 }
 
@@ -242,11 +243,11 @@ body {
   }
 
   .document-logo {
-    width: 100px !important;
+    width: 150px !important;
   }
   .logo-container {
-    bottom: 15px !important;
-    right: 15px !important;
+    bottom: 20px !important;
+    right: 20px !important;
   }
 }
 
@@ -375,5 +376,11 @@ body {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1200px) {
+  .document-logo {
+    width: 250px !important;
+  }
 }
 
