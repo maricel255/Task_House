@@ -223,26 +223,33 @@ body {
 }
 
 /* Logo positioning at bottom right */
-.header-logo {
+.logo-container {
   position: fixed !important;
   bottom: 20px !important;
   right: 20px !important;
   z-index: 9999 !important;
+  pointer-events: none !important;
+}
+
+.document-logo {
   width: 150px !important; /* Adjust size as needed */
   height: auto !important;
-  pointer-events: none !important;
+  display: block !important;
 }
 
 /* Responsive adjustments for the logo */
 @media (max-width: 768px) {
-  .header-logo {
+  .document-logo {
     width: 120px !important;
   }
 }
 
 @media (max-width: 576px) {
-  .header-logo {
+  .document-logo {
     width: 100px !important;
+  }
+  
+  .logo-container {
     bottom: 15px !important;
     right: 15px !important;
   }

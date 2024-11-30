@@ -100,9 +100,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </section>
 <script src="js/Intern_script.js"></script>
  <!-- Logo positioned at bottom right -->
- <div class="logo-wrapper">
-    <img src="image/th_logo.png" alt="logo" class="header-logo" />
-  </div>
+ <div class="logo-container">
+          <img src="image/maninlogo__1_-removebg-preview.png" alt="Logo" class="document-logo"/>
+        </div>
 
 </body>
 </html>
