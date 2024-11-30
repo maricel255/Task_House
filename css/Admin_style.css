@@ -611,7 +611,7 @@ body::before {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1000; /* Ensure it appears on top */
-  left: 10px; /* Align to the left with some padding */
+  left: 70px; /* Align to the left with some padding */
   bottom: 10px; /* Align to the bottom with some padding */
   width: 40%; /* Adjust width for portrait */
   max-width: 40%; /* Make it responsive on smaller screens */
