@@ -68,19 +68,23 @@ h1 {
     transform: translateX(0);
   }
 }
-/* Document Logo Styling */
+/* Update this logo container styling */
 .logo-container {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  z-index: 9999;
+  position: fixed !important;
+  top: 30px !important;          /* Position from top instead of bottom */
+  right: 30px !important;
+  z-index: 99999 !important;     /* Increased z-index to ensure visibility */
+  pointer-events: none !important;
+  width: auto !important;
+  display: block !important;
 }
 
 .document-logo {
-  display: block;
-  max-width: 300px;
-  height: auto;
-  transition: transform 0.3s ease;
+  width: 300px !important;       /* Increased size */
+  height: auto !important;
+  display: block !important;
+  opacity: 1 !important;         /* Ensure full visibility */
+  visibility: visible !important;
 }
 .message-box button {
   background-color: #333;
