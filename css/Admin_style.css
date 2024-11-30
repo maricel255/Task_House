@@ -773,7 +773,7 @@ body::before {
     margin: 4px 2px; /* Margins */
     cursor: pointer; /* Pointer cursor on hover */
     border-radius: 4px; /* Rounded corners */
-    margin-left: 50px;  /* Adds 50px space from the left */
+    margin-left: 90px;  /* Adds 50px space from the left */
     
   }
   .intern_acc:hover {
@@ -791,6 +791,8 @@ body::before {
   margin: 4px 2px; /* Margins */
   cursor: pointer; /* Pointer cursor on hover */
   border-radius: 4px; /* Rounded corners */
+  margin-left: 90px;  /* Adds 50px space from the left */
+
 }
 .faci_acc:hover {
   background-color:  #FF920C;
