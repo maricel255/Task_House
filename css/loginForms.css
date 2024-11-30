@@ -72,7 +72,7 @@ h1 {
 .logo-container {
   position: fixed !important;
   top: 20px !important;
-  right: 20px !important;
+  left: 20px !important;     /* Changed from right to left */
   z-index: 9999 !important;
   pointer-events: none !important;
   width: auto !important;
