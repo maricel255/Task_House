@@ -773,6 +773,7 @@ body::before {
     margin: 4px 2px; /* Margins */
     cursor: pointer; /* Pointer cursor on hover */
     border-radius: 4px; /* Rounded corners */
+    left:25px;
     
   }
   .intern_acc:hover {
