@@ -40,34 +40,57 @@ h1 {
 }
 /* Custom Alert Styling */
 .custom-alert {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  border-radius: 8px;
-  color: white;
-  font-weight: 500;
-  transform: translateX(150%);
-  animation: slideIn 0.5s forwards;
-  z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: fixed !important;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  padding: 15px 25px !important;
+  border-radius: 8px !important;
+  color: white !important;
+  font-weight: 500 !important;
+  z-index: 99999 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  text-align: center !important;
+  min-width: 300px !important;
+  animation: slideDown 0.5s forwards !important;
+  opacity: 0;
 }
 
 .alert-error {
-  background-color: #ff4444;
-  border-left: 5px solid #cc0000;
+  background-color: #ff4444 !important;
+  border-left: 5px solid #cc0000 !important;
 }
 
 .alert-success {
-  background-color: #00C851;
-  border-left: 5px solid #007E33;
+  background-color: #00C851 !important;
+  border-left: 5px solid #007E33 !important;
 }
 
-@keyframes slideIn {
-  to {
-    transform: translateX(0);
+@keyframes slideDown {
+  0% {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
   }
 }
+
+.custom-alert {
+  animation: slideDown 0.5s forwards, fadeOut 0.5s forwards 3s !important;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 .message-box button {
   background-color: #333;
   color: #fff;
@@ -104,37 +127,6 @@ body {
 .btn-green:hover {
   background-color: lightgreen;
   color: white;
-}
-
-/* Custom Alert Styling */
-.custom-alert {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  border-radius: 8px;
-  color: white;
-  font-weight: 500;
-  transform: translateX(150%);
-  animation: slideIn 0.5s forwards;
-  z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.alert-error {
-  background-color: #ff4444;
-  border-left: 5px solid #cc0000;
-}
-
-.alert-success {
-  background-color: #00C851;
-  border-left: 5px solid #007E33;
-}
-
-@keyframes slideIn {
-  to {
-    transform: translateX(0);
-  }
 }
 
 /* Responsive Login Form */
@@ -209,16 +201,9 @@ body {
   }
 
   .custom-alert {
-    width: 90%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-150%);
-    animation: slideDown 0.5s forwards;
-  }
-
-  @keyframes slideDown {
-    to {
-      transform: translateX(-50%) translateY(0);
-    }
+    width: 90% !important;
+    min-width: auto !important;
+    margin: 0 20px !important;
   }
 
   .document-logo {
