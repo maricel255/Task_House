@@ -870,6 +870,18 @@ body {
     width: 100%;
     max-width: none;
   }
+  .logo-container {
+    position: fixed;  /* Ensure fixed positioning */
+    bottom: 20px;    /* Adjust position for mobile */
+    right: 20px;     /* Adjust position for mobile */
+    z-index: 9999;   /* Keep high z-index to stay on top */
+  }
+
+  .document-logo {
+    max-width: 200px;  /* Adjust size for mobile */
+    width: auto;
+    height: auto;
+  }
 
   /* Make image container fill space */
   .portrait-card {
