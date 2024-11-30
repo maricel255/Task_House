@@ -871,16 +871,19 @@ body {
     max-width: none;
   }
   .logo-container {
-    position: fixed;  /* Ensure fixed positioning */
-    bottom: 20px;    /* Adjust position for mobile */
-    right: 20px;     /* Adjust position for mobile */
-    z-index: 9999;   /* Keep high z-index to stay on top */
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    pointer-events: none !important; /* Ensures logo doesn't interfere with scrolling */
   }
 
-  .document-logo {
-    max-width: 200px;  /* Adjust size for mobile */
-    width: auto;
-    height: auto;
+  .logo-container .document-logo {
+    display: block !important;
+    max-width: 200px !important;
+    width: auto !important;
+    height: auto !important;
+    transition: transform 0.3s ease !important;
   }
 
   /* Make image container fill space */
