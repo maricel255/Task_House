@@ -68,7 +68,7 @@ h1 {
     transform: translateX(0);
   }
 }
-/* Update this logo container styling */
+/* Keep and update this logo container styling */
 .logo-container {
   position: fixed !important;
   bottom: 30px !important;
