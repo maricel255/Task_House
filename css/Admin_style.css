@@ -796,7 +796,6 @@ body::before {
     display: block; /* Stack vertically */
     text-align: center; /* Keep text centered */
 }
-
 }
 .faci_acc{
   background-color:  #000543; /* Green background */
@@ -987,6 +986,28 @@ body::before {
   border: 1px solid #ccc; /* Optional: Add a border for better visibility */
   margin-top: 10px; /* Space above the table */
   margin-left: 50px; /* Space from the left */
+}
+@media screen and (max-width: 480px) {
+  .table-container {
+      max-height: 300px; /* Reduced height for mobile */
+      width: 80%; /* Takes up 80% of screen width */
+      margin-left: 65px; /* Match the margin of other elements */
+      overflow-x: auto; /* Enable horizontal scrolling if needed */
+      font-size: 14px; /* Slightly smaller font */
+      border-radius: 5px; /* Optional: rounded corners */
+  }
+
+  /* Make table content responsive */
+  .table-container table {
+      width: 100%;
+      min-width: 500px; /* Ensure minimum width for content */
+  }
+
+  /* Adjust table cell padding for mobile */
+  .table-container td, 
+  .table-container th {
+      padding: 8px 10px;
+  }
 }
 
 
