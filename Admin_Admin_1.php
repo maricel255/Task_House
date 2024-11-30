@@ -1266,8 +1266,7 @@ echo '</table>';
                 ?>
             </div>
             <h1>Intern Logins</h1>
-            <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
-
+            <button class="intern_acc ms-5" onclick="openModal('InternAccModal')">Intern Accounts</button>
             <!-- Intern Modal -->
             <div id="InternAccModal" class="modal">
                 <div class="modal-content">

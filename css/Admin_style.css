@@ -1569,3 +1569,7 @@ input[type="submit"]:hover {
   margin-right: 50px; /* Optional: for balance */
   margin-top: 20px;   /* Adds some space from the top */
 }
+
+.intern_acc {
+  margin-left: 50px;  /* Adds 50px space from the left */
+}
