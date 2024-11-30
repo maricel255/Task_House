@@ -146,7 +146,9 @@ body::before {
 .sidebar:hover ~ .header {
   margin-left: 250px; /* Adjust margin for expanded sidebar */
 }
-
+.h2{
+  left:15px;
+}
 .modal-btn {
   cursor: pointer;
   border-radius: 50%; /* Makes the button circular */
