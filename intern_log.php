@@ -62,6 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="css/loginForms.css"> <!-- Same CSS file -->
 </head>
 <body style="background-color:linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));" class="abody">
+    <!-- Logo positioned at bottom right -->
+    <div class="logo-container">
+          <img src="image/maninlogo__1_-removebg-preview.png" alt="Logo" class="document-logo"/>
+        </div>
 <section class="vh-100">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -99,11 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </section>
 <script src="js/Intern_script.js"></script>
- <!-- Logo positioned at bottom right -->
-  <!-- Logo positioned at bottom right -->
-  <div class="logo-container">
-          <img src="image/maninlogo__1_-removebg-preview.png" alt="Logo" class="document-logo"/>
-        </div>
+
 
 </body>
 </html>
