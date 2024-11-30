@@ -773,7 +773,7 @@ body::before {
     margin: 4px 2px; /* Margins */
     cursor: pointer; /* Pointer cursor on hover */
     border-radius: 4px; /* Rounded corners */
-    left:25px;
+    margin-left: 50px;  /* Adds 50px space from the left */
     
   }
   .intern_acc:hover {
@@ -1570,6 +1570,3 @@ input[type="submit"]:hover {
   margin-top: 20px;   /* Adds some space from the top */
 }
 
-.intern_acc {
-  margin-left: 50px;  /* Adds 50px space from the left */
-}
