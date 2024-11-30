@@ -28,21 +28,33 @@ h1 {
   text-align: center;
   z-index: 1000;
 }
-/* Logo positioning at bottom right */
+/* Character image styling */
+.character-image {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  max-width: 500px;
+  z-index: 1;
+  pointer-events: none; /* Prevent interaction with the image */
+}
+
+/* Logo container styling */
 .logo-container {
-  position: fixed;
-  bottom: 30px;  /* Adjusted for larger logo */
-  right: 30px;   /* Adjusted for larger logo */
-  z-index: 9999;
-  pointer-events: none;
+  position: fixed !important;
+  bottom: 30px !important;
+  right: 30px !important;
+  z-index: 9999 !important;
+  pointer-events: none !important;
+  width: auto !important; /* Remove any fixed width */
+  display: block !important;
 }
 
 .document-logo {
-  width: 300px;  /* Doubled the size */
-  height: auto;
-  transition: all 0.3s ease; /* Smooth transition if size changes */
+  width: 300px !important;
+  height: auto !important;
+  display: block !important;
 }
-
 .message-box button {
   background-color: #333;
   color: #fff;
