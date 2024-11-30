@@ -995,29 +995,35 @@ body::before {
     width: auto; /* Allow container to adjust to content */
     overflow-x: auto; /* Enable horizontal scrolling if needed */
   }
-  .delete-button {
-    display: inline-block; /* Ensure button is visible */
-    margin-top: 5px; /* Add some space above the button */
-    margin-left: 0; /* Remove left margin */
-    width: auto; /* Allow button to size based on content */
-    padding: 8px 12px; /* Slightly smaller padding for mobile */
-    font-size: 14px; /* Slightly smaller font size */
-  }
-
-  /* Adjust table cell layout for mobile */
   .table-data {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
     padding: 10px;
+    width: 100%; /* Ensure full width */
   }
 
-  /* Ensure action buttons container is visible */
   .action-form {
     display: flex;
+    flex-direction: row; /* Align buttons horizontally */
     gap: 5px;
     margin-top: 5px;
     width: 100%;
+    justify-content: flex-start; /* Align buttons to the start */
+  }
+
+  .delete-button {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin: 0; /* Remove margins */
+    white-space: nowrap; /* Prevent text wrapping */
+    min-width: fit-content; /* Ensure button fits its content */
+    position: relative; /* Ensure proper positioning */
+    z-index: 1; /* Ensure button stays on top */
+  }
+
+  /* Adjust input field width */
+  .password-input {
+    width: 120px; /* Reduce width of password input */
+    margin-right: 5px;
   }
 }
 
