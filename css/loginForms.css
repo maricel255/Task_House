@@ -39,14 +39,13 @@ h1 {
   pointer-events: none; /* Prevent interaction with the image */
 }
 
-/* Logo container styling */
 .logo-container {
   position: fixed !important;
-  bottom: 30px !important;
-  right: 30px !important;
+  top: 30px !important;     /* Keep at top */
+  right: 30px !important;   /* Changed to right */
   z-index: 9999 !important;
   pointer-events: none !important;
-  width: auto !important; /* Remove any fixed width */
+  width: auto !important;
   display: block !important;
 }
 
