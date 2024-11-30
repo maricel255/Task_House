@@ -68,27 +68,6 @@ h1 {
     transform: translateX(0);
   }
 }
-/* Keep and update this logo container styling */
-.logo-container {
-  position: fixed !important;
-  bottom: 40px !important;
-  right: 40px !important;
-  z-index: 9999 !important;
-  pointer-events: none !important;
-  width: auto !important;
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.document-logo {
-  width: 300px !important;
-  height: auto !important;
-  display: block !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  opacity: 1 !important;
-}
 .message-box button {
   background-color: #333;
   color: #fff;
