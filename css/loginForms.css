@@ -109,7 +109,7 @@ h1 {
 
 .document-logo {
   display: block;
-  max-width: 300px;
+  max-width: 600px;
   height: auto;
   transition: transform 0.3s ease;
 }
@@ -340,7 +340,7 @@ body {
 
 .login-content {
   width: 100%;
-  max-width: 500px;
+  max-width: 300px;
   margin-right: 2rem;
   z-index: 2;
 }
