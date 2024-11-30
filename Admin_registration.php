@@ -102,5 +102,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </section>
 <script src="js/Admin_script.js"></script>
+ <!-- Logo positioned at bottom right -->
+ <div class="logo-wrapper">
+    <img src="image/th_logo.png" alt="logo" class="header-logo" />
+  </div>
 </body>
 </html>

@@ -88,5 +88,9 @@ $conn = null; // Close the connection
     </div>
   </div>
 </section>
+ <!-- Logo positioned at bottom right -->
+ <div class="logo-wrapper">
+    <img src="image/th_logo.png" alt="logo" class="header-logo" />
+  </div>
 </body>
 </html>
