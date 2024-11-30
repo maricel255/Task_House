@@ -27,10 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           header("Location: intern_page.php");
           exit();
       } else {
-          echo "<script>alert('Password does not match.');</script>";
+        echo '<div class="custom-alert alert-error">Password does not match.</div>';
       }
   } else {
-      echo "<script>alert('No user found with the provided InternID.');</script>";
+     echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
   }
 }
 

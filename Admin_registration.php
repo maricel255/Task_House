@@ -31,10 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
                     </div>";
           } else {
-              echo "<script>alert('Invalid password.');</script>";
+            echo '<div class="custom-alert alert-error">Password does not match.</div>';
           }
       } else {
-          echo "<script>alert('Invalid username and password.');</script>";
+        echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
       }
   } catch (PDOException $e) {
       echo "Error: " . $e->getMessage(); // Handle any errors that may occur

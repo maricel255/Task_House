@@ -29,10 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           header("Location: faci_facilitator.php"); // Redirect to the facilitator page
           exit(); // Prevent further code execution
       } else {
-          echo "Password does not match.<br>"; // Debugging line (remove in production)
+        echo '<div class="custom-alert alert-error">Password does not match.</div>';
       }
     } else {
-        echo "No user found with the provided FaciID.<br>"; // Debugging line (remove in production)
+      echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
     }
 
     $stmt = null; // Close the statement
@@ -66,7 +66,7 @@ $conn = null; // Close the connection
                 <form method="POST" action="">
                   <span class="s-intern">INTERN'S</span>
                   <span class="s-TH">TASK HOUSE</span>
-                  <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">FACILITATOR LOG-IN</h1>
+                  <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">HR/MANAGER</h1>
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="text" id="form2Example17" name="Uname" class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">Username</label>

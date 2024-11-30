@@ -67,3 +67,158 @@ body {
   color: white;
 }
 
+/* Custom Alert Styling */
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  transform: translateX(150%);
+  animation: slideIn 0.5s forwards;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.alert-error {
+  background-color: #ff4444;
+  border-left: 5px solid #cc0000;
+}
+
+.alert-success {
+  background-color: #00C851;
+  border-left: 5px solid #007E33;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Login Form */
+@media (max-width: 992px) {
+  .s-intern, .s-TH {
+    font-size: 32px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .card {
+    margin: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .s-intern, .s-TH {
+    font-size: 28px;
+    padding-left: 30px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .card-body {
+    padding: 2rem !important;
+  }
+
+  .form-control-lg {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .s-intern, .s-TH {
+    font-size: 24px;
+    padding-left: 15px;
+  }
+
+  h1 {
+    font-size: 18px;
+    margin-top: 15px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .card {
+    border-radius: 0.5rem;
+  }
+
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .custom-alert {
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-150%);
+    animation: slideDown 0.5s forwards;
+  }
+
+  @keyframes slideDown {
+    to {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+}
+
+/* Enhanced Form Styling */
+.form-control-lg {
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.form-control-lg:focus {
+  border-color: #338B93;
+  box-shadow: 0 0 0 0.2rem rgba(51, 139, 147, 0.25);
+}
+
+.form-label {
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.form-control-lg:focus + .form-label {
+  color: #338B93;
+}
+
+/* Enhanced Button Styling */
+.btn-green, .btn-orange {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 24px;
+}
+
+.btn-green {
+  background: linear-gradient(145deg, #28a745, #218838);
+  border: none;
+  color: white;
+}
+
+.btn-orange {
+  background: linear-gradient(145deg, #fd7e14, #e65c00);
+  border: none;
+  color: white;
+}
+
+.btn-green:hover, .btn-orange:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
