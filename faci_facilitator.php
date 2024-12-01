@@ -501,7 +501,7 @@ try {
                     <i class="fa fa-cog"></i><span> Requests</span>
                 </a>
                 <a href="#" onclick="showContent('report')">
-                    <i class="fa fa-cog"></i><span> Intern Reports</span>
+                    <i class="fa fa-cog"></i><span> Intern Reportssss</span>
                 </a>
                 
             </nav>
