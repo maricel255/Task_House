@@ -310,6 +310,7 @@ body {
 .slider-container {
   display: flex;
   transition: transform 0.5s ease;
+  overflow: hidden;
 }
 
 .announcement-item {
@@ -317,9 +318,11 @@ body {
   display: none;
   opacity: 0;
   transition: opacity 0.5s ease;
+  overflow: hidden;
 }
 
 .announcement-item.active {
+  display: block;
   opacity: 1;
 }
 
@@ -1427,8 +1430,14 @@ form button {
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   margin-bottom: 30px;
   transition: transform 0.3s ease;
+  overflow: hidden;
   
  
+}
+.announcement-details {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 .announcement-board:hover {
   transform: translateY(-2px);
