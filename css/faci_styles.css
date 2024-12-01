@@ -98,11 +98,16 @@ body {
     cursor: pointer;
     transition: width 0.3s, height 0.3s;
     margin-left: 10px;
+    min-width: 40px; /* Prevent shrinking */
+    min-height: 40px; /* Prevent shrinking */
+    object-fit: cover; /* Maintain aspect ratio */
 }
 
 .sidebar.active .user-icon {
     width: 60px;
     height: 60px;
+    min-width: 60px; /* Prevent shrinking when sidebar is active */
+    min-height: 60px; /* Prevent shrinking when sidebar is active */
 }
 
 .user-details {
