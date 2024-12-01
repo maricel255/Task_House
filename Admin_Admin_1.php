@@ -894,7 +894,13 @@ $timeLogsCount = $stmt->fetchColumn();
     <link rel="stylesheet" href="css/Admin_style.css"> <!-- Link to your CSS -->
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+<!-- Replace line 897-898 with: -->
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <?php
@@ -1260,8 +1266,7 @@ echo '</table>';
                 ?>
             </div>
             <h1>Intern Logins</h1>
-            <button class="intern_acc" onclick="openModal('InternAccModal')">Intern Accounts</button>
-
+            <button class="intern_acc ms-7" onclick="openModal('InternAccModal')">Intern Accounts</button>
             <!-- Intern Modal -->
             <div id="InternAccModal" class="modal">
                 <div class="modal-content">
@@ -1285,69 +1290,71 @@ echo '</table>';
             </div>
 
             <!-- Display Existing Intern Accounts Outside the Modal -->
-            <h2>Existing Intern Accounts</h2>
+            <div class="accounts-section">
+                <h2>Existing Intern Accounts</h2>
 
-            <!-- Search Form Positioned in Upper Right of the Table -->
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                <form method="GET" action="">
-                    <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
-                    <button type="submit" class="search-button">Search</button>
-                </form>
-            </div>
-
-            <!-- Message Display for Search Results -->
-            <?php if ($searchInternID): ?>
-                <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
-            <?php endif; ?>
-
-            <!-- Intern Accounts Table -->
-            <?php if (!empty($internAccounts)): ?>
-                <div class="table-container"> <!-- Added container for scrolling -->
-
-                <table class="intern-accounts-table">
-                    <tr>
-                        <th class="table-header">Intern ID</th>
-                        <th class="table-header">Current Password</th>
-                        <th class="table-header" style="padding-left: 40%;">Actions</th>
-                    </tr>
-
-                    <?php 
-                    // To store the filtered and non-filtered accounts
-                    $highlightedRow = [];
-                    $otherRows = [];
-
-                    foreach ($internAccounts as $account): 
-                        if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
-                            $highlightedRow[] = $account; 
-                        } else {
-                            $otherRows[] = $account; 
-                        }
-                    endforeach; 
-
-                    // Merge highlighted row(s) with other rows
-                    $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                    foreach ($sortedAccounts as $account): ?>
-                        <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
-                            <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
-                            <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
-                            <td class="table-actions">
-                            <form method="POST" action="" style="display: flex; align-items: center;">
-                                <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
-                                <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
-                                <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;" onclick="return confirm('Are you sure you want to update this record?');">Update</button>
-                                <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                </form>
-
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </table>
+                <!-- Search Form Positioned in Upper Right of the Table -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                    <form method="GET" action="">
+                        <input type="text" name="searchInternID" value="<?php echo htmlspecialchars($searchInternID); ?>" placeholder="Search Intern ID" class="search-input" />
+                        <button type="submit" class="search-button">Search</button>
+                    </form>
                 </div>
 
-            <?php else: ?>
-                <p>No intern accounts found.</p>
-            <?php endif; ?>
+                <!-- Message Display for Search Results -->
+                <?php if ($searchInternID): ?>
+                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchInternID); ?></strong></p>
+                <?php endif; ?>
 
+                <!-- Intern Accounts Table -->
+                <?php if (!empty($internAccounts)): ?>
+                    <div class="table-container"> <!-- Added container for scrolling -->
+
+                    <table class="intern-accounts-table">
+                        <tr>
+                            <th class="table-header">Intern ID</th>
+                            <th class="table-header">Current Password</th>
+                            <th class="table-header" style="padding-left: 40%;">Actions</th>
+                        </tr>
+
+                        <?php 
+                        // To store the filtered and non-filtered accounts
+                        $highlightedRow = [];
+                        $otherRows = [];
+
+                        foreach ($internAccounts as $account): 
+                            if (isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false) {
+                                $highlightedRow[] = $account; 
+                            } else {
+                                $otherRows[] = $account; 
+                            }
+                        endforeach; 
+
+                        // Merge highlighted row(s) with other rows
+                        $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                        foreach ($sortedAccounts as $account): ?>
+                            <tr class="<?php echo isset($account['internID']) && strpos($account['internID'], $searchInternID) !== false ? 'highlight' : ''; ?>">
+                                <td class="table-data"><?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : 'N/A'; ?></td>
+                                <td class="table-data"><?php echo isset($account['InternPass']) ? htmlspecialchars($account['InternPass']) : 'N/A'; ?></td>
+                                <td class="table-actions">
+                                <form method="POST" action="" style="display: flex; align-items: center;">
+                                    <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
+                                    <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
+                                    <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;" onclick="return confirm('Are you sure you want to update this record?');">Update</button>
+                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                    </form>
+
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    </div>
+
+                <?php else: ?>
+                    <p>No intern accounts found.</p>
+                <?php endif; ?>
+
+            </div>
         </div>
                 
                 
@@ -1365,7 +1372,7 @@ echo '</table>';
                 ?>
             </div>
             <h1>Company Logins</h1>
-            <button class="faci_acc" onclick="openModal('FaccAccModal')">Company Accounts</button>
+            <button class="faci_acc ms-7" onclick="openModal('FaccAccModal')">Company Accounts</button>
 
             <!-- Facilitator Modal -->
             <div id="FaccAccModal" class="modal">
@@ -1388,68 +1395,71 @@ echo '</table>';
                 </div>
 
                                                                                     <!-- Display Existing Facilitator Accounts Outside the Modal -->
-                <h2>Existing Company Accounts</h2>
+                <div class="accounts-section">
+                    <h2>Existing Company Accounts</h2>
 
-                <!-- Search Form Positioned in Upper Right of the Table -->
-                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-                    <form method="GET" action="">
-                    <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Company ID" class="search-input" />
-                    <button type="submit" class="search-button">Search</button>
-                    </form>
-                </div>
+                    <!-- Search Form Positioned in Upper Right of the Table -->
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                        <form method="GET" action="">
+                            <input type="text" name="searchFaciID" value="<?php echo htmlspecialchars($searchFaciID); ?>" placeholder="Search Company ID" class="search-input" />
+                            <button type="submit" class="search-button">Search</button>
+                        </form>
+                    </div>
 
-                <!-- Message Display for Search Results -->
-                <?php if ($searchFaciID): ?>
-                    <p>Search Results for: <strong><?php echo htmlspecialchars($searchFaciID); ?></strong></p>
-                <?php endif; ?>
+                    <!-- Message Display for Search Results -->
+                    <?php if ($searchFaciID): ?>
+                        <p>Search Results for: <strong><?php echo htmlspecialchars($searchFaciID); ?></strong></p>
+                    <?php endif; ?>
 
-                <!-- Facilitator Accounts Table -->
-                <?php if (!empty($faccAccounts)): ?>
-                    <div class="table-container"> <!-- Added container for scrolling -->
+                    <!-- Facilitator Accounts Table -->
+                    <?php if (!empty($faccAccounts)): ?>
+                        <div class="table-container"> <!-- Added container for scrolling -->
 
-                            <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
-                                <tr>
-                                    <th class="table-header">Company ID</th>
-                                    <th class="table-header">Current Password</th>
-                                    <th class="table-header" style="padding-left: 30%;">Actions</th>
-                                </tr>
-
-                                <?php 
-                                // To store the filtered and non-filtered accounts
-                                $highlightedRow = [];
-                                $otherRows = [];
-
-                                foreach ($faccAccounts as $account): 
-                                    if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
-                                        $highlightedRow[] = $account; 
-                                    } else {
-                                        $otherRows[] = $account; 
-                                    }
-                                endforeach; 
-
-                                // Merge highlighted row(s) with other rows
-                                $sortedAccounts = array_merge($highlightedRow, $otherRows);
-                                foreach ($sortedAccounts as $account): ?>
-                                    <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
-                                        <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
-                                        <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
-                                        <td class="table-actions">
-                                            <form method="POST" action="" style="display:inline;">
-                                                <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
-                                                <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
-                                                <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;" onclick="return confirm('Are you sure you want to update this record?');">Update</button>
-                                                <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
-                                            </form>
-                                        
-                                        </td>
+                                <table class="intern-accounts-table"> <!-- Use the same class as intern accounts -->
+                                    <tr>
+                                        <th class="table-header">Company ID</th>
+                                        <th class="table-header">Current Password</th>
+                                        <th class="table-header" style="padding-left: 30%;">Actions</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </table>
-                            </div>
 
-                <?php else: ?>
-                    <p>No Company ID account found.</p>
-                <?php endif; ?>
+                                    <?php 
+                                    // To store the filtered and non-filtered accounts
+                                    $highlightedRow = [];
+                                    $otherRows = [];
+
+                                    foreach ($faccAccounts as $account): 
+                                        if (isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false) {
+                                            $highlightedRow[] = $account; 
+                                        } else {
+                                            $otherRows[] = $account; 
+                                        }
+                                    endforeach; 
+
+                                    // Merge highlighted row(s) with other rows
+                                    $sortedAccounts = array_merge($highlightedRow, $otherRows);
+                                    foreach ($sortedAccounts as $account): ?>
+                                        <tr class="<?php echo isset($account['faciID']) && strpos($account['faciID'], $searchFaciID) !== false ? 'highlight' : ''; ?>">
+                                            <td class="table-data"><?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : 'N/A'; ?></td>
+                                            <td class="table-data"><?php echo isset($account['faciPass']) ? htmlspecialchars($account['faciPass']) : 'N/A'; ?></td>
+                                            <td class="table-actions">
+                                                <form method="POST" action="" style="display:inline;">
+                                                    <input type="hidden" name="faciID" value="<?php echo isset($account['faciID']) ? htmlspecialchars($account['faciID']) : ''; ?>" />
+                                                    <input type="password" name="faciPass" class="password-input" placeholder="New Password"  style="margin-left: 40%;" />
+                                                    <button type="submit" name="action" value="update" class="update-button"  style="margin-right: 2px;" onclick="return confirm('Are you sure you want to update this record?');">Update</button>
+                                                    <button type="submit" name="action" value="delete" class="delete-button"  style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                                </form>
+                                            
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </table>
+                                </div>
+
+                    <?php else: ?>
+                        <p>No Company ID account found.</p>
+                    <?php endif; ?>
+
+                </div>
 
             </div>
 

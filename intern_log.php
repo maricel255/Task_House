@@ -27,10 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           header("Location: intern_page.php");
           exit();
       } else {
-          echo "<script>alert('Password does not match.');</script>";
+        echo '<div class="alert-container"><div class="custom-alert alert-error">Password does not match.</div></div>';
       }
   } else {
-      echo "<script>alert('No user found with the provided InternID.');</script>";
+    echo '<div class="alert-container"><div class="custom-alert alert-error">No user found with the provided InternID.</div></div>';
   }
 }
 
@@ -39,16 +39,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intern</title>
-</head>
-<body>
-    
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,6 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="stylesheet" href="css/loginForms.css"> <!-- Same CSS file -->
 </head>
 <body style="background-color:linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));" class="abody">
+    <!-- Logo positioned at bottom right -->
+    <div class="logo-container">
+          <img src="image/maninlogo__1_-removebg-preview.png" alt="Logo" class="document-logo"/>
+        </div>
 <section class="vh-100">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -99,5 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </section>
 <script src="js/Intern_script.js"></script>
+
+
 </body>
 </html>

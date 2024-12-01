@@ -31,10 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
                     </div>";
           } else {
-              echo "<script>alert('Invalid password.');</script>";
+            echo '<div class="custom-alert alert-error">Password does not match.</div>';
           }
       } else {
-          echo "<script>alert('Invalid username and password.');</script>";
+        echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
       }
   } catch (PDOException $e) {
       echo "Error: " . $e->getMessage(); // Handle any errors that may occur
@@ -102,5 +102,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </section>
 <script src="js/Admin_script.js"></script>
+ <!-- Logo positioned at bottom right -->
+ <div class="logo-container">
+          <img src="image/maninlogo__1_-removebg-preview.png" alt="Logo" class="document-logo"/>
+        </div>
+ 
 </body>
 </html>

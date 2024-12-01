@@ -608,21 +608,34 @@ body::before {
 
 /* Modal Background */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1000; /* Ensure it appears on top */
-  left: 10px; /* Align to the left with some padding */
-  bottom: 10px; /* Align to the bottom with some padding */
-  width: 40%; /* Adjust width for portrait */
-  max-width: 40%; /* Make it responsive on smaller screens */
-  height: auto; /* Let height adjust based on content */
-  max-height: 80%; /* Limit height to avoid overflow */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: transparent; /* Fully transparent background */
-  border-radius: 10px; /* Optional: add rounded corners */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Optional shadow for focus */
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 100px; /* Increased left spacing from 70px to 100px */
+  bottom: 10px;
+  width: 40%;
+  max-width: 40%;
+  height: auto;
+  max-height: 80%;
+  overflow: auto;
+  background-color: transparent;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
+/* Add responsive adjustment for smaller screens */
+@media (max-width: 768px) {
+  .modal {
+    left: 80px; /* Slightly reduced spacing for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    left: 65px; /* Further reduced spacing for mobile */
+    width: 80%; /* Increased width for better visibility on mobile */
+  }
+}
 
 /* Modal Content */
 .modal-content {
@@ -651,7 +664,7 @@ body::before {
   /* Close Button */
 .close {
   color: #aaa;
- left:3px; /* Move the close button to the left */
+ right:3px; /* Move the close button to the left */
   font-size: 28px;
   font-weight: bold;
 }
@@ -760,10 +773,29 @@ body::before {
     margin: 4px 2px; /* Margins */
     cursor: pointer; /* Pointer cursor on hover */
     border-radius: 4px; /* Rounded corners */
+    margin-left: 90px;  /* Adds 50px space from the left */
     
   }
   .intern_acc:hover {
     background-color:  #000543;
+}
+@media screen and (max-width: 480px) {
+  .intern_acc {
+      width: 80%; /* Takes up 80% of screen width */
+      padding: 30px 20px; /* Reduced padding */
+      margin-left: 65px; /* Adjusted left margin */
+      font-size: 14px; /* Slightly smaller font */
+      display: block; /* Stack vertically */
+      text-align: center; /* Keep text centered */
+  }
+  .faci_acc {
+    width: 80%; /* Takes up 80% of screen width */
+    padding: 30px 20px; /* Reduced padding */
+    margin-left: 65px; /* Adjusted left margin */
+    font-size: 14px; /* Slightly smaller font */
+    display: block; /* Stack vertically */
+    text-align: center; /* Keep text centered */
+}
 }
 .faci_acc{
   background-color:  #000543; /* Green background */
@@ -777,6 +809,8 @@ body::before {
   margin: 4px 2px; /* Margins */
   cursor: pointer; /* Pointer cursor on hover */
   border-radius: 4px; /* Rounded corners */
+  margin-left: 90px;  /* Adds 50px space from the left */
+
 }
 .faci_acc:hover {
   background-color:  #FF920C;
@@ -947,11 +981,50 @@ body::before {
   font-size: 14px;       /* Same font size */
 }
 .table-container {
-  max-height: 300px; /* Adjust the height as needed */
+  max-height: 400px; /* Adjust the height as needed */
   overflow-y: auto;  /* Enable vertical scrolling */
   border: 1px solid #ccc; /* Optional: Add a border for better visibility */
   margin-top: 10px; /* Space above the table */
   margin-left: 50px; /* Space from the left */
+}
+@media (max-width: 480px) {
+  .table-container {
+    max-height: none; /* Remove height restriction */
+    margin-left: 15px; /* Reduce left margin */
+    margin-right: 15px; /* Add right margin for balance */
+    width: auto; /* Allow container to adjust to content */
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+  }
+  .table-data {
+    padding: 10px;
+    width: 100%; /* Ensure full width */
+  }
+
+  .action-form {
+    display: flex;
+    flex-direction: row; /* Align buttons horizontally */
+    gap: 5px;
+    margin-top: 5px;
+    width: 100%;
+    justify-content: flex-start; /* Align buttons to the start */
+  }
+
+  .delete-button {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin: 0; /* Remove margins */
+    white-space: nowrap; /* Prevent text wrapping */
+    min-width: fit-content; /* Ensure button fits its content */
+    position: relative; /* Ensure proper positioning */
+    z-index: 1; /* Ensure button stays on top */
+  }
+
+  /* Adjust input field width */
+  .password-input {
+    width: 120px; /* Reduce width of password input */
+    margin-right: 5px;
+  }
 }
 
 
@@ -1548,3 +1621,11 @@ input[type="submit"]:hover {
   background-color: #2196F3;
   color: white;
 }
+
+/* Add this new class */
+.accounts-section {
+  margin-left: 70px;  /* Adds space from the left */
+  margin-right: 50px; /* Optional: for balance */
+  margin-top: 20px;   /* Adds some space from the top */
+}
+
