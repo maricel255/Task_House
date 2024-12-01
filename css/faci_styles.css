@@ -486,7 +486,7 @@ body {
   .card p {
     font-size: 12px;
   }
-}
+
 
 @media (max-width: 480px) {
   .dashboard {
