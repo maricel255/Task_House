@@ -607,24 +607,12 @@ button.prev:hover, button.next:hover {
 
 
 
-.dash-content{
-  margin-left: 60px;
-  padding: 0 520px 0 20px;
-  width: calc(100% - 60px);
-  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-}
+
 .shifts {  
   margin-left: 250px; /* Fully shifted when sidebar is active */
   width: calc(100% - 250px); /* Adjust width */
 }
-/* Content sections */
-.content-section {
-  display: none; /* Initially hidden, except the one being shown */
-}
 
-.content-section#dashboard {
-  display: block; /* Dashboard is visible by default */
-}
 /*Request*/
 
 /* Default .req-container styling */
