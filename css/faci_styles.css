@@ -416,7 +416,7 @@ button.prev:hover, button.next:hover {
 /* Card heading styling */
 .card h3 {
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     color: #333;
 }
@@ -424,7 +424,7 @@ button.prev:hover, button.next:hover {
 /* Card Content */
 .card p {
     margin: 5px 0 0;
-    font-size: 16px;
+    font-size: 15px;
     color: #666;
 }
 
@@ -455,33 +455,42 @@ button.prev:hover, button.next:hover {
 }
 
 /* Responsive Design */
+/* Responsive Design */
 @media screen and (max-width: 768px) {
-    .card {
-        width: 100%;
-        margin: 0 0 15px 0;
-    }
-    
-    .card h3 {
-        font-size: 20px;
-    }
-    
-    .card p {
-        font-size: 14px;
-    }
+  .main-content, 
+  .main-content.shift,
+  .shifts {
+      margin-left: 0;
+      width: 100%;
+      padding: 70px 10px 20px;
+  }
+
+  .card {
+      width: 100%;
+      margin: 0 0 15px 0;
+  }
+  
+  .card h3 {
+      font-size: 20px;
+  }
+  
+  .card p {
+      font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .card {
-        padding: 15px;
-    }
-    
-    .card h3 {
-        font-size: 18px;
-    }
-    
-    .card p {
-        font-size: 13px;
-    }
+  .card {
+      padding: 15px;
+  }
+  
+  .card h3 {
+      font-size: 18px;
+  }
+  
+  .card p {
+      font-size: 13px;
+  }
 }
 
 .shifts {  
@@ -1684,7 +1693,9 @@ button[type="submit"]:hover {
   /* Adjust main content */
   .main-content {
     margin-left: 60px; /* Match sidebar width */
+    padding: 70px 20px 20px;
     width: calc(100% - 60px);
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
   }
 
   .main-content.shift {
