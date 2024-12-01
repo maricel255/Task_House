@@ -220,6 +220,59 @@ body {
 .logout-btn:hover .logout-icon {
   filter: invert(100%);
 }
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .header {
+      padding: 8px 12px;
+  }
+
+  .settings-icon {
+      width: 25px;
+      height: 25px;
+  }
+
+  .logout-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+  }
+
+  .logout-icon {
+      width: 16px;
+      height: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header {
+      padding: 5px 8px;
+  }
+
+  .settings-icon {
+      width: 20px;
+      height: 20px;
+  }
+
+  .logout-btn {
+      padding: 5px 8px;
+      font-size: 11px;
+  }
+
+  .logout-icon {
+      width: 14px;
+      height: 14px;
+  }
+}
+
+/* For very small screens */
+@media screen and (max-width: 320px) {
+  .logout-btn span {
+      display: none; /* Hide the "LOG OUT" text on very small screens */
+  }
+
+  .logout-btn {
+      padding: 5px;
+  }
+}
 
 /* Main Content Styling */
 .main-content {
