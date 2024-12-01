@@ -576,7 +576,7 @@ try {
     </div>
 </div>
 <!-- End Kyle-->
-
+<div class="sidebar-backdrop"></div>
     <!-- Main Content -->
     <div class="content-section" id="dashboard">
     <div class="main-content">

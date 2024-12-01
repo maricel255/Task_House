@@ -21,7 +21,7 @@ body {
     background-color: green;
     color: white;
     width: 60px;
-    height: 100%;
+    height: 100vh;
     position: fixed;
     left: 0;
     transition: width 0.3s ease-in-out;
@@ -44,6 +44,97 @@ body {
 
 .sidebar.active {
   width: 250px;
+}
+/* Responsive Design for Sidebar */
+@media screen and (max-width: 768px) {
+  .sidebar {
+      width: 50px;
+      border-radius: 0; /* Remove border radius on mobile */
+  }
+
+  .sidebar.active {
+      width: 200px; /* Slightly smaller when expanded on mobile */
+  }
+
+  /* Adjust user info section */
+  .user-info {
+      padding: 10px 5px;
+  }
+
+  .user-icon {
+      width: 35px;
+      height: 35px;
+      min-width: 35px;
+      min-height: 35px;
+  }
+
+  .sidebar.active .user-icon {
+      width: 45px;
+      height: 45px;
+      min-width: 45px;
+      min-height: 45px;
+  }
+
+  /* Navigation items */
+  .navigation a {
+      padding: 15px 10px;
+      font-size: 14px;
+  }
+
+  .sidebar.active .navigation a {
+      padding-left: 25px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .sidebar {
+      width: 45px;
+  }
+
+  .sidebar.active {
+      width: 180px; /* Even smaller on very small screens */
+  }
+
+  .user-icon {
+      width: 30px;
+      height: 30px;
+      min-width: 30px;
+      min-height: 30px;
+  }
+
+  .sidebar.active .user-icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      min-height: 40px;
+  }
+
+  /* Adjust text size */
+  .navigation a {
+      font-size: 13px;
+  }
+
+  .user-details {
+      font-size: 13px;
+  }
+}
+
+/* Optional: Add a backdrop when sidebar is active on mobile */
+@media screen and (max-width: 768px) {
+  .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+  }
+
+  .sidebar.active + .sidebar-backdrop {
+      display: block;
+  }
 }
 
 .sidebar.active .user-details,
