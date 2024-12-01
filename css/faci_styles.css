@@ -388,6 +388,7 @@ button.prev:hover, button.next:hover {
   cursor: pointer;
   width: 450px; /* Fixed width for the cards */
   height: 73px; /* Adjust height to make it bigger */
+  overflow: hidden;
 }
 
 /* Card hover effect */
@@ -431,11 +432,7 @@ button.prev:hover, button.next:hover {
 }
 
 /* Prevent scrolling on zoom and adjust width */
-body {
-  overflow-x: auto; /* Enable horizontal scrolling if necessary */
-  max-width: 100vw; /* Prevent the body from becoming too wide */
-  margin: 0;
-}
+
 
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
