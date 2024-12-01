@@ -116,8 +116,18 @@ body {
   opacity: 1; /* Show details when sidebar expands */
 }
 /* Navigation links */
+.navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 20px;
+}
+
 .navigation a {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center text horizontally */
     padding: 20px;
     text-decoration: none;
     color: black;
@@ -126,15 +136,25 @@ body {
     transition: background-color 0.3s;
     white-space: nowrap;
     width: 100%;
+    text-align: center; /* Center text */
+}
+
+/* When sidebar is expanded */
+.sidebar.active .navigation a {
+    justify-content: flex-start; /* Align to left when expanded */
+    padding-left: 40px; /* Add some padding when expanded */
+}
+
+/* Navigation items */
+.navigation span {
+    margin-left: 10px; /* Space between icon and text */
 }
 
 .navigation a:hover {
   background-color: #f0f0f0;
 }
 
-.navigation a.active {
-  background-color: #ccc;
-}
+
 
 /* Content sections */
 .content-section {
