@@ -7,6 +7,8 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
+  overflow-x: hidden;
+    max-width: 100vw;
 }
 
 /* Container styling */
@@ -184,6 +186,7 @@ body {
   left: 60px; /* Offset by the sidebar */
   transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
   z-index: 1; /* To be above sidebar */
+  overflow-x: hidden;
 }
 
 .header.shifted {
@@ -223,7 +226,14 @@ body {
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .header {
-      padding: 8px 12px;
+    width: 100%;
+    left: 0;
+    padding: 0 10px;
+  }
+  .header.shifted {
+    left: 0;
+
+    width: 100%;
   }
 
   .settings-icon {
