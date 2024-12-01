@@ -1458,6 +1458,7 @@ form button {
 .settings-icon {
   width: 30px;
   height: 30px;
+  border-radius: 50%;
 }
 /*This is for the modal that will appear when the settings button is clicked*/
 .modal {
