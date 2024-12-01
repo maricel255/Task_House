@@ -404,40 +404,41 @@ button.prev:hover, button.next:hover {
     transition: transform 0.2s;
     cursor: pointer;
     width: 450px;
-    height: 73px;
+    min-height: 73px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     overflow: hidden;
 }
 
-/* Card hover effect */
-.card:hover {
-  transform: translateX(8px);
-}
+
 
 /* Card heading styling */
 .card h3 {
-  margin: 0;
-  font-size: 45px;
-  font-weight: bold;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
 }
 
-/* Card content styling */
+/* Card Content */
 .card p {
-  margin: 5px 0 0;
-  font-size: 14px;
-  color: #333;
+    margin: 5px 0 0;
+    font-size: 16px;
+    color: #666;
 }
 
-/* Card border colors */
+/* Card Colors */
 .card.red {
-  border-color: red;
+    border-color: #ff4444;
 }
 
 .card.orange {
-  border-color: orange;
+    border-color: #fca311;
 }
 
 .card.green {
-  border-color: green;
+    border-color: #4CAF50;
 }
 
 /* Dash content styling */
@@ -448,30 +449,40 @@ button.prev:hover, button.next:hover {
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
-/* Prevent scrolling on zoom and adjust width */
-
-
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .dashboard {
-    width: 90%; /* Increase width for medium screens */
-    padding: 15px;
-    max-width: 100%; /* Prevent overflow */
-  }
-
-  /* Responsive card layout */
-  .card {
-    flex: 1 1 calc(48% - 30px); /* Cards take half the width with space between */
-    width: auto; /* Adjust width to fit container */
-    margin-right: 15px; /* Add right space for visual balance */
-  }
-
-  /* Card container layout for small screens */
-  .dashboard .card-container {
-    justify-content: center; /* Center cards */
-  }
+/* Hover effect */
+.card:hover {
+    transform: translateX(8px);
 }
 
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .card {
+        width: 100%;
+        margin: 0 0 15px 0;
+    }
+    
+    .card h3 {
+        font-size: 20px;
+    }
+    
+    .card p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .card {
+        padding: 15px;
+    }
+    
+    .card h3 {
+        font-size: 18px;
+    }
+    
+    .card p {
+        font-size: 13px;
+    }
+}
 
 .shifts {  
   margin-left: 250px; /* Fully shifted when sidebar is active */
