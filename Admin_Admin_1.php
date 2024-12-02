@@ -11,6 +11,28 @@ $stmt->bindParam(':Uname', $_SESSION['Uname']);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle name update
+    if (isset($_POST['newFirstname'])) {
+        $newFirstname = trim($_POST['newFirstname']);
+        $Uname = $_SESSION['Uname'];
+
+        try {
+            $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
+            $stmt->bindParam(':firstname', $newFirstname);
+            $stmt->bindParam(':uname', $Uname);
+            
+            if ($stmt->execute()) {
+                $_SESSION['Firstname'] = $newFirstname;
+                $_SESSION['message'] = "Name updated successfully!";
+            } else {
+                $_SESSION['message'] = "Failed to update name.";
+            }
+        } catch (PDOException $e) {
+            $_SESSION['message'] = "Error updating name: " . $e->getMessage();
+        }
+    }
+}
 // Store firstname in session
 if ($user) {
     $_SESSION['Firstname'] = $user['Firstname'];
