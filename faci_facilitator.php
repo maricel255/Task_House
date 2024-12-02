@@ -21,6 +21,33 @@ if (isset($_SESSION['Uname'])) {
     header("Location: login.php");
     exit();
 }
+if (isset($_POST['declineBtn'])) {
+    $internID = $_POST['internID'];
+    $id = $_POST['id'];
+    $declineReason = $_POST['declineReason'];
+
+    try {
+        $sql = "UPDATE time_logs SET status = 'declined', decline_reason = :reason WHERE internID = :internID AND id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':reason', $declineReason, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            $_SESSION['alertMessage'] = "Request declined successfully";
+            $_SESSION['alertType'] = 'success';
+        } else {
+            $_SESSION['alertMessage'] = "Failed to decline request";
+            $_SESSION['alertType'] = 'error';
+        }
+    } catch (PDOException $e) {
+        $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+        $_SESSION['alertType'] = 'error';
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 // Start Kyle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
@@ -806,6 +833,23 @@ try {
                                         </div>
 
                                         <button type="submit" class="action-button update" name="updateBtn">Update to Approve</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Add this after your update modal but still inside the foreach loop -->
+                            <div id="declineModal<?php echo $log['id']; ?>" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeDeclineModal(<?php echo $log['id']; ?>)">&times;</span>
+                                    <h2>Decline Request</h2>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" />
+                                        <div class="form-group">
+                                            <label for="declineReason">Reason for Decline:</label>
+                                            <textarea name="declineReason" required></textarea>
+                                        </div>
+                                        <button type="submit" class="action-button decline" name="declineBtn">Submit Decline</button>
                                     </form>
                                 </div>
                             </div>

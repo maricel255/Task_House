@@ -241,3 +241,18 @@ function updateFileName(input) {
     }
 }
 
+function showDeclineForm(id) {
+    document.getElementById('declineModal' + id).style.display = 'block';
+}
+
+function closeDeclineModal(id) {
+    document.getElementById('declineModal' + id).style.display = 'none';
+}
+
+// Update your window.onclick function
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+}
+
