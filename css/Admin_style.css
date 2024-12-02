@@ -1416,12 +1416,10 @@ p {
 
 }
 .button-group {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
   display: flex;
+  justify-content: center;
   gap: 10px;
-  align-items: center;
+  margin-top: 20px;
 }
 
 
