@@ -21,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       if ($stmt->rowCount() > 0) {
           $user = $stmt->fetch(); // Fetch the user data
   
-          // Check if the password matches
-          if ($Upass === $user['Upass']) {
+          // Check if the password matches using password_verify
+          if (password_verify($Upass, $user['Upass'])) {
               $_SESSION['Uname'] = $Uname;
               echo "<div class='message-box' id='message-box'>
                       <p>Login successful! Welcome, " . $_SESSION['Uname'] . "!</p>
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo '<div class="custom-alert alert-error">Password does not match.</div>';
           }
       } else {
-        echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
+        echo '<div class="custom-alert alert-error">No user found with the provided Username.</div>';
       }
   } catch (PDOException $e) {
       echo "Error: " . $e->getMessage(); // Handle any errors that may occur
