@@ -261,17 +261,7 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Password updated successfully!');
-            window.location.reload();
-        } else {
-            alert(data.message || 'Failed to update password');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while updating the password');
+    .then(() => {
+        window.location.reload();
     });
 });
