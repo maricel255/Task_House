@@ -37,16 +37,25 @@ if (isset($_POST['updatePassword'])) {
     $currentPassword = $_POST['currentUpass'];
     $newPassword = $_POST['newUpass'];
     
-    // Direct update without complex verification
-    $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname AND Upass = :currentPassword");
-    $updateStmt->bindParam(':newPassword', $newPassword);
-    $updateStmt->bindParam(':currentPassword', $currentPassword);
-    $updateStmt->bindParam(':Uname', $Uname);
+    // First verify the current password
+    $checkStmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname AND Upass = :currentPassword");
+    $checkStmt->bindParam(':Uname', $Uname);
+    $checkStmt->bindParam(':currentPassword', $currentPassword);
+    $checkStmt->execute();
     
-    if ($updateStmt->execute()) {
-        echo json_encode(['success' => true]);
+    if ($checkStmt->rowCount() > 0) {
+        // Current password is correct, proceed with update
+        $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname");
+        $updateStmt->bindParam(':newPassword', $newPassword);
+        $updateStmt->bindParam(':Uname', $Uname);
+        
+        if ($updateStmt->execute()) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false]);
+        }
     } else {
-        echo json_encode(['success' => true]); // Still return success to avoid errors
+        echo json_encode(['success' => false]);
     }
     exit();
 }
