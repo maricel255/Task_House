@@ -32,39 +32,42 @@ if (isset($_FILES['newProfileImage'])) {
 }
 
 // Add this code block near the top of your file, with other handlers
-if (isset($_POST['updatePassword'])) {
-    $Uname = $_SESSION['Uname'];
-    $currentPassword = $_POST['currentUpass'];
-    $newPassword = $_POST['newUpass'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['currentUpass'])) {
+    $oldUpass = $_POST['currentUpass'];
+    $newUpass = $_POST['newUpass'];
+    $confirmUpass = $_POST['confirmUpass'];
     
-    try {
-        // First verify the current password
-        $checkStmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname AND Upass = :currentPassword");
-        $checkStmt->bindParam(':Uname', $Uname);
-        $checkStmt->bindParam(':currentPassword', $currentPassword);
-        $checkStmt->execute();
-        
-        if ($checkStmt->rowCount() > 0) {
-            // Current password is correct, proceed with update
-            $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname");
-            $updateStmt->bindParam(':newPassword', $newPassword);
+    // Verify current password
+    $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
+    $stmt->bindParam(':Uname', $Uname);
+    $stmt->execute();
+    $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($currentUser && $oldUpass === $currentUser['Upass']) {
+        // Current password is correct
+        if ($newUpass === $confirmUpass) {
+            // New passwords match, update the password
+            $updateStmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
+            $updateStmt->bindParam(':newUpass', $newUpass);
             $updateStmt->bindParam(':Uname', $Uname);
             
             if ($updateStmt->execute()) {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => true]);
+                $_SESSION['message'] = "Password updated successfully!";
+                $_SESSION['message_type'] = "success";
             } else {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+                $_SESSION['message'] = "Failed to update password.";
+                $_SESSION['message_type'] = "error";
             }
         } else {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
+            $_SESSION['message'] = "New passwords do not match.";
+            $_SESSION['message_type'] = "error";
         }
-    } catch (PDOException $e) {
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'Database error']);
+    } else {
+        $_SESSION['message'] = "Current password is incorrect.";
+        $_SESSION['message_type'] = "error";
     }
+    
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
 
