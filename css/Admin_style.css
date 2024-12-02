@@ -1431,6 +1431,7 @@ p {
     border-radius: 5px;
     border: none;
     cursor: pointer;
+    display: inline-block;
 }
 
 
@@ -1443,8 +1444,9 @@ p {
 }
 
 .delete-form {
-  position: absolute;
-  display: inline-block; 
+
+  margin: 10px auto; /* Center the form */
+    text-align: center;
   
 }
 
