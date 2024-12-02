@@ -5,26 +5,19 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
-// Get the current user's information
-$Uname = $_SESSION['Uname'] ?? '';
-$Firstname = $_SESSION['Firstname'] ?? '';
+// Get user data from database
+$stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname");
+$stmt->bindParam(':Uname', $_SESSION['Uname']);
+$stmt->execute();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// If firstname is not in session, fetch it from database
-if (empty($Firstname) && !empty($Uname)) {
-    try {
-        $stmt = $conn->prepare("SELECT Firstname FROM users WHERE Uname = :Uname");
-        $stmt->bindParam(':Uname', $Uname);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($user) {
-            $_SESSION['Firstname'] = $user['Firstname'];
-            $Firstname = $user['Firstname'];
-        }
-    } catch (PDOException $e) {
-        error_log($e->getMessage());
-    }
+// Store firstname in session
+if ($user) {
+    $_SESSION['Firstname'] = $user['Firstname'];
 }
+
+// Get firstname from session
+$Firstname = $_SESSION['Firstname'] ?? '';
 
 // Add this code block at the top of your file, before any HTML output
 if (isset($_FILES['newProfileImage'])) {
