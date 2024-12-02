@@ -1219,7 +1219,7 @@ p {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  max-width: 350px;
+  max-width: 300px;
   height: 50%;
   width: 22%;
   background-color: #dc3545;
@@ -1242,11 +1242,26 @@ p {
     height: 30%;
   }
   .deleter-button { 
-    top:88%;
-    left: 45%;
-    width: 28%;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #ffc107; /* Yellow/Orange color */
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
    }
 
+}
+/* Responsive Design for Announcement Slider */
+@media (max-width: 768px) {
+  .announcement-slider {
+      width: 90%;
+      left: 5%;
+      right: 5%;
+  }
 }
 
 .slider-container {
@@ -1429,6 +1444,7 @@ p {
 }
 
 .delete-form {
+  position: absolute;
   margin-top: 15px; /* Adjust as needed */
 }
 
