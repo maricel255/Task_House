@@ -27,7 +27,7 @@ if (isset($_POST['declineBtn'])) {
     $declineReason = $_POST['declineReason'];
 
     try {
-        $sql = "UPDATE time_logs SET status = 'declined', decline_reason = :reason WHERE internID = :internID AND id = :id";
+        $sql = "UPDATE time_logs SET status = 'declined', task = :reason WHERE internID = :internID AND id = :id";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
