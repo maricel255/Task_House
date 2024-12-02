@@ -37,18 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($updateType === 'password') {
         try {
-            // Get current password from database
+            $Uname = $_SESSION['Uname']; // Make sure we have the username
+            
+            // Get current password from database - using exact column names from your table
             $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
             $stmt->bindParam(':Uname', $Uname);
             $stmt->execute();
-            $currentUser = $stmt->fetch();
+            $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
                 echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
             } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
                 echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
             } else {
-                // Update password
+                // Update password - using exact column names from your table
                 $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
                 $stmt->bindParam(':newUpass', $_POST['newUpass']);
                 $stmt->bindParam(':Uname', $Uname);

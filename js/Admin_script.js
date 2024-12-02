@@ -255,8 +255,12 @@ function autoUploadImage(input) {
 document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const formData = new FormData(this);
+    // Create FormData object
+    const formData = new FormData();
     formData.append('updateType', 'password');
+    formData.append('currentUpass', document.getElementById('currentUpass').value);
+    formData.append('newUpass', document.getElementById('newUpass').value);
+    formData.append('confirmUpass', document.getElementById('confirmUpass').value);
     
     fetch('Admin_Admin_1.php', {
         method: 'POST',
