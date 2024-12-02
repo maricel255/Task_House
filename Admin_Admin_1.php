@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
-                echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
+               // echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
             } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
                 echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
             } else {
