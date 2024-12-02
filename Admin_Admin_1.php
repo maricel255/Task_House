@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newProfileImage'])) 
         $stmt->execute();
         echo json_encode(['status' => 'success', 'message' => 'Profile image updated successfully!']);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to upload image.']);
+        error_log('Failed to upload image.');
     }
     exit(); // Stop further processing
 }
