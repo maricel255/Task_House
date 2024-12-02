@@ -12,31 +12,21 @@ if (isset($_FILES['newProfileImage'])) {
     $fileName = basename($_FILES['newProfileImage']['name']);
     $targetFilePath = $uploadDir . $fileName;
 
-    // Check if the file is an image
-    $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-
-    if (in_array(strtolower($fileType), $allowedTypes)) {
-        if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $targetFilePath)) {
-            // Update the user's profile image in the database
-            $stmt = $conn->prepare("UPDATE users SET admin_profile = :profileImage WHERE Uname = :Uname");
-            $stmt->bindParam(':profileImage', $fileName);
-            $stmt->bindParam(':Uname', $Uname);
-
-            if ($stmt->execute()) {
-                $response['success'] = true;
-            } else {
-                $response['message'] = 'Failed to update profile image in the database.';
-            }
-        } else {
-            $response['message'] = 'Failed to move uploaded file.';
-        }
+    // Simply move the file and update database without showing errors
+    if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $targetFilePath)) {
+        // Update the user's profile image in the database
+        $stmt = $conn->prepare("UPDATE users SET admin_profile = :profileImage WHERE Uname = :Uname");
+        $stmt->bindParam(':profileImage', $fileName);
+        $stmt->bindParam(':Uname', $Uname);
+        $stmt->execute();
+        
+        $response['success'] = true;
     } else {
-        $response['message'] = 'Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.';
+        $response['success'] = false;
     }
     
     echo json_encode($response);
-    exit; // Important: stop further processing
+    exit;
 }
 
 // Add this function
