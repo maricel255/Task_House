@@ -15,7 +15,7 @@ function handleProfileUpdate($conn) {
         $Uname = $_SESSION['Uname'];
         $messages = [];
 
-        // Handle image upload
+        // Handle image upload automatically
         if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'uploads/';
             $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
@@ -23,17 +23,15 @@ function handleProfileUpdate($conn) {
             $uploadFile = $uploadDir . $newFileName;
 
             if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
-                $stmt = $conn->prepare("UPDATE adminacc SET profile_image = :profile_image WHERE Uname = :Uname");
-                $stmt->bindValue(':profile_image', $newFileName);
+                $stmt = $conn->prepare("UPDATE users SET admin_profile = :admin_profile WHERE Uname = :Uname");
+                $stmt->bindValue(':admin_profile', $newFileName);
                 $stmt->bindValue(':Uname', $Uname);
                 $stmt->execute();
                 $messages[] = "Profile image updated successfully!";
+                
+                // Refresh the page to show the new image
+                echo "<script>window.location.reload();</script>";
             }
-        }
-
-        // Handle other profile updates (firstname and password) only if provided
-        if (!empty($_POST['currentUpass']) || !empty($_POST['newFirstname'])) {
-            // Your existing password and firstname update logic here
         }
 
         return $messages;
@@ -956,7 +954,7 @@ $timeLogsCount = $stmt->fetchColumn();
 
                         <div class="form-group">
                             <label for="newProfileImage">New Profile Image:</label>
-                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*" onchange="autoUploadImage(this)">
                         </div>
                         
                         <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">

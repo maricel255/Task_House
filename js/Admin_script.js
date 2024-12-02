@@ -221,3 +221,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 });
+function autoUploadImage(input) {
+    if (input.files && input.files[0]) {
+        var formData = new FormData();
+        formData.append('newProfileImage', input.files[0]);
+
+        fetch('Admin_Admin_1.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Refresh the profile image display
+            var profileImage = document.querySelector('.profile-image img');
+            if (profileImage) {
+                profileImage.src = URL.createObjectURL(input.files[0]);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
