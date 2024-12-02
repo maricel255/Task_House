@@ -1287,6 +1287,7 @@ p {
 
 
 .announcement-item {
+  display: none; /* Hide all items by default */
    position: relative;
     background: #f9f9f9;
     padding: 20px;
