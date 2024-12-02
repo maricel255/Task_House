@@ -232,21 +232,30 @@ function autoUploadImage(input) {
             img.src = URL.createObjectURL(input.files[0]);
         });
 
+        // Prevent form submission and handle upload separately
+        var form = input.closest('form');
+        if (form) {
+            form.onsubmit = function(e) {
+                e.preventDefault(); // Prevent form submission
+                return false;
+            };
+        }
+
         // Upload to server silently
         fetch('Admin_Admin_1.php', {
             method: 'POST',
             body: formData
         })
         .then(() => {
-            // Silently complete the upload without showing any messages
+            // Silently complete the upload without page reload
             setTimeout(() => {
-                location.reload();
+                window.location.href = 'Admin_Admin_1.php'; // Redirect instead of reload
             }, 500);
         })
         .catch(() => {
             // Silently handle any errors
             setTimeout(() => {
-                location.reload();
+                window.location.href = 'Admin_Admin_1.php'; // Redirect instead of reload
             }, 500);
         });
     }
