@@ -604,8 +604,7 @@ body::before {
   bottom: 10px;
   width: 40%;
   max-width: 40%;
-  height: auto;
-  max-height: 80%;
+
   overflow: auto;
   background-color: #fefefe;
   border-radius: 10px;
@@ -635,6 +634,7 @@ body::before {
   border-radius: 10px; /* Optional: rounded corners */
   width: 100%; /* Ensure the content width is responsive */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+  height: fit-content;
 }
 
 
