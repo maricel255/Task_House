@@ -272,11 +272,11 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
             alert('Password updated successfully!');
             window.location.reload();
         } else {
-            alert(data.message || 'Failed to update password');
+            window.location.reload();
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while updating the password');
+       
     });
 });
