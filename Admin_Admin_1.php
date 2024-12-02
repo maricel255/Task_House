@@ -87,19 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else if (isset($_POST['newUpass'])) {
         // Get form data
         $Uname = $_SESSION['Uname'];
-        $currentUpass = $_POST['currentUpass'];
-        $newUpass = $_POST['newUpass'];
+        $currentUpass = password_hash($_POST['currentUpass'], PASSWORD_DEFAULT); // Hash the current password
+        $newUpass = password_hash($_POST['newUpass'], PASSWORD_DEFAULT); // Hash the new password
         $confirmUpass = $_POST['confirmUpass'];
 
         // Check if current password is correct
-        $stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname AND Upass = :currentUpass");
+        $stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname");
         $stmt->bindParam(':Uname', $Uname);
-        $stmt->bindParam(':currentUpass', $currentUpass);
         $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($stmt->rowCount() > 0) {
+        if ($user && password_verify($_POST['currentUpass'], $user['Upass'])) {
             // Current password is correct, check if new passwords match
-            if ($newUpass === $confirmUpass) {
+            if ($_POST['newUpass'] === $confirmUpass) {
                 // Update password
                 $updateStmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
                 $updateStmt->bindParam(':newUpass', $newUpass);

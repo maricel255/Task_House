@@ -10,36 +10,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $Upass = $_POST['Upass'];
 
     try {
-      // Prepare the SQL statement
-      $sql = "SELECT * FROM users WHERE Uname = :uname"; // Use a prepared statement with a placeholder
-      $stmt = $conn->prepare($sql); // Prepare the statement
-      
-      // Execute the statement with the actual value for the placeholder
-      $stmt->execute(['uname' => $Uname]);
-  
-      // Fetch the user data if it exists
-      if ($stmt->rowCount() > 0) {
-          $user = $stmt->fetch(); // Fetch the user data
-  
-          // Check if the password matches
-          if ($Upass === $user['Upass']) {
-              $_SESSION['Uname'] = $Uname;
-              echo "<div class='message-box' id='message-box'>
-                      <p>Login successful! Welcome, " . $_SESSION['Uname'] . "!</p>
-                    <form action='Admin_Admin_1.php' method='post'>
-                    <button type='submit'>OK</button>
-                </form>
-                    </div>";
-          } else {
-            echo '<div class="custom-alert alert-error">Password does not match.</div>';
-          }
-      } else {
-        echo '<div class="custom-alert alert-error">No user found with the provided InternID.</div>';
-      }
-  } catch (PDOException $e) {
-      echo "Error: " . $e->getMessage(); // Handle any errors that may occur
-  }
-  
+        // Prepare the SQL statement
+        $sql = "SELECT * FROM users WHERE Uname = :uname";
+        $stmt = $conn->prepare($sql);
+        
+        // Execute the statement with the actual value for the placeholder
+        $stmt->execute(['uname' => $Uname]);
+    
+        // Fetch the user data if it exists
+        if ($stmt->rowCount() > 0) {
+            $user = $stmt->fetch();
+    
+            // Check if the password matches using password_verify
+            if (password_verify($Upass, $user['Upass'])) {
+                $_SESSION['Uname'] = $Uname;
+                echo "<div class='message-box' id='message-box'>
+                        <p>Login successful! Welcome, " . $_SESSION['Uname'] . "!</p>
+                      <form action='Admin_Admin_1.php' method='post'>
+                      <button type='submit'>OK</button>
+                  </form>
+                      </div>";
+            } else {
+              echo '<div class="custom-alert alert-error">Password does not match.</div>';
+            }
+        } else {
+          echo '<div class="custom-alert alert-error">No user found with the provided Username.</div>';
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
 }
 ?>
 
