@@ -1413,6 +1413,7 @@ p {
   text-decoration: none;
   border: none;
   cursor: pointer;
+  display: inline-block;
 
 }
 .button-group {
@@ -1443,8 +1444,8 @@ p {
 
 .delete-form {
   position: absolute;
-  margin-top: 15px; /* Adjust as needed */
-  margin: 0;
+  display: inline-block; 
+  
 }
 
 /* General body styles */
