@@ -10,6 +10,21 @@ function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
 }
+function handleProfileUpdate($conn) {
+    try {
+        // Your existing file upload and profile update code goes here
+        $oldUpass = $_POST['currentUpass'] ?? null;
+        $newFirstname = $_POST['newFirstname'] ?? '';
+        $newUpass = $_POST['newUpass'] ?? '';
+        $confirmUpass = $_POST['confirmUpass'] ?? '';
+        $messages = [];
+
+        // Rest of your existing profile update code...
+    } catch (PDOException $e) {
+        error_log("Error updating user data: " . $e->getMessage());
+        echo "There was an error updating your data. Please try again later.";
+    }
+}
 
 
 // Get adminID from the logged-in user's session
