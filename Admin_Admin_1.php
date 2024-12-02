@@ -11,35 +11,6 @@ function setMessage($message, $type = 'info') {
     $_SESSION['message_type'] = $type;
 }
 
-function handleProfileUpdate($conn) {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
-        $internID = $_POST['internID'];
-        $newPassword = $_POST['InternPass'];
-        
-        if (empty($newPassword)) {
-            $_SESSION['message'] = "Password cannot be empty";
-            $_SESSION['message_type'] = "error";
-            return;
-        }
-
-        try {
-            $stmt = $conn->prepare("UPDATE intacc SET InternPass = :newPassword WHERE internID = :internID");
-            $stmt->bindParam(':newPassword', $newPassword);
-            $stmt->bindParam(':internID', $internID);
-            
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Password updated successfully";
-                $_SESSION['message_type'] = "success";
-            } else {
-                $_SESSION['message'] = "Error updating password";
-                $_SESSION['message_type'] = "error";
-            }
-        } catch (PDOException $e) {
-            $_SESSION['message'] = "Database error: " . $e->getMessage();
-            $_SESSION['message_type'] = "error";
-        }
-    }
-}
 
 // Get adminID from the logged-in user's session
 $Uname = $_SESSION['Uname'] ?? null;
