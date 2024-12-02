@@ -31,52 +31,44 @@ if (isset($_FILES['newProfileImage'])) {
     exit;
 }
 
-// Add this code block near the top of your file, with other handlers
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['currentUpass'])) {
-    $oldUpass = $_POST['currentUpass'];
-    $newUpass = $_POST['newUpass'];
-    $confirmUpass = $_POST['confirmUpass'];
-    
-    // Verify current password
-    $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
-    $stmt->bindParam(':Uname', $Uname);
-    $stmt->execute();
-    $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Handle password update
+    if (isset($_POST['currentUpass'], $_POST['newUpass'], $_POST['confirmUpass'])) {
+        try {
+            // Get current password from database
+            $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = ?");
+            $stmt->execute([$Uname]);
+            $currentUser = $stmt->fetch();
 
-    if ($currentUser && $oldUpass === $currentUser['Upass']) {
-        // Current password is correct
-        if ($newUpass === $confirmUpass) {
-            // New passwords match, update the password
-            $updateStmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
-            $updateStmt->bindParam(':newUpass', $newUpass);
-            $updateStmt->bindParam(':Uname', $Uname);
-            
-            if ($updateStmt->execute()) {
-                $_SESSION['message'] = "Password updated successfully!";
-                $_SESSION['message_type'] = "success";
+            if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
+                setMessage("Current password is incorrect.", "error");
+            } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
+                setMessage("New passwords do not match.", "error");
+            } else if (strlen($_POST['newUpass']) < 6) {
+                setMessage("Password must be at least 6 characters long.", "error");
             } else {
-                $_SESSION['message'] = "Failed to update password.";
-                $_SESSION['message_type'] = "error";
+                // Update password
+                $stmt = $conn->prepare("UPDATE users SET Upass = ? WHERE Uname = ?");
+                if ($stmt->execute([$_POST['newUpass'], $Uname])) {
+                    setMessage("Password updated successfully.", "success");
+                } else {
+                    setMessage("Failed to update password.", "error");
+                }
             }
-        } else {
-            $_SESSION['message'] = "New passwords do not match.";
-            $_SESSION['message_type'] = "error";
+        } catch (PDOException $e) {
+            setMessage("Database error: " . $e->getMessage(), "error");
         }
-    } else {
-        $_SESSION['message'] = "Current password is incorrect.";
-        $_SESSION['message_type'] = "error";
+        
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     }
-    
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
 }
-
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
 }
-function handleProfileUpdate($conn) {
+    function handleProfileUpdate($conn) {
     try {
         // Get form data
         $oldUpass = $_POST['currentUpass'] ?? null;
