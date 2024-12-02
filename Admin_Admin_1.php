@@ -31,6 +31,45 @@ if (isset($_FILES['newProfileImage'])) {
     exit;
 }
 
+// Add the new password update handler here
+if (isset($_POST['updatePassword'])) {
+    $Uname = $_SESSION['Uname'];
+    $currentPassword = $_POST['currentUpass'];
+    $newPassword = $_POST['newUpass'];
+    $confirmPassword = $_POST['confirmUpass'];
+
+    try {
+        // First verify if current password is correct
+        $stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname");
+        $stmt->bindParam(':Uname', $Uname);
+        $stmt->execute();
+        $user = $stmt->fetch();
+
+        if ($user && $currentPassword === $user['Upass']) {
+            // Current password is correct, now check if new passwords match
+            if ($newPassword === $confirmPassword) {
+                // Update the password
+                $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname");
+                $updateStmt->bindParam(':newPassword', $newPassword);
+                $updateStmt->bindParam(':Uname', $Uname);
+                
+                if ($updateStmt->execute()) {
+                    echo json_encode(['success' => true, 'message' => 'Password updated successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
+        }
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    }
+    exit();
+}
+
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
