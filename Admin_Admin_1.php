@@ -411,7 +411,6 @@ $Uname = $_SESSION['Uname'];
 
 
 
-
 try {
     // Prepare the SQL query using placeholders to prevent SQL injection
     $query = "SELECT Firstname, Roles, admin_profile, Uname, adminID FROM users WHERE Uname = :Uname"; // Include adminID
