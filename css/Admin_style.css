@@ -1287,14 +1287,14 @@ p {
 
 
 .announcement-item {
-  display: none; /* Hide all items by default */
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  text-align: left; /* Align text to the left for better readability */
-  background-color: #f9f9f9; /* Light background for the announcement text */
-  border-radius: 10px;
-  margin: 10px auto; /* Spacing between announcements */
-  height: 70%;
+   position: relative;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 15px auto;
+    width: 90%;
+    min-height: 100px; 
 }
 
 
