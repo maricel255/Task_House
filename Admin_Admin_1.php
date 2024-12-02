@@ -12,10 +12,18 @@ function setMessage($message, $type = 'info') {
 }
 function handleProfileUpdate($conn) {
     try {
-        $Uname = $_SESSION['Uname'];
+        // Get form data
+        $oldUpass = $_POST['currentUpass'] ?? null;
+        $newFirstname = $_POST['newFirstname'] ?? '';
+        $newUpass = $_POST['newUpass'] ?? '';
+        $confirmUpass = $_POST['confirmUpass'] ?? '';
         $messages = [];
 
-        // Handle image upload automatically
+        // Start building SQL update
+        $updateFields = [];
+        $params = [];
+
+        // Handle image upload if provided
         if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'uploads/';
             $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
@@ -23,19 +31,41 @@ function handleProfileUpdate($conn) {
             $uploadFile = $uploadDir . $newFileName;
 
             if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
-                $stmt = $conn->prepare("UPDATE users SET admin_profile = :admin_profile WHERE Uname = :Uname");
-                $stmt->bindValue(':admin_profile', $newFileName);
-                $stmt->bindValue(':Uname', $Uname);
-                $stmt->execute();
-                $messages[] = "Profile image updated successfully!";
-                
-                // Refresh the page to show the new image
-                echo "<script>window.location.reload();</script>";
+                $updateFields[] = "profile_image = :profile_image";
+                $params[':profile_image'] = $newFileName;
+            }
+        }
+
+        // Handle firstname update if provided
+        if (!empty($newFirstname)) {
+            $updateFields[] = "Firstname = :newFirstname";
+            $params[':newFirstname'] = $newFirstname;
+        }
+
+        // Handle password update only if current password is provided
+        if (!empty($oldUpass)) {
+            // Your existing password update logic here
+            // ...
+        }
+
+        // Only proceed with update if there are changes
+        if (!empty($updateFields)) {
+            $sql = "UPDATE adminacc SET " . implode(', ', $updateFields) . " WHERE Uname = :Uname";
+            $params[':Uname'] = $_SESSION['Uname'];
+
+            $stmt = $conn->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+
+            if ($stmt->execute()) {
+                $messages[] = "Profile updated successfully!";
             }
         }
 
         return $messages;
     } catch (PDOException $e) {
+        error_log("Error updating user data: " . $e->getMessage());
         return ["There was an error updating your data. Please try again later."];
     }
 }
@@ -82,40 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // For Profile Updates
     else if (isset($_POST['newFirstname'])) {
         handleProfileUpdate($conn);
-    }
-    // For Password Update
-    else if (isset($_POST['newUpass'])) {
-        // Get form data
-        $Uname = $_SESSION['Uname'];
-        $currentUpass = password_hash($_POST['currentUpass'], PASSWORD_DEFAULT); // Hash the current password
-        $newUpass = password_hash($_POST['newUpass'], PASSWORD_DEFAULT); // Hash the new password
-        $confirmUpass = $_POST['confirmUpass'];
-
-        // Check if current password is correct
-        $stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname");
-        $stmt->bindParam(':Uname', $Uname);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($_POST['currentUpass'], $user['Upass'])) {
-            // Current password is correct, check if new passwords match
-            if ($_POST['newUpass'] === $confirmUpass) {
-                // Update password
-                $updateStmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
-                $updateStmt->bindParam(':newUpass', $newUpass);
-                $updateStmt->bindParam(':Uname', $Uname);
-                
-                if ($updateStmt->execute()) {
-                    $_SESSION['message'] = "Password updated successfully!";
-                } else {
-                    $_SESSION['message'] = "Failed to update password.";
-                }
-            } else {
-                $_SESSION['message'] = "New passwords do not match.";
-            }
-        } else {
-            $_SESSION['message'] = "Current password is incorrect.";
-        }
     }
 }
 
@@ -302,32 +298,6 @@ function handleAnnouncementSubmission($conn, $adminID) {
     }
 }
 
-// Add the new image upload handler here, before fetching username from session
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newProfileImage'])) {
-    $Uname = $_SESSION['Uname'];
-    $uploadDir = 'uploads/';
-    $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
-    $newFileName = uniqid() . '.' . $fileExtension;
-    $uploadFile = $uploadDir . $newFileName;
-
-    // Check if the upload directory is writable
-    if (!is_writable($uploadDir)) {
-        echo json_encode(['status' => 'error', 'message' => 'Upload directory is not writable.']);
-        exit();
-    }
-
-    if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
-        $stmt = $conn->prepare("UPDATE users SET admin_profile = :admin_profile WHERE Uname = :Uname");
-        $stmt->bindValue(':admin_profile', $newFileName);
-        $stmt->bindValue(':Uname', $Uname);
-        $stmt->execute();
-        echo json_encode(['status' => 'success', 'message' => 'Profile image updated successfully!']);
-    } else {
-        error_log('Failed to upload image.');
-    }
-    exit(); // Stop further processing
-}
-
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
@@ -357,7 +327,7 @@ try {
         $adminID = $user['adminID']; // Store adminID for later use
     } else {
         // Redirect to the login page if user data is not found
-        header("Location: Admin_registration.php");
+        header("Location: admin_registration.php");
         exit();
     }
     
@@ -401,6 +371,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
+    // Handle file upload if provided
+    $newFileName = null; // Initialize to null
+    if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] == 0) {
+        $fileTmpPath = $_FILES['newProfileImage']['tmp_name'];
+        $fileName = $_FILES['newProfileImage']['name'];
+        $fileSize = $_FILES['newProfileImage']['size'];
+        $fileType = $_FILES['newProfileImage']['type'];
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+
+        // Validate file extension and size
+        $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg'];
+        if (in_array($fileExtension, $allowedfileExtensions) && $fileSize < 2000000) { // limit to 2MB
+            // Set a new file name and directory
+            $newFileName = md5(time() . $fileName) . '.' . $fileExtension; // unique file name
+            $uploadFileDir = './uploads/';
+            
+            // Ensure the upload directory exists
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0755, true); // Create directory if it doesn't exist
+            }
+            
+            $dest_path = $uploadFileDir . $newFileName;
+
+            // Move the file to the uploads directory
+            if (!move_uploaded_file($fileTmpPath, $dest_path)) {
+                $messages[] = "Error moving the uploaded file.";
+            }
+        } else {
+            $messages[] = "Invalid file type or file size too large.";
+        }
+    }
+
     // If there are no errors, update user info in the database
     if (empty($messages)) {
         try {
@@ -408,6 +411,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $query = "UPDATE users SET Firstname = :firstname";
             if (!empty($newUpass)) {
                 $query .= ", Upass = :password"; // Include password only if not empty
+            }
+            if (!empty($newFileName)) {
+                $query .= ", admin_profile = :profile"; // Include profile only if not empty
             }
             $query .= " WHERE Uname = :Uname"; // Finalize the WHERE clause
             
@@ -417,6 +423,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
             if (!empty($newUpass)) {
                 $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
+            }
+            if (!empty($newFileName)) {
+                $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
             }
             $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
             
@@ -935,6 +944,7 @@ $timeLogsCount = $stmt->fetchColumn();
     // END KYLE
     
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1013,7 +1023,7 @@ $timeLogsCount = $stmt->fetchColumn();
 
                         <div class="form-group">
                             <label for="newProfileImage">New Profile Image:</label>
-                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*" onchange="autoUploadImage(this)">
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
                         </div>
                         
                         <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
