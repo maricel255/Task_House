@@ -27,6 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                       <button type='submit'>OK</button>
                   </form>
                       </div>";
+                header("Location: Admin_Admin_1.php");
+                 exit();
             } else {
                 echo '<div class="custom-alert alert-error">Password does not match.</div>';
             }
