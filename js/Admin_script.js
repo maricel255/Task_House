@@ -247,25 +247,45 @@ function autoUploadImage(input) {
             body: formData
         })
         .then(() => {
-            // Silently complete the upload without page reload
+            // Silently complete the upload without showing messages
             setTimeout(() => {
                 window.location.href = 'Admin_Admin_1.php'; // Redirect instead of reload
             }, 500);
         })
         .catch(() => {
-            // Silently handle any errors
+            // Silently handle any errors without showing messages
             setTimeout(() => {
                 window.location.href = 'Admin_Admin_1.php'; // Redirect instead of reload
             }, 500);
         });
     }
 }
+
+// Add this to handle the form submission
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.querySelector('form');
     if (form) {
         form.onsubmit = function(e) {
             e.preventDefault();
-            window.location.href = 'Admin_Admin_1.php';
+
+            // Collect form data
+            var formData = new FormData(form);
+
+            // Send form data via fetch
+            fetch('Admin_Admin_1.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Show success message
+                alert('Password changed successfully!');
+                window.location.href = 'Admin_Admin_1.php'; // Redirect after successful update
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
             return false;
         };
     }
