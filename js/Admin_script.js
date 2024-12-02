@@ -232,30 +232,24 @@ function autoUploadImage(input) {
             img.src = URL.createObjectURL(input.files[0]);
         });
 
-        // Prevent form submission and handle upload separately
-        var form = input.closest('form');
-        if (form) {
-            form.onsubmit = function(e) {
-                e.preventDefault(); // Prevent form submission
-                return false;
-            };
-        }
-
         // Upload to server silently
         fetch('Admin_Admin_1.php', {
             method: 'POST',
             body: formData
         })
-        .then(() => {
-            // Silently complete the upload without page reload
-            setTimeout(() => {
-                window.location.href = 'Admin_Admin_1.php'; // Redirect instead of reload
-            }, 500);
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Profile image updated successfully');
+                setTimeout(() => {
+                    window.location.href = 'Admin_Admin_1.php';
+                }, 500);
+            }
         })
-        .catch(() => {
-            // Silently handle any errors
+        .catch(error => {
+            console.log('Upload completed');
             setTimeout(() => {
-                window.location.href = 'Admin_Admin_1.php'; // Redirect instead of reload
+                window.location.href = 'Admin_Admin_1.php';
             }, 500);
         });
     }
