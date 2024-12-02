@@ -604,7 +604,7 @@ body::before {
   bottom: 10px;
   width: 40%;
   max-width: 40%;
-  height: fit-content;
+  height: auto;
   overflow: hidden;
   background-color: #fefefe;
   border-radius: 10px;
