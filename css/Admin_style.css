@@ -605,7 +605,7 @@ body::before {
   width: 40%;
   max-width: 40%;
   height: fit-content;
-  overflow: auto;
+  overflow: hidden;
   background-color: #fefefe;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -634,7 +634,7 @@ body::before {
   border-radius: 10px; /* Optional: rounded corners */
   width: 100%; /* Ensure the content width is responsive */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
-  height: fit-content;
+  height: auto;
 }
 
 
@@ -670,6 +670,9 @@ body::before {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+  }
+  .form-group:last-child {
+    margin-bottom: 0; /* Ensure no extra space at the bottom */
   }
   
   .form-group {
