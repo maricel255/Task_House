@@ -40,13 +40,12 @@ if (isset($_POST['updatePassword'])) {
 
     try {
         // First verify if current password is correct
-        $stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname");
+        $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
         $stmt->bindParam(':Uname', $Uname);
         $stmt->execute();
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && $currentPassword === $user['Upass']) {
-            // Current password is correct, now check if new passwords match
             if ($newPassword === $confirmPassword) {
                 // Update the password
                 $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname");
@@ -54,17 +53,22 @@ if (isset($_POST['updatePassword'])) {
                 $updateStmt->bindParam(':Uname', $Uname);
                 
                 if ($updateStmt->execute()) {
+                    header('Content-Type: application/json');
                     echo json_encode(['success' => true, 'message' => 'Password updated successfully']);
                 } else {
+                    header('Content-Type: application/json');
                     echo json_encode(['success' => false, 'message' => 'Failed to update password']);
                 }
             } else {
+                header('Content-Type: application/json');
                 echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
             }
         } else {
+            header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
         }
     } catch (PDOException $e) {
+        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     }
     exit();

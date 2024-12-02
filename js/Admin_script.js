@@ -251,11 +251,11 @@ function autoUploadImage(input) {
     }
 }
 // Add this function to handle password update
-document.getElementById('updateProfileForm').onsubmit = function(e) {
+document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     var formData = new FormData(this);
-    formData.append('updatePassword', 'true'); // Add flag to indicate password update
+    formData.append('updatePassword', 'true');
 
     fetch('Admin_Admin_1.php', {
         method: 'POST',
@@ -274,4 +274,4 @@ document.getElementById('updateProfileForm').onsubmit = function(e) {
         console.error('Error:', error);
         alert('An error occurred while updating the password');
     });
-};
+});
