@@ -1057,7 +1057,7 @@ $timeLogsCount = $stmt->fetchColumn();
 
                         <div class="form-group">
                             <label for="newProfileImage">New Profile Image:</label>
-                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*" onchange="autoUploadImage(this)">
                         </div>
                         
                         <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
