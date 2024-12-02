@@ -232,18 +232,22 @@ function autoUploadImage(input) {
             img.src = URL.createObjectURL(input.files[0]);
         });
 
-        // Upload to server silently without showing error messages
+        // Upload to server silently
         fetch('Admin_Admin_1.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            // Just reload the page to refresh the image
-            window.location.reload();
+        .then(() => {
+            // Silently complete the upload without showing any messages
+            setTimeout(() => {
+                location.reload();
+            }, 500);
         })
-        .catch(error => {
-            // Silently handle any errors without showing messages
-            console.log('Upload completed');
+        .catch(() => {
+            // Silently handle any errors
+            setTimeout(() => {
+                location.reload();
+            }, 500);
         });
     }
 }
