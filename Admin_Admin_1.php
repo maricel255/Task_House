@@ -6,28 +6,7 @@ error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
 // Add this code block at the top of your file, before any HTML output
-if (isset($_FILES['newProfileImage'])) {
-    $Uname = $_SESSION['Uname'];
-    $uploadDir = 'uploads/';
-    $fileName = basename($_FILES['newProfileImage']['name']);
-    $targetFilePath = $uploadDir . $fileName;
 
-    // Simply move the file and update database without showing errors
-    if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $targetFilePath)) {
-        // Update the user's profile image in the database
-        $stmt = $conn->prepare("UPDATE users SET admin_profile = :profileImage WHERE Uname = :Uname");
-        $stmt->bindParam(':profileImage', $fileName);
-        $stmt->bindParam(':Uname', $Uname);
-        $stmt->execute();
-        
-        $response['success'] = true;
-    } else {
-        $response['success'] = false;
-    }
-    
-    echo json_encode($response);
-    exit;
-}
 
 // Add this function
 function setMessage($message, $type = 'info') {
