@@ -35,36 +35,62 @@ if (isset($_FILES['newProfileImage'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateType = $_POST['updateType'] ?? '';
     
-    if ($updateType === 'password') {
-        try {
-            $Uname = $_SESSION['Uname']; // Make sure we have the username
+    try {
+        $Uname = $_SESSION['Uname']; // Get current username from session
+        
+        // Handle name update
+        if (isset($_POST['newFirstname']) && !empty($_POST['newFirstname'])) {
+            $newFirstname = trim($_POST['newFirstname']);
             
-            // Get current password from database - using exact column names from your table
-            $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
+            // Update the name in the database
+            $updateNameSQL = "UPDATE users SET Firstname = :newFirstname WHERE Uname = :Uname";
+            $stmt = $conn->prepare($updateNameSQL);
+            $stmt->bindParam(':newFirstname', $newFirstname);
             $stmt->bindParam(':Uname', $Uname);
-            $stmt->execute();
-            $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
-               // echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
-            } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
-                echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
+            
+            if ($stmt->execute()) {
+                $_SESSION['Firstname'] = $newFirstname; // Update session
+                $_SESSION['message'] = "Name updated successfully!";
             } else {
-                // Update password - using exact column names from your table
-                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
-                $stmt->bindParam(':newUpass', $_POST['newUpass']);
-                $stmt->bindParam(':Uname', $Uname);
-                
-                if ($stmt->execute()) {
-                    echo json_encode(['success' => true]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to update password']);
-                }
+                $_SESSION['message'] = "Failed to update name.";
             }
-        } catch (PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
         }
-        exit();
+        
+        // Existing password update code...
+        if ($updateType === 'password') {
+            try {
+                $Uname = $_SESSION['Uname']; // Make sure we have the username
+                
+                // Get current password from database - using exact column names from your table
+                $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
+                $stmt->bindParam(':Uname', $Uname);
+                $stmt->execute();
+                $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
+                   // echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
+                } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
+                    echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
+                } else {
+                    // Update password - using exact column names from your table
+                    $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
+                    $stmt->bindParam(':newUpass', $_POST['newUpass']);
+                    $stmt->bindParam(':Uname', $Uname);
+                    
+                    if ($stmt->execute()) {
+                        echo json_encode(['success' => true]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+                    }
+                }
+            } catch (PDOException $e) {
+                echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+            }
+            exit();
+        }
+        
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Error: " . $e->getMessage();
     }
 }
 

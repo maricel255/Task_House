@@ -258,6 +258,7 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     // Create FormData object
     const formData = new FormData();
     formData.append('updateType', 'password');
+    formData.append('newFirstname', document.getElementById('newFirstname').value);
     formData.append('currentUpass', document.getElementById('currentUpass').value);
     formData.append('newUpass', document.getElementById('newUpass').value);
     formData.append('confirmUpass', document.getElementById('confirmUpass').value);
@@ -277,6 +278,6 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     })
     .catch(error => {
         console.error('Error:', error);
-       
+        window.location.reload();
     });
 });
