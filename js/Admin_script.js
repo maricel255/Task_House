@@ -226,16 +226,26 @@ function autoUploadImage(input) {
         var formData = new FormData();
         formData.append('newProfileImage', input.files[0]);
 
+        // Show preview immediately
+        var profileImages = document.querySelectorAll('.profile-image img');
+        profileImages.forEach(img => {
+            img.src = URL.createObjectURL(input.files[0]);
+        });
+
+        // Upload to server
         fetch('Admin_Admin_1.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
-            // Refresh the profile image display
-            var profileImage = document.querySelector('.profile-image img');
-            if (profileImage) {
-                profileImage.src = URL.createObjectURL(input.files[0]);
+            if (data.status === 'success') {
+                // Close the modal after successful upload
+                closeModal('myModal');
+                // Optionally show a success message
+                alert('Profile image updated successfully!');
+            } else {
+                console.error('Error:', data.message);
             }
         })
         .catch(error => {
