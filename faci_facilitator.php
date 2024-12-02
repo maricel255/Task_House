@@ -778,7 +778,7 @@ try {
                                      </form>
 
                                     <!-- Update button -->
-                                    <button type="button" class="action-button update" id="updateBtn<?php echo $log['id']; ?>" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
+                                    <button type="button" class="action-button update" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
                                     
                                     <!-- Decline button -->
                                     <form method="POST" action="">
