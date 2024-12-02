@@ -83,6 +83,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else if (isset($_POST['newFirstname'])) {
         handleProfileUpdate($conn);
     }
+    // For Password Update
+    else if (isset($_POST['newUpass'])) {
+        // Get form data
+        $Uname = $_SESSION['Uname'];
+        $currentUpass = $_POST['currentUpass'];
+        $newUpass = $_POST['newUpass'];
+        $confirmUpass = $_POST['confirmUpass'];
+
+        // Check if current password is correct
+        $stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname AND Upass = :currentUpass");
+        $stmt->bindParam(':Uname', $Uname);
+        $stmt->bindParam(':currentUpass', $currentUpass);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            // Current password is correct, check if new passwords match
+            if ($newUpass === $confirmUpass) {
+                // Update password
+                $updateStmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
+                $updateStmt->bindParam(':newUpass', $newUpass);
+                $updateStmt->bindParam(':Uname', $Uname);
+                
+                if ($updateStmt->execute()) {
+                    $_SESSION['message'] = "Password updated successfully!";
+                } else {
+                    $_SESSION['message'] = "Failed to update password.";
+                }
+            } else {
+                $_SESSION['message'] = "New passwords do not match.";
+            }
+        } else {
+            $_SESSION['message'] = "Current password is incorrect.";
+        }
+    }
 }
 
 // Helper Functions
