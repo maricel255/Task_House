@@ -160,49 +160,41 @@ function validateForm() {
     }
 
     // Start kyle
-document.addEventListener("DOMContentLoaded", function () {
-    // Attach event listeners to all View Details buttons
-    document.querySelectorAll(".view-details-btn").forEach((button) => {
-        button.addEventListener("click", function () {
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".view-details-btn").forEach(button => {
+        button.addEventListener("click", function() {
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
-
-            // Fetch and show details
-            fetch("", {
+            
+            // Show loading state
+            detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
+            detailsDiv.classList.add("show"); // Add show class to slide in
+            
+            fetch(window.location.href, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
-                body: new URLSearchParams({
-                    fetchDetails: true,
-                    internID: internID
-                }),
+                body: `fetchDetails=true&internID=${internID}`
             })
-            .then((response) => response.text())
-            .then((data) => {
-                detailsDiv.innerHTML = data; // Inject the fetched data
-                detailsDiv.classList.add("show"); // Show the details
+            .then(response => response.text())
+            .then(data => {
+                detailsDiv.innerHTML = data;
             })
-            .catch((error) => {
-                console.error("Error fetching details:", error);
+            .catch(error => {
+                detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
+                console.error("Error:", error);
             });
         });
     });
-
-    // Close button functionality
-    const closeButton = document.querySelector(".close-btn");
-    closeButton.addEventListener("click", function () {
-        const detailsDiv = document.getElementById("internDetails");
-        detailsDiv.classList.remove("show"); // Hide the details
-        detailsDiv.innerHTML = ""; // Clear the content
-    });
 });
 
-// Function to close the details section
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.classList.remove("show"); // Hide the details
-    detailsDiv.innerHTML = ""; // Clear the content
+    detailsDiv.classList.remove("show"); // Remove show class to slide out
+    setTimeout(() => {
+        detailsDiv.innerHTML = ""; // Clear content after animation
+    }, 300); // Match the transition duration
 }
 //end kyle
 
