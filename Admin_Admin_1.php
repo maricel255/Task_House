@@ -430,7 +430,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($newUpass !== $confirmUpass) {
             $messages[] = "Passwords do not match.";
         } elseif (strlen($newUpass) < 6) {
-            $messages[] = "Password must be at least 6 characters long.";
+         //   $messages[] = "Password must be at least 6 characters long.";
         }
     }
 
