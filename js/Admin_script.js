@@ -263,7 +263,7 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     })
     .then(response => response.json())
     .then(() => {
-        alert('Profile updated successfully!');
+        alert('Password updated successfully!');
         window.location.reload();
     })
     .catch(error => {
