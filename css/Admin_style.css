@@ -1413,7 +1413,7 @@ p {
   text-decoration: none;
   border: none;
   cursor: pointer;
-  
+  display: inline-block;
 
 }
 .button-group {
@@ -1437,7 +1437,7 @@ p {
     border-radius: 5px;
     border: none;
     cursor: pointer;
-    
+    display: inline-block;
 }
 
 
