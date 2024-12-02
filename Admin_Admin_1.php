@@ -343,39 +343,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Handle file upload if provided
-    $newFileName = null; // Initialize to null
-    if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] == 0) {
-        $fileTmpPath = $_FILES['newProfileImage']['tmp_name'];
-        $fileName = $_FILES['newProfileImage']['name'];
-        $fileSize = $_FILES['newProfileImage']['size'];
-        $fileType = $_FILES['newProfileImage']['type'];
-        $fileNameCmps = explode(".", $fileName);
-        $fileExtension = strtolower(end($fileNameCmps));
-
-        // Validate file extension and size
-        $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg'];
-        if (in_array($fileExtension, $allowedfileExtensions) && $fileSize < 2000000) { // limit to 2MB
-            // Set a new file name and directory
-            $newFileName = md5(time() . $fileName) . '.' . $fileExtension; // unique file name
-            $uploadFileDir = './uploads/';
-            
-            // Ensure the upload directory exists
-            if (!is_dir($uploadFileDir)) {
-                mkdir($uploadFileDir, 0755, true); // Create directory if it doesn't exist
-            }
-            
-            $dest_path = $uploadFileDir . $newFileName;
-
-            // Move the file to the uploads directory
-            if (!move_uploaded_file($fileTmpPath, $dest_path)) {
-                $messages[] = "Error moving the uploaded file.";
-            }
-        } else {
-            $messages[] = "Invalid file type or file size too large.";
-        }
-    }
-
     // If there are no errors, update user info in the database
     if (empty($messages)) {
         try {
@@ -383,9 +350,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $query = "UPDATE users SET Firstname = :firstname";
             if (!empty($newUpass)) {
                 $query .= ", Upass = :password"; // Include password only if not empty
-            }
-            if (!empty($newFileName)) {
-                $query .= ", admin_profile = :profile"; // Include profile only if not empty
             }
             $query .= " WHERE Uname = :Uname"; // Finalize the WHERE clause
             
@@ -395,9 +359,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
             if (!empty($newUpass)) {
                 $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
-            }
-            if (!empty($newFileName)) {
-                $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
             }
             $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
             
