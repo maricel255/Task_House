@@ -31,31 +31,39 @@ if (isset($_FILES['newProfileImage'])) {
     exit;
 }
 
-// Add the new password update handler here
+// Add this code block near the top of your file, with other handlers
 if (isset($_POST['updatePassword'])) {
     $Uname = $_SESSION['Uname'];
     $currentPassword = $_POST['currentUpass'];
     $newPassword = $_POST['newUpass'];
     
-    // First verify the current password
-    $checkStmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname AND Upass = :currentPassword");
-    $checkStmt->bindParam(':Uname', $Uname);
-    $checkStmt->bindParam(':currentPassword', $currentPassword);
-    $checkStmt->execute();
-    
-    if ($checkStmt->rowCount() > 0) {
-        // Current password is correct, proceed with update
-        $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname");
-        $updateStmt->bindParam(':newPassword', $newPassword);
-        $updateStmt->bindParam(':Uname', $Uname);
+    try {
+        // First verify the current password
+        $checkStmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname AND Upass = :currentPassword");
+        $checkStmt->bindParam(':Uname', $Uname);
+        $checkStmt->bindParam(':currentPassword', $currentPassword);
+        $checkStmt->execute();
         
-        if ($updateStmt->execute()) {
-            echo json_encode(['success' => true]);
+        if ($checkStmt->rowCount() > 0) {
+            // Current password is correct, proceed with update
+            $updateStmt = $conn->prepare("UPDATE users SET Upass = :newPassword WHERE Uname = :Uname");
+            $updateStmt->bindParam(':newPassword', $newPassword);
+            $updateStmt->bindParam(':Uname', $Uname);
+            
+            if ($updateStmt->execute()) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true]);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+            }
         } else {
-            echo json_encode(['success' => false]);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
         }
-    } else {
-        echo json_encode(['success' => false]);
+    } catch (PDOException $e) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Database error']);
     }
     exit();
 }

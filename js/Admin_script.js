@@ -250,9 +250,25 @@ function autoUploadImage(input) {
         });
     }
 }
-// Add this function to handle password update
+// Update the form submission handler
 document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Get form values
+    const currentPassword = document.getElementById('currentUpass').value;
+    const newPassword = document.getElementById('newUpass').value;
+    const confirmPassword = document.getElementById('confirmUpass').value;
+    
+    // Basic validation
+    if (newPassword !== confirmPassword) {
+        alert('New passwords do not match!');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        alert('Password must be at least 6 characters long!');
+        return;
+    }
     
     var formData = new FormData(this);
     formData.append('updatePassword', 'true');
@@ -262,12 +278,16 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
         body: formData
     })
     .then(response => response.json())
-    .then(() => {
-        alert('Password updated successfully!');
-        window.location.reload();
+    .then(data => {
+        if (data.success) {
+            alert('Password updated successfully!');
+            window.location.reload();
+        } else {
+            alert(data.message || 'Failed to update password. Please try again.');
+        }
     })
     .catch(error => {
         console.error('Error:', error);
-        window.location.reload();
+        alert('An error occurred while updating the password.');
     });
 });
