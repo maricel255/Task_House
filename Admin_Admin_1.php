@@ -1017,7 +1017,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 <div class="modal-content">
                     <span class="close" onclick="closeModal('myModal')">&times;</span>
                     <h2>My Profiles</h2>
-                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data">
+                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data" onsubmit="return false;">
                         <!-- Display error messages if any (only after form submission) -->
                         <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($messages)): ?>
                             <div class="error-messages" style="color: red;">
