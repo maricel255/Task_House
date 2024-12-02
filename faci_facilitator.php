@@ -262,57 +262,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    // Handle Update logic (if needed for the form/modal)
 // Handle Update logic (if needed for the form/modal)
 if (isset($_POST['updateBtn'])) {
-    // Sanitize input
+    // Sanitize input to avoid malicious data
     $internID = htmlspecialchars($_POST['internID']);
-    $id = htmlspecialchars($_POST['id']); 
+    $id = htmlspecialchars($_POST['id']); // Get the log ID
 
-    // Get the current values first
-    $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID AND id = :id");
-    $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $currentLog = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Sanitize the updated fields
+    $updated_login_time = htmlspecialchars($_POST['login_time']);
+    $updated_task = htmlspecialchars($_POST['task']);
+    $updated_break_time = htmlspecialchars($_POST['break_time']);
+    $updated_back_to_work_time = htmlspecialchars($_POST['back_to_work_time']);
+    $updated_logout_time = htmlspecialchars($_POST['logout_time']);
 
-    // Use existing values if new ones aren't provided
-    $updated_login_time = $_POST['login_time'] ?? $currentLog['login_time'];
-    $updated_task = $_POST['task'] ?? $currentLog['task'];
-    $updated_break_time = $_POST['break_time'] ?? $currentLog['break_time'];
-    $updated_back_to_work_time = $_POST['back_to_work_time'] ?? $currentLog['back_to_work_time'];
-    $updated_logout_time = $_POST['logout_time'] ?? $currentLog['logout_time'];
+    // Check if any required fields are empty before proceeding
+    if (empty($updated_login_time) || empty($updated_task) || empty($updated_break_time) || empty($updated_back_to_work_time) || empty($updated_logout_time)) {
+        // Set error message in the session
+        $_SESSION['alertMessage'] = "All fields (Login Time, Task, Break Time, Back to Work Time, Logout Time) must be filled in before updating.";
+        $_SESSION['alertType'] = 'error'; // Set alert type as error
+
+        // Redirect to the same page to show the error message
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    // Set status to 'Approved' upon update
+    $status = 'Approved';
+
+    // SQL query for updating values, including status
+    $sql = "UPDATE time_logs 
+            SET login_time = :login_time, 
+                break_time = :break_time,
+                back_to_work_time = :back_to_work_time,
+                task = :task,
+                logout_time = :logout_time,
+                status = :status
+            WHERE internID = :internID 
+            AND id = :id"; 
 
     try {
-        // Update query without status restriction
-        $sql = "UPDATE time_logs 
-                SET login_time = :login_time, 
-                    break_time = :break_time,
-                    back_to_work_time = :back_to_work_time,
-                    task = :task,
-                    logout_time = :logout_time,
-                    status = 'Approved'
-                WHERE internID = :internID 
-                AND id = :id 
-                AND LOWER(status) = LOWER('Pending')"; // Only update pending records
-
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':login_time', $updated_login_time);
-        $stmt->bindParam(':break_time', $updated_break_time);
-        $stmt->bindParam(':back_to_work_time', $updated_back_to_work_time);
-        $stmt->bindParam(':task', $updated_task);
-        $stmt->bindParam(':logout_time', $updated_logout_time);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); 
+        $stmt->bindParam(':login_time', $updated_login_time, PDO::PARAM_STR);
+        $stmt->bindParam(':break_time', $updated_break_time, PDO::PARAM_STR);
+        $stmt->bindParam(':back_to_work_time', $updated_back_to_work_time, PDO::PARAM_STR);
+        $stmt->bindParam(':task', $updated_task, PDO::PARAM_STR);
+        $stmt->bindParam(':logout_time', $updated_logout_time, PDO::PARAM_STR);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->execute();
 
-        if ($stmt->execute()) {
-            if ($stmt->rowCount() > 0) {
-                $_SESSION['alertMessage'] = "Log updated successfully for Intern ID: $internID";
-                $_SESSION['alertType'] = 'success';
-            } else {
-                $_SESSION['alertMessage'] = "No changes made. Record might not be in pending status.";
-                $_SESSION['alertType'] = 'warning';
-            }
-        }
+        // Set success message
+        $_SESSION['alertMessage'] = "Log updated for Intern ID: $internID";
+        $_SESSION['alertType'] = 'success'; 
 
-        // Redirect after update
+        // Redirect after the update
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } catch (PDOException $e) {
