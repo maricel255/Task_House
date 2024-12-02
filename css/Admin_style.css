@@ -1047,7 +1047,17 @@ body::before {
 
 .delete-button {
   background-color: #f44336; /* Red background for delete button */
-  margin-left: 5px; /* Space between buttons */
+  color: white;
+  border: none;
+  padding: 10px 15px;    /* Match update button padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+  width: auto;          /* Match update button width */
+  font-size: 16px; 
 }
 
 .delete-button:hover {
