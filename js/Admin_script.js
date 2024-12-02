@@ -261,7 +261,13 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
         method: 'POST',
         body: formData
     })
+    .then(response => response.json())
     .then(() => {
+        alert('Profile updated successfully!');
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
         window.location.reload();
     });
 });

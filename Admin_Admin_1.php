@@ -1037,7 +1037,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 <div class="modal-content">
                     <span class="close" onclick="closeModal('myModal')">&times;</span>
                     <h2>My Profiles</h2>
-                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data" onsubmit="return false;">
+                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data" >
                         <!-- Display error messages if any (only after form submission) -->
                         <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($messages)): ?>
                             <div class="error-messages" style="color: red;">
@@ -1054,17 +1054,17 @@ $timeLogsCount = $stmt->fetchColumn();
 
                         <div class="form-group">
                             <label for="currentUpass">Current Password:</label>
-                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" >
+                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required >
                         </div>
 
                         <div class="form-group">
                             <label for="newUpass">New Password:</label>
-                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" >
+                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" required>
                         </div>
 
                         <div class="form-group">
                             <label for="confirmUpass">Confirm New Password:</label>
-                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" >
+                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
                         </div>
 
                         <div class="form-group">
