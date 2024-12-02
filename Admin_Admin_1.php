@@ -12,17 +12,61 @@ function setMessage($message, $type = 'info') {
 }
 function handleProfileUpdate($conn) {
     try {
-        // Your existing file upload and profile update code goes here
+        // Get form data
         $oldUpass = $_POST['currentUpass'] ?? null;
         $newFirstname = $_POST['newFirstname'] ?? '';
         $newUpass = $_POST['newUpass'] ?? '';
         $confirmUpass = $_POST['confirmUpass'] ?? '';
         $messages = [];
 
-        // Rest of your existing profile update code...
+        // Start building SQL update
+        $updateFields = [];
+        $params = [];
+
+        // Handle image upload if provided
+        if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = 'uploads/';
+            $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
+            $newFileName = uniqid() . '.' . $fileExtension;
+            $uploadFile = $uploadDir . $newFileName;
+
+            if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
+                $updateFields[] = "profile_image = :profile_image";
+                $params[':profile_image'] = $newFileName;
+            }
+        }
+
+        // Handle firstname update if provided
+        if (!empty($newFirstname)) {
+            $updateFields[] = "Firstname = :newFirstname";
+            $params[':newFirstname'] = $newFirstname;
+        }
+
+        // Handle password update only if current password is provided
+        if (!empty($oldUpass)) {
+            // Your existing password update logic here
+            // ...
+        }
+
+        // Only proceed with update if there are changes
+        if (!empty($updateFields)) {
+            $sql = "UPDATE adminacc SET " . implode(', ', $updateFields) . " WHERE Uname = :Uname";
+            $params[':Uname'] = $_SESSION['Uname'];
+
+            $stmt = $conn->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+
+            if ($stmt->execute()) {
+                $messages[] = "Profile updated successfully!";
+            }
+        }
+
+        return $messages;
     } catch (PDOException $e) {
         error_log("Error updating user data: " . $e->getMessage());
-        echo "There was an error updating your data. Please try again later.";
+        return ["There was an error updating your data. Please try again later."];
     }
 }
 
