@@ -422,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verify the current password
     if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
-        $messages[] = "Current password is incorrect.";
+      //  $messages[] = "Current password is incorrect.";
     }
 
     // Validate new password if the current password is correct
