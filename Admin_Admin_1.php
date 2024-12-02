@@ -1065,7 +1065,7 @@ $timeLogsCount = $stmt->fetchColumn();
                         <?php endif; ?>
 
                         <div class="form-group">
-                            <label for="newFirstname">New First Name:</label>
+                            <label for="newFirstname">Name:</label>
                             <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
                         </div>
 
