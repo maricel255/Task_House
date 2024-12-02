@@ -5,6 +5,27 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
+// Get the current user's information
+$Uname = $_SESSION['Uname'] ?? '';
+$Firstname = $_SESSION['Firstname'] ?? '';
+
+// If firstname is not in session, fetch it from database
+if (empty($Firstname) && !empty($Uname)) {
+    try {
+        $stmt = $conn->prepare("SELECT Firstname FROM users WHERE Uname = :Uname");
+        $stmt->bindParam(':Uname', $Uname);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($user) {
+            $_SESSION['Firstname'] = $user['Firstname'];
+            $Firstname = $user['Firstname'];
+        }
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+    }
+}
+
 // Add this code block at the top of your file, before any HTML output
 if (isset($_FILES['newProfileImage'])) {
     $Uname = $_SESSION['Uname'];
@@ -35,62 +56,36 @@ if (isset($_FILES['newProfileImage'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updateType = $_POST['updateType'] ?? '';
     
-    try {
-        $Uname = $_SESSION['Uname']; // Get current username from session
-        
-        // Handle name update
-        if (isset($_POST['newFirstname']) && !empty($_POST['newFirstname'])) {
-            $newFirstname = trim($_POST['newFirstname']);
+    if ($updateType === 'password') {
+        try {
+            $Uname = $_SESSION['Uname']; // Make sure we have the username
             
-            // Update the name in the database
-            $updateNameSQL = "UPDATE users SET Firstname = :newFirstname WHERE Uname = :Uname";
-            $stmt = $conn->prepare($updateNameSQL);
-            $stmt->bindParam(':newFirstname', $newFirstname);
+            // Get current password from database - using exact column names from your table
+            $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
             $stmt->bindParam(':Uname', $Uname);
-            
-            if ($stmt->execute()) {
-                $_SESSION['Firstname'] = $newFirstname; // Update session
-                $_SESSION['message'] = "Name updated successfully!";
-            } else {
-                $_SESSION['message'] = "Failed to update name.";
-            }
-        }
-        
-        // Existing password update code...
-        if ($updateType === 'password') {
-            try {
-                $Uname = $_SESSION['Uname']; // Make sure we have the username
-                
-                // Get current password from database - using exact column names from your table
-                $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
-                $stmt->bindParam(':Uname', $Uname);
-                $stmt->execute();
-                $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->execute();
+            $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
-                   // echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
-                } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
-                    echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
+            if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
+               // echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
+            } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
+                echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
+            } else {
+                // Update password - using exact column names from your table
+                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
+                $stmt->bindParam(':newUpass', $_POST['newUpass']);
+                $stmt->bindParam(':Uname', $Uname);
+                
+                if ($stmt->execute()) {
+                    echo json_encode(['success' => true]);
                 } else {
-                    // Update password - using exact column names from your table
-                    $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
-                    $stmt->bindParam(':newUpass', $_POST['newUpass']);
-                    $stmt->bindParam(':Uname', $Uname);
-                    
-                    if ($stmt->execute()) {
-                        echo json_encode(['success' => true]);
-                    } else {
-                        echo json_encode(['success' => false, 'message' => 'Failed to update password']);
-                    }
+                    echo json_encode(['success' => false, 'message' => 'Failed to update password']);
                 }
-            } catch (PDOException $e) {
-                echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
             }
-            exit();
+        } catch (PDOException $e) {
+            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
         }
-        
-    } catch (PDOException $e) {
-        $_SESSION['message'] = "Error: " . $e->getMessage();
+        exit();
     }
 }
 
@@ -1092,7 +1087,11 @@ $timeLogsCount = $stmt->fetchColumn();
 
                         <div class="form-group">
                             <label for="newFirstname">Name:</label>
-                            <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
+                            <input type="text" 
+                                   id="newFirstname" 
+                                   name="newFirstname" 
+                                   value="<?php echo htmlspecialchars($Firstname); ?>" 
+                                   required>
                         </div>
 
                         <div class="form-group">
