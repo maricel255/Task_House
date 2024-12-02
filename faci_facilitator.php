@@ -488,7 +488,7 @@ try {
                     }
                 ?>" alt="Toggle Sidebar" class="user-icon">
                 <div class="user-details">
-                    <p class="user-name">Uname: <?php echo $faciID; ?></p>
+                    <p class="user-name">Company ID: <?php echo $faciID; ?></p>
                     <p class="role">HR/Manager</p>
                 </div>
 
