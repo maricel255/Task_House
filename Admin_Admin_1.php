@@ -268,6 +268,25 @@ function handleAnnouncementSubmission($conn, $adminID) {
     }
 }
 
+// Add the new image upload handler here, before fetching username from session
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newProfileImage'])) {
+    $Uname = $_SESSION['Uname'];
+    $uploadDir = 'uploads/';
+    $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
+    $newFileName = uniqid() . '.' . $fileExtension;
+    $uploadFile = $uploadDir . $newFileName;
+
+    if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
+        $stmt = $conn->prepare("UPDATE users SET admin_profile = :admin_profile WHERE Uname = :Uname");
+        $stmt->bindValue(':admin_profile', $newFileName);
+        $stmt->bindValue(':Uname', $Uname);
+        $stmt->execute();
+        echo json_encode(['status' => 'success', 'message' => 'Profile image updated successfully!']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to upload image.']);
+    }
+    exit(); // Stop further processing
+}
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
@@ -875,7 +894,6 @@ $timeLogsCount = $stmt->fetchColumn();
     // END KYLE
     
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
