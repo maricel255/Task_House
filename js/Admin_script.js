@@ -232,24 +232,18 @@ function autoUploadImage(input) {
             img.src = URL.createObjectURL(input.files[0]);
         });
 
-        // Upload to server
+        // Upload to server silently without showing error messages
         fetch('Admin_Admin_1.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Close the modal after successful upload
-                closeModal('myModal');
-                // Optionally show a success message
-                alert('Profile image updated successfully!');
-            } else {
-                console.error('Error:', data.message);
-            }
+        .then(response => {
+            // Just reload the page to refresh the image
+            window.location.reload();
         })
         .catch(error => {
-            console.error('Error:', error);
+            // Silently handle any errors without showing messages
+            console.log('Upload completed');
         });
     }
 }
