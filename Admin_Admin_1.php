@@ -276,6 +276,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newProfileImage'])) 
     $newFileName = uniqid() . '.' . $fileExtension;
     $uploadFile = $uploadDir . $newFileName;
 
+    // Check if the upload directory is writable
+    if (!is_writable($uploadDir)) {
+        echo json_encode(['status' => 'error', 'message' => 'Upload directory is not writable.']);
+        exit();
+    }
+
     if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
         $stmt = $conn->prepare("UPDATE users SET admin_profile = :admin_profile WHERE Uname = :Uname");
         $stmt->bindValue(':admin_profile', $newFileName);
@@ -287,6 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['newProfileImage'])) 
     }
     exit(); // Stop further processing
 }
+
 // Fetch the username from the session
 $Uname = $_SESSION['Uname'];
 
