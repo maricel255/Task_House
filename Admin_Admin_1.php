@@ -18,15 +18,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $Uname = $_SESSION['Uname'];
 
         try {
-            $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
-            $stmt->bindParam(':firstname', $newFirstname);
-            $stmt->bindParam(':uname', $Uname);
+            // First verify if the user exists
+            $checkStmt = $conn->prepare("SELECT * FROM users WHERE Uname = :uname");
+            $checkStmt->bindParam(':uname', $Uname);
+            $checkStmt->execute();
             
-            if ($stmt->execute()) {
-                $_SESSION['Firstname'] = $newFirstname;
-                $_SESSION['message'] = "Name updated successfully!";
-            } else {
-                $_SESSION['message'] = "Failed to update name.";
+            if ($checkStmt->fetch()) {
+                // User exists, proceed with update
+                $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
+                $stmt->bindParam(':firstname', $newFirstname);
+                $stmt->bindParam(':uname', $Uname);
+                
+                if ($stmt->execute()) {
+                    $_SESSION['Firstname'] = $newFirstname;
+                    $_SESSION['message'] = "Name updated successfully!";
+                } else {
+                    $_SESSION['message'] = "Failed to update name.";
+                }
             }
         } catch (PDOException $e) {
             $_SESSION['message'] = "Error updating name: " . $e->getMessage();

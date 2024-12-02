@@ -24,16 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           // Check if the password matches
           if ($Upass === $user['Upass']) {
               $_SESSION['Uname'] = $Uname;
-              
-              // Add this new code here to fetch and store firstname
-              $stmt = $conn->prepare("SELECT Firstname FROM users WHERE Uname = :Uname");
-              $stmt->bindParam(':Uname', $Uname);
-              $stmt->execute();
-              $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-              if ($user) {
-                  $_SESSION['Firstname'] = $user['Firstname'];
-              }
+              $_SESSION['Firstname'] = $user['Firstname'];
               
               // Your existing success message
               echo "<div class='message-box' id='message-box'>
