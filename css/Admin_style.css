@@ -1415,6 +1415,14 @@ p {
   cursor: pointer;
 
 }
+.button-group {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
 
 .deleter-button {  
@@ -1438,6 +1446,7 @@ p {
 .delete-form {
   position: absolute;
   margin-top: 15px; /* Adjust as needed */
+  margin: 0;
 }
 
 /* General body styles */
