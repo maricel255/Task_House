@@ -241,16 +241,11 @@ function autoUploadImage(input) {
         .then(data => {
             if (data.success) {
                 console.log('Profile image updated successfully');
-                setTimeout(() => {
-                    window.location.href = 'Admin_Admin_1.php';
-                }, 500);
+                // Optionally, show a message or update the UI
             }
         })
         .catch(error => {
-            console.log('Upload completed');
-            setTimeout(() => {
-                window.location.href = 'Admin_Admin_1.php';
-            }, 500);
+            console.error('Error uploading image:', error);
         });
     }
 }
