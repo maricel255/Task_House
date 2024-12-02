@@ -31,38 +31,43 @@ if (isset($_FILES['newProfileImage'])) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Handle password update
-    if (isset($_POST['currentUpass'], $_POST['newUpass'], $_POST['confirmUpass'])) {
-        try {
-            // Get current password from database
-            $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = ?");
-            $stmt->execute([$Uname]);
-            $currentUser = $stmt->fetch();
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['currentUpass'])) {
+    try {
+        // Get current password from database
+        $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = ?");
+        $stmt->execute([$Uname]);
+        $currentUser = $stmt->fetch();
 
-            if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
-                setMessage("Current password is incorrect.", "error");
-            } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
-                setMessage("New passwords do not match.", "error");
-            } else if (strlen($_POST['newUpass']) < 6) {
-                setMessage("Password must be at least 6 characters long.", "error");
+        if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
+            $_SESSION['message'] = "Current password is incorrect.";
+            $_SESSION['message_type'] = "error";
+        } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
+            $_SESSION['message'] = "New passwords do not match.";
+            $_SESSION['message_type'] = "error";
+        } else if (strlen($_POST['newUpass']) < 6) {
+            $_SESSION['message'] = "Password must be at least 6 characters long.";
+            $_SESSION['message_type'] = "error";
+        } else {
+            // Update password
+            $stmt = $conn->prepare("UPDATE users SET Upass = ? WHERE Uname = ?");
+            if ($stmt->execute([$_POST['newUpass'], $Uname])) {
+                $_SESSION['message'] = "Password updated successfully.";
+                $_SESSION['message_type'] = "success";
             } else {
-                // Update password
-                $stmt = $conn->prepare("UPDATE users SET Upass = ? WHERE Uname = ?");
-                if ($stmt->execute([$_POST['newUpass'], $Uname])) {
-                    setMessage("Password updated successfully.", "success");
-                } else {
-                    setMessage("Failed to update password.", "error");
-                }
+                $_SESSION['message'] = "Failed to update password.";
+                $_SESSION['message_type'] = "error";
             }
-        } catch (PDOException $e) {
-            setMessage("Database error: " . $e->getMessage(), "error");
         }
-        
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
+    } catch (PDOException $e) {
+        $_SESSION['message'] = "Database error: " . $e->getMessage();
+        $_SESSION['message_type'] = "error";
     }
+    
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
 }
+
+
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
