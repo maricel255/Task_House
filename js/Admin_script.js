@@ -240,15 +240,22 @@ function autoUploadImage(input) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Profile image updated successfully');
-                // Refresh the page after successful upload
+                // Silently reload the page
                 window.location.reload();
             }
         })
         .catch(error => {
-            console.error('Error uploading image:', error);
-            // Optionally refresh even if there's an error
+            // Silently reload even on error
             window.location.reload();
         });
+
+        // Prevent the default form submission
+        var form = input.closest('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                return false;
+            });
+        }
     }
 }
