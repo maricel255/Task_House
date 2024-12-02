@@ -1287,6 +1287,7 @@ p {
 
 
 .announcement-item {
+  display: none;
   position: relative;
   background: white;
   padding: 20px;
