@@ -250,3 +250,28 @@ function autoUploadImage(input) {
         });
     }
 }
+// Add this function to handle password update
+document.getElementById('updateProfileForm').onsubmit = function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    formData.append('updatePassword', 'true'); // Add flag to indicate password update
+
+    fetch('Admin_Admin_1.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Password updated successfully!');
+            window.location.reload();
+        } else {
+            alert(data.message || 'Failed to update password');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating the password');
+    });
+};
