@@ -1422,10 +1422,7 @@ p {
     align-items: center;
     gap: 10px;
     margin-top: 10px;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    
   
 }
 
@@ -1451,8 +1448,9 @@ p {
 
 .delete-form {
 
-  margin: 10px auto; /* Center the form */
-    text-align: center;
+  margin: 0; /* Center the form */
+    
+    display: inline-block;
   
 }
 
