@@ -1032,15 +1032,13 @@ body::before {
   background-color: #4CAF50; /* Green background for buttons */
   color: white; /* White text color for buttons */
   border: none; /* No border */
-  padding: 5px 10px; /* Padding for buttons */
+  padding: 10px 15px; /* Padding for buttons */
   text-align: center; /* Centered text */
   text-decoration: none; /* No underline */
   display: inline-block; /* Inline-block for buttons */
   border-radius: 4px; /* Rounded corners for buttons */
   cursor: pointer; /* Pointer cursor on hover */
   margin-left: 5px; /* Space between buttons */
-  width: 66px;
-  font-size: 14px;
 }
 
 .update-button:hover {
