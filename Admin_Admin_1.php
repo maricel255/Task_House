@@ -5,31 +5,48 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
-// Handle form submission for name update
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname'])) {
-    $newFirstname = trim($_POST['newFirstname']);
-    $Uname = $_SESSION['Uname'];
-
-    $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
-    $stmt->bindParam(':firstname', $newFirstname);
-    $stmt->bindParam(':uname', $Uname);
-    $stmt->execute();
-    
-    $_SESSION['Firstname'] = $newFirstname;
-    header("Location: Admin_Admin_1.php");
-    exit();
-}
-
-// Get user data
-$stmt = $conn->prepare("SELECT Firstname FROM users WHERE Uname = :Uname");
+// Get user data from database
+$stmt = $conn->prepare("SELECT * FROM users WHERE Uname = :Uname");
 $stmt->bindParam(':Uname', $_SESSION['Uname']);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Handle name update
+    if (isset($_POST['newFirstname'])) {
+        $newFirstname = trim($_POST['newFirstname']);
+        $Uname = $_SESSION['Uname'];
+
+        try {
+            // First verify if the user exists
+            $checkStmt = $conn->prepare("SELECT * FROM users WHERE Uname = :uname");
+            $checkStmt->bindParam(':uname', $Uname);
+            $checkStmt->execute();
+            
+            if ($checkStmt->fetch()) {
+                // User exists, proceed with update
+                $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
+                $stmt->bindParam(':firstname', $newFirstname);
+                $stmt->bindParam(':uname', $Uname);
+                
+                if ($stmt->execute()) {
+                    $_SESSION['Firstname'] = $newFirstname;
+                    $_SESSION['message'] = "Name updated successfully!";
+                } else {
+                    $_SESSION['message'] = "Failed to update name.";
+                }
+            }
+        } catch (PDOException $e) {
+            $_SESSION['message'] = "Error updating name: " . $e->getMessage();
+        }
+    }
+}
+// Store firstname in session
 if ($user) {
     $_SESSION['Firstname'] = $user['Firstname'];
 }
 
+// Get firstname from session
 $Firstname = $_SESSION['Firstname'] ?? '';
 
 // Add this code block at the top of your file, before any HTML output
