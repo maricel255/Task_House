@@ -357,7 +357,7 @@ try {
         $adminID = $user['adminID']; // Store adminID for later use
     } else {
         // Redirect to the login page if user data is not found
-        header("Location: admin_registration.php");
+        header("Location: Admin_registration.php");
         exit();
     }
     
