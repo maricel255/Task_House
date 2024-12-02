@@ -1413,13 +1413,19 @@ p {
   text-decoration: none;
   border: none;
   cursor: pointer;
-  display: inline-block;
+  
 
 }
 .button-group {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
   
 }
 
@@ -1431,7 +1437,7 @@ p {
     border-radius: 5px;
     border: none;
     cursor: pointer;
-    display: inline-block;
+    
 }
 
 
