@@ -607,7 +607,7 @@ body::before {
   height: auto;
   max-height: 80%;
   overflow: auto;
-  background-color: transparent;
+  background-color: #fefefe;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
