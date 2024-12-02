@@ -1406,32 +1406,24 @@ p {
 
 
 .pdf-link {
-  display: inline-block; /* Make it block-level for padding and margin */
-  background-color: #28a745; /* Green background color */
-  color: white; /* Text color */
-  padding: 10px 15px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  text-decoration: none; /* Remove underline from the link */
-  font-size: 16px; /* Slightly larger font size */
-  text-align: center; /* Center text within the button */
-  margin-top: 190px; /* Space above the link */
-  border: solid 4px #dc3545; /* Solid red border */
-  border-radius: 5px; /* Rounded corners */
+  background-color: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
 
 }
 
 
 .deleter-button {  
-  position: fixed; /* Fixed positioning ensures the button stays in the same place */
-  bottom: 100px; /* Distance from the bottom of the viewport */
-  right: 20px; /* Distance from the right edge of the viewport */
-  background: orange;
-  border: none;
-  cursor: pointer;
-  height: 60px; /* Set a specific height */
-  padding: 10px 20px; /* Add padding for a balanced look */
-  z-index: 1000; /* Ensure the button appears above other elements */
-  border-radius: 10px;
+  background-color: #ffc107;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
 }
 
 

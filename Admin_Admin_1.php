@@ -1083,17 +1083,18 @@ $timeLogsCount = $stmt->fetchColumn();
 
                                                 // Now you can use $pdfPath wherever needed, such as inserting it into your database or showing it in a link.
                                                                                                 ?>
-                                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                                <div class="button-group">
+                                                    <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                                    <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                                        <button type="submit" class="deleter-button">Delete</button>
+                                                    </form>
+                                                </div>
                                             <?php else: ?>
                                                 <p>Unsupported file type.</p>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
-                                        <!-- Delete Button Form -->
-                                        <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
-                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
-                                        <button type="submit" class="deleter-button">Delete</button>
-                                        </form>
                                 </div>
                             
                             <?php endforeach; ?>
