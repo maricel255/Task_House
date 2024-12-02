@@ -12,18 +12,10 @@ function setMessage($message, $type = 'info') {
 }
 function handleProfileUpdate($conn) {
     try {
-        // Get form data
-        $oldUpass = $_POST['currentUpass'] ?? null;
-        $newFirstname = $_POST['newFirstname'] ?? '';
-        $newUpass = $_POST['newUpass'] ?? '';
-        $confirmUpass = $_POST['confirmUpass'] ?? '';
+        $Uname = $_SESSION['Uname'];
         $messages = [];
 
-        // Start building SQL update
-        $updateFields = [];
-        $params = [];
-
-        // Handle image upload if provided
+        // Handle image upload
         if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'uploads/';
             $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
@@ -31,41 +23,21 @@ function handleProfileUpdate($conn) {
             $uploadFile = $uploadDir . $newFileName;
 
             if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
-                $updateFields[] = "profile_image = :profile_image";
-                $params[':profile_image'] = $newFileName;
+                $stmt = $conn->prepare("UPDATE adminacc SET profile_image = :profile_image WHERE Uname = :Uname");
+                $stmt->bindValue(':profile_image', $newFileName);
+                $stmt->bindValue(':Uname', $Uname);
+                $stmt->execute();
+                $messages[] = "Profile image updated successfully!";
             }
         }
 
-        // Handle firstname update if provided
-        if (!empty($newFirstname)) {
-            $updateFields[] = "Firstname = :newFirstname";
-            $params[':newFirstname'] = $newFirstname;
-        }
-
-        // Handle password update only if current password is provided
-        if (!empty($oldUpass)) {
-            // Your existing password update logic here
-            // ...
-        }
-
-        // Only proceed with update if there are changes
-        if (!empty($updateFields)) {
-            $sql = "UPDATE adminacc SET " . implode(', ', $updateFields) . " WHERE Uname = :Uname";
-            $params[':Uname'] = $_SESSION['Uname'];
-
-            $stmt = $conn->prepare($sql);
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-
-            if ($stmt->execute()) {
-                $messages[] = "Profile updated successfully!";
-            }
+        // Handle other profile updates (firstname and password) only if provided
+        if (!empty($_POST['currentUpass']) || !empty($_POST['newFirstname'])) {
+            // Your existing password and firstname update logic here
         }
 
         return $messages;
     } catch (PDOException $e) {
-        error_log("Error updating user data: " . $e->getMessage());
         return ["There was an error updating your data. Please try again later."];
     }
 }
