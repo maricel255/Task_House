@@ -241,11 +241,14 @@ function autoUploadImage(input) {
         .then(data => {
             if (data.success) {
                 console.log('Profile image updated successfully');
-                // Optionally, show a message or update the UI
+                // Refresh the page after successful upload
+                window.location.reload();
             }
         })
         .catch(error => {
             console.error('Error uploading image:', error);
+            // Optionally refresh even if there's an error
+            window.location.reload();
         });
     }
 }
