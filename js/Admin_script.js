@@ -260,3 +260,13 @@ function autoUploadImage(input) {
         });
     }
 }
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.querySelector('form');
+    if (form) {
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            window.location.href = 'Admin_Admin_1.php';
+            return false;
+        };
+    }
+});
