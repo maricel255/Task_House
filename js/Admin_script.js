@@ -190,7 +190,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 detailsDiv.innerHTML = `
                     <button class="close-btn" onclick="closeDetails()">&times;</button>
                     <div class="details-content">
+                        <h2>Intern Details</h2>
                         ${data}
+                        <button onclick="window.print()" class="print-btn">Print Details</button>
                     </div>
                 `;
             })
