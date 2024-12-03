@@ -1493,10 +1493,13 @@ table {
 }
 
 /* Table Header */
-thead {
+tr {
     position: sticky;
     top: 0;
-    z-index: 10; 
+    z-index: 1;
+}
+thead {
+    table-layout: fixed; 
     background-color: #4CAF50;
     color: white;
     text-align: left;
