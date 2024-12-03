@@ -1075,19 +1075,26 @@ $timeLogsCount = $stmt->fetchColumn();
                                         ?>
                                         <div class="Announcement-Image">
                                         <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                                        <a href="<?php echo htmlspecialchars($filePath); ?>" target="_blank">
-                                            <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
-                                        </a>
-                                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-                                        <?php
-                                        $fileName = basename($filePath);
-                                        $pdfPath = "https://taskhouseintern.com/uploaded_files/" . rawurlencode($fileName);
-                                        ?>
-                                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-                                    <?php else: ?>
-                                        <p>Unsupported file type.</p>
-                                    <?php endif; ?>
-                                        </div>
+                <?php
+                // Get just the filename from the full path
+                $fileName = basename($filePath);
+                // Construct the correct URL path
+                $imageUrl = "/uploaded_files/" . rawurlencode($fileName);
+                ?>
+                <a href="<?php echo $imageUrl; ?>" target="_blank">
+                    <img src="<?php echo $imageUrl; ?>" alt="Announcement Image" class="ann_img">
+                </a>
+            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                <?php
+                $fileName = basename($filePath);
+                // Construct the correct URL path for PDFs
+                $pdfUrl = "/uploaded_files/" . rawurlencode($fileName);
+                ?>
+                <a href="<?php echo $pdfUrl; ?>" target="_blank" class="pdf-link">View PDF</a>
+            <?php else: ?>
+                <p>Unsupported file type.</p>
+            <?php endif; ?>
+                                                    </div>
                                     <?php endif; ?>
                                         <!-- Delete Button Form -->
                                         <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
