@@ -66,8 +66,8 @@ $conn = null; // Close the connection
                 <form method="POST" action="">
                   <span class="s-intern">INTERN'S</span>
                   <span class="s-TH">TASK HOUSE</span>
-                  <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">HR/MANAGER</h1>
-                  <p class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">LOG-IN</p>
+                  <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">HR/MANAGER LOG-IN</h1>
+                  
                   <div data-mdb-input-init class="form-outline mb-4">
                     <input type="text" id="form2Example17" name="Uname" class="form-control form-control-lg" />
                     <label class="form-label" for="form2Example17">Username</label>
