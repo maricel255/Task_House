@@ -280,7 +280,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Function to close the details section
+// Add this at the top level of your JavaScript file
+document.addEventListener('click', function(e) {
+    if (e.target.matches('.close-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Close button clicked via delegation");
+        closeDetails();
+    }
+});
+
+// Update your existing closeDetails function
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
     if (!detailsDiv) {
@@ -289,9 +299,17 @@ function closeDetails() {
     }
     
     console.log("Closing details...");
-    detailsDiv.style.display = "none";
-    detailsDiv.classList.remove("show");
-    detailsDiv.innerHTML = "";
+    // Add a fade-out effect
+    detailsDiv.style.opacity = '0';
+    
+    // Wait for the fade-out animation to complete
+    setTimeout(() => {
+        detailsDiv.style.display = "none";
+        detailsDiv.classList.remove("show");
+        detailsDiv.innerHTML = "";
+        // Reset opacity for next time
+        detailsDiv.style.opacity = '1';
+    }, 300);
 }
 //end kyle
 
