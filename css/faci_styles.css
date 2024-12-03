@@ -1165,7 +1165,7 @@ width: 30vw;  /* Default width for balanced UI */
 height: 50vh; 
 padding: 20px; /* Add padding for better content spacing */
 border-radius: 15px; /* Soft rounded corners for a modern look */
-z-index: 9999;
+z-index: 0;
 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Smooth modern font */
 overflow-y: auto; /* Allow vertical scrolling if content overflows */
 overflow-x: hidden; /* Prevent horizontal scrolling */
