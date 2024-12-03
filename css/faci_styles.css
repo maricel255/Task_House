@@ -615,7 +615,9 @@ width: calc(100% - 250px); /* Adjust width */
 
 /* Default .req-container styling */
 .req-container {
-margin-left: 40px; /* Reduced margin to avoid excessive space */
+  margin-left: auto; /* Center the container */
+  margin-right: auto; /* Reduced margin to avoid excessive space */
+  width: 80%;
 padding: 15px 20px; /* Padding adjusted for content */
 width: calc(100% - 40px); /* Default width */
 transition: margin-left 0.3s ease, width 0.3s ease, padding 0.3s ease, font-size 0.3s ease; /* Smooth transition for margin, width, padding, and font-size */
@@ -2034,10 +2036,10 @@ color: #666;
 text-align: center;
 }
 .request-table {
-  padding-left: 50px;
-  width: 80%;
+  margin: 0 auto;
+  width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  font-size: 13px;
   background-color: white;
  
 }
