@@ -1697,7 +1697,7 @@ echo '</table>';
         <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
             <thead>
                 <tr>
-                    <th>Count</th>
+                    <th>Count</th> <!-- New Count Column -->
                     <th>Intern ID</th>
                     <th>Company ID</th>
                     <th>Start Shift</th>
@@ -1706,39 +1706,32 @@ echo '</table>';
                     <th>Task</th>
                     <th>Logout Time</th>
                     <th>Status</th>
-                    <th>Actions</th> <!-- New column -->
                 </tr>
             </thead>
             <tbody>
                 <?php 
-                $count = 1;
+                $count = 1; // Initialize the counter
                 foreach ($results as $row): 
                 ?>
                     <tr>
-                        <td><?php echo $count++; ?></td>
-                        <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td>
-                            <button class="view-details-btn" data-intern-id="<?php echo htmlspecialchars($row['internID']); ?>">
-                                View Details
-                            </button>
-                        </td>
-                    </tr>
+    <td><?php echo $count++; ?></td> <!-- Display count and increment -->
+    <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+    <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+</tr>
+
                 <?php endforeach; ?>
             </tbody>
         </table>
-    <?php endif; ?>
 
-    <!-- Add this div for the details modal -->
-    <div class="container" style="display: none;">
-        <div id="internDetails" class="intern-details"></div>
-    </div>
+    <?php else: ?>
+        <p>No records found.</p>
+    <?php endif; ?>
 </div>
     
     
