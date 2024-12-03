@@ -282,12 +282,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Add this at the top level of your JavaScript file
 document.addEventListener('click', function(e) {
-    if (e.target.matches('.close-btn')) {
+    if (e.target.classList.contains('close-btn')) {
         e.preventDefault();
         console.log('Close button clicked');
         closeDetails();
     }
 });
+console.log('Adding close button event listener');
+console.log('Button content:', detailsDiv.innerHTML);
+
 
 // Update your existing closeDetails function
 function closeDetails() {
@@ -296,15 +299,16 @@ function closeDetails() {
         console.error("internDetails element not found");
         return;
     }
-    
+
     console.log("Closing details...");
     detailsDiv.classList.remove("show");
-    
-    // Wait for transition to complete before clearing content
+
+    // Use timeout for smooth transitions
     setTimeout(() => {
         detailsDiv.style.display = "none";
-        detailsDiv.innerHTML = "";
-    }, 300);
+        detailsDiv.innerHTML = ""; // Clear content after closing
+    }, 300); // Adjust this delay to match CSS transition time
 }
+
 //end kyle
 
