@@ -615,11 +615,10 @@ width: calc(100% - 250px); /* Adjust width */
 
 /* Default .req-container styling */
 .req-container {
-  margin-left: auto; /* Center the container */
-  margin-right: auto; /* Reduced margin to avoid excessive space */
+  margin: 0 auto;  /* Reduced margin to avoid excessive space */
   width: 80%;
 padding: 15px 20px; /* Padding adjusted for content */
-width: calc(100% - 40px); /* Default width */
+width: calc(100% - 260px); /* Default width */
 transition: margin-left 0.3s ease, width 0.3s ease, padding 0.3s ease, font-size 0.3s ease; /* Smooth transition for margin, width, padding, and font-size */
 margin-top: 100px; /* Space between logout button and attendance container */
 font-size: 16px; /* Font size */
