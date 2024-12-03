@@ -4,176 +4,28 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
-// Check if logout is requested
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    session_unset();
-    session_destroy();
-    header("Location: Admin_registration.php");
-    exit();
-}
-// Handle form submission for profile updates
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $Uname = $_SESSION['Uname'];
-    $response = ['success' => false, 'message' => ''];
-
-    // Update name if provided
-    if (isset($_POST['newFirstname'])) {
-        $newFirstname = trim($_POST['newFirstname']);
-        $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
-        $stmt->bindParam(':firstname', $newFirstname);
-        $stmt->bindParam(':uname', $Uname);
-        if ($stmt->execute()) {
-            $_SESSION['Firstname'] = $newFirstname;
-            $response['success'] = true;
-        }
-    }
-
-    // Update password if provided and valid
-    if (isset($_POST['newUpass']) && isset($_POST['confirmUpass']) && $_POST['newUpass'] === $_POST['confirmUpass']) {
-        $newUpass = $_POST['newUpass'];
-        $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
-        $stmt->bindParam(':newUpass', $newUpass);
-        $stmt->bindParam(':uname', $Uname);
-        if ($stmt->execute()) {
-            $response['success'] = true;
-        }
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit();
-}
-
-// Get user data
-$stmt = $conn->prepare("SELECT Firstname FROM users WHERE Uname = :Uname");
-$stmt->bindParam(':Uname', $_SESSION['Uname']);
-$stmt->execute();
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if ($user) {
-    $_SESSION['Firstname'] = $user['Firstname'];
-}
-
-$Firstname = $_SESSION['Firstname'] ?? '';
-
-// Add this code block at the top of your file, before any HTML output
-if (isset($_FILES['newProfileImage'])) {
-    $Uname = $_SESSION['Uname'];
-    $uploadDir = 'uploads/';
-    $fileName = basename($_FILES['newProfileImage']['name']);
-    $targetFilePath = $uploadDir . $fileName;
-
-    if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $targetFilePath)) {
-        $stmt = $conn->prepare("UPDATE users SET admin_profile = :profileImage WHERE Uname = :Uname");
-        $stmt->bindParam(':profileImage', $fileName);
-        $stmt->bindParam(':Uname', $Uname);
-        
-        if ($stmt->execute()) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true]);
-        } else {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true]); // Still return success to avoid error message
-        }
-    } else {
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true]); // Still return success to avoid error message
-    }
-    exit;
-}
-
-// Add this near the top of your file, after session_start()
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $updateType = $_POST['updateType'] ?? '';
-    
-    if ($updateType === 'password') {
-        try {
-            $Uname = $_SESSION['Uname']; // Make sure we have the username
-            
-            // Get current password from database - using exact column names from your table
-            $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
-            $stmt->bindParam(':Uname', $Uname);
-            $stmt->execute();
-            $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$currentUser || $_POST['currentUpass'] !== $currentUser['Upass']) {
-               // echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
-            } else if ($_POST['newUpass'] !== $_POST['confirmUpass']) {
-                echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
-            } else {
-                // Update password - using exact column names from your table
-                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
-                $stmt->bindParam(':newUpass', $_POST['newUpass']);
-                $stmt->bindParam(':uname', $Uname);
-                
-                if ($stmt->execute()) {
-                    echo json_encode(['success' => true]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to update password']);
-                }
-            }
-        } catch (PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
-        }
-        exit();
-    }
-}
 
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
 }
-
-// Keep only this one version of handleProfileUpdate
 function handleProfileUpdate($conn) {
     try {
-        // Get form data
+        // Your existing file upload and profile update code goes here
         $oldUpass = $_POST['currentUpass'] ?? null;
         $newFirstname = $_POST['newFirstname'] ?? '';
         $newUpass = $_POST['newUpass'] ?? '';
         $confirmUpass = $_POST['confirmUpass'] ?? '';
         $messages = [];
 
-        // Start building SQL update
-        $updateFields = [];
-        $params = [];
-
-        // Handle image upload if provided
-        if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'uploads/';
-            $fileExtension = strtolower(pathinfo($_FILES['newProfileImage']['name'], PATHINFO_EXTENSION));
-            $newFileName = uniqid() . '.' . $fileExtension;
-            $uploadFile = $uploadDir . $newFileName;
-
-            if (move_uploaded_file($_FILES['newProfileImage']['tmp_name'], $uploadFile)) {
-                $updateFields[] = "profile_image = :profile_image";
-                $params[':profile_image'] = $newFileName;
-            }
-        }
-
-        // Handle firstname update if provided
-        if (!empty($newFirstname)) {
-            $updateFields[] = "Firstname = :newFirstname";
-            $params[':newFirstname'] = $newFirstname;
-        }
-
-        // Handle password update if provided
-        if (!empty($newUpass)) {
-            if ($newUpass !== $confirmUpass) {
-                $messages[] = "New passwords do not match.";
-            } else {
-                $updateFields[] = "Upass = :newUpass";
-                $params[':newUpass'] = $newUpass;
-            }
-        }
-
-        return $messages;
+        // Rest of your existing profile update code...
     } catch (PDOException $e) {
         error_log("Error updating user data: " . $e->getMessage());
-        return ["There was an error updating your data. Please try again later."];
+        echo "There was an error updating your data. Please try again later.";
     }
 }
+
 
 // Get adminID from the logged-in user's session
 $Uname = $_SESSION['Uname'] ?? null;
@@ -408,6 +260,7 @@ $Uname = $_SESSION['Uname'];
 
 
 
+
 try {
     // Prepare the SQL query using placeholders to prevent SQL injection
     $query = "SELECT Firstname, Roles, admin_profile, Uname, adminID FROM users WHERE Uname = :Uname"; // Include adminID
@@ -462,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Verify the current password
     if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
-      //  $messages[] = "Current password is incorrect.";
+        $messages[] = "Current password is incorrect.";
     }
 
     // Validate new password if the current password is correct
@@ -470,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($newUpass !== $confirmUpass) {
             $messages[] = "Passwords do not match.";
         } elseif (strlen($newUpass) < 6) {
-         //   $messages[] = "Password must be at least 6 characters long.";
+            $messages[] = "Password must be at least 6 characters long.";
         }
     }
 
@@ -1066,19 +919,23 @@ $timeLogsCount = $stmt->fetchColumn();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div id="messageBox" class="message-box" style="display: none;">
-        <?php 
-        if (isset($_SESSION['message'])) {
+<?php
+    // Place this at the very top of your body tag
+    if (isset($_SESSION['message'])): ?>
+        <div id="messageBox" class="message-box <?php echo $_SESSION['message_type']; ?>">
+            <?php 
             echo $_SESSION['message'];
+            // Clear the message after displaying
             unset($_SESSION['message']);
-        }
-        ?>
-    </div>
+            unset($_SESSION['message_type']);
+            ?>
+        </div>
+    <?php endif; ?>
    
 
 
     <div id="header" class="header">
-        <button class="logout-btn" onclick="window.location.href='Admin_Admin_1.php?action=logout'">
+        <button class="logout-btn" onclick="logout()">
             <img src="image/logout.png" alt="Logout Icon" class="logout-icon"> | LOG OUT
         </button>
 
@@ -1090,7 +947,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 <div class="modal-content">
                     <span class="close" onclick="closeModal('myModal')">&times;</span>
                     <h2>My Profiles</h2>
-                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data" >
+                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data">
                         <!-- Display error messages if any (only after form submission) -->
                         <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($messages)): ?>
                             <div class="error-messages" style="color: red;">
@@ -1101,32 +958,28 @@ $timeLogsCount = $stmt->fetchColumn();
                         <?php endif; ?>
 
                         <div class="form-group">
-                            <label for="newFirstname">Name:</label>
-                            <input type="text" 
-                                   id="newFirstname" 
-                                   name="newFirstname" 
-                                   value="<?php echo htmlspecialchars($Firstname); ?>" 
-                                   required>
+                            <label for="newFirstname">New First Name:</label>
+                            <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
                         </div>
 
                         <div class="form-group">
                             <label for="currentUpass">Current Password:</label>
-                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" required >
+                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" >
                         </div>
 
                         <div class="form-group">
                             <label for="newUpass">New Password:</label>
-                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" required>
+                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" >
                         </div>
 
                         <div class="form-group">
                             <label for="confirmUpass">Confirm New Password:</label>
-                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" required>
+                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" >
                         </div>
 
                         <div class="form-group">
                             <label for="newProfileImage">New Profile Image:</label>
-                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*" onchange="autoUploadImage(this)">
+                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
                         </div>
                         
                         <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
@@ -1230,18 +1083,17 @@ $timeLogsCount = $stmt->fetchColumn();
 
                                                 // Now you can use $pdfPath wherever needed, such as inserting it into your database or showing it in a link.
                                                                                                 ?>
-                                               
+                                                <div class="button-group">
+                                                    <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                                    <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                                        <button type="submit" class="deleter-button">Delete</button>
+                                                    </form>
+                                                </div>
                                             <?php else: ?>
                                                 <p>Unsupported file type.</p>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="button-group">
-            <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-            <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
-                <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
-                <button type="submit" class="deleter-button">Delete</button>
-            </form>
-        </div>
                                     <?php endif; ?>
                                 </div>
                             
@@ -1408,8 +1260,6 @@ echo '</table>';
                 <!-- Content for intern details will go here -->
             </div>
         </div>
-            
-        
 
          <!-- End Kyle -->
     </div>  
