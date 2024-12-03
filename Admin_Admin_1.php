@@ -17,10 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Uname = $_SESSION['Uname'];
     $response = ['success' => false, 'message' => ''];
 
-    // Check if it's a regular form submit or AJAX request
-    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-
     // Update name if provided
     if (isset($_POST['newFirstname'])) {
         $newFirstname = trim($_POST['newFirstname']);
@@ -44,19 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($response['success']) {
-        if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true]);
-            exit;
-        } else {
-            echo "<script>
-                alert('Profile updated successfully!');
-                window.location.href = 'Admin_Admin_1.php';
-            </script>";
-            exit;
-        }
-    }
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit();
 }
 
 // Get user data
