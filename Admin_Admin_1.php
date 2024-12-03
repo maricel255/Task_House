@@ -1388,7 +1388,7 @@ foreach ($records as $row) {
 
     // Add a button to view more details
     echo '<td>';
-    echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
+    echo '<button onclick="viewInternDetails(\'' . $row['internID'] . '\')" class="view-details-btn" data-intern-id="' . $row['internID'] . '">View Details</button>';
     echo '</td>';
 
     echo '</tr>';

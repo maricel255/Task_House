@@ -310,4 +310,52 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     });
 });
 
+function viewInternDetails(internId) {
+    // Prevent the dashboard from showing
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Get the container and details elements
+    const container = document.querySelector('.container');
+    const internDetails = document.getElementById('internDetails');
+    
+    // Hide the dashboard if it's visible
+    const dashboard = document.querySelector('.dashboard');
+    if (dashboard) {
+        dashboard.style.display = 'none';
+    }
+
+    // Show the container and details
+    container.style.display = 'block';
+    internDetails.style.display = 'block';
+    internDetails.classList.add('show');
+
+    // Fetch and display intern details
+    fetch(`get_intern_details.php?intern_id=${internId}`)
+        .then(response => response.json())
+        .then(data => {
+            internDetails.innerHTML = `
+                <button class="close-btn" onclick="closeInternDetails(event)">&times;</button>
+                <h2>Intern Details</h2>
+                <div class="intern-content">
+                    <!-- Add your intern details content here -->
+                </div>
+            `;
+        });
+}
+
+function closeInternDetails(event) {
+    // Prevent event bubbling
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Hide the modal
+    const container = document.querySelector('.container');
+    const internDetails = document.getElementById('internDetails');
+    
+    internDetails.classList.remove('show');
+    container.style.display = 'none';
+    internDetails.style.display = 'none';
+}
+
 
