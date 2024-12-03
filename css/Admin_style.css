@@ -1516,8 +1516,9 @@ input[type="submit"]:hover {
   top: 0;
   right: 0;
   height: 100vh;
+  width: 0; /* Set width to 0 to not interfere with other elements */
   z-index: 1000;
-  pointer-events: none; 
+  pointer-events: none;
 }
 .intern-details {
   max-width: 500px;
