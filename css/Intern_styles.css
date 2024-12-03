@@ -1487,7 +1487,7 @@ table {
     margin-top: 20px;
     margin-left: 0;
     border-radius: 16px;  /* Apply rounded corners to the table itself */
-    overflow: hidden;
+    overflow: auto;
     table-layout: fixed;
 }
 
