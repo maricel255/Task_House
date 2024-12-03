@@ -1005,15 +1005,16 @@ $timeLogsCount = $stmt->fetchColumn();
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fetchDetails'])) {
         $internID = $_POST['internID'];
     
-        // Fetch details for the selected Intern ID
+        // Simplified query to get all details
         $sql = "SELECT pi.*, ia.profile_image 
                 FROM profile_information pi
                 LEFT JOIN intacc ia ON pi.internID = ia.internID
                 WHERE pi.internID = :internID";
+                
         $stmt = $conn->prepare($sql);
         $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
         $stmt->execute();
-    
+
         if ($stmt->rowCount() > 0) {
             $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -1032,11 +1033,11 @@ $timeLogsCount = $stmt->fetchColumn();
                 echo '</div>';
             }
         
-            // Display details in a table
-            echo '<table>';
+            // Display all details in a table
+            echo '<table class="details-table">';
             foreach ($internDetails as $key => $value) {
                 if ($key !== 'profile_image') {
-                    $displayKey = ($key === 'faciID') ? 'Company ID' : ucfirst(str_replace('_', ' ', $key));
+                    $displayKey = ucwords(str_replace('_', ' ', $key));
                     echo '<tr>';
                     echo '<th>' . $displayKey . '</th>';
                     echo '<td>' . htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
@@ -1044,15 +1045,12 @@ $timeLogsCount = $stmt->fetchColumn();
                 }
             }
             echo '</table>';
-        
-            // Add the resize handle here
-            echo ' <div class="intern-details-resize-handle"></div>'; // Resize handle for the intern details panel
+            echo '<div class="intern-details-resize-handle"></div>';
         
         } else {
             echo '<p>No details found for the selected Intern ID.</p>';
         }
-        exit; // Stop further processing since this is an AJAX response
-        
+        exit;
     }
     // END KYLE
     
