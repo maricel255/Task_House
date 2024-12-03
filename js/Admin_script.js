@@ -274,4 +274,5 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     });
 });
 
+// Intern Details Functionality
 
