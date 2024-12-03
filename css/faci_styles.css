@@ -2038,7 +2038,7 @@ text-align: center;
   border-collapse: collapse;
   margin-bottom: 20px;
   background-color: white;
-  min-width: 1200px;
+ 
 }
 
 /* Header row */
@@ -2050,7 +2050,7 @@ text-align: center;
 .request-table-header th {
   padding: 15px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 200px;
 }
 
 /* Table body rows */
