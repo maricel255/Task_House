@@ -102,9 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
             } else {
                 // Update password - using exact column names from your table
-                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
+                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
                 $stmt->bindParam(':newUpass', $_POST['newUpass']);
-                $stmt->bindParam(':Uname', $Uname);
+                $stmt->bindParam(':uname', $Uname);
                 
                 if ($stmt->execute()) {
                     echo json_encode(['success' => true]);
@@ -1374,7 +1374,7 @@ $timeLogsCount = $stmt->fetchColumn();
             echo '<table id="profileTable" class="table table-bordered">';
 echo '<thead class="thead-light">';
 echo '<tr class="sticky-header">';
-echo '<th>#</th>'; // Add a column for numbering
+echo '<th>#</th>'; 
 echo '<th>Intern ID</th>';
 
 // Dynamically create headers based on the selected search criteria
@@ -1392,7 +1392,7 @@ $counter = 1;
 // Loop through the records and display each field
 foreach ($records as $row) {
     echo '<tr>';
-    echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+    echo '<td>' . $counter++ . '</td>'; 
     echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
 
     // Display the selected search column based on search criteria
@@ -1400,9 +1400,9 @@ foreach ($records as $row) {
         echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
     }
 
-    // Add a button to view more details
+    // Add the View Details button here
     echo '<td>';
-    echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
+    echo '<button class="view-details-btn" onclick="showInternDetails(\'' . htmlspecialchars($row['internID']) . '\')">View Details</button>';
     echo '</td>';
 
     echo '</tr>';
@@ -1415,11 +1415,11 @@ echo '</table>';
 
         
         ?>
-        <div class="container">
+        
         <div id="internDetails" class="intern-details"></div>
                 <!-- Content for intern details will go here -->
             
-        </div>
+        
 
          <!-- End Kyle -->
     </div>  
