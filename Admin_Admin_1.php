@@ -10,6 +10,22 @@ function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
 }
+function handleProfileUpdate($conn) {
+    try {
+        // Your existing file upload and profile update code goes here
+        $oldUpass = $_POST['currentUpass'] ?? null;
+        $newFirstname = $_POST['newFirstname'] ?? '';
+        $newUpass = $_POST['newUpass'] ?? '';
+        $confirmUpass = $_POST['confirmUpass'] ?? '';
+        $messages = [];
+
+        // Rest of your existing profile update code...
+    } catch (PDOException $e) {
+        error_log("Error updating user data: " . $e->getMessage());
+        echo "There was an error updating your data. Please try again later.";
+    }
+}
+
 
 // Get adminID from the logged-in user's session
 $Uname = $_SESSION['Uname'] ?? null;
@@ -845,8 +861,8 @@ $timeLogsCount = $stmt->fetchColumn();
             $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
             // Return the HTML to be injected dynamically
-            echo '<button class="close-btn" onclick="closeDetails()">×</button>';
-            echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
+            echo '<button class="close-btn">×</button>';
+                        echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
         
             // Show profile image
             if (!empty($internDetails['profile_image'])) {
@@ -1067,17 +1083,18 @@ $timeLogsCount = $stmt->fetchColumn();
 
                                                 // Now you can use $pdfPath wherever needed, such as inserting it into your database or showing it in a link.
                                                                                                 ?>
-                                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                                <div class="button-group">
+                                                    <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                                    <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
+                                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
+                                                        <button type="submit" class="deleter-button">Delete</button>
+                                                    </form>
+                                                </div>
                                             <?php else: ?>
                                                 <p>Unsupported file type.</p>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
-                                        <!-- Delete Button Form -->
-                                        <form enctype="multipart/form-data" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this announcement?');">
-                                        <input type="hidden" name="announcementID" value="<?php echo htmlspecialchars($announcement['announcementID']); ?>">
-                                        <button type="submit" class="deleter-button">Delete</button>
-                                        </form>
                                 </div>
                             
                             <?php endforeach; ?>
