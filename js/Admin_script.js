@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener("click", function() {
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
-            const container = document.querySelector('.container');
             
             const formData = new FormData();
             formData.append('fetchDetails', 'true');
@@ -179,36 +178,25 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(html => {
                 detailsDiv.innerHTML = html;
                 
-                // Style the container and details div
-                container.style.display = 'block';
-                container.style.position = 'fixed';
-                container.style.top = '50%';
-                container.style.left = '50%';
-                container.style.transform = 'translate(-50%, -50%)';
-                container.style.zIndex = '1000';
-                container.style.backgroundColor = 'white';
-                container.style.padding = '20px';
-                container.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
-                container.style.width = '80%';
-                container.style.maxWidth = '800px';
-                container.style.maxHeight = '80vh';
-                container.style.overflowY = 'auto';
-                container.style.borderRadius = '8px';
+                // Style the details div for right side display
+                detailsDiv.style.display = 'block';
+                detailsDiv.style.position = 'fixed';
+                detailsDiv.style.top = '0';
+                detailsDiv.style.right = '0';
+                detailsDiv.style.width = '40%'; // Adjust width as needed
+                detailsDiv.style.height = '100vh';
+                detailsDiv.style.backgroundColor = 'white';
+                detailsDiv.style.padding = '20px';
+                detailsDiv.style.boxShadow = '-2px 0 5px rgba(0,0,0,0.2)';
+                detailsDiv.style.overflowY = 'auto';
+                detailsDiv.style.zIndex = '1000';
 
-                // Add overlay
-                const overlay = document.createElement('div');
-                overlay.id = 'detailsOverlay';
-                overlay.style.position = 'fixed';
-                overlay.style.top = '0';
-                overlay.style.left = '0';
-                overlay.style.width = '100%';
-                overlay.style.height = '100%';
-                overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
-                overlay.style.zIndex = '999';
-                document.body.appendChild(overlay);
-
-                // Close modal when clicking overlay
-                overlay.addEventListener('click', closeDetails);
+                // Add a close button
+                const closeButton = document.createElement('button');
+                closeButton.innerHTML = '×';
+                closeButton.className = 'close-details-btn';
+                closeButton.onclick = closeDetails;
+                detailsDiv.insertBefore(closeButton, detailsDiv.firstChild);
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -219,15 +207,9 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function closeDetails() {
-    const container = document.querySelector('.container');
-    const overlay = document.getElementById('detailsOverlay');
-    
-    if (container) {
-        container.style.display = 'none';
-    }
-    
-    if (overlay) {
-        overlay.remove();
+    const detailsDiv = document.getElementById("internDetails");
+    if (detailsDiv) {
+        detailsDiv.style.display = 'none';
     }
 }
 //end kyle
