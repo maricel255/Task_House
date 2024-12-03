@@ -339,7 +339,7 @@ body {
     max-width: 18%; /* Set maximum width to be responsive */
     height: auto; /* Maintain aspect ratio */
     transform: scaleX(-1); /* This mirrors the image horizontally */
-    z-index: 9999; /* Ensure the image is always on top */
+    z-index: 1000; /* Ensure the image is always on top */
   }
   
 
