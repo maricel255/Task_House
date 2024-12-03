@@ -248,12 +248,7 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     e.preventDefault();
     
     // Create FormData object
-    const formData = new FormData();
-    formData.append('updateType', 'password');
-    formData.append('newFirstname', document.getElementById('newFirstname').value);
-    formData.append('currentUpass', document.getElementById('currentUpass').value);
-    formData.append('newUpass', document.getElementById('newUpass').value);
-    formData.append('confirmUpass', document.getElementById('confirmUpass').value);
+    const formData = new FormData(this);
     
     fetch('Admin_Admin_1.php', {
         method: 'POST',
@@ -262,15 +257,15 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Password updated successfully!');
+            alert('Profile updated successfully!');
             window.location.reload();
         } else {
-            window.location.reload();
+            alert('Failed to update profile. Please try again.');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        window.location.reload();
+        alert('An error occurred. Please try again.');
     });
 });
 
