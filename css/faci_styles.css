@@ -624,9 +624,26 @@ margin-top: 65px; /* Space between logout button and attendance container */
 font-size: 16px; /* Font size */
 font-weight: bold; /* Bold text */
 color: black; /* Text color */
-overflow-x: hidden; /* Prevent horizontal scrolling by default */
+max-height: 400px;
+overflow-y: auto; /* Prevent horizontal scrolling by default */
+}
+.req-container::-webkit-scrollbar {
+  width: 8px;
 }
 
+.req-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.req-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.req-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 /* When sidebar is active */
 /* When sidebar is active */
 .move .req-container {
@@ -2037,16 +2054,22 @@ text-align: center;
 .request-table {
   margin: 0 auto;
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
   font-size: 13px;
   background-color: white;
-  overflow-x: auto;
 }
 
 /* Header row */
 .request-table-header {
   background-color: #4CAF50;
   color: white;
+}
+.request-table thead {
+  background-color: #4CAF50;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .request-table-header th {
