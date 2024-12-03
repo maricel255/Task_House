@@ -7,14 +7,12 @@ function showContent(section) {
     // Hide all sections
     sections.forEach((content) => {
         content.classList.remove('active');
-        content.style.display = 'none'; // Ensure all are hidden initially
     });
 
     // Show the selected section
     const activeSection = document.getElementById(section);
     if (activeSection) {
-        activeSection.classList.add('active');
-        activeSection.style.display = 'block'; // Show the active section
+        activeSection.clascsList.add('active');
     } else {
         console.error(`Section with id ${section} not found.`);
     }
