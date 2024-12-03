@@ -378,8 +378,10 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: #ffffff; /* White background */
+    background-color: rgba(0, 0, 0, 0.5);
     border: none;
+    font-size: 18px;
+    color: white;
     border-radius: 35px; /* Rounded corners */
     cursor: pointer;
     padding: 10px; /* Padding */
@@ -395,7 +397,8 @@ body {
 
 /* Hover effects for buttons */
 .prev:hover, .next:hover {
-    background-color: #e0e0e0; /* Light gray on hover */
+    background-color: rgba(0, 0, 0, 0.8);
+
 }
 
 .time-clock-container {
