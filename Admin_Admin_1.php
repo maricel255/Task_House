@@ -16,25 +16,23 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 if (isset($_POST['fetchDetails']) && isset($_POST['internID'])) {
     $internID = $_POST['internID'];
     
-    // Prepare your SQL query to fetch intern details
-    $stmt = $conn->prepare("SELECT * FROM interns WHERE intern_id = :internID");
+    // Fetch all intern details with a single query
+    $stmt = $conn->prepare("
+        SELECT i.*, p.*
+        FROM intacc i
+        LEFT JOIN intern_profile p ON i.internID = p.internID
+        WHERE i.internID = :internID
+    ");
     $stmt->bindParam(':internID', $internID);
     $stmt->execute();
     $intern = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($intern) {
-        // Return the HTML for intern details
-        echo '<div class="intern-details-content">';
-        echo '<button onclick="closeDetails()" class="close-btn">&times;</button>';
-        echo '<h2>Intern Details</h2>';
-        echo '<table>';
-        echo '<tr><th>ID:</th><td>' . htmlspecialchars($intern['intern_id']) . '</td></tr>';
-        echo '<tr><th>Name:</th><td>' . htmlspecialchars($intern['firstname']) . ' ' . htmlspecialchars($intern['lastname']) . '</td></tr>';
-        // Add more fields as needed
-        echo '</table>';
-        echo '</div>';
+        // Just send back all the data as JSON
+        header('Content-Type: application/json');
+        echo json_encode($intern);
     } else {
-        echo '<p>Intern not found.</p>';
+        echo json_encode(['error' => 'Intern not found']);
     }
     exit;
 }
@@ -132,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Update password - using exact column names from your table
                 $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
                 $stmt->bindParam(':newUpass', $_POST['newUpass']);
-                $stmt->bindParam(':Uname', $Uname);
+                $stmt->bindParam(':uname', $Uname);
                 
                 if ($stmt->execute()) {
                     echo json_encode(['success' => true]);

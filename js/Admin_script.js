@@ -166,11 +166,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
             
-            // Show loading state
-            detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
-            detailsDiv.classList.add("show"); // Add show class to slide in
-            
-            // Update the fetch request to include proper headers
             fetch('Admin_Admin_1.php', {
                 method: "POST",
                 headers: {
@@ -178,19 +173,27 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: `fetchDetails=true&internID=${internID}`
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
+            .then(response => response.json())
             .then(data => {
-                try {
-                    detailsDiv.innerHTML = data;
-                } catch (e) {
-                    console.error("Error parsing response:", e);
-                    detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
+                if (data.error) {
+                    detailsDiv.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    let html = `
+                        <div class="intern-details-content">
+                            <button onclick="closeDetails()" class="close-btn">&times;</button>
+                            <h2>Intern Details</h2>
+                            <table>
+                    `;
+                    for (const [key, value] of Object.entries(data)) {
+                        html += `<tr><th>${key}:</th><td>${value || ''}</td></tr>`;
+                    }
+                    html += `
+                            </table>
+                        </div>
+                    `;
+                    detailsDiv.innerHTML = html;
                 }
+                detailsDiv.classList.add("show");
             })
             .catch(error => {
                 console.error("Error:", error);
