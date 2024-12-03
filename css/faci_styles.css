@@ -458,6 +458,30 @@ overflow: hidden;
 display: block;
 opacity: 1;
 }
+.pdf-link {
+  display: inline-block;
+  margin-top: 10px; /* Space above the link */
+  padding: 10px 15px; /* Padding for clickable area */
+  background-color: #CFFFE5; /* Light pastel mint green background */
+  color: #333; /* Darker text color for contrast */
+  border: 2px solid #FADADD; /* Soft pink border */
+  border-radius: 30px; /* Rounded edges for a softer look */
+  text-decoration: none; /* Remove underline from link */
+  font-weight: bold; /* Bold text for emphasis */
+  transition: background-color 0.3s ease, transform 0.2s; /* Smooth transitions */
+}
+
+.pdf-link:hover {
+  background-color: #dc3545; /* Change background on hover */
+  color: #fff; /* Change text color on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+  text-decoration: none;
+}
+
+.pdf-link:focus {
+  outline: 2px solid #FADADD; /* Outline for accessibility */
+  outline-offset: 2px; /* Space between outline and element */
+}
 
 button.prev, button.next {
 position: absolute;
