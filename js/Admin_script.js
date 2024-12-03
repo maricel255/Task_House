@@ -12,7 +12,7 @@ function showContent(section) {
     // Show the selected section
     const activeSection = document.getElementById(section);
     if (activeSection) {
-        activeSection.classList.add('active');
+        activeSection.clascsList.add('active');
     } else {
         console.error(`Section with id ${section} not found.`);
     }
@@ -160,82 +160,6 @@ function validateForm() {
     }
 
     // Start kyle
-
-//end kyle
-
-// Add this to your existing JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    const messageBox = document.getElementById('messageBox');
-    if (messageBox && messageBox.textContent.trim() !== '') {
-        messageBox.style.display = 'block';
-        
-        // Hide message after 5 seconds
-        setTimeout(function() {
-            messageBox.style.opacity = '0';
-            setTimeout(function() {
-                messageBox.style.display = 'none';
-            }, 500);
-        }, 5000);
-    }
-});
-function autoUploadImage(input) {
-    if (input.files && input.files[0]) {
-        var formData = new FormData();
-        formData.append('newProfileImage', input.files[0]);
-
-        // Show preview immediately
-        var profileImages = document.querySelectorAll('.profile-image img');
-        profileImages.forEach(img => {
-            img.src = URL.createObjectURL(input.files[0]);
-        });
-
-        // Upload to server silently
-        fetch('Admin_Admin_1.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Profile image updated successfully');
-                // Refresh the page after successful upload
-                window.location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Error uploading image:', error);
-        });
-    }
-}
-
-// Add new function for password update
-document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Create FormData object
-    const formData = new FormData(this);
-    
-    fetch('Admin_Admin_1.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Profile updated successfully!');
-            window.location.reload();
-        } else {
-            alert('Failed to update profile. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
-});
-
-// Intern Details Functionality
-
 document.addEventListener("DOMContentLoaded", function () {
     // Attach event listeners to all View Details buttons
     document.querySelectorAll(".view-details-btn").forEach((button) => {
@@ -256,58 +180,44 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((response) => response.text())
             .then((data) => {
-                detailsDiv.innerHTML = data;
-                detailsDiv.classList.add("show");
-
-                // Attach close button functionality after injecting the content
-                const closeButton = detailsDiv.querySelector(".close-btn");
-                if (closeButton) {
-                    console.log("Close button found:", closeButton);
-                    closeButton.addEventListener("click", function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log("Close button clicked");
-                        closeDetails();
-                    });
-                } else {
-                    console.error("Close button not found in the injected content");
-                }
+                detailsDiv.innerHTML = data; // Inject the fetched data
+                detailsDiv.classList.add("show"); // Show the details
             })
             .catch((error) => {
                 console.error("Error fetching details:", error);
             });
         });
     });
+
+    // Close button functionality
+    const closeButton = document.querySelector(".close-btn");
+    closeButton.addEventListener("click", function () {
+        const detailsDiv = document.getElementById("internDetails");
+        detailsDiv.classList.remove("show"); // Hide the details
+        detailsDiv.innerHTML = ""; // Clear the content
+    });
 });
 
-// Add this at the top level of your JavaScript file
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('close-btn')) {
-        e.preventDefault();
-        console.log('Close button clicked');
-        closeDetails();
-    }
-});
-
-
-
-// Update your existing closeDetails function
+// Function to close the details section
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    if (!detailsDiv) {
-        console.error("internDetails element not found");
-        return;
-    }
-
-    console.log("Closing details...");
-    detailsDiv.classList.remove("show");
-
-    // Use timeout for smooth transitions
-    setTimeout(() => {
-        detailsDiv.style.display = "none";
-        detailsDiv.innerHTML = ""; // Clear content after closing
-    }, 300); // Adjust this delay to match CSS transition time
+    detailsDiv.classList.remove("show"); // Hide the details
+    detailsDiv.innerHTML = ""; // Clear the content
 }
-
 //end kyle
 
+// Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const messageBox = document.getElementById('messageBox');
+    if (messageBox && messageBox.textContent.trim() !== '') {
+        messageBox.style.display = 'block';
+        
+        // Hide message after 5 seconds
+        setTimeout(function() {
+            messageBox.style.opacity = '0';
+            setTimeout(function() {
+                messageBox.style.display = 'none';
+            }, 500);
+        }, 5000);
+    }
+});
