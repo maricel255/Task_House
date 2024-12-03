@@ -1557,6 +1557,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                                     <td><?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?></td>
+                                    <td><?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars($log['status'] ?? 'N/A'); ?></td>
                                 </tr>
                             <?php endforeach; ?>
