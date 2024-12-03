@@ -11,6 +11,35 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     header("Location: Admin_registration.php");
     exit();
 }
+if (isset($_GET['action']) && $_GET['action'] === 'getDetails' && isset($_GET['internID'])) {
+    $internID = $_GET['internID'];
+    
+    try {
+        $stmt = $conn->prepare("SELECT * FROM profile_information WHERE internID = :internID");
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $intern = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($intern) {
+            // Output each field in a table row
+            foreach ($intern as $field => $value) {
+                // Skip adminID or other fields you don't want to show
+                if ($field === 'adminID') continue;
+                
+                echo '<tr>';
+                echo '<td><strong>' . ucwords(str_replace('_', ' ', $field)) . ':</strong></td>';
+                echo '<td>' . htmlspecialchars($value) . '</td>';
+                echo '</tr>';
+            }
+        } else {
+            echo '<tr><td colspan="2">No details found for this intern.</td></tr>';
+        }
+    } catch (PDOException $e) {
+        echo '<tr><td colspan="2">Error loading intern details.</td></tr>';
+    }
+    exit; // Important: stop further execution
+}
 
 // Handle form submission for name update ONLY
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname']) && !isset($_POST['newUpass'])) {

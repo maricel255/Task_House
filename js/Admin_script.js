@@ -161,15 +161,23 @@ function validateForm() {
 
     // Start kyle
 document.addEventListener("DOMContentLoaded", function() {
+    // Add click event listeners to all "View Details" buttons
     document.querySelectorAll(".view-details-btn").forEach(button => {
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function(e) {
+            e.preventDefault();
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
             
             // Show loading state
-            detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
-            detailsDiv.classList.add("show"); // Add show class to slide in
+            detailsDiv.innerHTML = `
+                <button class="close-btn" onclick="closeDetails()">&times;</button>
+                <div class="loading" style="text-align: center; padding: 20px;">
+                    <p>Loading...</p>
+                </div>
+            `;
+            detailsDiv.classList.add("show");
             
+            // Fetch intern details
             fetch(window.location.href, {
                 method: "POST",
                 headers: {
@@ -179,22 +187,48 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => response.text())
             .then(data => {
-                detailsDiv.innerHTML = data;
+                detailsDiv.innerHTML = `
+                    <button class="close-btn" onclick="closeDetails()">&times;</button>
+                    <div class="details-content">
+                        ${data}
+                    </div>
+                `;
             })
             .catch(error => {
-                detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
+                detailsDiv.innerHTML = `
+                    <button class="close-btn" onclick="closeDetails()">&times;</button>
+                    <div class="error-message" style="color: red; text-align: center; padding: 20px;">
+                        Error loading details. Please try again.
+                    </div>
+                `;
                 console.error("Error:", error);
             });
         });
     });
+
+    // Close details when clicking outside
+    document.addEventListener("click", function(e) {
+        const detailsDiv = document.getElementById("internDetails");
+        if (!detailsDiv) return;
+        
+        const isClickInside = detailsDiv.contains(e.target);
+        const isViewDetailsButton = e.target.closest('.view-details-btn');
+        
+        if (!isClickInside && !isViewDetailsButton && detailsDiv.classList.contains("show")) {
+            closeDetails();
+        }
+    });
 });
 
+// Function to close details panel
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.classList.remove("show"); // Remove show class to slide out
+    if (!detailsDiv) return;
+    
+    detailsDiv.classList.remove("show");
     setTimeout(() => {
-        detailsDiv.innerHTML = ""; // Clear content after animation
-    }, 300); // Match the transition duration
+        detailsDiv.innerHTML = "";
+    }, 300); // Match this with your CSS transition duration
 }
 //end kyle
 
@@ -273,3 +307,5 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
         window.location.reload();
     });
 });
+
+
