@@ -161,6 +161,7 @@ function validateForm() {
 
     // Start kyle
 document.addEventListener("DOMContentLoaded", function() {
+    // Add click event listeners to all view details buttons
     document.querySelectorAll(".view-details-btn").forEach(button => {
         button.addEventListener("click", function() {
             const internID = this.getAttribute("data-intern-id");
@@ -175,33 +176,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: `fetchDetails=true&internID=${internID}`
             })
-            .then(response => {
-                console.log("Response received"); // Debug line
-                return response.json();
-            })
-            .then(data => {
-                console.log("Data received:", data); // Debug line
-                
-                if (data.error) {
-                    detailsDiv.innerHTML = `<p>${data.error}</p>`;
-                } else {
-                    let html = `
-                        <div class="intern-details-content">
-                            <button onclick="closeDetails()" class="close-btn">&times;</button>
-                            <h2>Intern Details</h2>
-                            <table>
-                    `;
-                    for (const [key, value] of Object.entries(data)) {
-                        if (value !== null && value !== undefined) {
-                            html += `<tr><th>${key}:</th><td>${value}</td></tr>`;
-                        }
-                    }
-                    html += `
-                            </table>
-                        </div>
-                    `;
-                    detailsDiv.innerHTML = html;
-                }
+            .then(response => response.text())
+            .then(html => {
+                detailsDiv.innerHTML = html;
                 detailsDiv.classList.add("show");
             })
             .catch(error => {
