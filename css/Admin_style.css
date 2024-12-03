@@ -1516,10 +1516,8 @@ input[type="submit"]:hover {
   top: 0;
   right: 0;
   height: 100vh;
-  width: 100%; /* Changed from 0 to allow interaction */
+  width: 0; /* Set width to 0 to not interfere with other elements */
   z-index: 9999;
-  pointer-events: auto; /* Changed from none to allow interaction */
-  background-color: rgba(0, 0, 0, 0.5); /* Add semi-transparent overlay */
   
 }
 .intern-details {
