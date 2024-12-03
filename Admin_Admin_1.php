@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
             } else {
                 // Update password - using exact column names from your table
-                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
+                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
                 $stmt->bindParam(':newUpass', $_POST['newUpass']);
                 $stmt->bindParam(':uname', $Uname);
                 
@@ -1440,9 +1440,9 @@ echo '</table>';
         
         ?>
         <div class="container">
-            <div id="internDetails" class="intern-details">
+        <div id="internDetails" class="intern-details"></div>
                 <!-- Content for intern details will go here -->
-            </div>
+            
         </div>
 
          <!-- End Kyle -->

@@ -166,6 +166,8 @@ document.addEventListener("DOMContentLoaded", function() {
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
             
+            console.log("Fetching details for intern:", internID); // Debug line
+            
             fetch('Admin_Admin_1.php', {
                 method: "POST",
                 headers: {
@@ -173,8 +175,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: `fetchDetails=true&internID=${internID}`
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log("Response received"); // Debug line
+                return response.json();
+            })
             .then(data => {
+                console.log("Data received:", data); // Debug line
+                
                 if (data.error) {
                     detailsDiv.innerHTML = `<p>${data.error}</p>`;
                 } else {
@@ -185,7 +192,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             <table>
                     `;
                     for (const [key, value] of Object.entries(data)) {
-                        html += `<tr><th>${key}:</th><td>${value || ''}</td></tr>`;
+                        if (value !== null && value !== undefined) {
+                            html += `<tr><th>${key}:</th><td>${value}</td></tr>`;
+                        }
                     }
                     html += `
                             </table>
@@ -205,10 +214,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.classList.remove("show"); // Remove show class to slide out
-    setTimeout(() => {
-        detailsDiv.innerHTML = ""; // Clear content after animation
-    }, 300); // Match the transition duration
+    detailsDiv.classList.remove("show");
 }
 //end kyle
 
