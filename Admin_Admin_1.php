@@ -12,7 +12,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit();
 }
 
-
 // Handle form submission for name update ONLY
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname']) && !isset($_POST['newUpass'])) {
     $newFirstname = trim($_POST['newFirstname']);
