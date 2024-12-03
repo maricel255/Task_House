@@ -1786,6 +1786,22 @@ padding: 5px;
 border-radius: 5px;
 width: auto; /* Automatically adjust width based on content */
 }
+.search-form label {
+  font-weight: 12px;
+  white-space: nowrap; /* Prevents label from wrapping */
+  min-width: 80px; /* Set minimum width for labels */
+}
+
+/* Label specific adjustments */
+label[for="internID"] {
+  margin-right: 10px;
+  content: "Intern ID:"; /* Ensures consistent text */
+}
+
+label[for="status"] {
+  margin-right: 10px;
+  content: "Status:"; /* Ensures consistent text */
+}
 
 /* Adjust input fields and select box for more space */
 .search-form input,
