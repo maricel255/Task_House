@@ -1774,6 +1774,7 @@ color: white;
 }
 /*search button for inter request*/
 .search-form {
+display: flex;
 position: absolute;
 top: 70px; /* Push the form to the top */
 right: 60px; /* Adjust the right spacing */
@@ -1789,7 +1790,7 @@ width: auto; /* Automatically adjust width based on content */
 .search-form label {
   font-weight: 12px;
   white-space: nowrap; /* Prevents label from wrapping */
-  min-width: 80px; /* Set minimum width for labels */
+  margin-right: 15px;
 }
 
 /* Label specific adjustments */
