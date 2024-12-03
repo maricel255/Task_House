@@ -625,12 +625,11 @@ try {
                 $adminID = $admin['adminID'];
 
                 // Fetch announcements and corresponding faciID from the facacc table
-                $sql = "SELECT a.*, f.faciID
-                        FROM announcements a
-                        INNER JOIN facacc f ON a.adminID = f.adminID
-                        WHERE a.adminID = :adminID";
-                $stmt = $conn->prepare($sql);
-                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
+                $sql = "SELECT title, announcementID, imagePath, content 
+                                  FROM announcements 
+                                  WHERE adminID = :adminID";
+                          $stmt = $conn->prepare($sql);
+                          $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);
 
                 if ($stmt->execute()) {
                     $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -655,7 +654,9 @@ try {
                             // Display image or PDF link based on file type
                             echo '<div class="Announcement-Image">';
                             if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
-                                echo '<img src="' . $filePath . '" alt="Announcement Image" class="ann_img" style="max-width: 100%; height: auto;">';
+                                $fileName = basename($filePath);
+                                $imageUrl = "/uploaded_files/" . rawurlencode($fileName);
+                                echo '<a href="' . $imageUrl . '" target="_blank" class="pdf-link">View Image</a>';
                             } elseif (strtolower($fileExtension) === 'pdf') {
                                 $fileName = basename($filePath);
                                 $pdfPath = "/uploaded_files/" . rawurlencode($fileName);
