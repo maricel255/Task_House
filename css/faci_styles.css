@@ -1832,16 +1832,16 @@ cursor: pointer;
 display: flex;
 align-items: center; /* Vertically center the image */
 justify-content: center; /* Horizontally center the image */
-width: 50px; /* Width of the button */
-height: 50px; /* Height of the button */
+width: 80px;  /* Wider width for oval shape */
+    height: 40px;/* Height of the button */
 background-color: white; /* Ensures the white background color */
 transition: background-color 0.3s ease; /* Smooth transition on hover */
 margin-top: 1px;
 overflow: hidden;
 }
 .search-form button img {
-  width: 30px;  /* Adjusted image width */
-  height: 30px; /* Adjusted image height */
+  width: 20px;  /* Adjusted image width */
+  height: 20px;
   object-fit: cover; /* Ensures image scales properly */
 }
 
