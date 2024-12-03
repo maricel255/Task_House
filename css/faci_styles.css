@@ -1832,8 +1832,8 @@ cursor: pointer;
 display: flex;
 align-items: center; /* Vertically center the image */
 justify-content: center; /* Horizontally center the image */
-width: 55px; /* Width of the button */
-height: 55px; /* Height of the button */
+width: 50px; /* Width of the button */
+height: 50px; /* Height of the button */
 background-color: white; /* Ensures the white background color */
 transition: background-color 0.3s ease; /* Smooth transition on hover */
 margin-top: 1px;
