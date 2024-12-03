@@ -1517,7 +1517,7 @@ input[type="submit"]:hover {
   right: 0;
   height: 100vh;
   width: 0; /* Set width to 0 to not interfere with other elements */
-  z-index: 1000;
+  z-index: 9999;
   pointer-events: none;
 }
 .intern-details {
@@ -1536,7 +1536,7 @@ input[type="submit"]:hover {
   display: flex;
   flex-direction: column;
   border-radius: 5%;
-  z-index: 1001; /* Ensure it's above other content */
+  z-index: 10000; /* Ensure it's above other content */
 }
 
 /* When the panel is shown */
@@ -1547,7 +1547,7 @@ input[type="submit"]:hover {
 /* Ensure responsiveness */
 @media screen and (max-width: 768px) {
   .intern-details {
-    .intern-details {
+     
       max-width: 300px; /* Smaller width for tablets */
       right: -300px;
       top: 12%;
@@ -1557,7 +1557,7 @@ input[type="submit"]:hover {
       right: 15px;
     }
 
-  }
+  
 }
 
 @media screen and (max-width: 480px) {
