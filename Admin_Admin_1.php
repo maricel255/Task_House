@@ -1074,20 +1074,19 @@ $timeLogsCount = $stmt->fetchColumn();
                                         $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                                         ?>
                                         <div class="Announcement-Image">
-                                            <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                                                <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
-                                            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-                                                <?php
-                                                // Extract the file name and construct the file path
-                                                $fileName = basename($filePath);
-                                                $pdfPath = "https://taskhouseintern.com/uploaded_files/" . rawurlencode($fileName);
-
-                                                // Now you can use $pdfPath wherever needed, such as inserting it into your database or showing it in a link.
-                                                                                                ?>
-                                                <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
-                                            <?php else: ?>
-                                                <p>Unsupported file type.</p>
-                                            <?php endif; ?>
+                                        <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                        <a href="<?php echo htmlspecialchars($filePath); ?>" target="_blank">
+                                            <img src="<?php echo htmlspecialchars($filePath); ?>" alt="Announcement Image" class="ann_img">
+                                        </a>
+                                    <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                        <?php
+                                        $fileName = basename($filePath);
+                                        $pdfPath = "https://taskhouseintern.com/uploaded_files/" . rawurlencode($fileName);
+                                        ?>
+                                        <a href="<?php echo $pdfPath; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                    <?php else: ?>
+                                        <p>Unsupported file type.</p>
+                                    <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
                                         <!-- Delete Button Form -->
