@@ -12,17 +12,29 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit();
 }
 
-// Handle form submission for name update ONLY
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname'])) {
-    $newFirstname = trim($_POST['newFirstname']);
+// Handle form submission for profile updates
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Uname = $_SESSION['Uname'];
 
-    $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
-    $stmt->bindParam(':firstname', $newFirstname);
-    $stmt->bindParam(':uname', $Uname);
-    $stmt->execute();
-    
-    $_SESSION['Firstname'] = $newFirstname;
+    // Update name if provided
+    if (isset($_POST['newFirstname'])) {
+        $newFirstname = trim($_POST['newFirstname']);
+        $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
+        $stmt->bindParam(':firstname', $newFirstname);
+        $stmt->bindParam(':uname', $Uname);
+        $stmt->execute();
+        $_SESSION['Firstname'] = $newFirstname;
+    }
+
+    // Update password if provided and valid
+    if (isset($_POST['newUpass']) && isset($_POST['confirmUpass']) && $_POST['newUpass'] === $_POST['confirmUpass']) {
+        $newUpass = $_POST['newUpass'];
+        $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
+        $stmt->bindParam(':newUpass', $newUpass);
+        $stmt->bindParam(':uname', $Uname);
+        $stmt->execute();
+    }
+
     header("Location: Admin_Admin_1.php");
     exit();
 }
