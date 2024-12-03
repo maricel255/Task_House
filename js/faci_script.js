@@ -67,35 +67,23 @@ function showContent(sectionId) {
 
 
     // Announcement slider functionality
-    let slideIndex = 0; // Initialize slide index to start from the first slide
-    function moveSlide(step) {
-        const slides = document.querySelectorAll('.announcement-item');
-        const totalSlides = slides.length;
+    let currentIndex = 0; // Initialize the current index
 
-        // Update slideIndex with the step (move forward or backward)
-        slideIndex = (slideIndex + step + totalSlides) % totalSlides;
-
-        // Hide all slides first
-        slides.forEach(slide => {
-            slide.classList.remove('active');
-        });
-
-        // Show the new active slide
-        slides[slideIndex].classList.add('active');
-    }
-
-    // Attach event listeners to buttons
-    const prevButton = document.querySelector('.prev');
-    const nextButton = document.querySelector('.next');
-
-    if (prevButton && nextButton) {
-        prevButton.addEventListener('click', () => {
-            moveSlide(-1);
-        });
-
-        nextButton.addEventListener('click', () => {
-            moveSlide(1);
-        });
+    function moveSlide(direction) {
+        const announcementItems = document.querySelectorAll('.announcement-item');
+        announcementItems[currentIndex].classList.remove('active'); // Hide current announcement
+    
+        // Update the index based on direction
+        currentIndex += direction;
+    
+        // Wrap around if necessary
+        if (currentIndex < 0) {
+            currentIndex = announcementItems.length - 1; // Go to last item
+        } else if (currentIndex >= announcementItems.length) {
+            currentIndex = 0; // Go back to first item
+        }
+    
+        announcementItems[currentIndex].classList.add('active'); // Show new announcement
     }
 
       // Function to show the decline reason textarea when "Decline" is clicked
