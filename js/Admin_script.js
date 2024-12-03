@@ -256,8 +256,8 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((response) => response.text())
             .then((data) => {
-                detailsDiv.innerHTML = data; // Inject the fetched data
-                detailsDiv.classList.add("show"); // Show the details
+                detailsDiv.innerHTML = data;
+                detailsDiv.classList.add("show");
 
                 // Attach close button functionality after injecting the content
                 const closeButton = detailsDiv.querySelector(".close-btn");
@@ -266,7 +266,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     closeButton.addEventListener("click", function (e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        
                         console.log("Close button clicked");
                         closeDetails();
                     });
@@ -289,10 +288,7 @@ function closeDetails() {
         return;
     }
     
-    // Add a console log to verify the function is being called
     console.log("Closing details...");
-    
-    // Add inline styles for immediate visual feedback
     detailsDiv.style.display = "none";
     detailsDiv.classList.remove("show");
     detailsDiv.innerHTML = "";
