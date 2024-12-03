@@ -1538,6 +1538,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                             <th>Break Time</th>
                             <th>Back to Work Time</th>
                             <th>Logout Time</th>
+                            <th>Task</th>
                             <th>Status</th>
                         </tr>
                     </thead>
