@@ -22,8 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
         $stmt->bindParam(':firstname', $newFirstname);
         $stmt->bindParam(':uname', $Uname);
-        $stmt->execute();
-        $_SESSION['Firstname'] = $newFirstname;
+        if ($stmt->execute()) {
+            $_SESSION['Firstname'] = $newFirstname;
+            $_SESSION['message'] = "Name updated successfully!";
+            $_SESSION['message_type'] = "success";
+        }
     }
 
     // Update password if provided and valid
@@ -32,7 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
         $stmt->bindParam(':newUpass', $newUpass);
         $stmt->bindParam(':uname', $Uname);
-        $stmt->execute();
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Password updated successfully!";
+            $_SESSION['message_type'] = "success";
+        }
     }
 
     header("Location: Admin_Admin_1.php");
