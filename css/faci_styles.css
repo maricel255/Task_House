@@ -1789,13 +1789,12 @@ width: auto; /* Automatically adjust width based on content */
 .search-form label {
   font-weight: 12px;
   white-space: nowrap; /* Prevents label from wrapping */
-  min-width: 60px; /* Set minimum width for labels */
+  min-width: 80px; /* Set minimum width for labels */
 }
 
 /* Label specific adjustments */
 label[for="internID"] {
   margin-right: 10px;
-  margin-left: 10px;
   content: "Intern ID:"; /* Ensures consistent text */
 }
 
