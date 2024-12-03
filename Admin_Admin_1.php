@@ -1082,7 +1082,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 $imageUrl = "/uploaded_files/" . rawurlencode($fileName);
                 ?>
                 <a  target="_blank" class="pdf-link"> View
-                    <img src="<?php echo $imageUrl; ?>" alt="Announcement Image" class="pdf-link">
+                    <img  alt="Announcement Image" class="pdf-link">
                 </a>
             <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
                 <?php
