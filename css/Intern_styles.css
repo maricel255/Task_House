@@ -571,12 +571,16 @@ input[type="text"] {
 /* CSS for the styled button */
 /* Wrapper styling */
 .wrapper {
-    display: flex;
+    display: block;
     justify-content: flex-start;
     align-items: center;
     height: 100vh;
     padding-left: 20px;
     
+}
+#timeLogsTable {
+    width: 100%;
+    margin-top: 20px; /* Add space above the table */
 }
 
 /* CSS for the styled button */
