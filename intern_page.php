@@ -1545,11 +1545,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         <?php if (!empty($timeLogs)): ?>
                             <?php $count = 1; // Initialize counter ?>
                             <?php foreach ($timeLogs as $log): ?>
-                                <?php 
-                // Skip entries with 'pending' status
-                $status = strtolower($log['status'] ?? '');
-                if ($status === 'pending') continue;
-                ?>
+                                
                                 <tr>
                                     <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
                                     <td><?php echo htmlspecialchars($log['login_time'] ?? 'N/A'); ?></td>
