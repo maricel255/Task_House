@@ -1076,18 +1076,14 @@ $timeLogsCount = $stmt->fetchColumn();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<?php
-    // Place this at the very top of your body tag
-    if (isset($_SESSION['message'])): ?>
-        <div id="messageBox" class="message-box <?php echo $_SESSION['message_type']; ?>">
-            <?php 
+<div id="messageBox" class="message-box" style="display: none;">
+        <?php 
+        if (isset($_SESSION['message'])) {
             echo $_SESSION['message'];
-            // Clear the message after displaying
             unset($_SESSION['message']);
-            unset($_SESSION['message_type']);
-            ?>
-        </div>
-    <?php endif; ?>
+        }
+        ?>
+    </div>
    
 
 
