@@ -170,20 +170,31 @@ document.addEventListener("DOMContentLoaded", function() {
             detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
             detailsDiv.classList.add("show"); // Add show class to slide in
             
-            fetch(window.location.href, {
+            // Update the fetch request to include proper headers
+            fetch('Admin_Admin_1.php', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
                 body: `fetchDetails=true&internID=${internID}`
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
             .then(data => {
-                detailsDiv.innerHTML = data;
+                try {
+                    detailsDiv.innerHTML = data;
+                } catch (e) {
+                    console.error("Error parsing response:", e);
+                    detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
+                }
             })
             .catch(error => {
-                detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
                 console.error("Error:", error);
+                detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
             });
         });
     });

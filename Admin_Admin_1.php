@@ -12,6 +12,33 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit();
 }
 
+// Add this near the top of your file, after session_start()
+if (isset($_POST['fetchDetails']) && isset($_POST['internID'])) {
+    $internID = $_POST['internID'];
+    
+    // Prepare your SQL query to fetch intern details
+    $stmt = $conn->prepare("SELECT * FROM interns WHERE intern_id = :internID");
+    $stmt->bindParam(':internID', $internID);
+    $stmt->execute();
+    $intern = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($intern) {
+        // Return the HTML for intern details
+        echo '<div class="intern-details-content">';
+        echo '<button onclick="closeDetails()" class="close-btn">&times;</button>';
+        echo '<h2>Intern Details</h2>';
+        echo '<table>';
+        echo '<tr><th>ID:</th><td>' . htmlspecialchars($intern['intern_id']) . '</td></tr>';
+        echo '<tr><th>Name:</th><td>' . htmlspecialchars($intern['firstname']) . ' ' . htmlspecialchars($intern['lastname']) . '</td></tr>';
+        // Add more fields as needed
+        echo '</table>';
+        echo '</div>';
+    } else {
+        echo '<p>Intern not found.</p>';
+    }
+    exit;
+}
+
 // Handle form submission for profile updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Uname = $_SESSION['Uname'];
