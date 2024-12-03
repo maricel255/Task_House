@@ -35,10 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':newUpass', $newUpass);
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
-            echo "<script>
-                alert('Password updated successfully!');
-                window.location.href = 'Admin_Admin_1.php';
-            </script>";
+            echo "<script>alert('Password updated successfully!'); window.location.href = 'Admin_Admin_1.php';</script>";
             exit();
         }
     }
