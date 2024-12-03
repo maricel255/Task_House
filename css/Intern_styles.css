@@ -1488,6 +1488,7 @@ table {
     margin-left: 0;
     border-radius: 16px;  /* Apply rounded corners to the table itself */
     overflow-y: auto;
+    max-height: 400px;
     table-layout: fixed;
 }
 
