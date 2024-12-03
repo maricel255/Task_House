@@ -161,21 +161,15 @@ function validateForm() {
 
     // Start kyle
 document.addEventListener("DOMContentLoaded", function() {
-    // Add click event listeners to all "View Details" buttons
     document.querySelectorAll(".view-details-btn").forEach(button => {
-        button.addEventListener("click", function(e) {
-            e.preventDefault();
+        button.addEventListener("click", function() {
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
             
             // Show loading state
-            detailsDiv.innerHTML = `
-                <button class="close-btn" onclick="closeDetails()">&times;</button>
-                <div class="loading">Loading...</div>
-            `;
-            detailsDiv.classList.add("show");
+            detailsDiv.innerHTML = '<div class="loading">Loading...</div>';
+            detailsDiv.classList.add("show"); // Add show class to slide in
             
-            // Fetch intern details
             fetch(window.location.href, {
                 method: "POST",
                 headers: {
@@ -185,50 +179,22 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => response.text())
             .then(data => {
-                detailsDiv.innerHTML = `
-                    <button class="close-btn" onclick="closeDetails()">&times;</button>
-                    <div class="details-content">
-                        <h2>Intern Details</h2>
-                        ${data}
-                        <button onclick="window.print()" class="print-btn">Print Details</button>
-                    </div>
-                `;
+                detailsDiv.innerHTML = data;
             })
             .catch(error => {
-                detailsDiv.innerHTML = `
-                    <button class="close-btn" onclick="closeDetails()">&times;</button>
-                    <div class="error-message" style="color: red; text-align: center; padding: 20px;">
-                        Error loading details. Please try again.
-                    </div>
-                `;
+                detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
                 console.error("Error:", error);
             });
         });
     });
-
-    // Close details when clicking outside
-    document.addEventListener("click", function(e) {
-        const detailsDiv = document.getElementById("internDetails");
-        if (!detailsDiv) return;
-        
-        const isClickInside = detailsDiv.contains(e.target);
-        const isViewDetailsButton = e.target.closest('.view-details-btn');
-        
-        if (!isClickInside && !isViewDetailsButton && detailsDiv.classList.contains("show")) {
-            closeDetails();
-        }
-    });
 });
 
-// Function to close details panel
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    if (!detailsDiv) return;
-    
-    detailsDiv.classList.remove("show");
+    detailsDiv.classList.remove("show"); // Remove show class to slide out
     setTimeout(() => {
-        detailsDiv.innerHTML = "";
-    }, 300); // Match this with your CSS transition duration
+        detailsDiv.innerHTML = ""; // Clear content after animation
+    }, 300); // Match the transition duration
 }
 //end kyle
 
