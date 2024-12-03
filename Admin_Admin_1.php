@@ -11,32 +11,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     header("Location: Admin_registration.php");
     exit();
 }
-
-// Add this near the top of your file, after session_start()
-if (isset($_POST['fetchDetails']) && isset($_POST['internID'])) {
-    $internID = $_POST['internID'];
-    
-    // Fetch all intern details with a single query
-    $stmt = $conn->prepare("
-        SELECT i.*, p.*
-        FROM intacc i
-        LEFT JOIN intern_profile p ON i.internID = p.internID
-        WHERE i.internID = :internID
-    ");
-    $stmt->bindParam(':internID', $internID);
-    $stmt->execute();
-    $intern = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($intern) {
-        // Just send back all the data as JSON
-        header('Content-Type: application/json');
-        echo json_encode($intern);
-    } else {
-        echo json_encode(['error' => 'Intern not found']);
-    }
-    exit;
-}
-
 // Handle form submission for profile updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Uname = $_SESSION['Uname'];
@@ -128,9 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
             } else {
                 // Update password - using exact column names from your table
-                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :uname");
+                $stmt = $conn->prepare("UPDATE users SET Upass = :newUpass WHERE Uname = :Uname");
                 $stmt->bindParam(':newUpass', $_POST['newUpass']);
-                $stmt->bindParam(':uname', $Uname);
+                $stmt->bindParam(':Uname', $Uname);
                 
                 if ($stmt->execute()) {
                     echo json_encode(['success' => true]);
