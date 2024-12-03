@@ -258,19 +258,19 @@ document.addEventListener("DOMContentLoaded", function () {
             .then((data) => {
                 detailsDiv.innerHTML = data; // Inject the fetched data
                 detailsDiv.classList.add("show"); // Show the details
+
+                // Attach close button functionality after injecting the content
+                const closeButton = detailsDiv.querySelector(".close-btn");
+                if (closeButton) {
+                    closeButton.addEventListener("click", function () {
+                        closeDetails();
+                    });
+                }
             })
             .catch((error) => {
                 console.error("Error fetching details:", error);
             });
         });
-    });
-
-    // Close button functionality
-    const closeButton = document.querySelector(".close-btn");
-    closeButton.addEventListener("click", function () {
-        const detailsDiv = document.getElementById("internDetails");
-        detailsDiv.classList.remove("show"); // Hide the details
-        detailsDiv.innerHTML = ""; // Clear the content
     });
 });
 
