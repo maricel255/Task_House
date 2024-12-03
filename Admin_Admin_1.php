@@ -1075,25 +1075,20 @@ $timeLogsCount = $stmt->fetchColumn();
                                         ?>
                                         <div class="Announcement-Image">
                                         <?php if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                <?php
-                // Get just the filename from the full path
-                $fileName = basename($filePath);
-                // Construct the correct URL path
-                $imageUrl = "/uploaded_files/" . rawurlencode($fileName);
-                ?>
-                <a href="<?php echo $imageUrl; ?>" target="_blank" class="pdf-link"> View
-                    <img src="<?php echo $imageUrl; ?>" alt="Announcement Image" class="pdf-link">
-                </a>
-            <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
-                <?php
-                $fileName = basename($filePath);
-                // Construct the correct URL path for PDFs
-                $pdfUrl = "/uploaded_files/" . rawurlencode($fileName);
-                ?>
-                <a href="<?php echo $pdfUrl; ?>" target="_blank" class="pdf-link">View PDF</a>
-            <?php else: ?>
-                <p>Unsupported file type.</p>
-            <?php endif; ?>
+                                            <?php
+                                            $fileName = basename($filePath);
+                                            $imageUrl = "/uploaded_files/" . rawurlencode($fileName);
+                                            ?>
+                                            <a href="<?php echo $imageUrl; ?>" target="_blank" class="view-link">View Image</a>
+                                        <?php elseif (strtolower($fileExtension) === 'pdf'): ?>
+                                            <?php
+                                            $fileName = basename($filePath);
+                                            $pdfUrl = "/uploaded_files/" . rawurlencode($fileName);
+                                            ?>
+                                            <a href="<?php echo $pdfUrl; ?>" target="_blank" class="pdf-link">View PDF</a>
+                                        <?php else: ?>
+                                            <p>Unsupported file type.</p>
+                                        <?php endif; ?>
                                                     </div>
                                     <?php endif; ?>
                                         <!-- Delete Button Form -->
