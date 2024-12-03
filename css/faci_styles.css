@@ -1789,7 +1789,7 @@ width: auto; /* Automatically adjust width based on content */
 .search-form label {
   font-weight: 12px;
   white-space: nowrap; /* Prevents label from wrapping */
-  min-width: 55px; /* Set minimum width for labels */
+  min-width: 57px; /* Set minimum width for labels */
 }
 
 /* Label specific adjustments */
