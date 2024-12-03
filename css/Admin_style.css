@@ -1631,21 +1631,7 @@ input[type="submit"]:hover {
   background-color: #f1f1f1;
 }
 
-/* Close button */
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #333;
-}
 
-.close-btn:hover {
-  color: #888;
-}
 
 /* -----------------------MARICEL END------------------------------------------*/
 /* Print Button */
@@ -1695,5 +1681,31 @@ input[type="submit"]:hover {
   margin-left: 70px;  /* Adds space from the left */
   margin-right: 50px; /* Optional: for balance */
   margin-top: 20px;   /* Adds some space from the top */
+}
+
+
+
+#internDetails {
+    display: none; /* Hidden by default */
+}
+
+#internDetails.show {
+    display: block; /* Show when the 'show' class is added */
+}
+
+.close-btn {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+.close-btn:hover {
+    color: #666;
 }
 
