@@ -1512,9 +1512,12 @@ input[type="submit"]:hover {
 /* ------------------------MARICEL------------------------------------------*/
 /* Container for intern details, positioned off-screen initially */
 .container {
-  position: relative; /* For proper positioning of the intern-details */
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 1000;
+  pointer-events: none; 
 }
 .intern-details {
   max-width: 500px;
