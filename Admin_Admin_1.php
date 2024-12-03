@@ -124,7 +124,9 @@ function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
 }
-    function handleProfileUpdate($conn) {
+
+// Keep only this one version of handleProfileUpdate
+function handleProfileUpdate($conn) {
     try {
         // Get form data
         $oldUpass = $_POST['currentUpass'] ?? null;
@@ -156,24 +158,13 @@ function setMessage($message, $type = 'info') {
             $params[':newFirstname'] = $newFirstname;
         }
 
-        // Handle password update only if current password is provided
-        if (!empty($oldUpass)) {
-            // Your existing password update logic here
-            // ...
-        }
-
-        // Only proceed with update if there are changes
-        if (!empty($updateFields)) {
-            $sql = "UPDATE adminacc SET " . implode(', ', $updateFields) . " WHERE Uname = :Uname";
-            $params[':Uname'] = $_SESSION['Uname'];
-
-            $stmt = $conn->prepare($sql);
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-
-            if ($stmt->execute()) {
-                $messages[] = "Profile updated successfully!";
+        // Handle password update if provided
+        if (!empty($newUpass)) {
+            if ($newUpass !== $confirmUpass) {
+                $messages[] = "New passwords do not match.";
+            } else {
+                $updateFields[] = "Upass = :newUpass";
+                $params[':newUpass'] = $newUpass;
             }
         }
 
@@ -183,7 +174,6 @@ function setMessage($message, $type = 'info') {
         return ["There was an error updating your data. Please try again later."];
     }
 }
-
 
 // Get adminID from the logged-in user's session
 $Uname = $_SESSION['Uname'] ?? null;
