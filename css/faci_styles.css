@@ -1776,11 +1776,11 @@ color: white;
 .search-form {
 position: absolute;
 top: 70px; /* Push the form to the top */
-right: 20px; /* Adjust the right spacing */
+right: 60px; /* Adjust the right spacing */
 display: flex;
 align-items: center; /* Vertically center the items */
 justify-content: center; /* Horizontally center the items */
-gap: 10px; /* Space between form elements */
+gap: 20px; /* Space between form elements */
 background-color: transparent;
 padding: 5px;
 border-radius: 5px;
@@ -1790,7 +1790,7 @@ width: auto; /* Automatically adjust width based on content */
 /* Adjust input fields and select box for more space */
 .search-form input,
 .search-form select {
-padding: 5px;
+padding: 5px 5px;
 font-size: 14px;
 border-radius: 5px;
 border: 1px solid #ccc;
