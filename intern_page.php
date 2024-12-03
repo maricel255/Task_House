@@ -1607,7 +1607,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         foreach ($timeLogs as $log): ?>
                         <?php
                          $status = strtolower($log['status'] ?? '');
-                         if ($status === 'declined') continue;
+                         if ($status === 'approved' || $status === 'declined') continue;
                          ?>
                             <tr>
                                 <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
