@@ -281,107 +281,110 @@ try {
 $errorMessages = [];
 unset($_SESSION['message']); // Clear the message after displaying
 
+// Add this function at the top of your file, after the database connection
+function handleProfileUpdate($conn, $Uname) {
+    $messages = [];
+    $newFirstname = $_POST['newFirstname'] ?? '';
+    $oldUpass = $_POST['currentUpass'] ?? '';
+    $newUpass = $_POST['newUpass'] ?? '';
+    $confirmUpass = $_POST['confirmUpass'] ?? '';
 
-// Handle form submission for profile update
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $oldUpass = $_POST['currentUpass'] ?? null; // Get current password from input
-    $newFirstname = $_POST['newFirstname'] ?? ''; // New first name
-    $newUpass = $_POST['newUpass'] ?? ''; // New password
-    $confirmUpass = $_POST['confirmUpass'] ?? ''; // Confirm new password
-    $messages = []; // Array to hold any error messages
+    // Only validate passwords if the user is trying to change them
+    if (!empty($newUpass) || !empty($confirmUpass) || !empty($oldUpass)) {
+        // Fetch current user's password
+        $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
+        $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
+        $stmt->execute();
+        $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Fetch current user's password from the database
-    $query = "SELECT Upass FROM users WHERE Uname = :Uname";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
-    $stmt->execute();
-    $currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // Verify the current password
-    if ($currentUser && $oldUpass !== $currentUser['Upass']) { // No hashing, direct comparison
-        $messages[] = "Current password is incorrect.";
-    }
-
-    // Validate new password if the current password is correct
-    if (empty($messages)) {
+        if ($currentUser && $oldUpass !== $currentUser['Upass']) {
+            $messages[] = "Current password is incorrect.";
+        }
         if ($newUpass !== $confirmUpass) {
-            $messages[] = "Passwords do not match.";
-        } elseif (strlen($newUpass) < 6) {
-            $messages[] = "Password must be at least 6 characters long.";
+            $messages[] = "New passwords do not match.";
+        }
+        if (strlen($newUpass) < 6) {
+            $messages[] = "New password must be at least 6 characters.";
         }
     }
 
-    // Handle file upload if provided
-    $newFileName = null; // Initialize to null
+    // Handle profile image upload
+    $newFileName = null;
     if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] == 0) {
         $fileTmpPath = $_FILES['newProfileImage']['tmp_name'];
         $fileName = $_FILES['newProfileImage']['name'];
         $fileSize = $_FILES['newProfileImage']['size'];
-        $fileType = $_FILES['newProfileImage']['type'];
-        $fileNameCmps = explode(".", $fileName);
-        $fileExtension = strtolower(end($fileNameCmps));
-
-        // Validate file extension and size
-        $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg'];
-        if (in_array($fileExtension, $allowedfileExtensions) && $fileSize < 2000000) { // limit to 2MB
-            // Set a new file name and directory
-            $newFileName = md5(time() . $fileName) . '.' . $fileExtension; // unique file name
-            $uploadFileDir = './uploads/';
-            
-            // Ensure the upload directory exists
-            if (!is_dir($uploadFileDir)) {
-                mkdir($uploadFileDir, 0755, true); // Create directory if it doesn't exist
-            }
-            
-            $dest_path = $uploadFileDir . $newFileName;
-
-            // Move the file to the uploads directory
-            if (!move_uploaded_file($fileTmpPath, $dest_path)) {
-                $messages[] = "Error moving the uploaded file.";
-            }
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            $messages[] = "Invalid file type. Allowed types: " . implode(', ', $allowedExtensions);
+        } elseif ($fileSize > 2000000) { // 2MB limit
+            $messages[] = "File size too large. Maximum size: 2MB";
         } else {
-            $messages[] = "Invalid file type or file size too large.";
+            $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+            $uploadDir = './uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $uploadPath = $uploadDir . $newFileName;
+            if (!move_uploaded_file($fileTmpPath, $uploadPath)) {
+                $messages[] = "Failed to upload image.";
+            }
         }
     }
 
-    // If there are no errors, update user info in the database
+    // If no errors, update the database
     if (empty($messages)) {
         try {
-            // Build the query
-            $query = "UPDATE users SET Firstname = :firstname";
-            if (!empty($newUpass)) {
-                $query .= ", Upass = :password"; // Include password only if not empty
-            }
-            if (!empty($newFileName)) {
-                $query .= ", admin_profile = :profile"; // Include profile only if not empty
-            }
-            $query .= " WHERE Uname = :Uname"; // Finalize the WHERE clause
-            
-            $stmt = $conn->prepare($query);
-            
-            // Bind parameters
-            $stmt->bindParam(':firstname', $newFirstname, PDO::PARAM_STR);
-            if (!empty($newUpass)) {
-                $stmt->bindParam(':password', $newUpass, PDO::PARAM_STR); // No hashing
-            }
-            if (!empty($newFileName)) {
-                $stmt->bindParam(':profile', $newFileName, PDO::PARAM_STR);
-            }
-            $stmt->bindParam(':Uname', $Uname, PDO::PARAM_STR);
-            
-            // Execute the query
-            $stmt->execute();
-            
-            // Redirect to the admin page or display success message
-            header("Location: Admin_Admin_1.php"); // Adjust the redirect as needed
-            exit();
+            // Build the update query dynamically
+            $updateFields = ['Firstname = :firstname'];
+            $params = [':firstname' => $newFirstname];
 
+            if (!empty($newUpass)) {
+                $updateFields[] = 'Upass = :password';
+                $params[':password'] = $newUpass;
+            }
+
+            if ($newFileName) {
+                $updateFields[] = 'admin_profile = :profile';
+                $params[':profile'] = $newFileName;
+            }
+
+            $params[':Uname'] = $Uname;
+            
+            $sql = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE Uname = :Uname";
+            $stmt = $conn->prepare($sql);
+            
+            if ($stmt->execute($params)) {
+                $_SESSION['message'] = "Profile updated successfully!";
+                $_SESSION['message_type'] = 'success';
+                header("Location: Admin_Admin_1.php");
+                exit();
+            } else {
+                $messages[] = "Failed to update profile.";
+            }
         } catch (PDOException $e) {
-            // Log the error message instead of echoing it
-            error_log("Error updating user data: " . $e->getMessage());
-            echo "There was an error updating your data. Please try again later.";
+            error_log("Profile update error: " . $e->getMessage());
+            $messages[] = "Database error occurred.";
         }
     }
+
+    return $messages;
+}
+
+// Then in your POST handler, replace the existing profile update code with:
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['newFirstname'])) { // Check if it's a profile update
+        $messages = handleProfileUpdate($conn, $Uname);
+        if (!empty($messages)) {
+            // Store messages in session if you want them to persist after redirect
+            $_SESSION['messages'] = $messages;
+            $_SESSION['message_type'] = 'error';
+        }
+    }
+    // ... rest of your POST handling code ...
 }
 
 
