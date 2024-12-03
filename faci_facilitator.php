@@ -550,7 +550,7 @@ try {
     <div id="credentialsModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeCredentialsModal()">&times;</span>
-        <h2>Update Password</h2>
+        <h2>My Profile</h2>
 
         <!-- Add image upload section -->
         <div class="image-upload-container">
