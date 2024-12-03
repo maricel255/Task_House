@@ -842,8 +842,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                                       // Display image or PDF link based on file type
                                       echo '<div class="Announcement-Image">';
                                       if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])) {
-                                          echo '<img src="' . $filePath . '" alt="Announcement Image" class="ann_img" style="max-width: 100%; height: auto;">';
-                                          echo '<a href="' . $pdfPath . '" target="_blank" class="pdf-link">View Image</a>';
+                                            $fileName = basename($filePath);
+                                            $imageUrl = "/uploaded_files/" . rawurlencode($fileName);
+                                            echo '<a href="' . $imageUrl . '" target="_blank" class="pdf-link">View Image</a>';
+                                          
                                       } elseif (strtolower($fileExtension) === 'pdf') {
                                           $fileName = basename($filePath);
                                           $pdfPath = "/uploaded_files/" . rawurlencode($fileName);
