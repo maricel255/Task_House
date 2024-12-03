@@ -262,6 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Attach close button functionality after injecting the content
                 const closeButton = detailsDiv.querySelector(".close-btn");
                 if (closeButton) {
+                    console.log("Close button found:", closeButton);
                     closeButton.addEventListener("click", function (e) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -269,6 +270,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log("Close button clicked");
                         closeDetails();
                     });
+                } else {
+                    console.error("Close button not found in the injected content");
                 }
             })
             .catch((error) => {
