@@ -762,9 +762,9 @@ try {
             <h1>Request</h1>
 
             <?php if (count($logs) > 0): ?>
-                <table>
+                <table class="request-table">
                     <thead>
-                        <tr>
+                        <tr class="request-table-header">
                             <th>Intern ID</th>
                             <th>Admin ID</th>
                             <th>Login Time</th>
@@ -779,7 +779,7 @@ try {
                     </thead>
                     <tbody>
                         <?php foreach ($logs as $log): ?>
-                            <tr>
+                            <tr class="request-table-row">
                                 <td><?php echo htmlspecialchars($log['internID']); ?></td>
                                 <td><?php echo htmlspecialchars($log['adminID']); ?></td>
                                 <td><?php echo htmlspecialchars($log['login_time']); ?></td>
