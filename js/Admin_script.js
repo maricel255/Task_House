@@ -71,15 +71,33 @@ function logout() {
 
 // Basic client-side form validation
 function validateForm() {
-    var internID = document.getElementById("internID").value;
-    var password = document.getElementById("InternPass").value;
+    const currentPass = document.getElementById('currentUpass').value;
+    const newPass = document.getElementById('newUpass').value;
+    const confirmPass = document.getElementById('confirmUpass').value;
 
-    if (internID === "" || password === "") {
-        alert("All fields must be filled out");
-        return false;
-    }
-    return true;
-}
+    // If any password field is filled, all password fields must be filled
+    if (currentPass || newPass || confirmPass) {
+        if (!currentPass) {
+            alert('Current password is required when changing password');
+            return false;
+        }
+        if (!newPass) {
+            alert('New password is required when changing password');
+            return false;
+        }
+        if (!confirmPass) {
+            alert('Password confirmation is required when changing password');
+            return false;
+        }
+        if (newPass !== confirmPass) {
+            alert('New passwords do not match');
+            return false;
+        }
+        if (newPass.length < 6) {
+            alert('New password must be at least 6 characters long');
+            return false;
+        }
+    }}
 
     // Annoucement viewrer
 
