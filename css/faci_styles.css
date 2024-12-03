@@ -1795,6 +1795,7 @@ width: auto; /* Automatically adjust width based on content */
 /* Label specific adjustments */
 label[for="internID"] {
   margin-right: 10px;
+  margin-left: 10px;
   content: "Intern ID:"; /* Ensures consistent text */
 }
 
