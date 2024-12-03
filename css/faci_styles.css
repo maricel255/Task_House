@@ -1837,6 +1837,7 @@ height: 55px; /* Height of the button */
 background-color: white; /* Ensures the white background color */
 transition: background-color 0.3s ease; /* Smooth transition on hover */
 margin-top: 1px;
+overflow: hidden;
 }
 
 .search-form button img {
