@@ -15,7 +15,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 // Handle form submission for profile updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Uname = $_SESSION['Uname'];
-    $updated = false;
+    $response = ['success' => false, 'message' => ''];
+
+    // Check if it's a regular form submit or AJAX request
+    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 
     // Update name if provided
     if (isset($_POST['newFirstname'])) {
@@ -25,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
             $_SESSION['Firstname'] = $newFirstname;
-            $updated = true;
+            $response['success'] = true;
         }
     }
 
@@ -36,18 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':newUpass', $newUpass);
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
-            $updated = true;
+            $response['success'] = true;
         }
     }
 
-    if ($updated) {
-        ?>
-        <script>
-            alert('Profile updated successfully!');
-            window.location.href = 'Admin_Admin_1.php';
-        </script>
-        <?php
-        exit();
+    if ($response['success']) {
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+            exit;
+        } else {
+            echo "<script>
+                alert('Profile updated successfully!');
+                window.location.href = 'Admin_Admin_1.php';
+            </script>";
+            exit;
+        }
     }
 }
 
