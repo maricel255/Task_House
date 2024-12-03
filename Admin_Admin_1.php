@@ -1005,7 +1005,7 @@ $timeLogsCount = $stmt->fetchColumn();
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fetchDetails'])) {
         $internID = $_POST['internID'];
     
-        // Simplified query to get all details
+        // Keep your existing query
         $sql = "SELECT pi.*, ia.profile_image 
                 FROM profile_information pi
                 LEFT JOIN intacc ia ON pi.internID = ia.internID
@@ -1018,11 +1018,13 @@ $timeLogsCount = $stmt->fetchColumn();
         if ($stmt->rowCount() > 0) {
             $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
-            // Return the HTML to be injected dynamically
+            // Return the HTML with fixed structure
+            echo '<div class="intern-details-content">';
             echo '<button class="close-btn" onclick="closeDetails()">×</button>';
             echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
         
-            // Show profile image
+            // Profile image section
+            echo '<div class="profile-section">';
             if (!empty($internDetails['profile_image'])) {
                 echo '<div class="profile-image">';
                 echo '<img src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Image" width="160" height="150">';
@@ -1032,8 +1034,10 @@ $timeLogsCount = $stmt->fetchColumn();
                 echo '<img src="image/USER_ICON.png" alt="Default Image" width="150" height="150">';
                 echo '</div>';
             }
+            echo '</div>';
         
-            // Display all details in a table
+            // Details table
+            echo '<div class="details-table-wrapper">';
             echo '<table class="details-table">';
             foreach ($internDetails as $key => $value) {
                 if ($key !== 'profile_image') {
@@ -1045,7 +1049,14 @@ $timeLogsCount = $stmt->fetchColumn();
                 }
             }
             echo '</table>';
-            echo '<div class="intern-details-resize-handle"></div>';
+            echo '</div>';
+
+            // Add print button
+            echo '<div class="details-actions">';
+            echo '<button onclick="printDetails()" class="print-btn">Print Details</button>';
+            echo '</div>';
+            
+            echo '</div>'; // Close intern-details-content
         
         } else {
             echo '<p>No details found for the selected Intern ID.</p>';
