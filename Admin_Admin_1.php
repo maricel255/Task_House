@@ -15,6 +15,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 // Handle form submission for profile updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Uname = $_SESSION['Uname'];
+    $updated = false;
 
     // Update name if provided
     if (isset($_POST['newFirstname'])) {
@@ -24,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
             $_SESSION['Firstname'] = $newFirstname;
-            echo "<script>alert('Name updated successfully!');</script>";
+            $updated = true;
         }
     }
 
@@ -35,9 +36,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':newUpass', $newUpass);
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
-            echo "<script>alert('Password updated successfully!'); window.location.href = 'Admin_Admin_1.php';</script>";
-            exit();
+            $updated = true;
         }
+    }
+
+    if ($updated) {
+        ?>
+        <script>
+            alert('Profile updated successfully!');
+            window.location.href = 'Admin_Admin_1.php';
+        </script>
+        <?php
+        exit();
     }
 }
 
