@@ -1545,6 +1545,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         <?php if (!empty($timeLogs)): ?>
                             <?php $count = 1; // Initialize counter ?>
                             <?php foreach ($timeLogs as $log): ?>
+                                
                                 <tr>
                                     <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
                                     <td><?php echo htmlspecialchars($log['login_time'] ?? 'N/A'); ?></td>
