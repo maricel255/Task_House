@@ -2062,6 +2062,9 @@ text-align: center;
 
 /* Header row */
 .request-table-header {
+  position: sticky;
+    top: 0;
+    z-index: 1;
   background-color: #4CAF50;
   color: white;
 }
