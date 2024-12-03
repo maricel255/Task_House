@@ -1522,7 +1522,7 @@ right: 0; /* Align to the right */
 max-width: 18%; /* Set maximum width to be responsive */
 height: auto; /* Maintain aspect ratio */
 transform: scaleX(-1); /* This mirrors the image horizontally */
-z-index: 1; /* Ensure the image is always on top */
+z-index: 0; /* Ensure the image is always on top */
 }
 
 
