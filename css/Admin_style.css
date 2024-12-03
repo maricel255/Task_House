@@ -1520,7 +1520,7 @@ input[type="submit"]:hover {
   z-index: 9999;
   pointer-events: auto; /* Changed from none to allow interaction */
   background-color: rgba(0, 0, 0, 0.5); /* Add semi-transparent overlay */
-  display: none; /* Hide by default */
+  
 }
 .intern-details {
   max-width: 500px;
