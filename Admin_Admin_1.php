@@ -51,7 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     // For Profile Updates
     else if (isset($_POST['newFirstname'])) {
-        handleProfileUpdate($conn);
+        $messages = handleProfileUpdate($conn, $Uname);
+        if (!empty($messages)) {
+            // Store messages in session if you want them to persist after redirect
+            $_SESSION['messages'] = $messages;
+            $_SESSION['message_type'] = 'error';
+        }
     }
 }
 
