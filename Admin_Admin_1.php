@@ -24,8 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
             $_SESSION['Firstname'] = $newFirstname;
-            $_SESSION['message'] = "Name updated successfully!";
-            $_SESSION['message_type'] = "success";
+            echo "<script>alert('Name updated successfully!');</script>";
         }
     }
 
@@ -36,13 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':newUpass', $newUpass);
         $stmt->bindParam(':uname', $Uname);
         if ($stmt->execute()) {
-            $_SESSION['message'] = "Password updated successfully!";
-            $_SESSION['message_type'] = "success";
+            echo "<script>
+                alert('Password updated successfully!');
+                window.location.href = 'Admin_Admin_1.php';
+            </script>";
+            exit();
         }
     }
-
-    header("Location: Admin_Admin_1.php");
-    exit();
 }
 
 // Get user data
