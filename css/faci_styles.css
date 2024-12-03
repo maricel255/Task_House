@@ -1790,17 +1790,19 @@ width: auto; /* Automatically adjust width based on content */
 .search-form label {
   font-weight: 12px;
   white-space: nowrap; /* Prevents label from wrapping */
-  margin-right: 15px;
+  min-width: fit-content; 
 }
 
 /* Label specific adjustments */
 label[for="internID"] {
-  margin-right: 10px;
+  display: inline-block;
+    width: auto;
   content: "Intern ID:"; /* Ensures consistent text */
 }
 
 label[for="status"] {
-  margin-right: 10px;
+  display: inline-block;
+    width: auto;
   content: "Status:"; /* Ensures consistent text */
 }
 
