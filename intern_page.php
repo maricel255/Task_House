@@ -1545,6 +1545,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         <?php if (!empty($timeLogs)): ?>
                             <?php $count = 1; // Initialize counter ?>
                             <?php foreach ($timeLogs as $log): ?>
+                                <?php 
+                // Skip entries with 'pending' status
+                $status = strtolower($log['status'] ?? '');
+                if ($status === 'pending') continue;
+                ?>
                                 
                                 <tr>
                                     <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
@@ -1552,18 +1557,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                                     <td><?php echo htmlspecialchars($log['break_time'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars($log['back_to_work_time'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?></td>
-                                    <td>
-                                        <?php 
-                                        $status = strtolower($log['status'] ?? '');
-                                        if ($status === 'approved') {
-                                            echo '<span class="status-approved">Approved</span>';
-                                        } elseif ($status === 'declined') {
-                                            echo '<span class="status-declined">Declined</span>';
-                                        } else {
-                                            echo ''; // Leave empty for pending
-                                        }
-                                        ?>
-                                    </td>
+                                    <td><?php echo htmlspecialchars($log['status'] ?? 'N/A'); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -1611,6 +1605,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                     if (!empty($timeLogs)):
                         $count = 1; // Initialize counter
                         foreach ($timeLogs as $log): ?>
+                        <?php
+                         $status = strtolower($log['status'] ?? '');
+                         if ($status === 'approved' || $status === 'declined') continue;
+                         ?>
                             <tr>
                                 <td><?php echo $count++; ?></td> <!-- Display the current count and increment -->
                                 <td><?php echo htmlspecialchars($log['login_time'] ?? 'N/A'); ?></td>
