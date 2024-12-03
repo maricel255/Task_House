@@ -262,7 +262,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Attach close button functionality after injecting the content
                 const closeButton = detailsDiv.querySelector(".close-btn");
                 if (closeButton) {
-                    closeButton.addEventListener("click", function () {
+                    closeButton.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log("Close button clicked");
                         closeDetails();
                     });
                 }
@@ -277,8 +281,18 @@ document.addEventListener("DOMContentLoaded", function () {
 // Function to close the details section
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.classList.remove("show"); // Hide the details
-    detailsDiv.innerHTML = ""; // Clear the content
+    if (!detailsDiv) {
+        console.error("internDetails element not found");
+        return;
+    }
+    
+    // Add a console log to verify the function is being called
+    console.log("Closing details...");
+    
+    // Add inline styles for immediate visual feedback
+    detailsDiv.style.display = "none";
+    detailsDiv.classList.remove("show");
+    detailsDiv.innerHTML = "";
 }
 //end kyle
 
