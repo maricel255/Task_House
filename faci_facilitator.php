@@ -399,6 +399,7 @@ LEFT JOIN intacc i ON t.internID = i.internID
 LEFT JOIN profile_information p ON t.internID = p.internID
 WHERE t.faciID = :faciID
     AND t.status LIKE 'Pe%'
+    AND DATE(t.login_time) = CURDATE()  /* Add this condition to filter for current day */
 ORDER BY t.login_time DESC";
 
 try {
