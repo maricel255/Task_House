@@ -928,49 +928,58 @@ $timeLogsCount = $stmt->fetchColumn();
 
        <!-- Modal Structure -->
             <div id="myModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeModal('myModal')">&times;</span>
-                    <h2>My Profiles</h2>
-                    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data">
-                        <!-- Display error messages if any (only after form submission) -->
-                        <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($messages)): ?>
-                            <div class="error-messages" style="color: red;">
-                                <?php foreach ($messages as $message): ?>
-                                    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
+            <div class="modal-content">
+    <span class="close" onclick="closeModal('myModal')">&times;</span>
+    <h2>My Profiles</h2>
+    <form id="updateProfileForm" method="POST" action="" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <!-- Display error messages if any -->
+        <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($messages)): ?>
+            <div class="error-messages" style="color: red;">
+                <?php foreach ($messages as $message): ?>
+                    <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
-                        <div class="form-group">
-                            <label for="newFirstname">New First Name:</label>
-                            <input type="text" id="newFirstname" name="newFirstname" value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" required>
-                        </div>
+        <div class="form-group">
+            <label for="newFirstname">First Name:</label>
+            <input type="text" id="newFirstname" name="newFirstname" 
+                   value="<?php echo htmlspecialchars($Firstname, ENT_QUOTES, 'UTF-8'); ?>" 
+                   required>
+        </div>
 
-                        <div class="form-group">
-                            <label for="currentUpass">Current Password:</label>
-                            <input type="password" id="currentUpass" name="currentUpass" placeholder="Enter current password" >
-                        </div>
+        <!-- Password fields - all optional -->
+        <div class="form-group password-group">
+            <label for="currentUpass">Current Password:</label>
+            <input type="password" id="currentUpass" name="currentUpass" 
+                   placeholder="Only required if changing password">
+        </div>
 
-                        <div class="form-group">
-                            <label for="newUpass">New Password:</label>
-                            <input type="password" id="newUpass" name="newUpass" placeholder="Enter new password" >
-                        </div>
+        <div class="form-group password-group">
+            <label for="newUpass">New Password:</label>
+            <input type="password" id="newUpass" name="newUpass" 
+                   placeholder="Leave blank to keep current password">
+        </div>
 
-                        <div class="form-group">
-                            <label for="confirmUpass">Confirm New Password:</label>
-                            <input type="password" id="confirmUpass" name="confirmUpass" placeholder="Re-enter new password" >
-                        </div>
+        <div class="form-group password-group">
+            <label for="confirmUpass">Confirm New Password:</label>
+            <input type="password" id="confirmUpass" name="confirmUpass" 
+                   placeholder="Re-enter new password if changing">
+        </div>
 
-                        <div class="form-group">
-                            <label for="newProfileImage">New Profile Image:</label>
-                            <input type="file" id="newProfileImage" name="newProfileImage" accept="image/*">
-                        </div>
-                        
-                        <input type="hidden" name="Uname" value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </form>
+        <div class="form-group">
+            <label for="newProfileImage">Profile Image:</label>
+            <input type="file" id="newProfileImage" name="newProfileImage" 
+                   accept="image/*">
+            <small class="form-text text-muted">Optional: Upload a new profile image</small>
+        </div>
+        
+        <input type="hidden" name="Uname" 
+               value="<?php echo htmlspecialchars($Uname, ENT_QUOTES, 'UTF-8'); ?>">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
 
-                </div>
             </div>
     </div>
 
