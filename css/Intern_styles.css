@@ -1494,6 +1494,9 @@ table {
 
 /* Table Header */
 thead {
+    position: sticky;
+    top: 0;
+    z-index: 10; 
     background-color: #4CAF50;
     color: white;
     text-align: left;
