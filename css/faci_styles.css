@@ -1794,12 +1794,12 @@ width: auto; /* Automatically adjust width based on content */
 
 /* Label specific adjustments */
 label[for="internID"] {
-  margin-right: 5px;
+  margin-right: 3px;
   content: "Intern ID:"; /* Ensures consistent text */
 }
 
 label[for="status"] {
-  margin-right: 5px;
+  margin-right: 3px;
   content: "Status:"; /* Ensures consistent text */
 }
 
