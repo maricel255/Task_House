@@ -904,7 +904,7 @@ try {
         <div class="wrapper">
             <!-- Search Form -->
             <form method="POST" action="" class="search-form">
-                <label for="internID">InternID:</label>
+                <label for="internID">Intern ID:</label>
                 <input type="text" name="internID" id="internID" value="<?php echo htmlspecialchars($searchInternID ?? ''); ?>" placeholder="Search by Intern ID">
 
                 <label for="status">Status:</label>
