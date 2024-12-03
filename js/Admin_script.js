@@ -236,51 +236,49 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
 
 // Intern Details Functionality
 
-function showInternDetails(internID) {
-    const detailsDiv = document.getElementById("internDetails");
-    
-    const formData = new FormData();
-    formData.append('fetchDetails', 'true');
-    formData.append('internID', internID);
-    
-    fetch('Admin_Admin_1.php', {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-    .then(html => {
-        detailsDiv.innerHTML = html;
-        
-        // Style the details div for right side display
-        detailsDiv.style.display = 'block';
-        detailsDiv.style.position = 'fixed';
-        detailsDiv.style.top = '0';
-        detailsDiv.style.right = '0';
-        detailsDiv.style.width = '40%';
-        detailsDiv.style.height = '100vh';
-        detailsDiv.style.backgroundColor = 'white';
-        detailsDiv.style.padding = '20px';
-        detailsDiv.style.boxShadow = '-2px 0 5px rgba(0,0,0,0.2)';
-        detailsDiv.style.overflowY = 'auto';
-        detailsDiv.style.zIndex = '1000';
+document.addEventListener("DOMContentLoaded", function () {
+    // Attach event listeners to all View Details buttons
+    document.querySelectorAll(".view-details-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+            const internID = this.getAttribute("data-intern-id");
+            const detailsDiv = document.getElementById("internDetails");
 
-        // Add close button
-        const closeButton = document.createElement('button');
-        closeButton.innerHTML = '×';
-        closeButton.className = 'close-details-btn';
-        closeButton.onclick = closeDetails;
-        detailsDiv.insertBefore(closeButton, detailsDiv.firstChild);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
+            // Fetch and show details
+            fetch("", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                    fetchDetails: true,
+                    internID: internID
+                }),
+            })
+            .then((response) => response.text())
+            .then((data) => {
+                detailsDiv.innerHTML = data; // Inject the fetched data
+                detailsDiv.classList.add("show"); // Show the details
+            })
+            .catch((error) => {
+                console.error("Error fetching details:", error);
+            });
+        });
     });
-}
 
+    // Close button functionality
+    const closeButton = document.querySelector(".close-btn");
+    closeButton.addEventListener("click", function () {
+        const detailsDiv = document.getElementById("internDetails");
+        detailsDiv.classList.remove("show"); // Hide the details
+        detailsDiv.innerHTML = ""; // Clear the content
+    });
+});
+
+// Function to close the details section
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    if (detailsDiv) {
-        detailsDiv.style.display = 'none';
-    }
+    detailsDiv.classList.remove("show"); // Hide the details
+    detailsDiv.innerHTML = ""; // Clear the content
 }
+//end kyle
 

@@ -1005,26 +1005,23 @@ $timeLogsCount = $stmt->fetchColumn();
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fetchDetails'])) {
         $internID = $_POST['internID'];
     
-        // Keep your existing query
+        // Fetch details for the selected Intern ID
         $sql = "SELECT pi.*, ia.profile_image 
                 FROM profile_information pi
                 LEFT JOIN intacc ia ON pi.internID = ia.internID
                 WHERE pi.internID = :internID";
-                
         $stmt = $conn->prepare($sql);
         $stmt->bindValue(':internID', $internID, PDO::PARAM_STR);
         $stmt->execute();
-
+    
         if ($stmt->rowCount() > 0) {
             $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
-            // Return the HTML with fixed structure
-            echo '<div class="intern-details-content">';
+            // Return the HTML to be injected dynamically
             echo '<button class="close-btn" onclick="closeDetails()">×</button>';
             echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
         
-            // Profile image section
-            echo '<div class="profile-section">';
+            // Show profile image
             if (!empty($internDetails['profile_image'])) {
                 echo '<div class="profile-image">';
                 echo '<img src="uploaded_files/' . htmlspecialchars($internDetails['profile_image']) . '" alt="Profile Image" width="160" height="150">';
@@ -1034,14 +1031,12 @@ $timeLogsCount = $stmt->fetchColumn();
                 echo '<img src="image/USER_ICON.png" alt="Default Image" width="150" height="150">';
                 echo '</div>';
             }
-            echo '</div>';
         
-            // Details table
-            echo '<div class="details-table-wrapper">';
-            echo '<table class="details-table">';
+            // Display details in a table
+            echo '<table>';
             foreach ($internDetails as $key => $value) {
                 if ($key !== 'profile_image') {
-                    $displayKey = ucwords(str_replace('_', ' ', $key));
+                    $displayKey = ($key === 'faciID') ? 'Company ID' : ucfirst(str_replace('_', ' ', $key));
                     echo '<tr>';
                     echo '<th>' . $displayKey . '</th>';
                     echo '<td>' . htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8') . '</td>';
@@ -1049,12 +1044,15 @@ $timeLogsCount = $stmt->fetchColumn();
                 }
             }
             echo '</table>';
-            echo '<div class="intern-details-resize-handle"></div>';
+        
+            // Add the resize handle here
+            echo ' <div class="intern-details-resize-handle"></div>'; // Resize handle for the intern details panel
         
         } else {
             echo '<p>No details found for the selected Intern ID.</p>';
         }
-        exit;
+        exit; // Stop further processing since this is an AJAX response
+        
     }
     // END KYLE
     
@@ -1374,7 +1372,7 @@ $timeLogsCount = $stmt->fetchColumn();
             echo '<table id="profileTable" class="table table-bordered">';
 echo '<thead class="thead-light">';
 echo '<tr class="sticky-header">';
-echo '<th>#</th>'; 
+echo '<th>#</th>'; // Add a column for numbering
 echo '<th>Intern ID</th>';
 
 // Dynamically create headers based on the selected search criteria
@@ -1392,7 +1390,7 @@ $counter = 1;
 // Loop through the records and display each field
 foreach ($records as $row) {
     echo '<tr>';
-    echo '<td>' . $counter++ . '</td>'; 
+    echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
     echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
 
     // Display the selected search column based on search criteria
@@ -1400,9 +1398,9 @@ foreach ($records as $row) {
         echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
     }
 
-    // Add the View Details button here
+    // Add a button to view more details
     echo '<td>';
-    echo '<button class="view-details-btn" onclick="showInternDetails(\'' . htmlspecialchars($row['internID']) . '\')">View Details</button>';
+    echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
     echo '</td>';
 
     echo '</tr>';
@@ -1415,9 +1413,11 @@ echo '</table>';
 
         
         ?>
-        
-        <div id="internDetails" class="intern-details"></div>
+        <div class="container">
+            <div id="internDetails" class="intern-details">
                 <!-- Content for intern details will go here -->
+            </div>
+        </div>
             
         
 
