@@ -310,4 +310,78 @@ document.getElementById('updateProfileForm').addEventListener('submit', function
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Delegate click event for view details buttons
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('view-details-btn')) {
+            const internID = e.target.getAttribute('data-intern-id');
+            fetchInternDetails(internID);
+        }
+    });
+});
+
+function fetchInternDetails(internID) {
+    // Create form data
+    const formData = new FormData();
+    formData.append('fetchDetails', true);
+    formData.append('internID', internID);
+
+    // Make AJAX request
+    fetch('Admin_Admin_1.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        const detailsContainer = document.getElementById('internDetails');
+        detailsContainer.innerHTML = data;
+        detailsContainer.style.display = 'block';
+        
+        // Add drag functionality
+        makeDraggable(detailsContainer);
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function closeDetails() {
+    const detailsContainer = document.getElementById('internDetails');
+    detailsContainer.style.display = 'none';
+}
+
+// Make the details panel draggable
+function makeDraggable(element) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    
+    if (document.querySelector('.intern-details-resize-handle')) {
+        document.querySelector('.intern-details-resize-handle').onmousedown = dragMouseDown;
+    } else {
+        element.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
 
