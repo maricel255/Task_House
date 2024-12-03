@@ -2040,6 +2040,7 @@ text-align: center;
   border-collapse: collapse;
   font-size: 13px;
   background-color: white;
+  overflow-x: auto;
 }
 
 /* Header row */
