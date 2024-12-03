@@ -991,6 +991,7 @@ input, select {
     background-color: #dc3545; /* Change background on hover */
     color: #fff; /* Change text color on hover */
     transform: translateY(-2px); /* Slight lift effect on hover */
+    text-decoration: none;
 }
 
 .pdf-link:focus {
