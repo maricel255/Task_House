@@ -624,26 +624,9 @@ margin-top: 65px; /* Space between logout button and attendance container */
 font-size: 16px; /* Font size */
 font-weight: bold; /* Bold text */
 color: black; /* Text color */
-max-height: 400px;
-overflow-y: auto; /* Prevent horizontal scrolling by default */
-}
-.req-container::-webkit-scrollbar {
-  width: 8px;
+max-height: 400px; /* Prevent horizontal scrolling by default */
 }
 
-.req-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.req-container::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-.req-container::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
 /* When sidebar is active */
 /* When sidebar is active */
 .move .req-container {
@@ -2057,6 +2040,24 @@ text-align: center;
   border-collapse: separate;
   font-size: 13px;
   background-color: white;
+  overflow-y: auto;
+}
+.request-table::-webkit-scrollbar {
+  width: 8px;
+}
+
+.request-table::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.request-table::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.request-table::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Header row */
