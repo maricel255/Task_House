@@ -17,14 +17,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname']) && !i
     $newFirstname = trim($_POST['newFirstname']);
     $Uname = $_SESSION['Uname'];
 
-    $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
-    $stmt->bindParam(':firstname', $newFirstname);
-    $stmt->bindParam(':uname', $Uname);
-    $stmt->execute();
-    
-    $_SESSION['Firstname'] = $newFirstname;
-    header("Location: Admin_Admin_1.php");
-    exit();
+    try {
+        $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
+        $stmt->bindParam(':firstname', $newFirstname);
+        $stmt->bindParam(':uname', $Uname);
+        
+        if ($stmt->execute()) {
+            $_SESSION['Firstname'] = $newFirstname;
+            header("Location: Admin_Admin_1.php");
+            exit();
+        }
+    } catch (PDOException $e) {
+        error_log("Error updating firstname: " . $e->getMessage());
+    }
 }
 
 // Get user data
