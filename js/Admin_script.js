@@ -161,25 +161,23 @@ function validateForm() {
 
     // Start kyle
 document.addEventListener("DOMContentLoaded", function() {
-    // Add click event listeners to all view details buttons
     document.querySelectorAll(".view-details-btn").forEach(button => {
         button.addEventListener("click", function() {
             const internID = this.getAttribute("data-intern-id");
             const detailsDiv = document.getElementById("internDetails");
             
-            console.log("Fetching details for intern:", internID); // Debug line
+            const formData = new FormData();
+            formData.append('fetchDetails', 'true');
+            formData.append('internID', internID);
             
             fetch('Admin_Admin_1.php', {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `fetchDetails=true&internID=${internID}`
+                body: formData
             })
             .then(response => response.text())
             .then(html => {
                 detailsDiv.innerHTML = html;
-                detailsDiv.classList.add("show");
+                detailsDiv.style.display = 'block';
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -191,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function closeDetails() {
     const detailsDiv = document.getElementById("internDetails");
-    detailsDiv.classList.remove("show");
+    detailsDiv.style.display = 'none';
 }
 //end kyle
 
