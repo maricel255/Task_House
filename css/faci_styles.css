@@ -624,7 +624,8 @@ margin-top: 65px; /* Space between logout button and attendance container */
 font-size: 16px; /* Font size */
 font-weight: bold; /* Bold text */
 color: black; /* Text color */
-max-height: 400px; /* Prevent horizontal scrolling by default */
+max-height: 500px; /* Prevent horizontal scrolling by default */
+overflow: auto;
 }
 
 /* When sidebar is active */
@@ -2041,24 +2042,10 @@ text-align: center;
   font-size: 13px;
   background-color: white;
   overflow-y: auto;
-}
-.request-table::-webkit-scrollbar {
-  width: 8px;
-}
-
-.request-table::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  display: block;
+  max-height: 400px; 
 }
 
-.request-table::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
-}
-
-.request-table::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
 
 /* Header row */
 .request-table-header {
@@ -2069,11 +2056,9 @@ text-align: center;
   color: white;
 }
 .request-table thead {
-  background-color: #4CAF50;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  display: table; /* Keep the header in table format */
+  width: 100%; /* Ensure header takes full width */
+  table-layout: fixed; 
 }
 
 .request-table-header th {
