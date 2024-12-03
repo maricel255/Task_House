@@ -1840,8 +1840,8 @@ margin-top: 1px;
 overflow: hidden;
 }
 .search-form button img {
-  width: 24px;  /* Adjusted image width */
-  height: 24px; /* Adjusted image height */
+  width: 30px;  /* Adjusted image width */
+  height: 30px; /* Adjusted image height */
   object-fit: cover; /* Ensures image scales properly */
 }
 
