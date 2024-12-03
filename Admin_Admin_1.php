@@ -124,7 +124,9 @@ function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
     $_SESSION['message_type'] = $type;
 }
-    function handleProfileUpdate($conn) {
+
+// Keep only this one version of handleProfileUpdate
+function handleProfileUpdate($conn) {
     try {
         // Get form data
         $oldUpass = $_POST['currentUpass'] ?? null;
@@ -156,24 +158,13 @@ function setMessage($message, $type = 'info') {
             $params[':newFirstname'] = $newFirstname;
         }
 
-        // Handle password update only if current password is provided
-        if (!empty($oldUpass)) {
-            // Your existing password update logic here
-            // ...
-        }
-
-        // Only proceed with update if there are changes
-        if (!empty($updateFields)) {
-            $sql = "UPDATE adminacc SET " . implode(', ', $updateFields) . " WHERE Uname = :Uname";
-            $params[':Uname'] = $_SESSION['Uname'];
-
-            $stmt = $conn->prepare($sql);
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-
-            if ($stmt->execute()) {
-                $messages[] = "Profile updated successfully!";
+        // Handle password update if provided
+        if (!empty($newUpass)) {
+            if ($newUpass !== $confirmUpass) {
+                $messages[] = "New passwords do not match.";
+            } else {
+                $updateFields[] = "Upass = :newUpass";
+                $params[':newUpass'] = $newUpass;
             }
         }
 
@@ -183,7 +174,6 @@ function setMessage($message, $type = 'info') {
         return ["There was an error updating your data. Please try again later."];
     }
 }
-
 
 // Get adminID from the logged-in user's session
 $Uname = $_SESSION['Uname'] ?? null;
@@ -199,107 +189,6 @@ if ($Uname) {
     }
 }
 
-
-// Add this function after the other handler functions
-function handleProfileUpdate($conn) {
-    try {
-        $Uname = $_SESSION['Uname'];
-        $newFirstname = $_POST['newFirstname'] ?? '';
-        $newUpass = $_POST['newUpass'] ?? '';
-        $confirmUpass = $_POST['confirmUpass'] ?? '';
-        $currentUpass = $_POST['currentUpass'] ?? '';
-
-        // Verify current password
-        $stmt = $conn->prepare("SELECT Upass FROM users WHERE Uname = :Uname");
-        $stmt->bindParam(':Uname', $Uname);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$user || $currentUpass !== $user['Upass']) {
-            setMessage("Current password is incorrect.", "error");
-            return;
-        }
-
-        // Validate new password if provided
-        if (!empty($newUpass)) {
-            if ($newUpass !== $confirmUpass) {
-                setMessage("New passwords do not match.", "error");
-                return;
-            }
-            if (strlen($newUpass) < 6) {
-                setMessage("New password must be at least 6 characters long.", "error");
-                return;
-            }
-        }
-
-        // Handle profile image upload
-        $newFileName = null;
-        if (isset($_FILES['newProfileImage']) && $_FILES['newProfileImage']['error'] === UPLOAD_ERR_OK) {
-            $uploadResult = handleProfileImageUpload($_FILES['newProfileImage']);
-            if (isset($uploadResult['error'])) {
-                setMessage($uploadResult['error'], "error");
-                return;
-            }
-            $newFileName = $uploadResult['filename'];
-        }
-
-        // Build and execute update query
-        $updates = [];
-        $params = [':Uname' => $Uname];
-
-        if (!empty($newFirstname)) {
-            $updates[] = "Firstname = :firstname";
-            $params[':firstname'] = $newFirstname;
-        }
-        if (!empty($newUpass)) {
-            $updates[] = "Upass = :password";
-            $params[':password'] = $newUpass;
-        }
-        if ($newFileName) {
-            $updates[] = "admin_profile = :profile";
-            $params[':profile'] = $newFileName;
-        }
-
-        if (!empty($updates)) {
-            $sql = "UPDATE users SET " . implode(", ", $updates) . " WHERE Uname = :Uname";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute($params);
-
-            setMessage("Profile updated successfully!", "success");
-        }
-
-    } catch (PDOException $e) {
-        setMessage("Error updating profile: " . $e->getMessage(), "error");
-    }
-}
-
-// Helper function to handle image upload
-function handleProfileImageUpload($file) {
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    $maxSize = 2 * 1024 * 1024; // 2MB
-
-    if (!in_array($file['type'], $allowedTypes)) {
-        return ['error' => 'Invalid file type. Only JPG, PNG and GIF are allowed.'];
-    }
-
-    if ($file['size'] > $maxSize) {
-        return ['error' => 'File is too large. Maximum size is 2MB.'];
-    }
-
-    $uploadDir = 'uploads/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-    }
-
-    $fileName = uniqid() . '_' . basename($file['name']);
-    $targetPath = $uploadDir . $fileName;
-
-    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-        return ['filename' => $fileName];
-    }
-
-    return ['error' => 'Failed to upload file.'];
-}
 // Handle all form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // For Intern Account Management

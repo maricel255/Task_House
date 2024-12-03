@@ -754,7 +754,7 @@ body::before {
     align-items: center;
 }
   .intern_acc{
-    background-color:  #FF920C; /* Green background */
+    background-color:  #238A31 ; /* Green background */
     color: white; /* Text color */
     border: none; /* Remove border */
     padding: 55px 715px; /* Padding */
@@ -769,7 +769,7 @@ body::before {
     
   }
   .intern_acc:hover {
-    background-color:  #000543;
+    background-color:  #234F1e;
 }
 @media screen and (max-width: 480px) {
   .intern_acc {
