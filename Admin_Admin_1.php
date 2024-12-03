@@ -13,23 +13,18 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 }
 
 // Handle form submission for name update ONLY
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname']) && !isset($_POST['newUpass'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['newFirstname'])) {
     $newFirstname = trim($_POST['newFirstname']);
     $Uname = $_SESSION['Uname'];
 
-    try {
-        $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
-        $stmt->bindParam(':firstname', $newFirstname);
-        $stmt->bindParam(':uname', $Uname);
-        
-        if ($stmt->execute()) {
-            $_SESSION['Firstname'] = $newFirstname;
-            header("Location: Admin_Admin_1.php");
-            exit();
-        }
-    } catch (PDOException $e) {
-        error_log("Error updating firstname: " . $e->getMessage());
-    }
+    $stmt = $conn->prepare("UPDATE users SET Firstname = :firstname WHERE Uname = :uname");
+    $stmt->bindParam(':firstname', $newFirstname);
+    $stmt->bindParam(':uname', $Uname);
+    $stmt->execute();
+    
+    $_SESSION['Firstname'] = $newFirstname;
+    header("Location: Admin_Admin_1.php");
+    exit();
 }
 
 // Get user data
