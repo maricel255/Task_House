@@ -2070,5 +2070,21 @@ text-align: center;
 .request-table-row td {
   padding: 12px 15px;
 }
-
+@media (max-width: 1200px) {
+  .request-table {
+      font-size: 14px; /* Slightly smaller font on smaller screens */
+  }
+  
+  .request-table th,
+  .request-table td {
+      padding: 8px 6px; /* Further reduce padding on smaller screens */
+  }
+  
+  .btn-approve,
+  .btn-update,
+  .btn-decline {
+      padding: 4px 8px;
+      font-size: 12px;
+  }
+}
 
