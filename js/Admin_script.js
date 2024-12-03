@@ -160,6 +160,82 @@ function validateForm() {
     }
 
     // Start kyle
+
+//end kyle
+
+// Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const messageBox = document.getElementById('messageBox');
+    if (messageBox && messageBox.textContent.trim() !== '') {
+        messageBox.style.display = 'block';
+        
+        // Hide message after 5 seconds
+        setTimeout(function() {
+            messageBox.style.opacity = '0';
+            setTimeout(function() {
+                messageBox.style.display = 'none';
+            }, 500);
+        }, 5000);
+    }
+});
+function autoUploadImage(input) {
+    if (input.files && input.files[0]) {
+        var formData = new FormData();
+        formData.append('newProfileImage', input.files[0]);
+
+        // Show preview immediately
+        var profileImages = document.querySelectorAll('.profile-image img');
+        profileImages.forEach(img => {
+            img.src = URL.createObjectURL(input.files[0]);
+        });
+
+        // Upload to server silently
+        fetch('Admin_Admin_1.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Profile image updated successfully');
+                // Refresh the page after successful upload
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error uploading image:', error);
+        });
+    }
+}
+
+// Add new function for password update
+document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Create FormData object
+    const formData = new FormData(this);
+    
+    fetch('Admin_Admin_1.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Profile updated successfully!');
+            window.location.reload();
+        } else {
+            alert('Failed to update profile. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+});
+
+// Intern Details Functionality
+
 document.addEventListener("DOMContentLoaded", function () {
     // Attach event listeners to all View Details buttons
     document.querySelectorAll(".view-details-btn").forEach((button) => {
@@ -206,18 +282,3 @@ function closeDetails() {
 }
 //end kyle
 
-// Add this to your existing JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    const messageBox = document.getElementById('messageBox');
-    if (messageBox && messageBox.textContent.trim() !== '') {
-        messageBox.style.display = 'block';
-        
-        // Hide message after 5 seconds
-        setTimeout(function() {
-            messageBox.style.opacity = '0';
-            setTimeout(function() {
-                messageBox.style.display = 'none';
-            }, 500);
-        }, 5000);
-    }
-});

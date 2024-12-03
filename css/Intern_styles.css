@@ -871,10 +871,10 @@ input, select {
 }
 
 /* Modal background */
-.modal.modal {
+.modal {
     display: none;
     position: fixed;
-    z-index: 9999;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -1024,8 +1024,9 @@ input, select {
 
 /* Profile Sidebar */
 .profile-sidebar {
-    width: 20%;
+    width: 200px;
     float: left;
+    position: sticky;
     padding-right: 20px;
     margin-right: 20px;
 }
@@ -1055,6 +1056,8 @@ input, select {
 .profile-form-container {
     width: 75%;
     float: left;
+    flex: 1;
+    overflow: hidden;
 }
   
 .profile-category {
@@ -1188,7 +1191,7 @@ input, select {
 /* Credentials Modal Base */
 #credentialsModal {
     position: fixed;
-    z-index: 9999;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -1674,12 +1677,15 @@ td[colspan="10"] {
 
     /* Stack form elements vertically on mobile */
     .form-row {
-        flex-direction: column;
+        display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
     }
 
     .form-group {
-        width: 100%;
-        margin-bottom: 15px;
+        flex: 1 1 calc(50% - 20px);
+    min-width: 250px;
     }
 
     /* Ensure the button is visible and clickable */
@@ -1709,5 +1715,93 @@ td[colspan="10"] {
     .profile-sidebar button {
         display: inline-block;
         margin-right: 10px;
+    }
+}
+@media (max-width: 1024px) {
+    .profile-sidebar {
+        width: 100%;
+        position: static;
+        margin-bottom: 20px;
+    }
+
+    .profile-form-container {
+        margin-left: 0;
+    }
+
+    .form-group {
+        flex: 1 1 calc(50% - 10px);
+    }
+}
+
+@media (max-width: 768px) {
+    #profileModal .modal-content {
+        width: 95%;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+    }
+
+    .form-group label {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+    }
+
+    /* Adjust the profile categories for mobile */
+    .profile-category {
+        padding: 10px;
+    }
+
+    /* Make sidebar buttons more touch-friendly */
+    .profile-sidebar button {
+        padding: 12px;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    #profileModal .modal-content {
+        margin: 5px;
+        padding: 10px;
+    }
+
+    .profile-category h3 {
+        font-size: 18px;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* Adjust the image upload container for mobile */
+    .image-upload-container {
+        padding: 10px;
+    }
+
+    .image-upload-container img {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* Make the insert button full width on mobile */
+    .insert-btn {
+        width: 100%;
+        margin: 10px 0;
     }
 }

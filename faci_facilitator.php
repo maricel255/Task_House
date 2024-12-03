@@ -21,6 +21,33 @@ if (isset($_SESSION['Uname'])) {
     header("Location: login.php");
     exit();
 }
+if (isset($_POST['declineBtn'])) {
+    $internID = $_POST['internID'];
+    $id = $_POST['id'];
+    $declineReason = $_POST['declineReason'];
+
+    try {
+        $sql = "UPDATE time_logs SET status = 'declined', task = :reason WHERE internID = :internID AND id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':reason', $declineReason, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            $_SESSION['alertMessage'] = "Request declined successfully";
+            $_SESSION['alertType'] = 'success';
+        } else {
+            $_SESSION['alertMessage'] = "Failed to decline request";
+            $_SESSION['alertType'] = 'error';
+        }
+    } catch (PDOException $e) {
+        $_SESSION['alertMessage'] = "Error: " . $e->getMessage();
+        $_SESSION['alertType'] = 'error';
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 // Start Kyle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['faci_image'])) {
@@ -488,7 +515,7 @@ try {
                     }
                 ?>" alt="Toggle Sidebar" class="user-icon">
                 <div class="user-details">
-                    <p class="user-name">Uname: <?php echo $faciID; ?></p>
+                    <p class="user-name">Company ID: <?php echo $faciID; ?></p>
                     <p class="role">HR/Manager</p>
                 </div>
 
@@ -576,7 +603,7 @@ try {
     </div>
 </div>
 <!-- End Kyle-->
-
+<div class="sidebar-backdrop"></div>
     <!-- Main Content -->
     <div class="content-section" id="dashboard">
     <div class="main-content">
@@ -760,47 +787,72 @@ try {
                                 <td><?php echo htmlspecialchars($log['task'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($log['logout_time'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($log['status']); ?></td>
-
-                                <!-- Action Buttons (Approve and Decline) -->
                                 <td style="display: flex; justify-content: flex-start; align-items: center;">
                                     <form action="" method="post" style="margin-right: 10px;">
                                         <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
-                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" /> <!-- Unique identifier -->
-
-                                        <?php 
-                                        // Check if any of the fields are empty
-                                        $disableApprove = empty($log['login_time']) || empty($log['break_time']) || empty($log['back_to_work_time']) || empty($log['task']) || empty($log['logout_time']);
-                                        ?>
-
-                                        <!-- Disable approve button if any field is empty -->
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" />
                                         <button type="submit" class="action-button approve" name="approveBtn">Approve</button>
-                              
-                                     </form>
-
-                                    <!-- Update button -->
-                                    <button type="button" class="action-button update" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
-                                    
-                                    <!-- Decline button -->
-                                    <form method="POST" action="">
-                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
-                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
-                                        <button type="button" class="action-button decline" onclick="showDeclineForm(<?php echo $log['id']; ?>)">Decline</button>
                                     </form>
-
-                                    <!-- Decline reason form, initially hidden -->
-                                    <form id="declineReasonForm<?php echo $log['id']; ?>" method="POST" action="" style="display:none;">
-                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>"> <!-- Hidden internID -->
-                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>"> <!-- Hidden log ID -->
-                                        <label for="decline_reason">Enter reason for decline:</label>
-                                        <textarea name="decline_reason" id="decline_reason_<?php echo $log['id']; ?>" required></textarea>
-                                        <button type="submit" name="submitDeclineReason">Submit Reason</button>
-                                     
-                                  </form>
+                                    <button type="button" class="action-button update" onclick="openModal(<?php echo $log['id']; ?>)">Update</button>
+                                    <button type="button" class="action-button decline" onclick="showDeclineForm(<?php echo $log['id']; ?>)">Decline</button>
                                 </td>
+                            </tr>
 
-                                
+                            <!-- Modal for this specific row -->
+                            <div id="updateModal<?php echo $log['id']; ?>" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeModal(<?php echo $log['id']; ?>)">&times;</span>
+                                    <h2>Update Request</h2>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" />
+                                        
+                                        <div class="form-group">
+                                            <label for="login_time">Login Time:</label>
+                                            <input type="datetime-local" name="login_time" value="<?php echo date('Y-m-d\TH:i', strtotime($log['login_time'])); ?>" required />
+                                        </div>
 
+                                        <div class="form-group">
+                                            <label for="break_time">Break Time:</label>
+                                            <input type="datetime-local" name="break_time" value="<?php echo $log['break_time'] ? date('Y-m-d\TH:i', strtotime($log['break_time'])) : ''; ?>" required />
+                                        </div>
 
+                                        <div class="form-group">
+                                            <label for="back_to_work_time">Back to Work Time:</label>
+                                            <input type="datetime-local" name="back_to_work_time" value="<?php echo $log['back_to_work_time'] ? date('Y-m-d\TH:i', strtotime($log['back_to_work_time'])) : ''; ?>" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="task">Task:</label>
+                                            <input type="text" name="task" value="<?php echo htmlspecialchars($log['task'] ?? ''); ?>" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="logout_time">Logout Time:</label>
+                                            <input type="datetime-local" name="logout_time" value="<?php echo $log['logout_time'] ? date('Y-m-d\TH:i', strtotime($log['logout_time'])) : ''; ?>" required />
+                                        </div>
+
+                                        <button type="submit" class="action-button update" name="updateBtn">Update to Approve</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Add this after your update modal but still inside the foreach loop -->
+                            <div id="declineModal<?php echo $log['id']; ?>" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeDeclineModal(<?php echo $log['id']; ?>)">&times;</span>
+                                    <h2>Decline Request</h2>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="internID" value="<?php echo $log['internID']; ?>" />
+                                        <input type="hidden" name="id" value="<?php echo $log['id']; ?>" />
+                                        <div class="form-group">
+                                            <label for="declineReason">Reason for Decline:</label>
+                                            <textarea name="declineReason" required></textarea>
+                                        </div>
+                                        <button type="submit" class="action-button decline" name="declineBtn">Submit Decline</button>
+                                    </form>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </tbody>
 

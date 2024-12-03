@@ -594,17 +594,6 @@ body::before {
   /* Modal Content */
 /* Overlay to blur the background */
 /* Overlay to blur the background */
-.overlay {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1000; /* Below modal */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width of the viewport */
-  height: 100%; /* Full height of the viewport */
-  backdrop-filter: blur(8px); /* Apply blur effect to the background */
-  background-color: rgba(0, 0, 0, 0.5); /* Optional: darken the background for contrast */
-}
 
 /* Modal Background */
 .modal {
@@ -615,10 +604,9 @@ body::before {
   bottom: 10px;
   width: 40%;
   max-width: 40%;
-  height: auto;
-  max-height: 80%;
-  overflow: auto;
-  background-color: transparent;
+  height: min-content;
+  overflow: hidden;
+  background-color: #fefefe;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
@@ -640,12 +628,13 @@ body::before {
 /* Modal Content */
 .modal-content {
   background-color: #fefefe; /* Light background for the modal content */
-  margin: 0 auto; /* Center modal content horizontally */
+  margin: 0; /* Center modal content horizontally */
   padding: 20px; /* Padding inside the modal */
   border: 1px solid #888; /* Border for the content */
   border-radius: 10px; /* Optional: rounded corners */
   width: 100%; /* Ensure the content width is responsive */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+  height: auto;
 }
 
 
@@ -681,6 +670,9 @@ body::before {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+  }
+  .form-group:last-child {
+    margin-bottom: 0; /* Ensure no extra space at the bottom */
   }
   
   .form-group {
@@ -973,12 +965,21 @@ body::before {
   cursor: pointer; /* Pointer cursor on hover */
 }
 .delete-btn-new {
-  background-color: red; /* Same as current background */
-  color: white;          /* White text */
-  border: none;          /* No border */
-  cursor: pointer;       /* Pointer cursor on hover */
-  padding: 5px 10px;     /* Same padding */
-  font-size: 14px;       /* Same font size */
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;    /* Match update button padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+  width: auto;          /* Match update button width */
+  font-size: 16px;      /* Same font size */
+}
+.delete-btn-new:hover {
+  background-color: #e53935; /* Darker red on hover for delete button */
 }
 .table-container {
   max-height: 400px; /* Adjust the height as needed */
@@ -1047,7 +1048,17 @@ body::before {
 
 .delete-button {
   background-color: #f44336; /* Red background for delete button */
-  margin-left: 5px; /* Space between buttons */
+  color: white;
+  border: none;
+  padding: 10px 15px;    /* Match update button padding */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+  width: auto;          /* Match update button width */
+  font-size: 16px; 
 }
 
 .delete-button:hover {
@@ -1200,7 +1211,7 @@ p {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  max-width: 350px;
+  max-width: 300px;
   height: 50%;
   width: 22%;
   background-color: #dc3545;
@@ -1223,11 +1234,26 @@ p {
     height: 30%;
   }
   .deleter-button { 
-    top:88%;
-    left: 45%;
-    width: 28%;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: #ffc107; /* Yellow/Orange color */
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
    }
 
+}
+/* Responsive Design for Announcement Slider */
+@media (max-width: 768px) {
+  .announcement-slider {
+      width: 90%;
+      left: 5%;
+      right: 5%;
+  }
 }
 
 .slider-container {
@@ -1269,12 +1295,14 @@ p {
 
 .announcement-item {
   display: none; /* Hide all items by default */
-  padding: 15px;
-  text-align: left; /* Align text to the left for better readability */
-  background-color: #f9f9f9; /* Light background for the announcement text */
-  border-radius: 10px;
-  margin: 10px; /* Spacing between announcements */
-  height: 70%;
+   position: relative;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 15px auto;
+    width: 90%;
+    min-height: 100px; 
 }
 
 
@@ -1370,34 +1398,49 @@ p {
 
 
 .pdf-link {
-  display: inline-block; /* Make it block-level for padding and margin */
-  background-color: #28a745; /* Green background color */
-  color: white; /* Text color */
-  padding: 10px 15px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  text-decoration: none; /* Remove underline from the link */
-  font-size: 16px; /* Slightly larger font size */
-  text-align: center; /* Center text within the button */
-  margin-top: 190px; /* Space above the link */
-  border: solid 4px #dc3545; /* Solid red border */
-  border-radius: 5px; /* Rounded corners */
-
+  background-color: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+.pdf-link:hover {
+  background-color: #218838; /* Darker green on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Shadow on hover */
+  text-decoration: none;
+}
+.button-group {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    
+  
 }
 
 
 .deleter-button {  
-  position: fixed; /* Fixed positioning ensures the button stays in the same place */
-  bottom: 100px; /* Distance from the bottom of the viewport */
-  right: 20px; /* Distance from the right edge of the viewport */
-  background: orange;
-  border: none;
-  cursor: pointer;
-  height: 60px; /* Set a specific height */
-  padding: 10px 20px; /* Add padding for a balanced look */
-  z-index: 1000; /* Ensure the button appears above other elements */
-  border-radius: 10px;
+  background-color: #ffc107;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.3s ease;
 }
-
+.deleter-button:hover {
+  color: white;
+  background-color: #e0a800; /* Darker yellow on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Shadow on hover */
+}
 
 .trash-icon {
   width: 20px; /* Adjust the size of the icon */
@@ -1408,7 +1451,11 @@ p {
 }
 
 .delete-form {
-  margin-top: 15px; /* Adjust as needed */
+
+  margin: 0; /* Center the form */
+    
+    display: inline-block;
+  
 }
 
 /* General body styles */
@@ -1464,45 +1511,66 @@ input[type="submit"]:hover {
 
 /* ------------------------MARICEL------------------------------------------*/
 /* Container for intern details, positioned off-screen initially */
+.container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 0; /* Set width to 0 to not interfere with other elements */
+  z-index: 9999;
+  pointer-events: none;
+}
 .intern-details {
   max-width: 500px;
   height: 90vh;
   position: fixed;
   top: 8%;
-  right: -500px; /* Start off-screen to the right */
+  right: -500px; /* Initial position off-screen */
   background-color: #fff;
   border-left: 1px solid #ddd;
   padding: 20px;
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
   overflow-y: auto;
-  transition: right 0.3s ease; /* Smooth slide-in effect */
+  transition: right 0.3s ease; /* Smooth transition */
   display: flex;
   flex-direction: column;
-  border-radius: 5%; /* Make the corners rounded */
+  border-radius: 5%;
+  z-index: 10000; /* Ensure it's above other content */
+}
 
+/* When the panel is shown */
+.intern-details.show {
+    right: 0; /* Slide in from the right */
 }
 
 /* Ensure responsiveness */
 @media screen and (max-width: 768px) {
   .intern-details {
-   top: 30%;
-    max-width: 70%; /* Allow full width on small screens */
-    height: 80vh; /* Adjust height on smaller screens */
-    border-radius: 5%; /* Make the corners rounded */
-    right: -80%; /* Add space from the right edge */
+     
+      max-width: 300px; /* Smaller width for tablets */
+      right: -300px;
+      top: 12%;
+      height: 80vh;
+    }
+    .intern-details.show {
+      right: 15px;
+    }
 
-
-  }
+  
 }
 
 @media screen and (max-width: 480px) {
   .intern-details {
-    margin-top: 5%;
-
-    height: 70vh; /* Further adjust height on very small screens */
-    border-radius: 5%; /* Make the corners rounded */
-    right: 5%; /* Less space from the right on very small screens */
+    max-width: 85%; /* Use percentage for mobile */
+    right: -85%;
+    top: 15%;
+    height: 75vh;
+    margin: 0 auto; /* Center horizontally */
+  }
+  
+  .intern-details.show {
+    right: 7.5%; /* Center the panel on mobile */
   }
   
 }
