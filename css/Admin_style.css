@@ -1693,19 +1693,5 @@ input[type="submit"]:hover {
     display: block; /* Show when the 'show' class is added */
 }
 
-.close-btn {
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 5px 10px;
-}
 
-.close-btn:hover {
-    color: #666;
-}
 

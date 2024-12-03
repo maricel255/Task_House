@@ -284,8 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener('click', function(e) {
     if (e.target.matches('.close-btn')) {
         e.preventDefault();
-        e.stopPropagation();
-        console.log("Close button clicked via delegation");
+        console.log('Close button clicked');
         closeDetails();
     }
 });
@@ -299,16 +298,12 @@ function closeDetails() {
     }
     
     console.log("Closing details...");
-    // Add a fade-out effect
-    detailsDiv.style.opacity = '0';
+    detailsDiv.classList.remove("show");
     
-    // Wait for the fade-out animation to complete
+    // Wait for transition to complete before clearing content
     setTimeout(() => {
         detailsDiv.style.display = "none";
-        detailsDiv.classList.remove("show");
         detailsDiv.innerHTML = "";
-        // Reset opacity for next time
-        detailsDiv.style.opacity = '1';
     }, 300);
 }
 //end kyle

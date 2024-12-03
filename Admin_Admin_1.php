@@ -861,7 +861,10 @@ $timeLogsCount = $stmt->fetchColumn();
             $internDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         
             // Return the HTML to be injected dynamically
-            echo '<button class="close-btn">×</button>';
+          // To this:
+            echo '<div class="close-btn-container">';
+            echo '<button class="close-btn" type="button">×</button>';
+            echo '</div>';
                         echo '<h2>Intern Details for ' . htmlspecialchars($internDetails['internID']) . '</h2>';
         
             // Show profile image
