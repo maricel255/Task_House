@@ -1511,6 +1511,11 @@ input[type="submit"]:hover {
 
 /* ------------------------MARICEL------------------------------------------*/
 /* Container for intern details, positioned off-screen initially */
+.container {
+  position: relative; /* For proper positioning of the intern-details */
+  width: 100%;
+  height: 100%;
+}
 .intern-details {
   max-width: 500px;
   height: 90vh;
@@ -1527,7 +1532,7 @@ input[type="submit"]:hover {
   display: flex;
   flex-direction: column;
   border-radius: 5%;
-  z-index: 1000; /* Ensure it's above other content */
+  z-index: 1001; /* Ensure it's above other content */
 }
 
 /* When the panel is shown */
@@ -1538,23 +1543,30 @@ input[type="submit"]:hover {
 /* Ensure responsiveness */
 @media screen and (max-width: 768px) {
   .intern-details {
-   top: 30%;
-    max-width: 70%; /* Allow full width on small screens */
-    height: 80vh; /* Adjust height on smaller screens */
-    border-radius: 5%; /* Make the corners rounded */
-    right: -80%; /* Add space from the right edge */
-
+    .intern-details {
+      max-width: 300px; /* Smaller width for tablets */
+      right: -300px;
+      top: 12%;
+      height: 80vh;
+    }
+    .intern-details.show {
+      right: 15px;
+    }
 
   }
 }
 
 @media screen and (max-width: 480px) {
   .intern-details {
-    margin-top: 5%;
-
-    height: 70vh; /* Further adjust height on very small screens */
-    border-radius: 5%; /* Make the corners rounded */
-    right: 5%; /* Less space from the right on very small screens */
+    max-width: 85%; /* Use percentage for mobile */
+    right: -85%;
+    top: 15%;
+    height: 75vh;
+    margin: 0 auto; /* Center horizontally */
+  }
+  
+  .intern-details.show {
+    right: 7.5%; /* Center the panel on mobile */
   }
   
 }
