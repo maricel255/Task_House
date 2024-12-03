@@ -1499,10 +1499,8 @@ tr {
     z-index: 1;
 }
 thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    table-layout: fixed; 
+    
+    
     background-color: #4CAF50;
     color: white;
     text-align: left;
