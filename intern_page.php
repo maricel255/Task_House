@@ -747,7 +747,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     <div id="credentialsModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeCredentialsModal()">&times;</span>
-        <h2>My Profiles </h2>
+        <h2>My Profile </h2>
 
         <!-- Add image upload section -->
         <div class="image-upload-container">
