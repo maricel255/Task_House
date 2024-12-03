@@ -1049,14 +1049,7 @@ $timeLogsCount = $stmt->fetchColumn();
                 }
             }
             echo '</table>';
-            echo '</div>';
-
-            // Add print button
-            echo '<div class="details-actions">';
-            echo '<button onclick="printDetails()" class="print-btn">Print Details</button>';
-            echo '</div>';
-            
-            echo '</div>'; // Close intern-details-content
+            echo '<div class="intern-details-resize-handle"></div>';
         
         } else {
             echo '<p>No details found for the selected Intern ID.</p>';

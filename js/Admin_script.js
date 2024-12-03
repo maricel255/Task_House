@@ -160,58 +160,7 @@ function validateForm() {
     }
 
     // Start kyle
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".view-details-btn").forEach(button => {
-        button.addEventListener("click", function() {
-            const internID = this.getAttribute("data-intern-id");
-            const detailsDiv = document.getElementById("internDetails");
-            
-            const formData = new FormData();
-            formData.append('fetchDetails', 'true');
-            formData.append('internID', internID);
-            
-            fetch('Admin_Admin_1.php', {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text())
-            .then(html => {
-                detailsDiv.innerHTML = html;
-                
-                // Style the details div for right side display
-                detailsDiv.style.display = 'block';
-                detailsDiv.style.position = 'fixed';
-                detailsDiv.style.top = '0';
-                detailsDiv.style.right = '0';
-                detailsDiv.style.width = '40%'; // Adjust width as needed
-                detailsDiv.style.height = '100vh';
-                detailsDiv.style.backgroundColor = 'white';
-                detailsDiv.style.padding = '20px';
-                detailsDiv.style.boxShadow = '-2px 0 5px rgba(0,0,0,0.2)';
-                detailsDiv.style.overflowY = 'auto';
-                detailsDiv.style.zIndex = '1000';
 
-                // Add a close button
-                const closeButton = document.createElement('button');
-                closeButton.innerHTML = '×';
-                closeButton.className = 'close-details-btn';
-                closeButton.onclick = closeDetails;
-                detailsDiv.insertBefore(closeButton, detailsDiv.firstChild);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                detailsDiv.innerHTML = '<p>Error loading details. Please try again.</p>';
-            });
-        });
-    });
-});
-
-function closeDetails() {
-    const detailsDiv = document.getElementById("internDetails");
-    if (detailsDiv) {
-        detailsDiv.style.display = 'none';
-    }
-}
 //end kyle
 
 // Add this to your existing JavaScript
