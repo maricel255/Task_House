@@ -1839,15 +1839,10 @@ transition: background-color 0.3s ease; /* Smooth transition on hover */
 margin-top: 1px;
 overflow: hidden;
 }
-.search-form img {
-width: 80px; /* Size of the icon */
-height: 80px; /* Size of the icon */
-object-fit: contain; /* Ensures the image scales properly within the button */
-} 
 .search-form button img {
-width: 80px; /* Size of the icon */
-height: 80px; /* Size of the icon */
-object-fit: contain; /* Ensures the image scales properly within the button */
+  width: 20px;  /* Adjusted image width */
+  height: 20px; /* Adjusted image height */
+  object-fit: contain; /* Ensures image scales properly */
 }
 
 .search-form button:hover {
