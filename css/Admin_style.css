@@ -1397,7 +1397,7 @@ background-color: #333; /* Darker background on hover for better visual feedback
   margin-top: 120.5%; /* Space above the link (200px) */
   border: solid 0.25rem #dc3545; /* Solid red border (4px) */
   min-width: 150px; /* Minimum width */
-  min-height: 90px; /* Minimum height */
+  min-height: 100px; /* Minimum height */
   border-radius: 15%;
 }
 
