@@ -642,6 +642,10 @@ z-index: -1; /* Places it behind other elements */
 .delete-details-btn:hover {
   background-color: darkred; /* Darker shade on hover */
 }
+.view-details-btn, .delete-details-btn {
+  margin-right: 10px; /* Adjust spacing between buttons */
+  display: inline-block; /* Ensure buttons are on the same line */
+}
 
 .delete-details-btn:focus {
   outline: none; /* Remove outline on focus */
