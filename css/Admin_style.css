@@ -654,11 +654,7 @@ z-index: -1; /* Places it behind other elements */
 /* Modal Content */
 
 /* Blur the entire page when the modal is active */
-/* Apply blur to all content except modal */
-body:has(:target) > *:not(.modal) {
-  filter: blur(5px); /* Adjust the blur intensity */
-  transition: filter 0.3s ease; /* Smooth transition for blur effect */
-}
+/
 
 /* Modal */
 .modal-content {
