@@ -1258,12 +1258,7 @@ if ($stmt->rowCount() > 0) {
         echo '</td>';
 
         // Add delete button
-        echo '<td>';
-        echo '<form method="POST" action="">'; // Form for delete action
-        echo '<input type="hidden" name="deleteID" value="' . htmlspecialchars($row['internID']) . '">';
-        echo '<button type="submit" name="delete" class="btn btn-danger">Delete</button>';
-        echo '</form>';
-        echo '</td>';
+       
 
         echo '</tr>';
     }
@@ -1272,23 +1267,6 @@ if ($stmt->rowCount() > 0) {
     echo '</div>'; // Close the table container
 } else {
     echo '<p>No records found for your search!</p>';
-}
-
-// Check if the delete form has been submitted
-if (isset($_POST['delete']) && isset($_POST['deleteID'])) {
-    $deleteID = $_POST['deleteID'];
-
-    // Prepare the SQL query for deleting the record
-    $deleteSql = "DELETE FROM profile_information WHERE internID = :deleteID";
-    $stmt = $conn->prepare($deleteSql);
-    $stmt->bindValue(':deleteID', $deleteID, PDO::PARAM_INT);
-
-    // Execute the deletion
-    if ($stmt->execute()) {
-        echo '<p>Record deleted successfully.</p>';
-    } else {
-        echo '<p>Error deleting record.</p>';
-    }
 }
 
 
