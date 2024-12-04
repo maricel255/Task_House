@@ -5,6 +5,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
+
+
+
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
@@ -1228,7 +1231,7 @@ if (isset($_POST['intern_id'])) {
             // If an exception occurs, show a user-friendly error message
             if ($e->getCode() == 23000) { // Integrity constraint violation
             
-                echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
+                $_SESSION['message'] = 'Error deleting record: Cannot delete this record because it is referenced by another record.';
                 
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
