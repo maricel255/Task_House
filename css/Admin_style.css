@@ -1396,6 +1396,7 @@ background-color: #333; /* Darker background on hover for better visual feedback
   border: solid 0.25rem #dc3545; /* Solid red border (4px) */
   min-width: 150px; /* Minimum width */
   min-height: 50px; /* Minimum height */
+  border-radius: 10%;
 }
 
 
