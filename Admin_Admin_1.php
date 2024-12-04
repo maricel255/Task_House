@@ -904,10 +904,13 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
+
 // Handle the deletion for intern profile
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $internID = $_POST['internID'] ?? null; // Get the internID from the POST request
-
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
     if ($internID) {
         try {
             // Prepare the SQL statement to delete the intern from profile_information
