@@ -904,6 +904,26 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
+   
+To make the delete button send a POST request for each row, the form structure in your table already fulfills the requirement for submitting POST data. Each row's form is set up to send the specific internID for deletion. Here's how the POST handling and form are tied together:
+
+    The Delete Button Form (Within the Table Row)
+    The form sends a POST request for the specific internID:
+    
+    php
+    Copy code
+    echo '<form method="POST" action="' . htmlspecialchars($_SERVER['PHP_SELF']) . '?section=Intern_Account">';
+    echo '<input type="hidden" name="action" value="deleting">';
+    echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
+    echo '<button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">';
+    echo 'Delete Intern Account';
+    echo '</button>';
+    echo '</form>';
+    Handling the POST Request (PHP Logic)
+    This part of your PHP script processes the form submission:
+    
+    php
+    Copy code
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'deleting') {
         $internID = $_POST['internID'] ?? null;
         $adminID = $_SESSION['adminID'] ?? null; // Retrieve adminID from session
