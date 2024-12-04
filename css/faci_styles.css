@@ -1123,6 +1123,7 @@ font-size: 14px; /* Font size to ensure it fits well */
 display: flex; /* Make the button a flex container */
 align-items: center; /* Vertically center the text and image */
 justify-content: center; /* Horizontally center the text */
+overflow-y: hidden;
 }
 
 .action-button.update:hover {
