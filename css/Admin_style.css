@@ -604,22 +604,7 @@ z-index: -1; /* Places it behind other elements */
   background-color: rgba(0, 0, 0, 0.5); /* Optional: darken the background for contrast */
 }
 
-/* Modal Background */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 120px; /* Increased left spacing from 100px to 120px */
-  bottom: 10px;
-  width: 40%;
-  max-width: 40%;
-  height: auto;
-  max-height: 80%;
-  overflow: auto;
-  background-color: transparent;
-  border-radius: 10px;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
-}
+
 
 
 /* Add responsive adjustment for smaller screens */
