@@ -1719,6 +1719,9 @@ margin-top: 20px;   /* Adds some space from the top */
   font-size: 16px; /* Font size */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
+  display: inline; 
+  margin-left: 80px;
+
 }
 
 .print-table-btn:hover {
