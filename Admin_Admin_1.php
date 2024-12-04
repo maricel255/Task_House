@@ -1312,7 +1312,7 @@ To make the delete button send a POST request for each row, the form structure i
         
                 // Add delete button
                 echo '<td>';
-                echo '<form method="POST" action="' . htmlspecialchars($_SERVER['PHP_SELF']) . '?section=Intern_Account">';
+                echo '<form method="POST" action="">'; // Set action to an empty string
                 echo '<input type="hidden" name="action" value="deleting">';
                 echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
                 echo '<button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">';
