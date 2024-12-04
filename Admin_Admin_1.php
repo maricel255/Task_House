@@ -909,7 +909,7 @@ $timeLogsCount = $stmt->fetchColumn();
     $internID = $_POST['intern_id'];
 
     // Prepare and execute the deletion query
-    $stmt = $pdo->prepare("DELETE FROM profile_information WHERE internID = :internID");
+    $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
     $stmt->execute(['internID' => $internID]);
 
     // Redirect or show a success message
