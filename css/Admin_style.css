@@ -981,11 +981,19 @@ padding: 5px 10px;     /* Same padding */
 font-size: 14px;       /* Same font size */
 }
 .table-container {
-max-height: 400px; /* Adjust the height as needed */
-overflow-y: auto;  /* Enable vertical scrolling */
-border: 1px solid #ccc; /* Optional: Add a border for better visibility */
-margin-top: 10px; /* Space above the table */
-margin-left: 50px; /* Space from the left */
+  max-height: 400px; /* Set a maximum height for the table container */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  border: 1px solid #ddd; /* Optional: Add a border around the container */
+  margin-bottom: 20px; /* Optional: Add some space below the table */
+}
+.table {
+  width: 100%; /* Ensure the table takes full width of the container */
+  border-collapse: collapse; /* Collapse borders for a cleaner look */
+}
+.table th, .table td {
+  padding: 10px; /* Add padding for table cells */
+  text-align: left; /* Align text to the left */
 }
 @media (max-width: 480px) {
 .table-container {
