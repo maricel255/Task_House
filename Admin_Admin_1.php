@@ -206,30 +206,40 @@ function handleAnnouncementSubmission($conn, $adminID) {
     try {
         $title = $_POST['title'];
         $announcement = $_POST['announcement'];
-        $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-        $fileName = $_FILES['fileUpload']['name'];
         
-        $uploadFileDir = __DIR__ . '/uploaded_files/';
-        $dest_path = $uploadFileDir . $fileName;
+        // Initialize the image path to null
+        $imagePath = null;
 
-        if (move_uploaded_file($fileTmpPath, $dest_path)) {
-            $stmt = $conn->prepare("INSERT INTO announcements (title, imagePath, content, adminID) VALUES (?, ?, ?, ?)");
-            if ($stmt->execute([$title, $dest_path, $announcement, $adminID])) {
-                echo "<script>
-                    alert('Announcement posted successfully!');
-                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
-                </script>";
-                exit();
+        // Check if a file was uploaded
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+            $fileName = $_FILES['fileUpload']['name'];
+            
+            $uploadFileDir = __DIR__ . '/uploaded_files/';
+            $dest_path = $uploadFileDir . $fileName;
+
+            // Attempt to move the uploaded file
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                $imagePath = $dest_path; // Set the image path if the upload is successful
             } else {
-                echo "<script>
-                    alert('Error: Failed to post announcement.');
-                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
-                </script>";
-                exit();
+                // Handle the case where the file upload fails silently
+                // You can log this error if needed, but do not show an error message
             }
+        }
+
+        // Prepare the SQL statement
+        $stmt = $conn->prepare("INSERT INTO announcements (title, imagePath, content, adminID) VALUES (?, ?, ?, ?)");
+        
+        // Execute the statement with the image path (NULL if no file uploaded)
+        if ($stmt->execute([$title, $imagePath, $announcement, $adminID])) {
+            echo "<script>
+                alert('Announcement posted successfully!');
+                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+            </script>";
+            exit();
         } else {
             echo "<script>
-                alert('Error: Failed to upload file.');
+                alert('Error: Failed to post announcement.');
                 window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
             </script>";
             exit();
@@ -698,45 +708,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
         $title = trim($_POST['title']);
         $announcement = trim($_POST['announcement']);
-
-        // Ensure file upload is handled
-        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
-            // Process file upload
-            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-            $fileName = $_FILES['fileUpload']['name'];
-            $fileSize = $_FILES['fileUpload']['size'];
-            $fileType = $_FILES['fileUpload']['type'];
-
-            // Define the path where the file will be uploaded
-            $uploadFileDir = __DIR__ . '/uploaded_files/';
-            $dest_path = $uploadFileDir . $fileName;
-
-            // Move the file to the desired directory
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                // File successfully uploaded
-                // Prepare the SQL statement
-                $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
-                $stmt = $conn->prepare($sql);
-
-                // Bind the parameters
-                $stmt->bindValue(':title', $title, PDO::PARAM_STR);
-                $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
-                $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
-                $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
-
-                // Execute the statement
-                if ($stmt->execute()) {
-                    // Redirect to the same page to avoid resubmission on refresh
-                    header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
-                    exit;  // Ensure no further code is executed after the redirect
+        
+        // Initialize a variable for the image path
+        $imagePath = null;
+    
+        // Check if a file was uploaded
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] !== UPLOAD_ERR_NO_FILE) {
+            // Process file upload only if a file was selected
+            if ($_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+                $fileName = $_FILES['fileUpload']['name'];
+                $uploadFileDir = __DIR__ . '/uploaded_files/';
+                $dest_path = $uploadFileDir . $fileName;
+    
+                // Move the file to the desired directory
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    // File successfully uploaded
+                    $imagePath = $dest_path; // Set the image path to the uploaded file path
                 } else {
-                    echo "<script>alert('Error posting announcement.');</script>";
+                    // Handle file upload error silently
+                    // You can log this error if needed
                 }
             } else {
-                echo "<script>alert('Error uploading the file.');</script>";
+                // Handle other file upload errors if necessary
             }
+        }
+    
+        // Prepare the SQL statement
+        $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
+        $stmt = $conn->prepare($sql);
+    
+        // Bind the parameters
+        $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+        $stmt->bindValue(':imagePath', $imagePath, PDO::PARAM_STR);  // Use the image path (NULL if no file uploaded)
+        $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
+    
+        // Execute the statement
+        if ($stmt->execute()) {
+            header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
+            exit;  // Ensure no further code is executed after the redirect
         } else {
-            echo "<script>alert('No file uploaded or there was an upload error.');</script>";
+            echo "<script>alert('Error posting announcement.');</script>";
         }
     }
 }
