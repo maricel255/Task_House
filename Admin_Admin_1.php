@@ -1281,6 +1281,10 @@ if ($stmt->rowCount() > 0) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
     if ($internID) {
+        if ($internID) {
+            echo '<script>console.log("Intern ID: ' . $internID . '");</script>'; // Debugging output
+            echo '<script>console.log("Admin ID: ' . $adminID . '");</script>'; // Debugging output
+        }
         try {
             // Prepare the SQL statement to delete the intern record
             $deleteStmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
@@ -1301,6 +1305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } else {
         echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
     }
+}
 }
 
 ?>
