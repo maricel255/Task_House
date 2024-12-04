@@ -703,24 +703,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $imagePath = null;
     
         // Check if a file was uploaded
-        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
-            // Process file upload
-            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-            $fileName = $_FILES['fileUpload']['name'];
-            $fileSize = $_FILES['fileUpload']['size'];
-            $fileType = $_FILES['fileUpload']['type'];
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] !== UPLOAD_ERR_NO_FILE) {
+            // Process file upload only if a file was selected
+            if ($_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+                $fileName = $_FILES['fileUpload']['name'];
+                $uploadFileDir = __DIR__ . '/uploaded_files/';
+                $dest_path = $uploadFileDir . $fileName;
     
-            // Define the path where the file will be uploaded
-            $uploadFileDir = __DIR__ . '/uploaded_files/';
-            $dest_path = $uploadFileDir . $fileName;
-    
-            // Move the file to the desired directory
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                // File successfully uploaded
-                $imagePath = $dest_path; // Set the image path to the uploaded file path
+                // Move the file to the desired directory
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    // File successfully uploaded
+                    $imagePath = $dest_path; // Set the image path to the uploaded file path
+                } else {
+                    // Handle file upload error silently
+                    // You can log this error if needed
+                }
             } else {
-                // If the file upload fails, you can choose to log the error or handle it silently
-                // For now, we will not show an error message
+                // Handle other file upload errors if necessary
             }
         }
     
