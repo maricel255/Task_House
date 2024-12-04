@@ -593,33 +593,34 @@ z-index: -1; /* Places it behind other elements */
       
 /* Overlay to blur the background */
 .overlay {
-display: none; /* Hidden by default */
-position: fixed; /* Stay in place */
-z-index: 1000; /* Below modal */
-left: 30%;
-top: 0;
-width: 100%; /* Full width of the viewport */
-height: 100%; /* Full height of the viewport */
-backdrop-filter: blur(8px); /* Apply blur effect to the background */
-background-color: rgba(0, 0, 0, 0.5); /* Optional: darken the background for contrast */
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Below modal */
+  left: 40%; /* Adjust left spacing for more space */
+  top: 0;
+  width: 100%; /* Full width of the viewport */
+  height: 100%; /* Full height of the viewport */
+  backdrop-filter: blur(8px); /* Apply blur effect to the background */
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: darken the background for contrast */
 }
 
 /* Modal Background */
 .modal {
-display: none;
-position: fixed;
-z-index: 1000;
-left: 100px; /* Increased left spacing from 70px to 100px */
-bottom: 10px;
-width: 40%;
-max-width: 40%;
-height: auto;
-max-height: 80%;
-overflow: auto;
-background-color: transparent;
-border-radius: 10px;
-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 120px; /* Increased left spacing from 100px to 120px */
+  bottom: 10px;
+  width: 40%;
+  max-width: 40%;
+  height: auto;
+  max-height: 80%;
+  overflow: auto;
+  background-color: transparent;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
+
 
 /* Add responsive adjustment for smaller screens */
 @media (max-width: 768px) {
