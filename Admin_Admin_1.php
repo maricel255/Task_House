@@ -904,34 +904,35 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-// Ensure you have the following code to handle the deletion action
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
-    if ($internID) {
-        try {
-            // Prepare the SQL statement to delete the intern record from the profile_information table
-            $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
-            $stmt->bindParam(':internID', $internID);
-            $stmt->bindParam(':adminID', $adminID); // Ensure you bind the adminID for security
-            
-            // Execute the statement
-            if ($stmt->execute()) {
-                echo '<script>alert("Intern account deleted successfully!");</script>'; // Echo the success message
-            } else {
-                echo '<script>alert("Error: Could not delete intern account.");</script>'; // Echo the error message
-            }
-        } catch (PDOException $e) {
-            // Log the error message for debugging
-            error_log("Deletion error: " . $e->getMessage());
-            echo '<script>alert("Error: ' . addslashes($e->getMessage()) . '");</script>'; // Echo the error message
-        }
-    } else {
-        echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
-    }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+        $internID = $_POST['internID'] ?? null;
+        $adminID = $_SESSION['adminID'] ?? null; // Retrieve adminID from session
     
-    header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account"); // Redirect after deletion
-    exit();
-}
+        if ($internID && $adminID) {
+            try {
+                // Prepare SQL to delete the record
+                $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
+                $stmt->bindParam(':internID', $internID, PDO::PARAM_STR);
+                $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+    
+                // Execute and provide feedback
+                if ($stmt->execute()) {
+                    echo '<script>alert("Intern account deleted successfully!");</script>';
+                } else {
+                    echo '<script>alert("Error: Could not delete intern account.");</script>';
+                }
+            } catch (PDOException $e) {
+                error_log("Deletion error: " . $e->getMessage());
+                echo '<script>alert("Error: ' . htmlspecialchars($e->getMessage()) . '");</script>';
+            }
+        } else {
+            echo '<script>alert("Error: Missing Intern ID or Admin ID.");</script>';
+        }
+    
+        // Redirect back to the same page to refresh
+        echo '<script>window.location.href="' . htmlspecialchars($_SERVER['PHP_SELF']) . '?section=Intern_Account";</script>';
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
