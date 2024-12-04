@@ -1205,16 +1205,10 @@ if (isset($_POST['intern_id'])) {
         echo "<script>alert('Intern ID is missing.');</script>";
     } else {
         try {
-            // First, delete related records in time_logs
-            $deleteLogsSql = "DELETE FROM time_logs WHERE internID = :internID";
-            $deleteLogsStmt = $conn->prepare($deleteLogsSql);
-            $deleteLogsStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
-            $deleteLogsStmt->execute();
-
-            // Now delete the intern record
+            // Prepare the DELETE SQL statement
             $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
             $deleteStmt = $conn->prepare($deleteSql);
-            $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
 
             // Execute the delete statement
             if ($deleteStmt->execute()) {
