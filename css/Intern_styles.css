@@ -1833,7 +1833,7 @@ td[colspan="10"] {
     background: #fff;
     border-radius: 15px;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 1002;
     padding: 25px;
     animation: fadeIn 0.3s ease;
 }
@@ -1965,5 +1965,5 @@ td[colspan="10"] {
     background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     backdrop-filter: blur(8px); /* Blur effect */
     -webkit-backdrop-filter: blur(8px); /* For Safari support */
-    z-index: 999;
+    z-index: 1001;
 }
