@@ -1227,8 +1227,8 @@ if (isset($_POST['intern_id'])) {
             // If an exception occurs, show a user-friendly error message
             if ($e->getCode() == 23000) { // Integrity constraint violation
                 
-                setMessage("Cannot delete this record because it is referenced by another record.", "error");
-               
+                
+                echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
             }
