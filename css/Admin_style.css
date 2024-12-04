@@ -1366,6 +1366,7 @@ border-radius: 50%; /* Make images circular */
 /* Message Style */
 p {
 font-size: 18px; /* Increase font size for messages */
+margin-left: 90px;
 }
 
 /* Responsive Styles */
@@ -1742,7 +1743,4 @@ margin-top: 20px;   /* Adds some space from the top */
 .view-details-btn:focus {
   outline: none; /* Remove outline on focus */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
-}
-.p {
-  margin-left: 90px;
 }
