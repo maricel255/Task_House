@@ -1604,7 +1604,7 @@ if ($stmt->rowCount() > 0) {
                             <td>
                                 <!-- Delete Button -->
                                 <form method="POST" action="">
-                                    <input type="hidden" name="logID" value="<?php echo htmlspecialchars($row['internID'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <input type="hidden" name="logID" value="<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8'); ?>">
                                     <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this record?');" class="delete-time-btn">Delete</button>
                                 </form>
                             </td>
@@ -1620,13 +1620,13 @@ if ($stmt->rowCount() > 0) {
 
 <?php
 // Handle Deletion
-if (isset($_POST['delete']) && isset($_POST['logID'])) { // Check for logID
+if (isset($_POST['delete']) && isset($_POST['logID'])) {
     $logID = $_POST['logID']; // Get the unique logID
 
     // Prepare the DELETE SQL statement
     $sql = "DELETE FROM time_logs WHERE id = :logID"; // Use id for deletion
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID
+    $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID as an integer
 
     // Execute the deletion
     if ($stmt->execute()) {
