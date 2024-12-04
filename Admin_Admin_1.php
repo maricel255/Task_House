@@ -1232,8 +1232,8 @@ if ($stmt->rowCount() > 0) {
     echo '<tr class="sticky-header">';
     echo '<th>#</th>'; // Add a column for numbering
     echo '<th>Intern ID</th>';
-    echo '<th style="text-align: right;">View Intern Information</th>';
-    echo '<th>Delete</th>'; // Add Delete header
+    echo '<th style="text-align: right;">Actions</th>';
+ 
     echo '</tr>'; // Close the header row
     echo '</thead>';
     echo '<tbody>';
