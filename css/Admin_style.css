@@ -636,7 +636,7 @@ z-index: -1; /* Places it behind other elements */
   /* Center the modal content vertically and horizontally */
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 20%;
   transform: translate(-50%, -50%); /* Adjust for perfect centering */
 }
 
