@@ -1581,7 +1581,7 @@ if ($stmt->rowCount() > 0) {
                                 <!-- Delete Button -->
                                 <form method="POST" action="">
                                     <input type="hidden" name="internID" value="<?php echo htmlspecialchars($row['internID'], ENT_QUOTES, 'UTF-8'); ?>">
-                                    <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this record?');" class="delete-details-btn">Delete</button>
+                                    <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this record?');" class="delete-time-btn">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -1590,7 +1590,7 @@ if ($stmt->rowCount() > 0) {
             </table>
         </div>
     <?php else: ?>
-        <p style="margin-left: 90px;">No records found.</p>    <?php endif; ?>
+        <p >No records found.</p>    <?php endif; ?>
 
 </div>
 
