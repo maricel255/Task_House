@@ -1839,11 +1839,10 @@ td[colspan="10"] {
 .cls {
     position: absolute;
     right: 15px;
-    top: 10px; /* Position the close button above the text */
+    top: 20px; /* Position the close button above the text */
     font-size: 24px;
     color: #5c5c5c;
     cursor: pointer;
-    font-weight: 30px;
     transition: color 0.3s ease;
 }
 
