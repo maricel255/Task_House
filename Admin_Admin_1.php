@@ -1229,12 +1229,13 @@ if (isset($_POST['intern_id'])) {
             if ($e->getCode() == 23000) { // Integrity constraint violation
             
                 echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
+                header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_profile");
+                 exit;
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
             }
         }
-        header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_profile");
-        exit; // Prevent further execution
+         // Prevent further execution
     }
 }
 // Prepare the base SQL query
