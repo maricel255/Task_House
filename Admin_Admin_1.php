@@ -1628,7 +1628,6 @@ if (isset($_POST['delete']) && isset($_POST['logID'])) {
     $stmt = $conn->prepare($sql);
     $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID as an integer
 
-    // Execute the deletion
     try {
         // Execute the deletion
         if ($stmt->execute()) {
@@ -1640,7 +1639,7 @@ if (isset($_POST['delete']) && isset($_POST['logID'])) {
     } catch (PDOException $e) {
         // Customize the error message
         if ($e->getCode() == 23000) { // Integrity constraint violation
-            echo "<script>alert('Delete unsuccessful this intern has data in reports.');</script>";
+            echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
         } else {
             echo "<script>alert('Error deleting record: " . $e->getMessage() . "');</script>";
         }
