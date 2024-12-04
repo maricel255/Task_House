@@ -600,7 +600,7 @@ z-index: -1; /* Places it behind other elements */
   top: 0;
   width: 100%; /* Full width of the viewport */
   height: 100%; /* Full height of the viewport */
-  backdrop-filter: blur(8px); /* Apply blur effect to the background */
+  backdrop-filter: blur(20px); /* Apply blur effect to the background */
   background-color: rgba(0, 0, 0, 0.5); /* Optional: darken the background for contrast */
 }
 
