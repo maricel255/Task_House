@@ -591,14 +591,12 @@ z-index: -1; /* Places it behind other elements */
           display: block; /* Show the detail section on hover */
       }
       
-/* Modal Content */
-/* Overlay to blur the background */
 /* Overlay to blur the background */
 .overlay {
 display: none; /* Hidden by default */
 position: fixed; /* Stay in place */
 z-index: 1000; /* Below modal */
-left: 30px;
+left: 30%;
 top: 0;
 width: 100%; /* Full width of the viewport */
 height: 100%; /* Full height of the viewport */
