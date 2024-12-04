@@ -1704,7 +1704,7 @@ margin-top: 20px;   /* Adds some space from the top */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
   float: right; /* Float the button to the right */
-  margin-left: 10px; /* Optional: Add some space to the left of the button */
+  margin-left: 5px; /* Optional: Add some space to the left of the button */
 }
 
 .view-details-btn:hover {
