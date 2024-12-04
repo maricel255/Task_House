@@ -1232,7 +1232,7 @@ if ($stmt->rowCount() > 0) {
     echo '<tr class="sticky-header">';
     echo '<th>#</th>'; // Add a column for numbering
     echo '<th>Intern ID</th>';
-    echo '<th style="text-align: right;">Actions</th>';
+    echo '<th style="text-align: right;">Asctions</th>';
  
     echo '</tr>'; // Close the header row
     echo '</thead>';
