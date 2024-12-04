@@ -1631,7 +1631,7 @@ if (isset($_POST['delete']) && isset($_POST['internID'])) {
     // Execute the deletion
     if ($stmt->execute()) {
         echo "<script>
-                alert('Record deleted successfully.');
+                alert('Time record deleted successfully.');
                         window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
               </script>";
     } else {
