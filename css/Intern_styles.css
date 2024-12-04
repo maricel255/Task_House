@@ -1828,7 +1828,7 @@ td[colspan="10"] {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 500px;
+    width: 700px;
     max-width: 90%;
     background: #fff;
     border-radius: 15px;
@@ -1841,7 +1841,7 @@ td[colspan="10"] {
     position: absolute;
     right: 15px;
     top: 5px; /* Position the close button above the text */
-    font-size: 24px;
+   font-weight: 200;
     color: #5c5c5c;
     cursor: pointer;
     transition: color 0.3s ease;
