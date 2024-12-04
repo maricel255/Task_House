@@ -1263,7 +1263,7 @@ echo '<thead class="thead-light">';
 echo '<tr class="sticky-header">';
 echo '<th>#</th>'; // Add a column for numbering
 echo '<th>Intern ID</th>';
-echo '<th>Actions</th>';
+echo 'Actions';
 
 
 // Dynamically create headers based on the selected search criteria
