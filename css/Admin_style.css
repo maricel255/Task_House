@@ -762,7 +762,7 @@ font-weight: bold;
   align-items: center;
 }
 .intern_acc{
-  background-color:  lightgreen; /* Green background */
+  background-color:  limegreen;
   color: white; /* Text color */
   border: none; /* Remove border */
   padding: 55px 715px; /* Padding */
@@ -777,7 +777,7 @@ font-weight: bold;
   
 }
 .intern_acc:hover {
-  background-color:  lime;
+  background-color:  lightgreen; /* Green background */
 }
 @media screen and (max-width: 480px) {
 .intern_acc {
@@ -798,7 +798,7 @@ font-weight: bold;
 }
 }
 .faci_acc{
-background-color:  #000543; /* Green background */
+  background-color:  limegreen;
 color: white; /* Text color */
 border: none; /* Remove border */
 padding: 55px 715px; /* Padding */
@@ -813,7 +813,7 @@ margin-left: 90px;  /* Adds 50px space from the left */
 
 }
 .faci_acc:hover {
-background-color:  #FF920C;
+  background-color:  lightgreen; /* Green background */
 }
 .db_Details{
 text-align: center;
@@ -981,11 +981,19 @@ padding: 5px 10px;     /* Same padding */
 font-size: 14px;       /* Same font size */
 }
 .table-container {
-max-height: 400px; /* Adjust the height as needed */
-overflow-y: auto;  /* Enable vertical scrolling */
-border: 1px solid #ccc; /* Optional: Add a border for better visibility */
-margin-top: 10px; /* Space above the table */
-margin-left: 50px; /* Space from the left */
+  max-height: 400px; /* Set a maximum height for the table container */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  border: 1px solid #ddd; /* Optional: Add a border around the container */
+  margin-bottom: 20px; /* Optional: Add some space below the table */
+}
+.table {
+  width: 100%; /* Ensure the table takes full width of the container */
+  border-collapse: collapse; /* Collapse borders for a cleaner look */
+}
+.table th, .table td {
+  padding: 10px; /* Add padding for table cells */
+  text-align: left; /* Align text to the left */
 }
 @media (max-width: 480px) {
 .table-container {
@@ -1649,3 +1657,24 @@ margin-right: 50px; /* Optional: for balance */
 margin-top: 20px;   /* Adds some space from the top */
 }
 
+.view-details-btn {
+  background-color: #007bff; /* Bootstrap primary color */
+  color: white; /* Text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  float: right; /* Float the button to the right */
+  margin-left: 10px; /* Optional: Add some space to the left of the button */
+}
+
+.view-details-btn:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.view-details-btn:focus {
+  outline: none; /* Remove outline on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+}

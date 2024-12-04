@@ -904,39 +904,35 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-
-// Handle the deletion for intern profile
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $internID = $_POST['internID'] ?? null; // Get the internID from the POST request
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-    if ($internID) {
-        try {
-            // Prepare the SQL statement to delete the intern from profile_information
-            $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
-            $stmt->bindParam(':internID', $internID, PDO::PARAM_STR);
-
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Intern profile deleted successfully!";
-                $_SESSION['message_type'] = 'success';
-            } else {
-                $_SESSION['message'] = "Error: Could not delete intern profile.";
-                $_SESSION['message_type'] = 'error';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'deleting') {
+        $internID = $_POST['internID'] ?? null;
+        $adminID = $_SESSION['adminID'] ?? null; // Retrieve adminID from session
+    
+        if ($internID && $adminID) {
+            try {
+                // Prepare SQL to delete the record
+                $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
+                $stmt->bindParam(':internID', $internID, PDO::PARAM_STR);
+                $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
+    
+                // Execute and provide feedback
+                if ($stmt->execute()) {
+                    echo '<script>alert("Intern account deleted successfully!");</script>';
+                } else {
+                    echo '<script>alert("Error: Could not delete intern account.");</script>';
+                }
+            } catch (PDOException $e) {
+                error_log("Deletion error: " . $e->getMessage());
+                echo '<script>alert("Error: ' . htmlspecialchars($e->getMessage()) . '");</script>';
             }
-        } catch (PDOException $e) {
-            $_SESSION['message'] = "Error: " . $e->getMessage();
-            $_SESSION['message_type'] = 'error';
+        } else {
+            echo '<script>alert("Error: Missing Intern ID or Admin ID.");</script>';
         }
-    } else {
-        $_SESSION['message'] = "Error: Intern ID is missing.";
-        $_SESSION['message_type'] = 'error';
+    
+        // Redirect back to the same page to refresh
+        echo '<script>window.location.href="' . htmlspecialchars($_SERVER['PHP_SELF']) . '?section=Intern_Account";</script>';
+        exit();
     }
-
-    // Redirect back to the same page to avoid resubmission
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -1263,6 +1259,10 @@ echo '<thead class="thead-light">';
 echo '<tr class="sticky-header">';
 echo '<th>#</th>'; // Add a column for numbering
 echo '<th>Intern ID</th>';
+echo '<th style="text-align: right;">View Intern Information</th>';
+echo '<th>Delete</th>';
+
+
 
 // Dynamically create headers based on the selected search criteria
 if ($searchBy !== 'all') {
@@ -1296,7 +1296,7 @@ foreach ($records as $row) {
     echo '<td>';
     echo '<form method="POST" action="" style="display:inline;">
     <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
-    <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record for an intern?\');">Delete</button>
+    <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record?\');">Delete</button>
 </form>';
     echo '</td>';
 
@@ -1413,7 +1413,7 @@ echo '</table>';
                                     <input type="hidden" name="internID" value="<?php echo isset($account['internID']) ? htmlspecialchars($account['internID']) : ''; ?>" />
                                     <input type="password" name="InternPass" class="password-input" placeholder="New Password" style="margin-left: 40%;" />
                                     <button type="submit" name="action" value="update" class="update-button" style="margin-right: 2px;" onclick="return confirm('Are you sure you want to update this record?');">Update</button>
-                                    <button type="submit" name="action" value="delete" class="delete-btn-new" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                    <button type="submit" name="action" value="delete" class="delete-button" style="margin-left: 2px;" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
                                     </form>
 
                                 </td>
