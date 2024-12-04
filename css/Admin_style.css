@@ -623,22 +623,35 @@ z-index: -1; /* Places it behind other elements */
 }
 
 /* Modal Content */
+
+/* Blur the entire page when the modal is active */
+/* Apply blur to all content except modal */
+body:has(:target) > *:not(.modal) {
+  filter: blur(5px); /* Adjust the blur intensity */
+  transition: filter 0.3s ease; /* Smooth transition for blur effect */
+}
+
+/* Modal */
 .modal-content {
-  background-color: #fefefe; /* Light background for the modal content */
-  margin: 0 auto; /* Center modal content horizontally */
-  padding: 20px; /* Padding inside the modal */
-  border: 1px solid #888; /* Border for the content */
-  border-radius: 10px; /* Optional: rounded corners */
-  width: 50%; /* Adjust width for better centering */
-  max-width: 600px; /* Optional: max width for responsiveness */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
-  
-  /* Center the modal content vertically and horizontally */
+  background-color: #fefefe;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 50%;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: absolute;
   top: 50%;
   left: 20%;
-  transform: translate(-50%, -50%); /* Adjust for perfect centering */
+  transform: translate(-50%, -50%);
 }
+
+/* Show modal when the URL hash matches the modal id */
+.modal:target {
+  display: flex;
+}
+
 
 
 

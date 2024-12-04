@@ -241,3 +241,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 });
+
+function confirmDelete(internID) {
+    if (confirm("Are you sure you want to delete this intern? This action cannot be undone.")) {
+        // Create a form to submit the delete request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = ''; // Submit to the current page
+
+        // Create hidden inputs for action and internID
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'delete';
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'internID';
+        idInput.value = internID;
+
+        // Append inputs to the form
+        form.appendChild(actionInput);
+        form.appendChild(idInput);
+
+        // Append the form to the body and submit it
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
