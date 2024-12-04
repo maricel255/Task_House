@@ -1201,15 +1201,20 @@ $timeLogsCount = $stmt->fetchColumn();
 if (isset($_POST['intern_id'])) {
     $internID = $_POST['intern_id'];
 
-    // Debugging: Check if internID is passed correctly
     if (empty($internID)) {
         echo "<script>alert('Intern ID is missing.');</script>";
     } else {
         try {
-            // Prepare the DELETE SQL statement
+            // First, delete related records in time_logs
+            $deleteLogsSql = "DELETE FROM time_logs WHERE internID = :internID";
+            $deleteLogsStmt = $conn->prepare($deleteLogsSql);
+            $deleteLogsStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
+            $deleteLogsStmt->execute();
+
+            // Now delete the intern record
             $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
             $deleteStmt = $conn->prepare($deleteSql);
-            $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+            $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_STR);
 
             // Execute the delete statement
             if ($deleteStmt->execute()) {
@@ -1623,32 +1628,22 @@ if ($stmt->rowCount() > 0) {
 if (isset($_POST['delete']) && isset($_POST['logID'])) {
     $logID = $_POST['logID']; // Get the unique logID
 
-    // Check for dependencies in time_logs first
-    $checkSql = "SELECT COUNT(*) FROM time_logs WHERE faciID = (SELECT faciID FROM profile_information WHERE id = :logID)";
-    $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bindValue(':logID', $logID, PDO::PARAM_INT);
-    $checkStmt->execute();
-    $count = $checkStmt->fetchColumn();
+    // Prepare the DELETE SQL statement
+    $sql = "DELETE FROM time_logs WHERE id = :logID"; // Use id for deletion
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID as an integer
 
-    if ($count > 0) {
-        // If there are dependencies, show an alert and do not delete
-        echo "<script>alert('Cannot delete this record because it is referenced by another record in time_logs.');</script>";
-    } else {
-        // Prepare the DELETE SQL statement
-        $sql = "DELETE FROM profile_information WHERE id = :logID"; // Use id for deletion
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID as an integer
-
-        try {
-            // Execute the deletion
-            if ($stmt->execute()) {
-                echo "<script>alert('Record deleted successfully.');</script>";
-                echo "<script>window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';</script>";
-            }
-        } catch (PDOException $e) {
-            // Display a custom error message
-            echo "<script>alert('Error deleting record: " . $e->getMessage() . "');</script>";
+    try {
+        // Execute the deletion
+        if ($stmt->execute()) {
+            echo "<script>
+                    alert('Time record deleted successfully.');
+                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
+                  </script>";
         }
+    } catch (PDOException $e) {
+        // Display a custom error message
+        echo "<script>alert('Error deleting record: Cannot delete this record because it is referenced by another record.');</script>";
     }
 }
 ?>
