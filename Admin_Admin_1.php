@@ -1505,11 +1505,11 @@ if ($stmt->rowCount() > 0) {
     <h1>Report</h1>
 
     <!-- Search Form -->
-    <form method="GET" action="">
-        <label for="search">Search by Intern ID:</label>
-        <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-        <button type="submit">Search</button>
-    </form>
+<form method="GET" action="" style="margin-left: 80px;">
+    <label for="search">Search by Intern ID:</label>
+    <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+    <button type="submit">Search</button>
+</form>
   <!-- Print Table Button -->
   <button class="print-table-btn" onclick="printTable()" >Print Table</button>
     <?php
