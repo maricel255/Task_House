@@ -1511,7 +1511,7 @@ if ($stmt->rowCount() > 0) {
         <button type="submit">Search</button>
     </form>
   <!-- Print Table Button -->
-  <button onclick="printTable()" style="display: inline; margin-left: 10px;">Print Table</button>
+  <button onclick="printTable()" style="display: inline; margin-left: 20px;">Print Table</button>
 
     <?php
     // Assuming you're already connected to the database via PDO
