@@ -1367,7 +1367,7 @@ border-radius: 50%; /* Make images circular */
 /* Message Style */
 p {
 font-size: 18px; /* Increase font size for messages */
-margin-left: 90px;
+margin-left: 90px;modal-conten
 }
 
 /* Responsive Styles */
@@ -1385,7 +1385,7 @@ img {
     width: 40px; /* Smaller images on mobile */
     height: 40px;
 }
-
+}
 
 
 
