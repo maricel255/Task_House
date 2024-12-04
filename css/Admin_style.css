@@ -1403,16 +1403,18 @@ background-color: #333; /* Darker background on hover for better visual feedback
 
 
 .deleter-button {  
-position: fixed; /* Fixed positioning ensures the button stays in the same place */
-bottom: 100px; /* Distance from the bottom of the viewport */
-right: 20px; /* Distance from the right edge of the viewport */
-background: orange;
-border: none;
-cursor: pointer;
-height: 60px; /* Set a specific height */
-padding: 10px 20px; /* Add padding for a balanced look */
-z-index: 1000; /* Ensure the button appears above other elements */
-border-radius: 10px;
+  position: fixed; /* Fixed positioning ensures the button stays in the same place */
+  bottom: 100px; /* Distance from the bottom of the viewport */
+  right: 20px; /* Distance from the right edge of the viewport */
+  background: orange;
+  border: none;
+  cursor: pointer;
+  height: 80px; /* Increased height */
+  padding: 15px 30px; /* Increased padding for a more balanced look */
+  z-index: 1000; /* Ensure the button appears above other elements */
+  border-radius: 10px;
+  font-size: 1.25rem; /* Increased font size for better visibility */
+  min-width: 100px; /* Minimum width */
 }
 
 
