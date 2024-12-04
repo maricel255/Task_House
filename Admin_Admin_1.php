@@ -905,6 +905,7 @@ $timeLogsCount = $stmt->fetchColumn();
     // END KYLE
 
     // Handle the deletion for intern profile
+// Handle the deletion for intern profile
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $internID = $_POST['internID'] ?? null; // Get the internID from the POST request
 
@@ -934,7 +935,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
-    
 ?>
 
 <!DOCTYPE html>
@@ -1293,9 +1293,9 @@ foreach ($records as $row) {
     // Add delete button
     echo '<td>';
     echo '<form method="POST" action="" style="display:inline;">
-            <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
-            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record for an intern?\');">Delete</button>
-    </form>';
+    <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
+    <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record for an intern?\');">Delete</button>
+</form>';
     echo '</td>';
 
     echo '</tr>';
