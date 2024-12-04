@@ -618,7 +618,7 @@ z-index: -1; /* Places it behind other elements */
   overflow: auto;
   background-color: transparent;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
 }
 
 
