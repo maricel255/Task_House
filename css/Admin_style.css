@@ -621,7 +621,11 @@ z-index: -1; /* Places it behind other elements */
   width: 80%; /* Increased width for better visibility on mobile */
 }
 }
-
+.table-cell {
+  display: flex; /* Use flexbox for alignment */
+  justify-content: space-between; /* Space between buttons */
+  align-items: center; /* Center vertically */
+}
 
 .delete-details-btn {
   background-color: red; /* Red background */
