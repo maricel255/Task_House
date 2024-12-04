@@ -698,7 +698,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['title']) && isset($_POST['announcement'])) {
         $title = trim($_POST['title']);
         $announcement = trim($_POST['announcement']);
-
+        
         // Ensure file upload is handled
         if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
             // Process file upload
@@ -706,24 +706,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $fileName = $_FILES['fileUpload']['name'];
             $fileSize = $_FILES['fileUpload']['size'];
             $fileType = $_FILES['fileUpload']['type'];
-
+    
             // Define the path where the file will be uploaded
             $uploadFileDir = __DIR__ . '/uploaded_files/';
             $dest_path = $uploadFileDir . $fileName;
-
+    
             // Move the file to the desired directory
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                 // File successfully uploaded
                 // Prepare the SQL statement
                 $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, :imagePath, :content, :adminID)";
                 $stmt = $conn->prepare($sql);
-
+    
                 // Bind the parameters
                 $stmt->bindValue(':title', $title, PDO::PARAM_STR);
                 $stmt->bindValue(':imagePath', $dest_path, PDO::PARAM_STR);  // Store file path
                 $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
                 $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
-
+    
                 // Execute the statement
                 if ($stmt->execute()) {
                     // Redirect to the same page to avoid resubmission on refresh
@@ -736,7 +736,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>alert('Error uploading the file.');</script>";
             }
         } else {
-            echo "<script>alert('No file uploaded or there was an upload error.');</script>";
+            // Handle case where no file is uploaded
+            $sql = "INSERT INTO announcements (title, imagePath, content, adminID) VALUES (:title, NULL, :content, :adminID)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+            $stmt->bindValue(':content', $announcement, PDO::PARAM_STR);
+            $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT);  // Replace with actual admin ID
+    
+            // Execute the statement
+            if ($stmt->execute()) {
+                header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
+                exit;  // Ensure no further code is executed after the redirect
+            } else {
+                echo "<script>alert('Error posting announcement.');</script>";
+            }
         }
     }
 }
