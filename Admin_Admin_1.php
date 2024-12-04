@@ -1205,7 +1205,13 @@ if (isset($_POST['intern_id'])) {
         echo "<script>alert('Intern ID is missing.');</script>";
     } else {
         try {
-            // Prepare the DELETE SQL statement
+            // Step 1: Delete related records in time_logs
+            $deleteLogsSql = "DELETE FROM time_logs WHERE internID = :internID";
+            $deleteLogsStmt = $conn->prepare($deleteLogsSql);
+            $deleteLogsStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+            $deleteLogsStmt->execute();
+
+            // Step 2: Prepare the DELETE SQL statement for profile_information
             $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
             $deleteStmt = $conn->prepare($deleteSql);
             $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
@@ -1219,8 +1225,12 @@ if (isset($_POST['intern_id'])) {
                 echo "<script>alert('Error deleting the record.');</script>";
             }
         } catch (PDOException $e) {
-            // If an exception occurs, show the error message
-            echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+            // If an exception occurs, show a user-friendly error message
+            if ($e->getCode() == 23000) { // Integrity constraint violation
+                echo "<script>alert('Error: Cannot delete this record because it is referenced by another record.');</script>";
+            } else {
+                echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
+            }
         }
     }
 }
