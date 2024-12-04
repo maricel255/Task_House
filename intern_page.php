@@ -934,6 +934,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                         }
                     }
                 } 
+                $existingTasks = array_unique($existingTasks);
                 ?>
 
         <h2>Enter Task Before Logging Out</h2>
