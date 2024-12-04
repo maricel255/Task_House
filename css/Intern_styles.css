@@ -1843,6 +1843,7 @@ td[colspan="10"] {
     font-size: 24px;
     color: #5c5c5c;
     cursor: pointer;
+    font-weight: 30px;
     transition: color 0.3s ease;
 }
 
