@@ -1273,24 +1273,24 @@ if ($stmt->rowCount() > 0) {
 } else {
     echo '<p>No records found for your search!</p>';
 }
-// Handle delete functionality
-if (isset($_POST['delete']) && !empty($_POST['deleteID'])) {
+
+// Check if the delete form has been submitted
+if (isset($_POST['delete']) && isset($_POST['deleteID'])) {
     $deleteID = $_POST['deleteID'];
 
-    // Delete query
-    $deleteSQL = "DELETE FROM profile_information WHERE internID = :internID";
-    $deleteStmt = $conn->prepare($deleteSQL);
-    $deleteStmt->bindValue(':internID', $deleteID, PDO::PARAM_INT);
+    // Prepare the SQL query for deleting the record
+    $deleteSql = "DELETE FROM profile_information WHERE internID = :deleteID";
+    $stmt = $conn->prepare($deleteSql);
+    $stmt->bindValue(':deleteID', $deleteID, PDO::PARAM_INT);
 
-    if ($deleteStmt->execute()) {
-        echo '<p>Record deleted successfully!</p>';
-        // Optional: Refresh the page to reflect the changes
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
+    // Execute the deletion
+    if ($stmt->execute()) {
+        echo '<p>Record deleted successfully.</p>';
     } else {
         echo '<p>Error deleting record.</p>';
     }
 }
+
 
 ?>
 <div class="container">
