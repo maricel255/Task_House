@@ -5,10 +5,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
-if (isset($_SESSION['message'])) {
-    echo "<script>alert('" . htmlspecialchars($_SESSION['message'], ENT_QUOTES, 'UTF-8') . "');</script>";
-    unset($_SESSION['message']); // Clear the message after displaying
-}
 
 // Add this function
 function setMessage($message, $type = 'info') {
@@ -1232,8 +1228,8 @@ if (isset($_POST['intern_id'])) {
         } catch (PDOException $e) {
             // If an exception occurs, show a user-friendly error message
             if ($e->getCode() == 23000) { // Integrity constraint violation
+                echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
                 
-                $_SESSION['message'] = 'Cannot delete this record because it is referenced by another record.';
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
             }
