@@ -1629,13 +1629,21 @@ if (isset($_POST['delete']) && isset($_POST['logID'])) {
     $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID as an integer
 
     // Execute the deletion
-    if ($stmt->execute()) {
-        echo "<script>
-                alert('Time record deleted successfully.');
-                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
-              </script>";
-    } else {
-        echo "<script>alert('Error deleting record.');</script>";
+    try {
+        // Execute the deletion
+        if ($stmt->execute()) {
+            echo "<script>
+                    alert('Time record deleted successfully.');
+                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
+                  </script>";
+        }
+    } catch (PDOException $e) {
+        // Customize the error message
+        if ($e->getCode() == 23000) { // Integrity constraint violation
+            echo "<script>alert('Delete unsuccessful this intern has data in reports.');</script>";
+        } else {
+            echo "<script>alert('Error deleting record: " . $e->getMessage() . "');</script>";
+        }
     }
 }
 ?>
