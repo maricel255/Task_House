@@ -6,8 +6,6 @@ error_reporting(E_ALL);
 require('db_Taskhouse/Admin_connection.php');
 
 
-
-
 // Add this function
 function setMessage($message, $type = 'info') {
     $_SESSION['message'] = $message;
@@ -1230,8 +1228,8 @@ if (isset($_POST['intern_id'])) {
         } catch (PDOException $e) {
             // If an exception occurs, show a user-friendly error message
             if ($e->getCode() == 23000) { // Integrity constraint violation
-            
-                $_SESSION['message'] = 'Error deleting record: Cannot delete this record because it is referenced by another record.';
+                
+                echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
                 
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
