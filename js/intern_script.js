@@ -86,8 +86,15 @@ function moveSlide(direction) {
     announcementItems[currentIndex].classList.add('active'); // Show new announcement
 }
 
-
-
+// Initial setup: show the first announcement
+document.addEventListener('DOMContentLoaded', function () {
+    const announcementItems = document.querySelectorAll('.announcement-item');
+    announcementItems.forEach((item, index) => {
+        if (index !== 0) {
+            item.classList.remove('active'); // Hide all except the first
+        }
+    });
+});
 
 
 function updateTime() {
