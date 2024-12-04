@@ -1841,7 +1841,7 @@ td[colspan="10"] {
     position: absolute;
     right: 15px;
     top: 5px; /* Position the close button above the text */
-   font-weight: 200;
+   font-weight: 600;
     color: #5c5c5c;
     cursor: pointer;
     transition: color 0.3s ease;
@@ -1869,7 +1869,7 @@ td[colspan="10"] {
 
 #taskForm label {
     color: #34495e;
-    font-weight: 1000;
+    font-weight: 500;
     font-size: 15px;
     margin-bottom: 5px;
 }
