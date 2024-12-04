@@ -915,8 +915,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
 
 <div id="taskModal" >
+<span class="close" onclick="closeTaskModal()">&times;</span>
     <div class="modal-content">
-    <span class="close" onclick="closeTaskModal()">&times;</span>
+    
 
         <h2>Enter Task Before Logging Out</h2>
         <form id="taskForm" method="POST" action="" onsubmit="return validateTask()">
