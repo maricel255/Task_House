@@ -1263,7 +1263,7 @@ foreach ($records as $row) {
     echo '<td>';
     echo '<form method="POST" action="" style="display:inline;">
             <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
-            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record?\');">Delete</button>
+            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record for an intern?\');">Delete</button>
     </form>';
     echo '</td>';
 
