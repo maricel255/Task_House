@@ -904,26 +904,6 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-   
-To make the delete button send a POST request for each row, the form structure in your table already fulfills the requirement for submitting POST data. Each row's form is set up to send the specific internID for deletion. Here's how the POST handling and form are tied together:
-
-    The Delete Button Form (Within the Table Row)
-    The form sends a POST request for the specific internID:
-    
-    php
-    Copy code
-    echo '<form method="POST" action="' . htmlspecialchars($_SERVER['PHP_SELF']) . '?section=Intern_Account">';
-    echo '<input type="hidden" name="action" value="deleting">';
-    echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-    echo '<button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">';
-    echo 'Delete Intern Account';
-    echo '</button>';
-    echo '</form>';
-    Handling the POST Request (PHP Logic)
-    This part of your PHP script processes the form submission:
-    
-    php
-    Copy code
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'deleting') {
         $internID = $_POST['internID'] ?? null;
         $adminID = $_SESSION['adminID'] ?? null; // Retrieve adminID from session
@@ -1272,64 +1252,64 @@ To make the delete button send a POST request for each row, the form structure i
         if ($stmt->rowCount() > 0) {
             // Fetch all records
             $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
             // Start the table
             echo '<table id="profileTable" class="table table-bordered">';
-            echo '<thead class="thead-light">';
-            echo '<tr class="sticky-header">';
-            echo '<th>#</th>'; // Add a column for numbering
-            echo '<th>Intern ID</th>';
-            echo '<th style="text-align: right;">View Intern Information</th>';
-            echo '<th>Delete</th>';
-        
-            // Dynamically create headers based on the selected search criteria
-            if ($searchBy !== 'all') {
-                echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
-            }
-        
-            echo '</tr>';
-            echo '</thead>';
-            echo '<tbody>';
-        
-            // Counter for enumeration
-            $counter = 1;
-        
-            // Loop through the records and display each field
-            foreach ($records as $row) {
-                echo '<tr>';
-                echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-                echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
-        
-                // Display the selected search column based on search criteria
-                if ($searchBy !== 'all') {
-                    echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
-                }
-        
-                // Add a button to view more details
-                echo '<td>';
-                echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
-                echo '</td>';
-        
-                // Add delete button
-                echo '<td>';
-                echo '<form method="POST" action="">'; // Set action to an empty string
-                echo '<input type="hidden" name="action" value="deleting">';
-                echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">';
-                echo '<button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">';
-                echo 'Delete Intern Account';
-                echo '</button>';
-                echo '</form>';
-                echo '</td>';
-        
-                echo '</tr>';
-            }
-        
-            echo '</tbody>';
-            echo '</table>';
+echo '<thead class="thead-light">';
+echo '<tr class="sticky-header">';
+echo '<th>#</th>'; // Add a column for numbering
+echo '<th>Intern ID</th>';
+echo '<th style="text-align: right;">View Intern Information</th>';
+echo '<th>Delete</th>';
+
+
+
+// Dynamically create headers based on the selected search criteria
+if ($searchBy !== 'all') {
+    echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+}
+
+echo '</tr>';
+echo '</thead>';
+echo '<tbody>';
+
+// Counter for enumeration
+$counter = 1;
+
+// Loop through the records and display each field
+foreach ($records as $row) {
+    echo '<tr>';
+    echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+    echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+
+    // Display the selected search column based on search criteria
+    if ($searchBy !== 'all') {
+        echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+    }
+
+    // Add a button to view more details
+    echo '<td>';
+    echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
+    echo '</td>';
+
+    // Add delete button
+    echo '<td>';
+    echo '<form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?section=Intern_Account">
+    <input type="hidden" name="action" value="deleting">
+    <button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">
+        Delete Intern Account
+    </button>
+</form>';
+    echo '</td>';
+
+    echo '</tr>';
+}
+echo '</tbody>';
+echo '</table>';
         } else {
             echo '<p>No records found for your search!</p>';
         }
-        
+
         
         ?>
         <div class="container">
