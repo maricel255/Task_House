@@ -1254,13 +1254,16 @@ $timeLogsCount = $stmt->fetchColumn();
             $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Start the table
+            echo '<div class="table-container">';
+
             echo '<table id="profileTable" class="table table-bordered">';
-echo '<thead class="thead-light">';
-echo '<tr class="sticky-header">';
-echo '<th>#</th>'; // Add a column for numbering
-echo '<th>Intern ID</th>';
-echo '<th style="text-align: right;">View Intern Information</th>';
-echo '<th>Delete</th>';
+            echo '<thead class="thead-light">';
+            echo '<tr class="sticky-header">';
+            echo '<th>#</th>'; // Add a column for numbering
+            echo '<th>Intern ID</th>';
+            echo '<th style="text-align: right;">View Intern Information</th>';
+            echo '<th>Delete</th>';
+            echo '</div>'; // Close the table container
 
 
 
