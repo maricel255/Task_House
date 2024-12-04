@@ -669,7 +669,7 @@ z-index: -1; /* Places it behind other elements */
 /* Modal Content */
 
 /* Blur the entire page when the modal is active */
-/
+
 
 /* Modal */
 .modal-content {
@@ -683,9 +683,10 @@ z-index: -1; /* Places it behind other elements */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: absolute;
   top: 50%;
-  left: 20%;
-  transform: translate(-50%, -50%);
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Center the element */
 }
+
 
 /* Show modal when the URL hash matches the modal id */
 .modal:target {
@@ -1366,7 +1367,7 @@ border-radius: 50%; /* Make images circular */
 /* Message Style */
 p {
 font-size: 18px; /* Increase font size for messages */
-margin-left: 90px;
+margin-left: 90px;modal-conten
 }
 
 /* Responsive Styles */
