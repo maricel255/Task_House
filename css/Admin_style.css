@@ -636,14 +636,9 @@ z-index: -1; /* Places it behind other elements */
   /* Center the modal content vertically and horizontally */
   position: absolute;
   top: 50%;
-  left: 20%; /* Corrected centering */
+  left: 20%;
   transform: translate(-50%, -50%); /* Adjust for perfect centering */
-  
-  /* Apply the background blur effect */
-  backdrop-filter: blur(8px); /* Adjust the blur strength */
-  -webkit-backdrop-filter: blur(8px); /* Safari support */
 }
-
 
 
 
