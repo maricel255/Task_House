@@ -1259,6 +1259,14 @@ foreach ($records as $row) {
     echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
     echo '</td>';
 
+    // Add delete button
+    echo '<td>';
+    echo '<form method="POST" action="" style="display:inline;">
+            <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
+            <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record?\');">Delete</button>
+    </form>';
+    echo '</td>';
+
     echo '</tr>';
 }
 echo '</tbody>';
