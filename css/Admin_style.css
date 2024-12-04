@@ -636,7 +636,7 @@ z-index: -1; /* Places it behind other elements */
   /* Center the modal content vertically and horizontally */
   position: absolute;
   top: 50%;
-  left: 50%; /* Corrected centering */
+  left: 20%; /* Corrected centering */
   transform: translate(-50%, -50%); /* Adjust for perfect centering */
   
   /* Apply the background blur effect */
