@@ -1259,12 +1259,9 @@ if ($stmt->rowCount() > 0) {
 
         // Add delete button
         echo '<td>';
-        echo '<form method="POST" action="">'; // Set action to current page
-        echo '<input type="hidden" name="action" value="delete">'; // Action for deletion
-        echo '<input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">'; // Intern ID to delete
-        echo '<button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">';
-        echo 'Delete';
-        echo '</button>';
+        echo '<form method="POST" action="">'; // Form for delete action
+        echo '<input type="hidden" name="deleteID" value="' . htmlspecialchars($row['internID']) . '">';
+        echo '<button type="submit" name="delete" class="btn btn-danger">Delete</button>';
         echo '</form>';
         echo '</td>';
 
@@ -1276,31 +1273,22 @@ if ($stmt->rowCount() > 0) {
 } else {
     echo '<p>No records found for your search!</p>';
 }
+// Handle delete functionality
+if (isset($_POST['delete']) && !empty($_POST['deleteID'])) {
+    $deleteID = $_POST['deleteID'];
 
-// Handle deletion action
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
-    if ($internID) {
-        echo '<script>console.log("Intern ID: ' . $internID . '");</script>'; // Debugging output
-        try {
-            // Prepare the SQL statement to delete the intern record
-            $deleteStmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
-            $deleteStmt->bindParam(':internID', $internID);
-            $deleteStmt->bindParam(':adminID', $adminID); // Ensure you bind the adminID for security
-            
-            // Execute the statement
-            if ($deleteStmt->execute()) {
-                echo '<script>alert("Intern account deleted successfully!");</script>'; // Success message
-            } else {
-                echo '<script>alert("Error: Could not delete intern account.");</script>'; // Error message
-            }
-        } catch (PDOException $e) {
-            // Log the error message for debugging
-            error_log("Deletion error: " . $e->getMessage());
-            echo '<script>alert("Error: ' . addslashes($e->getMessage()) . '");</script>'; // Show the error message
-        }
+    // Delete query
+    $deleteSQL = "DELETE FROM profile_information WHERE internID = :internID";
+    $deleteStmt = $conn->prepare($deleteSQL);
+    $deleteStmt->bindValue(':internID', $deleteID, PDO::PARAM_INT);
+
+    if ($deleteStmt->execute()) {
+        echo '<p>Record deleted successfully!</p>';
+        // Optional: Refresh the page to reflect the changes
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     } else {
-        echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
+        echo '<p>Error deleting record.</p>';
     }
 }
 
