@@ -1409,12 +1409,12 @@ background-color: #333; /* Darker background on hover for better visual feedback
   background: orange;
   border: none;
   cursor: pointer;
-  height: 85px; /* Increased height */
+  height: 88px; /* Increased height */
   padding: 15px 30px; /* Increased padding for a more balanced look */
   z-index: 1000; /* Ensure the button appears above other elements */
   border-radius: 10px;
   font-size: 1.25rem; /* Increased font size for better visibility */
-  min-width: 100px; /* Minimum width */
+  min-width: 200px; /* Minimum width */
   
 }
 
