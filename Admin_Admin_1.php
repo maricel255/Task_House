@@ -1195,7 +1195,26 @@ $timeLogsCount = $stmt->fetchColumn();
        
        
         <!-- Start Kyle -->
-<?php
+        <?php
+
+// Check if delete is requested
+if (isset($_POST['intern_id'])) {
+    $internID = $_POST['intern_id'];
+
+    // Prepare the DELETE SQL statement
+    $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
+    $deleteStmt = $conn->prepare($deleteSql);
+    $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+
+    // Execute the delete statement
+    if ($deleteStmt->execute()) {
+        // If deletion is successful, redirect to the same page to refresh the data
+        echo "<script>alert('Intern record deleted successfully.'); window.location.href = window.location.href;</script>";
+    } else {
+        // If there's an error, display an alert
+        echo "<script>alert('Error deleting the record.');</script>";
+    }
+}
 
 // Prepare the base SQL query
 $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
@@ -1233,7 +1252,6 @@ if ($stmt->rowCount() > 0) {
     echo '<th>#</th>'; // Add a column for numbering
     echo '<th>Intern ID</th>';
     echo '<th style="text-align: center;">Actions</th>';
- 
     echo '</tr>'; // Close the header row
     echo '</thead>';
     echo '<tbody>';
@@ -1255,13 +1273,10 @@ if ($stmt->rowCount() > 0) {
         // Add a button to view more details
         echo '<td>';
         echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
-        echo '<form action=" " method="POST" onsubmit="return confirm(\'Are you sure you want to delete this intern?\')">';
+        echo '<form action="" method="POST" onsubmit="return confirm(\'Are you sure you want to delete this intern?\')">';
         echo '<button type="submit" class="delete-details-btn" name="intern_id" value="' . htmlspecialchars($row['internID']) . '">Delete</button>';
         echo '</form>';
-                echo '</td>';
-
-
-       
+        echo '</td>';
 
         echo '</tr>';
     }
@@ -1272,8 +1287,8 @@ if ($stmt->rowCount() > 0) {
     echo '<p>No records found for your search!</p>';
 }
 
-
 ?>
+
 <div class="container">
     <div id="internDetails" class="intern-details">
         <!-- Content for intern details will go here -->
