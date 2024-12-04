@@ -206,30 +206,40 @@ function handleAnnouncementSubmission($conn, $adminID) {
     try {
         $title = $_POST['title'];
         $announcement = $_POST['announcement'];
-        $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
-        $fileName = $_FILES['fileUpload']['name'];
         
-        $uploadFileDir = __DIR__ . '/uploaded_files/';
-        $dest_path = $uploadFileDir . $fileName;
+        // Initialize the image path to null
+        $imagePath = null;
 
-        if (move_uploaded_file($fileTmpPath, $dest_path)) {
-            $stmt = $conn->prepare("INSERT INTO announcements (title, imagePath, content, adminID) VALUES (?, ?, ?, ?)");
-            if ($stmt->execute([$title, $dest_path, $announcement, $adminID])) {
-                echo "<script>
-                    alert('Announcement posted successfully!');
-                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
-                </script>";
-                exit();
+        // Check if a file was uploaded
+        if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+            $fileName = $_FILES['fileUpload']['name'];
+            
+            $uploadFileDir = __DIR__ . '/uploaded_files/';
+            $dest_path = $uploadFileDir . $fileName;
+
+            // Attempt to move the uploaded file
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                $imagePath = $dest_path; // Set the image path if the upload is successful
             } else {
-                echo "<script>
-                    alert('Error: Failed to post announcement.');
-                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
-                </script>";
-                exit();
+                // Handle the case where the file upload fails silently
+                // You can log this error if needed, but do not show an error message
             }
+        }
+
+        // Prepare the SQL statement
+        $stmt = $conn->prepare("INSERT INTO announcements (title, imagePath, content, adminID) VALUES (?, ?, ?, ?)");
+        
+        // Execute the statement with the image path (NULL if no file uploaded)
+        if ($stmt->execute([$title, $imagePath, $announcement, $adminID])) {
+            echo "<script>
+                alert('Announcement posted successfully!');
+                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
+            </script>";
+            exit();
         } else {
             echo "<script>
-                alert('Error: Failed to upload file.');
+                alert('Error: Failed to post announcement.');
                 window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Dashboard';
             </script>";
             exit();
