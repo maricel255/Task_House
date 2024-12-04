@@ -762,7 +762,7 @@ font-weight: bold;
   align-items: center;
 }
 .intern_acc{
-  background-color:  #FF920C; /* Green background */
+  background-color:  lightgreen; /* Green background */
   color: white; /* Text color */
   border: none; /* Remove border */
   padding: 55px 715px; /* Padding */
@@ -777,7 +777,7 @@ font-weight: bold;
   
 }
 .intern_acc:hover {
-  background-color:  #000543;
+  background-color:  limegreen;
 }
 @media screen and (max-width: 480px) {
 .intern_acc {
