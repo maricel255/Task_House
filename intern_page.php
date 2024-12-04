@@ -930,7 +930,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 if (!empty($timeLogs)) {
                     foreach ($timeLogs as $log) {
                         if (isset($log['task'])) { // Check if 'task' column exists
-                            echo '<option value="' . htmlspecialchars($log['task']) . '">' . htmlspecialchars($log['task']) . '</option>'; // Display the task value safely
+                            $existingTasks[] = htmlspecialchars($log['task']);
                         }
                     }
                 } 
@@ -944,7 +944,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
             <label for="task">Select Existing Task:</label>
             <select name="tasks[]" >
                 <option value="" disabled selected>Select a Task</option>
-                
+
                 <?php 
         // Display only the 'task' column in the dropdown without redundancy
         foreach ($existingTasks as $task) {
