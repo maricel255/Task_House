@@ -2068,6 +2068,7 @@ text-align: center;
   overflow-y: auto;
   display: block;
   max-height: 400px; 
+  table-layout: fixed; 
 }
 
 
@@ -2079,11 +2080,7 @@ text-align: center;
   background-color: #4CAF50;
   color: white;
 }
-.request-table thead {
-  display: table; /* Keep the header in table format */
-  width: 100%; /* Ensure header takes full width */
-  table-layout: fixed; 
-}
+
 
 .request-table-header th {
   padding: 15px;
