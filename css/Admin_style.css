@@ -636,7 +636,7 @@ z-index: -1; /* Places it behind other elements */
   font-size: 16px; /* Font size */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
-  margin-left: auto; /* Push the button to the right */
+  margin-right: auto; /* Push the button to the right */
 }
 
 .delete-details-btn:hover {
