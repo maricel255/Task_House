@@ -1842,6 +1842,7 @@ td[colspan="10"] {
     right: 15px;
     top: 5px; /* Position the close button above the text */
    font-weight: 600;
+   font-size: 20px;
     color: #5c5c5c;
     cursor: pointer;
     transition: color 0.3s ease;
