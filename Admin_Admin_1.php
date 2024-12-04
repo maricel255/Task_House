@@ -904,17 +904,31 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-   // Handle deletion action
-   if (isset($_POST['intern_id'])) {
-    $internID = $_POST['intern_id'];
-
-    // Prepare and execute the deletion query
-    $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
-    $stmt->execute(['internID' => $internID]);
-
-    // Redirect or show a success message
-    header("Location: " . $_SERVER['PHP_SELF'] . "?" . http_build_query($_GET));
-    exit;
+ // Handle deletion action
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
+    if ($internID) {
+        try {
+            // Prepare the SQL statement to delete the intern record
+            $deleteStmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
+            $deleteStmt->bindParam(':internID', $internID);
+            
+            // Execute the statement
+            $deleteStmt->execute();
+            echo '<script>alert("Intern details deleted successfully!");</script>'; // Success message
+        } catch (PDOException $e) {
+            // Check for foreign key constraint violation
+            if ($e->getCode() == 23000) { // Integrity constraint violation
+                echo '<script>alert("You can\'t delete this profile; it has data in time logs.");</script>';
+            } else {
+                // Log other errors
+                error_log("Deletion error: " . $e->getMessage());
+                echo '<script>alert("Error: ' . addslashes($e->getMessage()) . '");</script>'; // Show the error message
+            }
+        }
+    } else {
+        echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
+    }
 }
 ?>
 
