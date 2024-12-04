@@ -1294,7 +1294,7 @@ foreach ($records as $row) {
 
     // Add delete button
     echo '<td>';
-    echo '<form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?section=Intern_Account">
+    echo '<form method="POST" action=" ">
     <input type="hidden" name="action" value="deleting">
     <button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">
         Delete Intern Account
