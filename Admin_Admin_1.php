@@ -1201,21 +1201,30 @@ $timeLogsCount = $stmt->fetchColumn();
 if (isset($_POST['intern_id'])) {
     $internID = $_POST['intern_id'];
 
-    // Prepare the DELETE SQL statement
-    $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
-    $deleteStmt = $conn->prepare($deleteSql);
-    $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
-
-    // Execute the delete statement
-    if ($deleteStmt->execute()) {
-        // If deletion is successful, redirect to the same page to refresh the data
-        echo "<script>alert('Intern record deleted successfully.'); window.location.href = window.location.href;</script>";
+    // Debugging: Check if internID is passed correctly
+    if (empty($internID)) {
+        echo "<script>alert('Intern ID is missing.');</script>";
     } else {
-        // If there's an error, display an alert
-        echo "<script>alert('Error deleting the record.');</script>";
+        try {
+            // Prepare the DELETE SQL statement
+            $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
+            $deleteStmt = $conn->prepare($deleteSql);
+            $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+
+            // Execute the delete statement
+            if ($deleteStmt->execute()) {
+                // If deletion is successful, redirect to the Intern_profile section
+                echo "<script>alert('Intern record deleted successfully.'); window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_profile';</script>";
+            } else {
+                // If there's an error, show a failure message
+                echo "<script>alert('Error deleting the record.');</script>";
+            }
+        } catch (PDOException $e) {
+            // If an exception occurs, show the error message
+            echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+        }
     }
 }
-
 // Prepare the base SQL query
 $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 
