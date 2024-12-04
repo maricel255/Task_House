@@ -1609,7 +1609,7 @@ if (isset($_POST['delete']) && isset($_POST['internID'])) {
     if ($stmt->execute()) {
         echo "<script>
                 alert('Record deleted successfully.');
-                window.location.href = 'Admin_Admin_1.php#report';  // Redirect to the report section
+                        window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
               </script>";
     } else {
         echo "<script>alert('Error deleting record.');</script>";
