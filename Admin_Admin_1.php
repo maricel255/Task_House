@@ -1604,7 +1604,7 @@ if ($stmt->rowCount() > 0) {
                             <td>
                                 <!-- Delete Button -->
                                 <form method="POST" action="">
-                                    <input type="hidden" name="internID" value="<?php echo htmlspecialchars($row['internID'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <input type="hidden" name="logID" value="<?php echo htmlspecialchars($row['internID'], ENT_QUOTES, 'UTF-8'); ?>">
                                     <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this record?');" class="delete-time-btn">Delete</button>
                                 </form>
                             </td>
