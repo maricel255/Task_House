@@ -1372,15 +1372,17 @@ background-color: #333; /* Darker background on hover for better visual feedback
   display: inline-block; /* Make it block-level for padding and margin */
   background-color: #28a745; /* Green background color */
   color: white; /* Text color */
-  padding: 0.625rem 1rem; /* Padding around the text (10px 15px) */
+  padding: 1rem 1.5rem; /* Increased padding for height and width */
   border-radius: 0.3125rem; /* Rounded corners (5px) */
   text-decoration: none; /* Remove underline from the link */
-  font-size: 1rem; /* Font size (16px) */
+  font-size: 1.25rem; /* Increased font size for better visibility */
   text-align: center; /* Center text within the button */
   margin-top: 120.5%; /* Space above the link (200px) */
   border: solid 0.25rem #dc3545; /* Solid red border (4px) */
   min-width: 150px; /* Minimum width */
   min-height: 50px; /* Minimum height */
+  border-radius: 15%;
+
 }
  
 .pdf-link {
@@ -1396,7 +1398,7 @@ background-color: #333; /* Darker background on hover for better visual feedback
   border: solid 0.25rem #dc3545; /* Solid red border (4px) */
   min-width: 150px; /* Minimum width */
   min-height: 50px; /* Minimum height */
-  border-radius: 10%;
+  border-radius: 15%;
 }
 
 
