@@ -1414,7 +1414,7 @@ background-color: #333; /* Darker background on hover for better visual feedback
   z-index: 1000; /* Ensure the button appears above other elements */
   border-radius: 10px;
   font-size: 1.25rem; /* Increased font size for better visibility */
-  min-width: 150px; /* Minimum width */
+  min-width: 180px; /* Minimum width */
   
 }
 
