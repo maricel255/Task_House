@@ -605,21 +605,7 @@ z-index: -1; /* Places it behind other elements */
 }
 
 /* Modal Background */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 120px; /* Increased left spacing from 100px to 120px */
-  bottom: 10px;
-  width: 40%;
-  max-width: 40%;
-  height: auto;
-  max-height: 80%;
-  overflow: auto;
-  background-color: transparent;
-  border-radius: 10px;
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
-}
+
 
 
 /* Add responsive adjustment for smaller screens */
@@ -638,14 +624,22 @@ z-index: -1; /* Places it behind other elements */
 
 /* Modal Content */
 .modal-content {
-background-color: #fefefe; /* Light background for the modal content */
-margin: 0 auto; /* Center modal content horizontally */
-padding: 20px; /* Padding inside the modal */
-border: 1px solid #888; /* Border for the content */
-border-radius: 10px; /* Optional: rounded corners */
-width: 100%; /* Ensure the content width is responsive */
-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+  background-color: #fefefe; /* Light background for the modal content */
+  margin: 0 auto; /* Center modal content horizontally */
+  padding: 20px; /* Padding inside the modal */
+  border: 1px solid #888; /* Border for the content */
+  border-radius: 10px; /* Optional: rounded corners */
+  width: 50%; /* Adjust width for better centering */
+  max-width: 600px; /* Optional: max width for responsiveness */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Optional shadow effect */
+  
+  /* Center the modal content vertically and horizontally */
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%); /* Adjust for perfect centering */
 }
+
 
 
 .Accmodal-content {
