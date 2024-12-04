@@ -639,6 +639,21 @@ z-index: -1; /* Places it behind other elements */
   margin-right: auto; /* Push the button to the right */
 }
 
+.delete-time-btn {
+  background-color: red; /* Red background */
+  color: white;           /* White text color */
+  border: none;           /* Remove border */
+  padding: 10px 20px;     /* Add padding to make the button larger */
+  border-radius: 15px;    /* Curved corners */
+  cursor: pointer;       /* Change cursor to pointer on hover */
+  font-size: 16px;        /* Set font size */
+  transition: background-color 0.3s ease; /* Smooth color transition on hover */
+}
+
+.delete-time-btn:hover {
+  background-color: darkred; /* Darker red on hover */
+}
+
 .delete-details-btn:hover {
   background-color: darkred; /* Darker shade on hover */
 }
