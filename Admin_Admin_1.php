@@ -1620,19 +1620,19 @@ if ($stmt->rowCount() > 0) {
 
 <?php
 // Handle Deletion
-if (isset($_POST['delete']) && isset($_POST['internID'])) {
-    $internID = $_POST['internID'];
+if (isset($_POST['delete']) && isset($_POST['logID'])) { // Check for logID
+    $logID = $_POST['logID']; // Get the unique logID
 
     // Prepare the DELETE SQL statement
-    $sql = "DELETE FROM time_logs WHERE internID = :internID";
+    $sql = "DELETE FROM time_logs WHERE id = :logID"; // Use id for deletion
     $stmt = $conn->prepare($sql);
-    $stmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+    $stmt->bindValue(':logID', $logID, PDO::PARAM_INT); // Bind logID
 
     // Execute the deletion
     if ($stmt->execute()) {
         echo "<script>
                 alert('Time record deleted successfully.');
-                        window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
+                window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
               </script>";
     } else {
         echo "<script>alert('Error deleting record.');</script>";
