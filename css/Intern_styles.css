@@ -1962,8 +1962,8 @@ td[colspan="10"] {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px); /* Increased blur effect */
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    backdrop-filter: blur(8px); /* Blur effect */
     -webkit-backdrop-filter: blur(8px); /* For Safari support */
     z-index: 999;
 }
