@@ -917,7 +917,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 <div id="taskModal" class="modal">
     <div class="modal-content">
     <span class="close" onclick="closeTaskModal()">&times;</span>
-    <?php 
+
+        <h2>Enter Task Before Logging Out</h2>
+        <form id="taskForm" method="POST" action="" onsubmit="return validateTask()">
+            <input type="hidden" name="internID" value="<?php echo htmlspecialchars($internID); ?>">
+
+            <!-- Dropdown to select an existing task -->
+            <label for="task">Select Existing Task:</label>
+            <select name="tasks[]" >
+                <option value="" disabled selected>Select a Task</option>
+                
+                <?php 
                 // Query to get time logs for the current intern
                 $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID");
                 $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
@@ -930,35 +940,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 if (!empty($timeLogs)) {
                     foreach ($timeLogs as $log) {
                         if (isset($log['task'])) { // Check if 'task' column exists
-                            $existingTasks[] = htmlspecialchars($log['task']);
+                            echo '<option value="' . htmlspecialchars($log['task']) . '">' . htmlspecialchars($log['task']) . '</option>'; // Display the task value safely
                         }
                     }
-                } 
-                $existingTasks = array_unique($existingTasks);
+                } else {
+                    echo '<option value="">No tasks available</option>';
+                }
                 ?>
-
-        <h2>Enter Task Before Logging Out</h2>
-        <form id="taskForm" method="POST" action="" onsubmit="return validateTask()">
-            <input type="hidden" name="internID" value="<?php echo htmlspecialchars($internID); ?>">
-
-            <!-- Dropdown to select an existing task -->
-            <label for="task">Select Existing Task:</label>
-            <select name="tasks[]" >
-                <option value="" disabled selected>Select a Task</option>
-
-                <?php 
-        // Display only the 'task' column in the dropdown without redundancy
-        foreach ($existingTasks as $task) {
-            echo '<option value="' . $task . '">' . $task . '</option>'; // Display the task value safely
-        }
-
-        // If no tasks are available, show a message
-        if (empty($existingTasks)) {
-            echo '<option value="">No tasks available</option>';
-        }
-        ?>
-                
-                
             </select>
 
             <!-- Input for a new task -->
