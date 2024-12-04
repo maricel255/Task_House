@@ -243,29 +243,59 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function confirmDelete(internID) {
-    if (confirm("Are you sure you want to delete this intern? This action cannot be undone.")) {
-        // Create a form to submit the delete request
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = ''; // Submit to the current page
+    // Fetch the intern details before confirming deletion
+    fetch("", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+            fetchDetails: true,
+            internID: internID
+        }),
+    })
+    .then((response) => response.json()) // Expecting JSON response
+    .then((data) => {
+        if (data.success) {
+            // Display the intern details in a confirmation dialog
+            const details = `
+                <h3>Confirm Deletion</h3>
+                <p>Are you sure you want to delete the following intern?</p>
+                <p><strong>Intern ID:</strong> ${data.internID}</p>
+                <p><strong>Name:</strong> ${data.name}</p>
+                <p><strong>Email:</strong> ${data.email}</p>
+                <!-- Add more fields as necessary -->
+            `;
+            if (confirm(details)) {
+                // If confirmed, create a form to submit the delete request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = ''; // Submit to the current page
 
-        // Create hidden inputs for action and internID
-        const actionInput = document.createElement('input');
-        actionInput.type = 'hidden';
-        actionInput.name = 'action';
-        actionInput.value = 'delete';
+                // Create hidden inputs for action and internID
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'delete';
 
-        const idInput = document.createElement('input');
-        idInput.type = 'hidden';
-        idInput.name = 'internID';
-        idInput.value = internID;
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'internID';
+                idInput.value = internID;
 
-        // Append inputs to the form
-        form.appendChild(actionInput);
-        form.appendChild(idInput);
+                // Append inputs to the form
+                form.appendChild(actionInput);
+                form.appendChild(idInput);
 
-        // Append the form to the body and submit it
-        document.body.appendChild(form);
-        form.submit();
-    }
+                // Append the form to the body and submit it
+                document.body.appendChild(form);
+                form.submit();
+            }
+        } else {
+            alert("Error fetching intern details.");
+        }
+    })
+    .catch((error) => {
+        console.error("Error fetching details:", error);
+    });
 }

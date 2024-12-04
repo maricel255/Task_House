@@ -621,15 +621,55 @@ z-index: -1; /* Places it behind other elements */
   width: 80%; /* Increased width for better visibility on mobile */
 }
 }
+.table-cell {
+  display: flex; /* Use flexbox for alignment */
+  justify-content: space-between; /* Space between buttons */
+  align-items: center; /* Center vertically */
+}
 
+.delete-details-btn {
+  background-color: red; /* Red background */
+  color: white; /* White text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  margin-right: auto; /* Push the button to the right */
+}
+
+.delete-time-btn {
+  background-color: red; /* Red background */
+  color: white;           /* White text color */
+  border: none;           /* Remove border */
+  padding: 10px 20px;     /* Add padding to make the button larger */
+  border-radius: 15px;    /* Curved corners */
+  cursor: pointer;       /* Change cursor to pointer on hover */
+  font-size: 16px;        /* Set font size */
+  transition: background-color 0.3s ease; /* Smooth color transition on hover */
+}
+
+.delete-time-btn:hover {
+  background-color: darkred; /* Darker red on hover */
+}
+
+.delete-details-btn:hover {
+  background-color: darkred; /* Darker shade on hover */
+}
+.view-details-btn, .delete-details-btn {
+  margin-right: 10px; /* Adjust spacing between buttons */
+  display: inline-block; /* Ensure buttons are on the same line */
+}
+
+.delete-details-btn:focus {
+  outline: none; /* Remove outline on focus */
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Add shadow on focus */
+}
 /* Modal Content */
 
 /* Blur the entire page when the modal is active */
-/* Apply blur to all content except modal */
-body:has(:target) > *:not(.modal) {
-  filter: blur(5px); /* Adjust the blur intensity */
-  transition: filter 0.3s ease; /* Smooth transition for blur effect */
-}
+
 
 /* Modal */
 .modal-content {
@@ -643,9 +683,10 @@ body:has(:target) > *:not(.modal) {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: absolute;
   top: 50%;
-  left: 20%;
-  transform: translate(-50%, -50%);
+  left: 20%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Center the element */
 }
+
 
 /* Show modal when the URL hash matches the modal id */
 .modal:target {
@@ -1326,6 +1367,7 @@ border-radius: 50%; /* Make images circular */
 /* Message Style */
 p {
 font-size: 18px; /* Increase font size for messages */
+margin-left: 90px;modal-conten
 }
 
 /* Responsive Styles */
@@ -1675,11 +1717,28 @@ margin-top: 20px;   /* Adds some space from the top */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
   float: right; /* Float the button to the right */
-  margin-left: 10px; /* Optional: Add some space to the left of the button */
+  margin-left: 5px; /* Optional: Add some space to the left of the button */
 }
 
 .view-details-btn:hover {
   background-color: #0056b3; /* Darker shade on hover */
+}
+.print-table-btn {
+  background-color: green; /* Green background */
+  color: white; /* White text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+  display: inline; 
+  margin-left: 80px;
+
+}
+
+.print-table-btn:hover {
+  background-color: darkgreen; /* Darker shade on hover */
 }
 
 .view-details-btn:focus {

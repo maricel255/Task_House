@@ -904,7 +904,7 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-   
+
 ?>
 
 <!DOCTYPE html>
@@ -1195,8 +1195,36 @@ $timeLogsCount = $stmt->fetchColumn();
        
        
         <!-- Start Kyle -->
-<?php
+        <?php
 
+// Check if delete is requested
+if (isset($_POST['intern_id'])) {
+    $internID = $_POST['intern_id'];
+
+    // Debugging: Check if internID is passed correctly
+    if (empty($internID)) {
+        echo "<script>alert('Intern ID is missing.');</script>";
+    } else {
+        try {
+            // Prepare the DELETE SQL statement
+            $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
+            $deleteStmt = $conn->prepare($deleteSql);
+            $deleteStmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+
+            // Execute the delete statement
+            if ($deleteStmt->execute()) {
+                // If deletion is successful, redirect to the Intern_profile section
+                echo "<script>alert('Intern record deleted successfully.'); window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_profile';</script>";
+            } else {
+                // If there's an error, show a failure message
+                echo "<script>alert('Error deleting the record.');</script>";
+            }
+        } catch (PDOException $e) {
+            // If an exception occurs, show the error message
+            echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+        }
+    }
+}
 // Prepare the base SQL query
 $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 
@@ -1232,8 +1260,7 @@ if ($stmt->rowCount() > 0) {
     echo '<tr class="sticky-header">';
     echo '<th>#</th>'; // Add a column for numbering
     echo '<th>Intern ID</th>';
-    echo '<th style="text-align: right;">Asctions</th>';
- 
+    echo '<th style="text-align: center;">Actions</th>';
     echo '</tr>'; // Close the header row
     echo '</thead>';
     echo '<tbody>';
@@ -1255,35 +1282,10 @@ if ($stmt->rowCount() > 0) {
         // Add a button to view more details
         echo '<td>';
         echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
-        echo '<button class="delete-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '" onclick="confirmDelete(' . htmlspecialchars($row['internID']) . ')">Delete</button>';
-
+        echo '<form action="" method="POST" onsubmit="return confirm(\'Are you sure you want to delete this intern?\')">';
+        echo '<button type="submit" class="delete-details-btn" name="intern_id" value="' . htmlspecialchars($row['internID']) . '">Delete</button>';
+        echo '</form>';
         echo '</td>';
-
-       // Handle deletion action
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
-    if ($internID) {
-        try {
-            // Prepare the SQL statement to delete the intern record
-            $deleteStmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
-            $deleteStmt->bindParam(':internID', $internID);
-            
-            // Execute the statement
-            if ($deleteStmt->execute()) {
-                echo '<script>alert("Intern account deleted successfully!");</script>'; // Success message
-            } else {
-                echo '<script>alert("Error: Could not delete intern account.");</script>'; // Error message
-            }
-        } catch (PDOException $e) {
-            // Log the error message for debugging
-            error_log("Deletion error: " . $e->getMessage());
-            echo '<script>alert("Error: ' . addslashes($e->getMessage()) . '");</script>'; // Show the error message
-        }
-    } else {
-        echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
-    }
-}
-       
 
         echo '</tr>';
     }
@@ -1294,8 +1296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     echo '<p>No records found for your search!</p>';
 }
 
-
 ?>
+
 <div class="container">
     <div id="internDetails" class="intern-details">
         <!-- Content for intern details will go here -->
@@ -1527,13 +1529,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <h1>Report</h1>
 
     <!-- Search Form -->
-    <form method="GET" action="">
+    <form method="GET" action="" style="margin-left: 80px;">
         <label for="search">Search by Intern ID:</label>
         <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
         <button type="submit">Search</button>
     </form>
-  <!-- Print Table Button -->
-  <button onclick="printTable()" style="display: inline; margin-left: 10px;">Print Table</button>
+
+    <!-- Print Table Button -->
+    <button class="print-table-btn" onclick="printTable()">Print Table</button>
 
     <?php
     // Assuming you're already connected to the database via PDO
@@ -1567,49 +1570,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     ?>
 
     <?php if ($results): ?>
-        <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
-            <thead>
-                <tr>
-                    <th>Count</th> <!-- New Count Column -->
-                    <th>Intern ID</th>
-                    <th>Company ID</th>
-                    <th>Start Shift</th>
-                    <th>End Shift</th>
-                    <th>Login Time</th>
-                    <th>Task</th>
-                    <th>Logout Time</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php 
-                $count = 1; // Initialize the counter
-                foreach ($results as $row): 
-                ?>
+        <div class="table-container">
+            <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
+                <thead>
                     <tr>
-    <td><?php echo $count++; ?></td> <!-- Display count and increment -->
-    <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-</tr>
-
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-
+                        <th>Count</th> <!-- New Count Column -->
+                        <th>Intern ID</th>
+                        <th>Company ID</th>
+                        <th>Start Shift</th>
+                        <th>End Shift</th>
+                        <th>Login Time</th>
+                        <th>Task</th>
+                        <th>Logout Time</th>
+                        <th>Status</th>
+                        <th>Action</th> <!-- Delete Column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $count = 1; // Initialize the counter
+                    foreach ($results as $row): 
+                    ?>
+                        <tr>
+                            <td><?php echo $count++; ?></td> <!-- Display count and increment -->
+                            <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td>
+                                <!-- Delete Button -->
+                                <form method="POST" action="">
+                                    <input type="hidden" name="internID" value="<?php echo htmlspecialchars($row['internID'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this record?');" class="delete-time-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
-        <p>No records found.</p>
-    <?php endif; ?>
-</div>
-    
-    
+        <p >No records found.</p>    <?php endif; ?>
 
-    </div>
+</div>
+
+<?php
+// Handle Deletion
+if (isset($_POST['delete']) && isset($_POST['internID'])) {
+    $internID = $_POST['internID'];
+
+    // Prepare the DELETE SQL statement
+    $sql = "DELETE FROM time_logs WHERE internID = :internID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+
+    // Execute the deletion
+    if ($stmt->execute()) {
+        echo "<script>
+                alert('Time record deleted successfully.');
+                        window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Report';
+              </script>";
+    } else {
+        echo "<script>alert('Error deleting record.');</script>";
+    }
+}
+?>
+
  
 <script src="js/Admin_script.js"></script>
 </body>
