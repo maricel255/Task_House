@@ -699,7 +699,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $title = trim($_POST['title']);
         $announcement = trim($_POST['announcement']);
         
-        // Ensure file upload is handled
+        // Check if a file was uploaded
         if (isset($_FILES['fileUpload']) && $_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
             // Process file upload
             $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
@@ -726,7 +726,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
                 // Execute the statement
                 if ($stmt->execute()) {
-                    // Redirect to the same page to avoid resubmission on refresh
                     header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
                     exit;  // Ensure no further code is executed after the redirect
                 } else {
