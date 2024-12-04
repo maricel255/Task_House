@@ -927,16 +927,14 @@ $timeLogsCount = $stmt->fetchColumn();
 </head>
 <body>
 <?php
-if (isset($_SESSION['message'])): ?>
-    <div id="messageBox" class="message-box <?php echo $_SESSION['message_type']; ?>">
-        <?php 
-        echo $_SESSION['message'];
-        unset($_SESSION['message']);
-        unset($_SESSION['message_type']);
-        ?>
-    </div>
-<?php endif; ?>
-   
+// Clear the delete error and success flags when the page loads normally
+if (isset($_SESSION['delete_error'])) {
+    unset($_SESSION['delete_error']);
+}
+if (isset($_SESSION['delete_success'])) {
+    unset($_SESSION['delete_success']);
+}
+?>
 
 
     <div id="header" class="header">
@@ -1225,14 +1223,17 @@ if (isset($_POST['intern_id'])) {
             }
         } catch (PDOException $e) {
             // If an exception occurs, show a user-friendly error message
-            if ($e->getCode() == 23000) { // Integrity constraint violation
-                
-                
-                echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
+            if (!isset($_SESSION['delete_error'])) {
+                $_SESSION['delete_error'] = true;
+                echo "<script>
+                    alert('Cannot delete this record because it is referenced by another record.');
+                    window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_profile';
+                </script>";
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
             }
         }
+        exit();
          // Prevent further execution
     }
      // Redirect to prevent form resubmission
