@@ -1232,7 +1232,7 @@ if ($stmt->rowCount() > 0) {
     echo '<tr class="sticky-header">';
     echo '<th>#</th>'; // Add a column for numbering
     echo '<th>Intern ID</th>';
-    echo '<th style="text-align: right;">actions</th>';
+    echo '<th style="text-align: right;">Actions</th>';
  
     echo '</tr>'; // Close the header row
     echo '</thead>';
@@ -1255,6 +1255,8 @@ if ($stmt->rowCount() > 0) {
         // Add a button to view more details
         echo '<td>';
         echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
+        echo '<button class="delete-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '" onclick="confirmDelete(' . htmlspecialchars($row['internID']) . ')">Delete</button>';
+
         echo '</td>';
 
         // Add delete button
