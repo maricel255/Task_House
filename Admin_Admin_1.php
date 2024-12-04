@@ -719,7 +719,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // File successfully uploaded
                 $imagePath = $dest_path; // Set the image path to the uploaded file path
             } else {
-                echo "<script>alert('Error uploading the file.');</script>";
+                // If the file upload fails, you can choose to log the error or handle it silently
+                // For now, we will not show an error message
             }
         }
     
