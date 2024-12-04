@@ -905,28 +905,16 @@ $timeLogsCount = $stmt->fetchColumn();
     // END KYLE
 
    // Handle deletion action
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
-    if ($internID) {
-        try {
-            // Prepare the SQL statement to delete the intern record
-            $deleteStmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
-            $deleteStmt->bindParam(':internID', $internID);
-            
-            // Execute the statement
-            if ($deleteStmt->execute()) {
-                echo '<script>alert("Intern account deleted successfully!");</script>'; // Success message
-            } else {
-                echo '<script>alert("Error: Could not delete intern account.");</script>'; // Error message
-            }
-        } catch (PDOException $e) {
-            // Log the error message for debugging
-            error_log("Deletion error: " . $e->getMessage());
-            echo '<script>alert("Error: ' . addslashes($e->getMessage()) . '");</script>'; // Show the error message
-        }
-    } else {
-        echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
-    }
+   if (isset($_POST['intern_id'])) {
+    $internID = $_POST['intern_id'];
+
+    // Prepare and execute the deletion query
+    $stmt = $pdo->prepare("DELETE FROM profile_information WHERE internID = :internID");
+    $stmt->execute(['internID' => $internID]);
+
+    // Redirect or show a success message
+    header("Location: " . $_SERVER['PHP_SELF'] . "?" . http_build_query($_GET));
+    exit;
 }
 ?>
 
@@ -1278,9 +1266,10 @@ if ($stmt->rowCount() > 0) {
         // Add a button to view more details
         echo '<td>';
         echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
-        echo '<button class="delete-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '" onclick="confirmDelete(' . htmlspecialchars($row['internID']) . ')">Delete</button>';
-
-        echo '</td>';
+        echo '<form action=" " method="POST" onsubmit="return confirm(\'Are you sure you want to delete this intern?\')">';
+        echo '<button type="submit" class="delete-details-btn" name="intern_id" value="' . htmlspecialchars($row['internID']) . '">Delete</button>';
+        echo '</form>';
+                echo '</td>';
 
 
        
