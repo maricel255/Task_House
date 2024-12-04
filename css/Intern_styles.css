@@ -1836,6 +1836,19 @@ td[colspan="10"] {
     padding: 25px;
     animation: fadeIn 0.3s ease;
 }
+.cls {
+    position: absolute;
+    right: 15px;
+    top: 10px; /* Position the close button above the text */
+    font-size: 24px;
+    color: #5c5c5c;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.cls:hover {
+    color: #0f0f0f;
+}
 
 #taskModal h2 {
     color: #2c3e50;
