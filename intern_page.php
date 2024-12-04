@@ -914,7 +914,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
 
 
-<div id="taskModal" class="modal">
+<div id="taskModal" >
     <div class="modal-content">
     <span class="close" onclick="closeTaskModal()">&times;</span>
 

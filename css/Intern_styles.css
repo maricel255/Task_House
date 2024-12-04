@@ -1821,3 +1821,122 @@ td[colspan="10"] {
         margin: 10px 0;
     }
 }
+/* Task Modal Styling */
+#taskModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    padding: 25px;
+    animation: fadeIn 0.3s ease;
+}
+
+#taskModal h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+#taskForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#taskForm label {
+    color: #34495e;
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+#taskForm select, 
+#taskForm input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+#taskForm select:focus, 
+#taskForm input[type="text"]:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+    outline: none;
+}
+
+#taskForm button[type="submit"] {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+#taskForm button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2);
+}
+
+
+/* Task message styling */
+#taskMessage {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+    #taskModal {
+        width: 90%;
+        padding: 20px;
+    }
+
+    #taskModal h2 {
+        font-size: 20px;
+    }
+
+    #taskForm select, 
+    #taskForm input[type="text"] {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    #taskForm button[type="submit"] {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
