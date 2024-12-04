@@ -1227,8 +1227,8 @@ if (isset($_POST['intern_id'])) {
             // If an exception occurs, show a user-friendly error message
             if ($e->getCode() == 23000) { // Integrity constraint violation
                 
-                $_SESSION['message'] = 'Cannot delete this record because it is referenced by another record.';
-                $_SESSION['message_type'] = 'error';
+                setMessage("Cannot delete this record because it is referenced by another record.", "error");
+               
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
             }
@@ -1236,8 +1236,7 @@ if (isset($_POST['intern_id'])) {
          // Prevent further execution
     }
      // Redirect to prevent form resubmission
-     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_profile");
-     exit();
+    
 }
 // Prepare the base SQL query
 $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
