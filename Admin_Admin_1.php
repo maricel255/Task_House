@@ -927,17 +927,15 @@ $timeLogsCount = $stmt->fetchColumn();
 </head>
 <body>
 <?php
-    // Place this at the very top of your body tag
-    if (isset($_SESSION['message'])): ?>
-        <div id="messageBox" class="message-box <?php echo $_SESSION['message_type']; ?>">
-            <?php 
-            echo $_SESSION['message'];
-            // Clear the message after displaying
-            unset($_SESSION['message']);
-            unset($_SESSION['message_type']);
-            ?>
-        </div>
-    <?php endif; ?>
+if (isset($_SESSION['message'])): ?>
+    <div id="messageBox" class="message-box <?php echo $_SESSION['message_type']; ?>">
+        <?php 
+        echo $_SESSION['message'];
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
+        ?>
+    </div>
+<?php endif; ?>
    
 
 
@@ -1229,14 +1227,17 @@ if (isset($_POST['intern_id'])) {
             // If an exception occurs, show a user-friendly error message
             if ($e->getCode() == 23000) { // Integrity constraint violation
                 
-                echo "<script>alert('Cannot delete this record because it is referenced by another record.');</script>";
-                
+                $_SESSION['message'] = 'Cannot delete this record because it is referenced by another record.';
+                $_SESSION['message_type'] = 'error';
             } else {
                 echo "<script>alert('An unexpected error occurred. Please try again later.');</script>";
             }
         }
          // Prevent further execution
     }
+     // Redirect to prevent form resubmission
+     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_profile");
+     exit();
 }
 // Prepare the base SQL query
 $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
