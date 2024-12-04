@@ -622,6 +622,26 @@ z-index: -1; /* Places it behind other elements */
 }
 }
 
+
+.delete-details-btn {
+  background-color: red; /* Red background */
+  color: white; /* White text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.delete-details-btn:hover {
+  background-color: darkred; /* Darker shade on hover */
+}
+
+.delete-details-btn:focus {
+  outline: none; /* Remove outline on focus */
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Add shadow on focus */
+}
 /* Modal Content */
 
 /* Blur the entire page when the modal is active */

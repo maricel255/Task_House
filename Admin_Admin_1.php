@@ -904,18 +904,7 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-   // Handle deletion action
-   if (isset($_POST['intern_id'])) {
-    $internID = $_POST['intern_id'];
 
-    // Prepare and execute the deletion query
-    $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
-    $stmt->execute(['internID' => $internID]);
-
-    // Redirect or show a success message
-    header("Location: " . $_SERVER['PHP_SELF'] . "?" . http_build_query($_GET));
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
