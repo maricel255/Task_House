@@ -1404,7 +1404,7 @@ background-color: #333; /* Darker background on hover for better visual feedback
 
 .deleter-button {  
   position: fixed; /* Fixed positioning ensures the button stays in the same place */
-  bottom: 48px; /* Distance from the bottom of the viewport */
+  bottom: 40px; /* Distance from the bottom of the viewport */
   right: 35px; /* Distance from the right edge of the viewport */
   background: orange;
   border: none;
