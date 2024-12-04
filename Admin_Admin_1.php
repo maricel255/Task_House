@@ -908,20 +908,30 @@ $timeLogsCount = $stmt->fetchColumn();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
     if ($internID) {
-        // Prepare the SQL statement to delete the intern record
-        $stmt = $conn->prepare("DELETE FROM intacc WHERE internID = :internID AND adminID = :adminID");
-        $stmt->bindParam(':internID', $internID);
-        $stmt->bindParam(':adminID', $adminID); // Ensure you bind the adminID for security
-        if ($stmt->execute()) {
-            $_SESSION['message'] = 'Intern account deleted successfully!';
-        } else {
-            $_SESSION['message'] = 'Error: Could not delete intern account.';
+        try {
+            // Prepare the SQL statement to delete the intern record from the profile_information table
+            $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
+            $stmt->bindParam(':internID', $internID);
+            $stmt->bindParam(':adminID', $adminID); // Ensure you bind the adminID for security
+            
+            // Execute the statement
+            if ($stmt->execute()) {
+                echo '<script>alert("Intern account deleted successfully!");</script>'; // Echo the success message
+            } else {
+                echo '<script>alert("Error: Could not delete intern account.");</script>'; // Echo the error message
+            }
+        } catch (PDOException $e) {
+            // Log the error message for debugging
+            error_log("Deletion error: " . $e->getMessage());
+            echo '<script>alert("Error: ' . addslashes($e->getMessage()) . '");</script>'; // Echo the error message
         }
+    } else {
+        echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
     }
+    
     header("Location: " . $_SERVER['PHP_SELF'] . "?section=Intern_Account"); // Redirect after deletion
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
