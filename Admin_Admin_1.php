@@ -907,27 +907,34 @@ $timeLogsCount = $stmt->fetchColumn();
 
 // Handle the deletion for intern profile
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $internID = $_POST['internID'] ?? null;
+    $internID = $_POST['internID'] ?? null; // Get the internID from the POST request
 
     if ($internID) {
         try {
+            // Prepare the SQL statement to delete the intern from profile_information
             $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID");
             $stmt->bindParam(':internID', $internID, PDO::PARAM_STR);
-            
+
             if ($stmt->execute()) {
-                echo "Delete successful!";
+                $_SESSION['message'] = "Intern profile deleted successfully!";
+                $_SESSION['message_type'] = 'success';
             } else {
-                echo "Delete failed!";
+                $_SESSION['message'] = "Error: Could not delete intern profile.";
+                $_SESSION['message_type'] = 'error';
             }
         } catch (PDOException $e) {
-            echo "PDO Error: " . $e->getMessage();
+            $_SESSION['message'] = "Error: " . $e->getMessage();
+            $_SESSION['message_type'] = 'error';
         }
     } else {
-        echo "Intern ID is missing!";
+        $_SESSION['message'] = "Error: Intern ID is missing.";
+        $_SESSION['message_type'] = 'error';
     }
+
+    // Redirect back to the same page to avoid resubmission
+    header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -1291,7 +1298,7 @@ foreach ($records as $row) {
     echo '<td>';
     echo '<form method="POST" action="" style="display:inline;">
     <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
-    <button type="submit" name="action" value="delete" class="delete-button">Delete</button>
+    <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record for an intern?\');">Delete</button>
 </form>';
     echo '</td>';
 
