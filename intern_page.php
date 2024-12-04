@@ -928,25 +928,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
                 <option value="" disabled selected>Select a Task</option>
                 
                 <?php 
-                // Query to get time logs for the current intern
-                $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID");
-                $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
-                $stmt->execute();
+        // Query to get time logs for the current intern
+        $stmt = $conn->prepare("SELECT * FROM time_logs WHERE internID = :internID");
+        $stmt->bindParam(':internID', $internID, PDO::PARAM_INT);
+        $stmt->execute();
 
-                // Fetch all the time logs
-                $timeLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Fetch all the time logs
+        $timeLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Display only the 'task' column in the dropdown
-                if (!empty($timeLogs)) {
-                    foreach ($timeLogs as $log) {
-                        if (isset($log['task'])) { // Check if 'task' column exists
-                            echo '<option value="' . htmlspecialchars($log['task']) . '">' . htmlspecialchars($log['task']) . '</option>'; // Display the task value safely
-                        }
-                    }
-                } else {
-                    echo '<option value="">No tasks available</option>';
+        // Create an array to track unique tasks
+        $uniqueTasks = [];
+
+        if (!empty($timeLogs)) {
+            foreach ($timeLogs as $log) {
+                if (isset($log['task']) && !in_array($log['task'], $uniqueTasks)) { 
+                    // Check if the task is unique before adding to the dropdown
+                    $uniqueTasks[] = $log['task']; // Add task to the unique array
+                    echo '<option value="' . htmlspecialchars($log['task']) . '">' . htmlspecialchars($log['task']) . '</option>';
                 }
-                ?>
+            }
+        } else {
+            echo '<option value="">No tasks available</option>';
+        }
+        ?>
             </select>
 
             <!-- Input for a new task -->
