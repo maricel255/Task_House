@@ -1505,13 +1505,15 @@ if ($stmt->rowCount() > 0) {
     <h1>Report</h1>
 
     <!-- Search Form -->
-<form method="GET" action="" style="margin-left: 80px;">
-    <label for="search">Search by Intern ID:</label>
-    <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-    <button type="submit">Search</button>
-</form>
-  <!-- Print Table Button -->
-  <button class="print-table-btn" onclick="printTable()" >Print Table</button>
+    <form method="GET" action="" style="margin-left: 80px;">
+        <label for="search">Search by Intern ID:</label>
+        <input type="text" id="search" name="search" placeholder="Enter Intern ID" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Print Table Button -->
+    <button class="print-table-btn" onclick="printTable()">Print Table</button>
+
     <?php
     // Assuming you're already connected to the database via PDO
 
@@ -1545,49 +1547,72 @@ if ($stmt->rowCount() > 0) {
 
     <?php if ($results): ?>
         <div class="table-container">
-        <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
-            <thead>
-                <tr>
-                    <th>Count</th> <!-- New Count Column -->
-                    <th>Intern ID</th>
-                    <th>Company ID</th>
-                    <th>Start Shift</th>
-                    <th>End Shift</th>
-                    <th>Login Time</th>
-                    <th>Task</th>
-                    <th>Logout Time</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php 
-                $count = 1; // Initialize the counter
-                foreach ($results as $row): 
-                ?>
+            <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
+                <thead>
                     <tr>
-    <td><?php echo $count++; ?></td> <!-- Display count and increment -->
-    <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-</tr>
-
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-                </div>
+                        <th>Count</th> <!-- New Count Column -->
+                        <th>Intern ID</th>
+                        <th>Company ID</th>
+                        <th>Start Shift</th>
+                        <th>End Shift</th>
+                        <th>Login Time</th>
+                        <th>Task</th>
+                        <th>Logout Time</th>
+                        <th>Status</th>
+                        <th>Action</th> <!-- Delete Column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $count = 1; // Initialize the counter
+                    foreach ($results as $row): 
+                    ?>
+                        <tr>
+                            <td><?php echo $count++; ?></td> <!-- Display count and increment -->
+                            <td><?php echo htmlspecialchars($row['internID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['faciID'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['start_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['end_shift'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['login_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['task'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['logout_time'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?php echo htmlspecialchars($row['status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td>
+                                <!-- Delete Button -->
+                                <form method="POST" action="">
+                                    <input type="hidden" name="internID" value="<?php echo htmlspecialchars($row['internID'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <button type="submit" name="delete" onclick="return confirm('Are you sure you want to delete this record?');">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
         <p>No records found.</p>
     <?php endif; ?>
-</div>
-    
-    
 
-    </div>
+</div>
+
+<?php
+// Handle Deletion
+if (isset($_POST['delete']) && isset($_POST['internID'])) {
+    $internID = $_POST['internID'];
+
+    // Prepare the DELETE SQL statement
+    $sql = "DELETE FROM time_logs WHERE internID = :internID";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindValue(':internID', $internID, PDO::PARAM_INT);
+
+    // Execute the deletion
+    if ($stmt->execute()) {
+        echo "<script>alert('Record deleted successfully.'); window.location.reload();</script>";
+    } else {
+        echo "<script>alert('Error deleting record.');</script>";
+    }
+}
+?>
  
 <script src="js/Admin_script.js"></script>
 </body>
