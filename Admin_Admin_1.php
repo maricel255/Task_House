@@ -1289,10 +1289,10 @@ foreach ($records as $row) {
 
     // Add delete button
     echo '<td>';
-    echo ' <form method="POST" action="">
-        <input type="hidden" name="internID" value="<?php echo htmlspecialchars($row['internID']); ?>">
-        <button type="submit" name="action" value="delete" class="delete-button">Delete</button>
-    </form>';
+    echo '<form method="POST" action="" style="display:inline;">
+    <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
+    <button type="submit" name="action" value="delete" class="delete-button">Delete</button>
+</form>';
     echo '</td>';
 
     echo '</tr>';
