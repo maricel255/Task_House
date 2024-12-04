@@ -1294,11 +1294,9 @@ foreach ($records as $row) {
 
     // Add delete button
     echo '<td>';
-    echo '<form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?section=Intern_Account">
-    <input type="hidden" name="action" value="deleting">
-    <button type="submit" style="background-color: red; color: white; border: none; padding: 10px 15px; cursor: pointer;">
-        Delete Intern Account
-    </button>
+    echo '<form method="POST" action="" style="display:inline;">
+    <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
+    <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record?\');">Delete</button>
 </form>';
     echo '</td>';
 
