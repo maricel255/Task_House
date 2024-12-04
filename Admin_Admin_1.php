@@ -904,35 +904,7 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'deleting') {
-        $internID = $_POST['internID'] ?? null;
-        $adminID = $_SESSION['adminID'] ?? null; // Retrieve adminID from session
-    
-        if ($internID && $adminID) {
-            try {
-                // Prepare SQL to delete the record
-                $stmt = $conn->prepare("DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID");
-                $stmt->bindParam(':internID', $internID, PDO::PARAM_STR);
-                $stmt->bindParam(':adminID', $adminID, PDO::PARAM_STR);
-    
-                // Execute and provide feedback
-                if ($stmt->execute()) {
-                    echo '<script>alert("Intern account deleted successfully!");</script>';
-                } else {
-                    echo '<script>alert("Error: Could not delete intern account.");</script>';
-                }
-            } catch (PDOException $e) {
-                error_log("Deletion error: " . $e->getMessage());
-                echo '<script>alert("Error: ' . htmlspecialchars($e->getMessage()) . '");</script>';
-            }
-        } else {
-            echo '<script>alert("Error: Missing Intern ID or Admin ID.");</script>';
-        }
-    
-        // Redirect back to the same page to refresh
-        echo '<script>window.location.href="' . htmlspecialchars($_SERVER['PHP_SELF']) . '?section=Intern_Account";</script>';
-        exit();
-    }
+   
 ?>
 
 <!DOCTYPE html>
@@ -1223,100 +1195,88 @@ $timeLogsCount = $stmt->fetchColumn();
        
        
         <!-- Start Kyle -->
-        <?php
+<?php
 
-        // Prepare the base SQL query
-        $sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
+// Prepare the base SQL query
+$sql = "SELECT * FROM profile_information WHERE adminID = :adminID";
 
-        // Determine the column to be displayed
-        $searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
-        $searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
+// Determine the column to be displayed
+$searchField = isset($_POST['searchField']) ? $_POST['searchField'] : '';
+$searchBy = isset($_POST['searchBy']) ? $_POST['searchBy'] : 'all';
 
-        // Add condition to search by the selected field
-        if ($searchBy !== 'all' && !empty($searchField)) {
-            $sql .= " AND $searchBy = :searchField"; 
-        }
-
-        // Prepare and execute the query
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
-
-        // Bind the search field parameter if it's not 'All' and searchField is set
-        if ($searchBy !== 'all' && !empty($searchField)) {
-            $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // Bind the search field parameter
-        }
-
-        // Execute the statement
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            // Fetch all records
-            $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Start the table
-            echo '<table id="profileTable" class="table table-bordered">';
-echo '<thead class="thead-light">';
-echo '<tr class="sticky-header">';
-echo '<th>#</th>'; // Add a column for numbering
-echo '<th>Intern ID</th>';
-echo '<th style="text-align: right;">View Intern Information</th>';
-echo '<th>Delete</th>';
-
-
-
-// Dynamically create headers based on the selected search criteria
-if ($searchBy !== 'all') {
-    echo '<th>' . ucfirst(str_replace('_', ' ', $searchBy)) . '</th>';
+// Add condition to search by the selected field
+if ($searchBy !== 'all' && !empty($searchField)) {
+    $sql .= " AND $searchBy = :searchField"; 
 }
 
-echo '</tr>';
-echo '</thead>';
-echo '<tbody>';
+// Prepare and execute the query
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':adminID', $adminID, PDO::PARAM_INT); // Bind the adminID parameter
 
-// Counter for enumeration
-$counter = 1;
+// Bind the search field parameter if it's not 'All' and searchField is set
+if ($searchBy !== 'all' && !empty($searchField)) {
+    $stmt->bindValue(':searchField', $searchField, PDO::PARAM_STR); // Bind the search field parameter
+}
 
-// Loop through the records and display each field
-foreach ($records as $row) {
-    echo '<tr>';
-    echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
-    echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+// Execute the statement
+$stmt->execute();
 
-    // Display the selected search column based on search criteria
-    if ($searchBy !== 'all') {
-        echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+if ($stmt->rowCount() > 0) {
+    // Fetch all records
+    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Start the table
+    echo '<div class="table-container">';
+    echo '<table id="profileTable" class="table table-bordered">';
+    echo '<thead class="thead-light">';
+    echo '<tr class="sticky-header">';
+    echo '<th>#</th>'; // Add a column for numbering
+    echo '<th>Intern ID</th>';
+    echo '<th style="text-align: right;">View Intern Information</th>';
+    echo '<th>Delete</th>'; // Add Delete header
+    echo '</tr>'; // Close the header row
+    echo '</thead>';
+    echo '<tbody>';
+
+    // Counter for enumeration
+    $counter = 1;
+
+    // Loop through the records and display each field
+    foreach ($records as $row) {
+        echo '<tr>';
+        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+        echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
+
+        // Display the selected search column based on search criteria
+        if ($searchBy !== 'all') {
+            echo '<td>' . htmlspecialchars($row[$searchBy]) . '</td>';
+        }
+
+        // Add a button to view more details
+        echo '<td>';
+        echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
+        echo '</td>';
+
+        // Add delete button
+       
+
+        echo '</tr>';
     }
-
-    // Add a button to view more details
-    echo '<td>';
-    echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
-    echo '</td>';
-
-    // Add delete button
-    echo '<td>';
-    echo '<form method="POST" action="" style="display:inline;">
-    <input type="hidden" name="internID" value="' . htmlspecialchars($row['internID']) . '">
-    <button type="submit" name="action" value="delete" class="delete-button" onclick="return confirm(\'Are you sure you want to delete this record?\');">Delete</button>
-</form>';
-    echo '</td>';
-
-    echo '</tr>';
+    echo '</tbody>';
+    echo '</table>';
+    echo '</div>'; // Close the table container
+} else {
+    echo '<p>No records found for your search!</p>';
 }
-echo '</tbody>';
-echo '</table>';
-        } else {
-            echo '<p>No records found for your search!</p>';
-        }
 
-        
-        ?>
-        <div class="container">
-            <div id="internDetails" class="intern-details">
-                <!-- Content for intern details will go here -->
-            </div>
-        </div>
 
-         <!-- End Kyle -->
+?>
+<div class="container">
+    <div id="internDetails" class="intern-details">
+        <!-- Content for intern details will go here -->
+    </div>
+</div>
+<!-- End Kyle -->
     </div>  
     </div>  
 </div>  
