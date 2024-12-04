@@ -1590,7 +1590,7 @@ if ($stmt->rowCount() > 0) {
             </table>
         </div>
     <?php else: ?>
-        <p style="margin-left: 60px;">No records found.</p>    <?php endif; ?>
+        <p style="margin-left: 90px;">No records found.</p>    <?php endif; ?>
 
 </div>
 
