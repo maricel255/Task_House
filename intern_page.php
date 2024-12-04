@@ -919,7 +919,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
     <span class="close" onclick="closeTaskModal()">&times;</span>
 
         <h2>Enter Task Before Logging Out</h2>
-        <form id="taskForm" method="POST" action="">
+        <form id="taskForm" method="POST" action="" onsubmit="return validateTask()">
             <input type="hidden" name="internID" value="<?php echo htmlspecialchars($internID); ?>">
 
             <!-- Dropdown to select an existing task -->
