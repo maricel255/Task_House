@@ -354,3 +354,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function validateTask() {
+    const newTask = document.getElementById('new_task').value.trim();
+    const taskSelect = document.getElementById('taskSelect');
+    const existingTasks = Array.from(taskSelect.options).map(option => option.value);
+
+    // Check if the new task already exists in the dropdown
+    if (existingTasks.includes(newTask)) {
+        alert("The task you entered already exists in the dropdown. Please enter a different task.");
+        return false; // Prevent form submission
+    }
+    return true; // Allow form submission
+}
