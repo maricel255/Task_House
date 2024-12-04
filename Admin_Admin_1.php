@@ -1302,7 +1302,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         echo '<script>alert("Error: Intern ID is missing.");</script>'; // Echo if internID is missing
     }
 }
-}
 
 ?>
 <div class="container">
