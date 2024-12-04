@@ -367,12 +367,3 @@ function validateTask() {
     }
     return true; // Allow form submission
 }
-function openTaskModal() {
-    document.getElementById('taskModal').style.display = 'block';
-    document.getElementById('modalOverlay').style.display = 'block';
-}
-
-function closeTaskModal() {
-    document.getElementById('taskModal').style.display = 'none';
-    document.getElementById('modalOverlay').style.display = 'none';
-}
