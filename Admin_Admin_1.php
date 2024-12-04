@@ -1544,6 +1544,7 @@ if ($stmt->rowCount() > 0) {
     ?>
 
     <?php if ($results): ?>
+        <div class="table-container">
         <table border="1" cellpadding="5" cellspacing="0" style="margin-left: 60px;" id="reportTable">
             <thead>
                 <tr>
@@ -1578,7 +1579,7 @@ if ($stmt->rowCount() > 0) {
                 <?php endforeach; ?>
             </tbody>
         </table>
-
+                </div>
     <?php else: ?>
         <p>No records found.</p>
     <?php endif; ?>
