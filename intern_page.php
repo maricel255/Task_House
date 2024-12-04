@@ -915,7 +915,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
 
 
 <div id="taskModal" >
-    <div class="modal-content">
+    
     <span class="close" onclick="closeTaskModal()">&times;</span>
 
         <h2>Enter Task Before Logging Out</h2>
@@ -961,7 +961,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_credentials'])
         </form>
 
         <div id="taskMessage"><?php echo isset($alertMessage) ? htmlspecialchars($alertMessage) : ''; ?></div>
-    </div>
+    
 </div>
 
 
