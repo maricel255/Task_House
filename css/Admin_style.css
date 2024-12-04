@@ -1710,6 +1710,20 @@ margin-top: 20px;   /* Adds some space from the top */
 .view-details-btn:hover {
   background-color: #0056b3; /* Darker shade on hover */
 }
+.print-table-btn {
+  background-color: green; /* Green background */
+  color: white; /* White text color */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px 15px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.print-table-btn:hover {
+  background-color: darkgreen; /* Darker shade on hover */
+}
 
 .view-details-btn:focus {
   outline: none; /* Remove outline on focus */
