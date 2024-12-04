@@ -904,7 +904,7 @@ $timeLogsCount = $stmt->fetchColumn();
     }
     // END KYLE
 
- // Handle deletion action
+// Handle deletion action
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     $internID = $_POST['internID'] ?? null; // Get the internID from the form submission
     if ($internID) {
@@ -915,7 +915,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             
             // Execute the statement
             $deleteStmt->execute();
-            echo '<script>alert("Intern details deleted successfully!");</script>'; // Success message
+            echo '<script>alert("Intern account deleted successfully!");</script>'; // Success message
         } catch (PDOException $e) {
             // Check for foreign key constraint violation
             if ($e->getCode() == 23000) { // Integrity constraint violation
