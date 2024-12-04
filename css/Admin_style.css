@@ -598,7 +598,7 @@ z-index: -1; /* Places it behind other elements */
 display: none; /* Hidden by default */
 position: fixed; /* Stay in place */
 z-index: 1000; /* Below modal */
-left: 0;
+left: 30px;
 top: 0;
 width: 100%; /* Full width of the viewport */
 height: 100%; /* Full height of the viewport */
