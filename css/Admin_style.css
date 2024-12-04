@@ -777,7 +777,7 @@ font-weight: bold;
   
 }
 .intern_acc:hover {
-  background-color:  limegreen;
+  background-color:  lime;
 }
 @media screen and (max-width: 480px) {
 .intern_acc {
