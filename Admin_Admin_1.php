@@ -1205,23 +1205,22 @@ if (isset($_POST['intern_id'])) {
             // Start a transaction
             $conn->beginTransaction();
 
-            // Step 1: Delete from time_logs (if any exist)
+            // Step 1: Delete related records in time_logs
             $deleteLogsSql = "DELETE FROM time_logs WHERE internID = :internID";
             $deleteLogsStmt = $conn->prepare($deleteLogsSql);
             $deleteLogsStmt->bindValue(':internID', $internID);
             $deleteLogsStmt->execute();
 
-            // Step 2: Delete from intacc
+            // Step 2: Delete from intacc table
             $deleteIntAccSql = "DELETE FROM intacc WHERE internID = :internID";
             $deleteIntAccStmt = $conn->prepare($deleteIntAccSql);
             $deleteIntAccStmt->bindValue(':internID', $internID);
             $deleteIntAccStmt->execute();
 
             // Step 3: Delete from profile_information
-            $deleteSql = "DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID";
+            $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
             $deleteStmt = $conn->prepare($deleteSql);
             $deleteStmt->bindValue(':internID', $internID);
-            $deleteStmt->bindValue(':adminID', $adminID);
             $deleteStmt->execute();
 
             // Commit the transaction
@@ -1270,8 +1269,7 @@ $stmt->execute();
 if ($stmt->rowCount() > 0) {
     // Fetch all records
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Start the table
+    
     echo '<div class="table-container">';
     echo '<table id="profileTable" class="table table-bordered">';
     echo '<thead class="thead-light">';
@@ -1279,7 +1277,7 @@ if ($stmt->rowCount() > 0) {
     echo '<th>#</th>'; // Add a column for numbering
     echo '<th>Intern ID</th>';
     echo '<th style="text-align: center;">Actions</th>';
-    echo '</tr>'; // Close the header row
+    echo '</tr>';
     echo '</thead>';
     echo '<tbody>';
 
@@ -1289,7 +1287,7 @@ if ($stmt->rowCount() > 0) {
     // Loop through the records and display each field
     foreach ($records as $row) {
         echo '<tr>';
-        echo '<td>' . $counter++ . '</td>'; // Display the row number and increment it
+        echo '<td>' . $counter++ . '</td>';
         echo '<td>' . htmlspecialchars($row['internID']) . '</td>';
 
         // Display the selected search column based on search criteria
@@ -1300,20 +1298,20 @@ if ($stmt->rowCount() > 0) {
         // Add a button to view more details
         echo '<td>';
         echo '<button class="view-details-btn" data-intern-id="' . htmlspecialchars($row['internID']) . '">View Details</button>';
-        echo '<form action="" method="POST" onsubmit="return confirm(\'Are you sure you want to delete this intern?\')">';
-        echo '<button type="submit" class="delete-details-btn" name="intern_id" value="' . htmlspecialchars($row['internID']) . '">Delete</button>';
+        echo '<form method="POST" action="" style="display: inline;" onsubmit="return confirm(\'Are you sure you want to delete this intern?\')">';
+        echo '<input type="hidden" name="intern_id" value="' . htmlspecialchars($row['internID']) . '">';
+        echo '<button type="submit" class="delete-details-btn">Delete</button>';
         echo '</form>';
         echo '</td>';
-
         echo '</tr>';
     }
+    
     echo '</tbody>';
     echo '</table>';
-    echo '</div>'; // Close the table container
+    echo '</div>';
 } else {
     echo '<p>No records found for your search!</p>';
 }
-
 ?>
 
 <div class="container">
