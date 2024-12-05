@@ -1205,44 +1205,38 @@ if (isset($_POST['intern_id'])) {
             // Start a transaction
             $conn->beginTransaction();
 
-            // Step 1: Delete related records in time_logs
+            // Step 1: Delete from time_logs (if any exist)
             $deleteLogsSql = "DELETE FROM time_logs WHERE internID = :internID";
             $deleteLogsStmt = $conn->prepare($deleteLogsSql);
             $deleteLogsStmt->bindValue(':internID', $internID);
             $deleteLogsStmt->execute();
 
-            // Step 2: Delete from intacc table
+            // Step 2: Delete from intacc
             $deleteIntAccSql = "DELETE FROM intacc WHERE internID = :internID";
             $deleteIntAccStmt = $conn->prepare($deleteIntAccSql);
             $deleteIntAccStmt->bindValue(':internID', $internID);
             $deleteIntAccStmt->execute();
 
             // Step 3: Delete from profile_information
-            $deleteSql = "DELETE FROM profile_information WHERE internID = :internID";
+            $deleteSql = "DELETE FROM profile_information WHERE internID = :internID AND adminID = :adminID";
             $deleteStmt = $conn->prepare($deleteSql);
             $deleteStmt->bindValue(':internID', $internID);
+            $deleteStmt->bindValue(':adminID', $adminID);
             $deleteStmt->execute();
 
-            // If all deletions are successful, commit the transaction
+            // Commit the transaction
             $conn->commit();
 
-            // Show success message and redirect
             echo "<script>
-                alert('Intern record and related accounts deleted successfully.');
+                alert('Intern record deleted successfully.');
                 window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_profile';
             </script>";
             exit();
 
         } catch (PDOException $e) {
-            // If any error occurs, rollback the transaction
             $conn->rollBack();
-
-            // Log the error for debugging (optional)
-            error_log("Delete error: " . $e->getMessage());
-
-            // Show user-friendly error message
             echo "<script>
-                alert('Error: Unable to delete the intern record completely. Please try again or contact support.');
+                alert('Error deleting record. Please try again.');
                 window.location.href = '" . $_SERVER['PHP_SELF'] . "?section=Intern_profile';
             </script>";
             exit();
